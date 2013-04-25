@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<model version="2.1">
+  <id>1e095754-e02c-40c9-8d19-0ae8e0987f4f</id>
+  <name>Verzeichnis erstellen</name>
+  <changecounter>3</changecounter>
+  <sib>
+    <id>eaa7fc38-72e2-41b8-b61f-52e5ec73a610</id>
+    <name>Prototype_1</name>
+    <label>Ins gewünschte Verzeichnis wechseln</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>246.0,17.5</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+    <userobject key="ABC$START">
+      <boolean>true</boolean>
+    </userobject>
+  </sib>
+  <edge>
+    <source>eaa7fc38-72e2-41b8-b61f-52e5ec73a610</source>
+    <target>283c587c-744b-41d6-952e-5c2e4e2440ef</target>
+    <point>327.0,73.58235294117647</point>
+    <point>108.0,163.75882352941176</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>8bd1fc0a-c349-4ee1-a1b2-ca5070c617be</source>
+    <target>192d1920-ee46-464f-a1de-476e56deb37b</target>
+    <point>343.57519788918205,428.5</point>
+    <point>331.58357771260995,572.5</point>
+    <branch>ok</branch>
+  </edge>
+  <edge>
+    <source>e77f9611-e207-46f9-a0a9-ed4b08ebdeee</source>
+    <target>8bd1fc0a-c349-4ee1-a1b2-ca5070c617be</target>
+    <point>45.0,482.5</point>
+    <point>45.0,390.0</point>
+    <point>279.5,390.0</point>
+    <labelposition>538.5387078753354,-36.21109918813987</labelposition>
+    <branch>Nochmals Namen eingeben</branch>
+  </edge>
+  <sib>
+    <id>addf87d7-f12b-4ae5-b227-df1181e6fe69</id>
+    <name>Prototype</name>
+    <label>Auf &quot;Verzeichnis erstellen&quot; klicken</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>258.0,197.5</position>
+    <parameter name="dialogTitle">
+      <string>Verzeichnis erstellen</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Innerhalb eines Verzeichnisses:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Verzeichnis erstellen</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>8bd1fc0a-c349-4ee1-a1b2-ca5070c617be</id>
+    <name>Prototype_2</name>
+    <label>Verzeichnis umbenennen</label>
+    <sib-uid>gui-sibs/ShowInputDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowInputDialog</taxonomy>
+    <position>279.5,377.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Name des Verzeichnisses</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="initialValue">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>${name}</expression>
+          <clazz>java.lang.String</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Neuen Namen für das Verzeichnis eingeben:</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>2</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <parameter name="possibleValues">
+      <list/>
+    </parameter>
+    <parameter name="selection">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>name2</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <edge>
+    <source>283c587c-744b-41d6-952e-5c2e4e2440ef</source>
+    <target>addf87d7-f12b-4ae5-b227-df1181e6fe69</target>
+    <point>345.0,143.5</point>
+    <point>345.0,182.5</point>
+    <branch>default</branch>
+  </edge>
+  <sib>
+    <id>283c587c-744b-41d6-952e-5c2e4e2440ef</id>
+    <name>UpdateCounter</name>
+    <label>Zähler hochzählen für Standard-Verzeichnisname</label>
+    <sib-uid>basic-sibs/UpdateCounter</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.UpdateCounter</taxonomy>
+    <position>220.0,107.5</position>
+    <parameter name="decrement">
+      <boolean>false</boolean>
+    </parameter>
+    <parameter name="initialValue">
+      <int>0</int>
+    </parameter>
+    <parameter name="steps">
+      <int>1</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>wert</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <edge>
+    <source>addf87d7-f12b-4ae5-b227-df1181e6fe69</source>
+    <target>5a8efe1d-0241-4487-931f-3c6bb6535cfc</target>
+    <point>327.0,219.5875</point>
+    <point>123.0,257.8375</point>
+    <labelposition>500.0,0.0</labelposition>
+    <branch>Verzeichnis erstellen</branch>
+  </edge>
+  <edge>
+    <source>5a8efe1d-0241-4487-931f-3c6bb6535cfc</source>
+    <target>8bd1fc0a-c349-4ee1-a1b2-ca5070c617be</target>
+    <point>123.0,272.4625</point>
+    <point>327.0,399.9625</point>
+    <labelposition>500.0,0.0</labelposition>
+    <branch>default</branch>
+  </edge>
+  <sib>
+    <id>192d1920-ee46-464f-a1de-476e56deb37b</id>
+    <name>ShowBranchingDialog</name>
+    <label>Ist Verzeichnisname bereits vergeben? (Test)</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>230.5,482.5</position>
+    <parameter name="dialogTitle">
+      <string>System-Prüfung</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>System prüft ob der Name bereits vergeben wurde.</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>System-Prüfung: Name bereits vergeben</branch>
+    <branch>System-Prüfung: Name noch nicht vorhanden</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>5a8efe1d-0241-4487-931f-3c6bb6535cfc</id>
+    <name>PutExpression</name>
+    <label>Verzeichnis wird angelegt mit Standardnamen</label>
+    <sib-uid>basic-sibs/PutExpression</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutExpression</taxonomy>
+    <position>230.0,287.5</position>
+    <parameter name="resolve">
+      <boolean>true</boolean>
+    </parameter>
+    <parameter name="value">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Neuer Ordner (${wert})</expression>
+          <clazz>java.lang.String</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>name</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <edge>
+    <source>192d1920-ee46-464f-a1de-476e56deb37b</source>
+    <target>e77f9611-e207-46f9-a0a9-ed4b08ebdeee</target>
+    <point>327.0,501.96999999999997</point>
+    <point>63.0,515.17</point>
+    <labelposition>527.0,13.0</labelposition>
+    <branch>System-Prüfung: Name bereits vergeben</branch>
+  </edge>
+  <sib>
+    <id>8d31514e-baa6-489e-81a2-d1b4882b35de</id>
+    <name>Prototype_6</name>
+    <label>Verzeichnis erstellen abgeschlossen</label>
+    <sib-uid>gui-sibs/ShowMessageDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowMessageDialog</taxonomy>
+    <position>252.5,632.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Abgeschlossen</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Neues Verzeichnis: ${name} wurde angelegt!</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>e77f9611-e207-46f9-a0a9-ed4b08ebdeee</id>
+    <name>Prototype_5</name>
+    <label>Fehlermeldung</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>21.0,482.5</position>
+    <parameter name="dialogTitle">
+      <string>Fehler</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Der Name ist bereits vergeben!</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>4</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Abbrechen</branch>
+    <branch>Nochmals Namen eingeben</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>b5fd5e83-37c6-4ecc-a31c-1c2ee21338c5</id>
+    <name>PutExpression_1</name>
+    <label>Neuer Name wird gesetzt!</label>
+    <sib-uid>basic-sibs/PutExpression</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutExpression</taxonomy>
+    <position>593.5,482.5</position>
+    <parameter name="resolve">
+      <boolean>true</boolean>
+    </parameter>
+    <parameter name="value">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>${name2}</expression>
+          <clazz>java.lang.String</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>name</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <edge>
+    <source>b5fd5e83-37c6-4ecc-a31c-1c2ee21338c5</source>
+    <target>8d31514e-baa6-489e-81a2-d1b4882b35de</target>
+    <point>660.0,537.5</point>
+    <point>660.0,675.0</point>
+    <point>467.5,675.0</point>
+    <labelposition>557.4789915966387,-45.28928259143723</labelposition>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>e77f9611-e207-46f9-a0a9-ed4b08ebdeee</source>
+    <target>8d31514e-baa6-489e-81a2-d1b4882b35de</target>
+    <point>45.0,537.5</point>
+    <point>45.0,675.0</point>
+    <point>252.5,675.0</point>
+    <labelposition>620.0726245713133,48.2730222089878</labelposition>
+    <branch>Abbrechen</branch>
+  </edge>
+  <edge>
+    <source>192d1920-ee46-464f-a1de-476e56deb37b</source>
+    <target>b5fd5e83-37c6-4ecc-a31c-1c2ee21338c5</target>
+    <point>363.0,501.04285714285714</point>
+    <point>642.0,501.04285714285714</point>
+    <labelposition>509.0,-14.0</labelposition>
+    <branch>System-Prüfung: Name noch nicht vorhanden</branch>
+  </edge>
+  <edge>
+    <source>8bd1fc0a-c349-4ee1-a1b2-ca5070c617be</source>
+    <target>8d31514e-baa6-489e-81a2-d1b4882b35de</target>
+    <point>410.5,390.0</point>
+    <point>825.0,390.0</point>
+    <point>825.0,765.0</point>
+    <point>360.0,765.0</point>
+    <point>360.0,687.5</point>
+    <labelposition>-107.0,-286.0</labelposition>
+    <branch>cancel</branch>
+  </edge>
+  <values/>
+  <branch>
+    <name>ok</name>
+    <branch>ok</branch>
+    <sib>8d31514e-baa6-489e-81a2-d1b4882b35de</sib>
+  </branch>
+</model>

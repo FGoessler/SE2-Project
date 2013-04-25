@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<model version="2.1">
+  <id>6e1b708d-71e8-4ed8-ac20-a720d7ac2b55</id>
+  <name>Volumen vergroessern</name>
+  <changecounter>10</changecounter>
+  <sib>
+    <id>d61878bc-4ef3-4af4-abc6-99af27eef30d</id>
+    <name>Prototype</name>
+    <label>An Sharebox angemeldet</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>55.0,32.5</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+    <userobject key="ABC$START">
+      <boolean>true</boolean>
+    </userobject>
+  </sib>
+  <sib>
+    <id>4bd9a5cc-5e4a-401a-92ca-c9bb17ae31ff</id>
+    <name>ShowBranchingDialog</name>
+    <label>Auf &quot;Volumen vergrößern&quot; klicken</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>34.0,122.5</position>
+    <parameter name="dialogTitle">
+      <string>In Sharebox eingeloggt</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>In Sharebox eingeloggt und Wunsch nach Volumenvergrößerung</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Volumen vergrößern</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>7c18bd82-46c8-4764-9034-f50592165d70</id>
+    <name>ShowBranchingDialog_1</name>
+    <label>System ermittelt Volumengröße des Nutzers und&lt;br&gt;verrechnet es mit dem max. Volumen (Test)</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>-0.5,310.0</position>
+    <parameter name="dialogTitle">
+      <string>System-Prüfung (Test)</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>System ermittelt maximal erweiterbares Volumen</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Volumen &lt; 40 GB</branch>
+    <branch>Volumen = 40 GB</branch>
+    <branch>Volumen = 49 GB</branch>
+    <branch>Volumen = 50 GB</branch>
+    <branch>Volumen &gt; 40 GB und &lt; 46 GB</branch>
+    <branch>Volumen &gt; 45 GB und &lt; 49 GB</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>9988d72c-f714-474e-a830-e38dcfc68104</id>
+    <name>ShowBranchingDialog_2</name>
+    <label>Alle Erweiterungsstufen anzeigen (1-5)</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>185.5,392.5</position>
+    <parameter name="dialogTitle">
+      <string>Mögliche Erweiterungsstufen</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Auswählen der Erweiterungsstufe:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+    <branch>Erweiterungspaket 3 (5GB)</branch>
+    <branch>Erweiterungspaket 4 (10GB)</branch>
+    <branch>Erweiterungspaket 5 (max)</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>87ca3e8f-2032-4d6b-a3f1-a018d2c14f23</id>
+    <name>ShowBranchingDialog_3</name>
+    <label>Erweiterungsstufen 1-4 anzeigen</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>200.0,452.5</position>
+    <parameter name="dialogTitle">
+      <string>Mögliche Erweiterungsstufen</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Auswählen der Erweiterungsstufe:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+    <branch>Erweiterungspaket 3 (5GB)</branch>
+    <branch>Erweiterungspaket 4 (10GB)</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>40b8da83-e093-4c16-9a34-75855cd8b8a0</id>
+    <name>ShowBranchingDialog_4</name>
+    <label>Erweiterungsstufen 1-3 anzeigen</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>200.0,512.5</position>
+    <parameter name="dialogTitle">
+      <string>Mögliche Erweiterungsstufen</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Auswählen der Erweiterungsstufe:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+    <branch>Erweiterungspaket 3 (5GB)</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>1e9a3b31-b032-412b-9242-4195141eb38a</id>
+    <name>ShowBranchingDialog_5</name>
+    <label>Erweiterungsstufen 1-2 anzeigen</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>200.0,572.5</position>
+    <parameter name="dialogTitle">
+      <string>Mögliche Erweiterungsstufen</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Auswählen der Erweiterungsstufe:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>e36b9f6b-a8d8-4f48-9756-cc2583c58e0d</id>
+    <name>ShowBranchingDialog_6</name>
+    <label>Erweiterungsstufe 1 anzeigen</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>208.0,632.5</position>
+    <parameter name="dialogTitle">
+      <string>Mögliche Erweiterungsstufen</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Auswählen der Erweiterungsstufe:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>36425725-4921-4215-9f08-9a3cf5f7001d</id>
+    <name>ShowMessageDialog</name>
+    <label>Fehlermeldung</label>
+    <sib-uid>gui-sibs/ShowMessageDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowMessageDialog</taxonomy>
+    <position>246.0,692.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Fehler</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Volumen hat bereits das Limit erreicht!</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>4</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>08823a8b-ea43-4923-a150-41aced385e82</id>
+    <name>ShowInputDialog</name>
+    <label>Zahlungsdaten eingeben</label>
+    <sib-uid>gui-sibs/ShowInputDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowInputDialog</taxonomy>
+    <position>791.5,722.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Zahlungsdaten eingeben</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="initialValue">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression></expression>
+          <clazz>java.lang.String</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Bitte Zahlungsdaten eingeben:</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>2</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <parameter name="possibleValues">
+      <list/>
+    </parameter>
+    <parameter name="selection">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key></key>
+          <scope>LOCAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>278e8db9-5285-4d4d-95cf-f6b4fd488936</id>
+    <name>ShowBranchingDialog_7</name>
+    <label>System prüft Korrektheit der Daten</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>602.5,722.5</position>
+    <parameter name="dialogTitle">
+      <string>System-Prüfung (Test)</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Sind die EC- oder Kreditkartendaten korrekt?</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Daten korrekt</branch>
+    <branch>Daten nicht korrekt</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>b620d353-4548-465c-97e4-628433d61fb2</id>
+    <name>PutInteger</name>
+    <label>Volumengröße des Benutzers</label>
+    <sib-uid>basic-sibs/PutInteger</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutInteger</taxonomy>
+    <position>103.5,212.5</position>
+    <parameter name="value">
+      <int>20</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>volumen</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>0b9da644-248e-417e-ade5-c41c9815fb6b</id>
+    <name>PutExpression</name>
+    <label>Volumen wird erweitert</label>
+    <sib-uid>basic-sibs/PutExpression</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutExpression</taxonomy>
+    <position>419.0,722.5</position>
+    <parameter name="resolve">
+      <boolean>true</boolean>
+    </parameter>
+    <parameter name="value">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>${volumen + neu}</expression>
+          <clazz>java.lang.Integer</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>volumen</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>287df3c0-3eb5-4244-ba9a-69c81bbd2be3</id>
+    <name>Prototype_3</name>
+    <label>Erweiterung wird in Benutzerdatenbank&lt;br&gt;beim Benutzer eingtragen</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>380.0,820.0</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+  </sib>
+  <edge>
+    <source>d61878bc-4ef3-4af4-abc6-99af27eef30d</source>
+    <target>4bd9a5cc-5e4a-401a-92ca-c9bb17ae31ff</target>
+    <point>120.0,60.0</point>
+    <point>120.0,150.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>4bd9a5cc-5e4a-401a-92ca-c9bb17ae31ff</source>
+    <target>ceabc368-76bc-493a-b747-38d116516e99</target>
+    <point>138.0,148.3</point>
+    <point>297.0,216.26153846153846</point>
+    <labelposition>500.0,0.0</labelposition>
+    <branch>Volumen vergrößern</branch>
+  </edge>
+  <edge>
+    <source>156321d4-dd78-4675-877c-97285613c76e</source>
+    <target>7c18bd82-46c8-4764-9034-f50592165d70</target>
+    <point>372.0,203.13333333333333</point>
+    <point>138.0,319.1333333333333</point>
+    <labelposition>500.0,0.0</labelposition>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>7c18bd82-46c8-4764-9034-f50592165d70</source>
+    <target>9988d72c-f714-474e-a830-e38dcfc68104</target>
+    <point>135.0,380.0</point>
+    <point>135.0,405.0</point>
+    <point>185.5,405.0</point>
+    <labelposition>924.9783836020548,21.27406352705702</labelposition>
+    <branch>Volumen &lt; 40 GB</branch>
+  </edge>
+  <edge>
+    <source>7c18bd82-46c8-4764-9034-f50592165d70</source>
+    <target>87ca3e8f-2032-4d6b-a3f1-a018d2c14f23</target>
+    <point>120.0,380.0</point>
+    <point>120.0,480.0</point>
+    <point>200.0,480.0</point>
+    <labelposition>774.390243902439,15.305028665083395</labelposition>
+    <branch>Volumen = 40 GB</branch>
+  </edge>
+  <edge>
+    <source>7c18bd82-46c8-4764-9034-f50592165d70</source>
+    <target>40b8da83-e093-4c16-9a34-75855cd8b8a0</target>
+    <point>105.0,380.0</point>
+    <point>105.0,555.0</point>
+    <point>200.0,555.0</point>
+    <labelposition>906.6834804539723,6.980607257230373</labelposition>
+    <branch>Volumen &gt; 40 GB und &lt; 46 GB</branch>
+  </edge>
+  <edge>
+    <source>7c18bd82-46c8-4764-9034-f50592165d70</source>
+    <target>1e9a3b31-b032-412b-9242-4195141eb38a</target>
+    <point>90.0,380.0</point>
+    <point>90.0,615.0</point>
+    <point>200.0,615.0</point>
+    <labelposition>905.1615298923134,17.18884429978994</labelposition>
+    <branch>Volumen &gt; 45 GB und &lt; 49 GB</branch>
+  </edge>
+  <edge>
+    <source>7c18bd82-46c8-4764-9034-f50592165d70</source>
+    <target>e36b9f6b-a8d8-4f48-9756-cc2583c58e0d</target>
+    <point>75.0,380.0</point>
+    <point>75.0,660.0</point>
+    <point>208.0,660.0</point>
+    <labelposition>868.0,58.0</labelposition>
+    <branch>Volumen = 49 GB</branch>
+  </edge>
+  <edge>
+    <source>7c18bd82-46c8-4764-9034-f50592165d70</source>
+    <target>36425725-4921-4215-9f08-9a3cf5f7001d</target>
+    <point>60.0,380.0</point>
+    <point>60.0,720.0</point>
+    <point>246.0,720.0</point>
+    <labelposition>799.0,109.0</labelposition>
+    <branch>Volumen = 50 GB</branch>
+  </edge>
+  <edge>
+    <source>36425725-4921-4215-9f08-9a3cf5f7001d</source>
+    <target>ddd353ce-1c91-4a10-a7d8-25dc1689f798</target>
+    <point>285.0,720.0</point>
+    <point>723.0,738.0</point>
+  </edge>
+  <sib>
+    <id>bc36b8ce-533a-4675-be1c-d59a91d75f59</id>
+    <name>PutInteger_1</name>
+    <label>EP 4: 10 GB</label>
+    <sib-uid>basic-sibs/PutInteger</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutInteger</taxonomy>
+    <position>642.5,452.5</position>
+    <parameter name="value">
+      <int>10</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>neu</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>5afcca2b-e708-48b1-845f-987db57600d8</id>
+    <name>PutExpression_1</name>
+    <label>EP 5: Max - Volumen</label>
+    <sib-uid>basic-sibs/PutExpression</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutExpression</taxonomy>
+    <position>621.5,392.5</position>
+    <parameter name="resolve">
+      <boolean>true</boolean>
+    </parameter>
+    <parameter name="value">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>${limit - volumen}</expression>
+          <clazz>java.lang.Integer</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>neu</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>4cdbeae7-8af6-42fa-847d-1a2e85df4cd3</id>
+    <name>PutInteger_2</name>
+    <label>EP 3: 5 GB</label>
+    <sib-uid>basic-sibs/PutInteger</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutInteger</taxonomy>
+    <position>645.5,512.5</position>
+    <parameter name="value">
+      <int>5</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>neu</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>bf83758f-d1b9-48c6-8619-08cf3a8426ae</id>
+    <name>PutInteger_3</name>
+    <label>EP 2: 2 GB</label>
+    <sib-uid>basic-sibs/PutInteger</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutInteger</taxonomy>
+    <position>645.5,572.5</position>
+    <parameter name="value">
+      <int>2</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>neu</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>9a4595df-39c9-40e8-9481-10baf0d8f4e8</id>
+    <name>PutInteger_4</name>
+    <label>EP 1: 1 GB</label>
+    <sib-uid>basic-sibs/PutInteger</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutInteger</taxonomy>
+    <position>645.5,632.5</position>
+    <parameter name="value">
+      <int>1</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>neu</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <edge>
+    <source>e36b9f6b-a8d8-4f48-9756-cc2583c58e0d</source>
+    <target>9a4595df-39c9-40e8-9481-10baf0d8f4e8</target>
+    <point>285.0,660.0</point>
+    <point>496.0,655.0</point>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+  </edge>
+  <edge>
+    <source>1e9a3b31-b032-412b-9242-4195141eb38a</source>
+    <target>bf83758f-d1b9-48c6-8619-08cf3a8426ae</target>
+    <point>285.0,600.0</point>
+    <point>499.0,598.0</point>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+  </edge>
+  <edge>
+    <source>1e9a3b31-b032-412b-9242-4195141eb38a</source>
+    <target>9a4595df-39c9-40e8-9481-10baf0d8f4e8</target>
+    <point>285.0,600.0</point>
+    <point>515.0,654.0</point>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+  </edge>
+  <edge>
+    <source>40b8da83-e093-4c16-9a34-75855cd8b8a0</source>
+    <target>9a4595df-39c9-40e8-9481-10baf0d8f4e8</target>
+    <point>285.0,540.0</point>
+    <point>508.0,659.0</point>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+  </edge>
+  <edge>
+    <source>40b8da83-e093-4c16-9a34-75855cd8b8a0</source>
+    <target>bf83758f-d1b9-48c6-8619-08cf3a8426ae</target>
+    <point>285.0,540.0</point>
+    <point>510.0,600.0</point>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+  </edge>
+  <edge>
+    <source>40b8da83-e093-4c16-9a34-75855cd8b8a0</source>
+    <target>4cdbeae7-8af6-42fa-847d-1a2e85df4cd3</target>
+    <point>285.0,540.0</point>
+    <point>491.0,528.0</point>
+    <branch>Erweiterungspaket 3 (5GB)</branch>
+  </edge>
+  <edge>
+    <source>87ca3e8f-2032-4d6b-a3f1-a018d2c14f23</source>
+    <target>9a4595df-39c9-40e8-9481-10baf0d8f4e8</target>
+    <point>285.0,480.0</point>
+    <point>510.0,660.0</point>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+  </edge>
+  <edge>
+    <source>87ca3e8f-2032-4d6b-a3f1-a018d2c14f23</source>
+    <target>bf83758f-d1b9-48c6-8619-08cf3a8426ae</target>
+    <point>285.0,480.0</point>
+    <point>510.0,600.0</point>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+  </edge>
+  <edge>
+    <source>87ca3e8f-2032-4d6b-a3f1-a018d2c14f23</source>
+    <target>4cdbeae7-8af6-42fa-847d-1a2e85df4cd3</target>
+    <point>285.0,480.0</point>
+    <point>505.0,542.0</point>
+    <branch>Erweiterungspaket 3 (5GB)</branch>
+  </edge>
+  <edge>
+    <source>87ca3e8f-2032-4d6b-a3f1-a018d2c14f23</source>
+    <target>bc36b8ce-533a-4675-be1c-d59a91d75f59</target>
+    <point>285.0,480.0</point>
+    <point>506.0,474.0</point>
+    <branch>Erweiterungspaket 4 (10GB)</branch>
+  </edge>
+  <edge>
+    <source>9988d72c-f714-474e-a830-e38dcfc68104</source>
+    <target>9a4595df-39c9-40e8-9481-10baf0d8f4e8</target>
+    <point>285.0,420.0</point>
+    <point>510.0,660.0</point>
+    <branch>Erweiterungspaket 1 (1GB)</branch>
+  </edge>
+  <edge>
+    <source>9988d72c-f714-474e-a830-e38dcfc68104</source>
+    <target>bf83758f-d1b9-48c6-8619-08cf3a8426ae</target>
+    <point>285.0,420.0</point>
+    <point>515.0,602.0</point>
+    <branch>Erweiterungspaket 2 (2GB)</branch>
+  </edge>
+  <edge>
+    <source>9988d72c-f714-474e-a830-e38dcfc68104</source>
+    <target>4cdbeae7-8af6-42fa-847d-1a2e85df4cd3</target>
+    <point>303.0,416.4769230769231</point>
+    <point>657.0,525.4</point>
+    <labelposition>506.9964880134374,-1.7792193854669758</labelposition>
+    <branch>Erweiterungspaket 3 (5GB)</branch>
+  </edge>
+  <edge>
+    <source>9988d72c-f714-474e-a830-e38dcfc68104</source>
+    <target>5afcca2b-e708-48b1-845f-987db57600d8</target>
+    <point>285.0,420.0</point>
+    <point>488.0,412.0</point>
+    <branch>Erweiterungspaket 5 (max)</branch>
+  </edge>
+  <edge>
+    <source>9988d72c-f714-474e-a830-e38dcfc68104</source>
+    <target>bc36b8ce-533a-4675-be1c-d59a91d75f59</target>
+    <point>285.0,420.0</point>
+    <point>684.0,464.0</point>
+    <branch>Erweiterungspaket 4 (10GB)</branch>
+  </edge>
+  <sib>
+    <id>500c9b41-7389-4bb0-a492-75b522643bb2</id>
+    <name>Prototype_1</name>
+    <label>Zahlungsaufforderung wird erstellt</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>766.5,632.5</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+  </sib>
+  <edge>
+    <source>0b9da644-248e-417e-ade5-c41c9815fb6b</source>
+    <target>287df3c0-3eb5-4244-ba9a-69c81bbd2be3</target>
+    <point>510.0,750.0</point>
+    <point>532.0,845.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>287df3c0-3eb5-4244-ba9a-69c81bbd2be3</source>
+    <target>ddd353ce-1c91-4a10-a7d8-25dc1689f798</target>
+    <point>525.0,840.0</point>
+    <point>302.0,833.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>5afcca2b-e708-48b1-845f-987db57600d8</source>
+    <target>500c9b41-7389-4bb0-a492-75b522643bb2</target>
+    <point>675.0,420.0</point>
+    <point>855.0,660.0</point>
+    <labelposition>500.0,0.0</labelposition>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>bc36b8ce-533a-4675-be1c-d59a91d75f59</source>
+    <target>500c9b41-7389-4bb0-a492-75b522643bb2</target>
+    <point>675.0,480.0</point>
+    <point>855.0,660.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>4cdbeae7-8af6-42fa-847d-1a2e85df4cd3</source>
+    <target>500c9b41-7389-4bb0-a492-75b522643bb2</target>
+    <point>675.0,540.0</point>
+    <point>850.0,653.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>bf83758f-d1b9-48c6-8619-08cf3a8426ae</source>
+    <target>500c9b41-7389-4bb0-a492-75b522643bb2</target>
+    <point>675.0,600.0</point>
+    <point>834.0,660.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>9a4595df-39c9-40e8-9481-10baf0d8f4e8</source>
+    <target>500c9b41-7389-4bb0-a492-75b522643bb2</target>
+    <point>675.0,660.0</point>
+    <point>829.0,657.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>500c9b41-7389-4bb0-a492-75b522643bb2</source>
+    <target>08823a8b-ea43-4923-a150-41aced385e82</target>
+    <point>855.0,660.0</point>
+    <point>854.0,750.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>08823a8b-ea43-4923-a150-41aced385e82</source>
+    <target>278e8db9-5285-4d4d-95cf-f6b4fd488936</target>
+    <point>855.0,750.0</point>
+    <point>684.0,749.0</point>
+    <branch>ok</branch>
+  </edge>
+  <edge>
+    <source>08823a8b-ea43-4923-a150-41aced385e82</source>
+    <target>ddd353ce-1c91-4a10-a7d8-25dc1689f798</target>
+    <point>855.0,777.5</point>
+    <point>855.0,915.0</point>
+    <point>285.0,915.0</point>
+    <point>285.0,890.0</point>
+    <labelposition>129.96722768427483,-114.03694691833984</labelposition>
+    <branch>cancel</branch>
+  </edge>
+  <edge>
+    <source>278e8db9-5285-4d4d-95cf-f6b4fd488936</source>
+    <target>0b9da644-248e-417e-ade5-c41c9815fb6b</target>
+    <point>690.0,750.0</point>
+    <point>480.0,750.0</point>
+    <branch>Daten korrekt</branch>
+  </edge>
+  <edge>
+    <source>278e8db9-5285-4d4d-95cf-f6b4fd488936</source>
+    <target>08823a8b-ea43-4923-a150-41aced385e82</target>
+    <spline/>
+    <point>708.0,728.38</point>
+    <point>765.0,690.0</point>
+    <point>837.0,730.4</point>
+    <labelposition>477.90771860735805,-22.348112984466994</labelposition>
+    <branch>Daten nicht korrekt</branch>
+  </edge>
+  <sib>
+    <id>ddd353ce-1c91-4a10-a7d8-25dc1689f798</id>
+    <name>Prototype_2</name>
+    <label>Vorgang&lt;br&gt;abgeschlossen</label>
+    <sib-uid>gui-sibs/ShowMessageDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowMessageDialog</taxonomy>
+    <position>238.5,820.0</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Vorgang abgeschlossen</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Volumengröße jetzt: ${volumen}</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>ceabc368-76bc-493a-b747-38d116516e99</id>
+    <name>ForkSIB</name>
+    <label>&lt;br&gt;</label>
+    <sib-uid>c0a8b214:2d323631393935303131:1133275548672</sib-uid>
+    <taxonomy>de.metaframe.jabc.sib.controlsib.ForkSIB</taxonomy>
+    <position>293.0,122.5</position>
+    <branch>Thread1</branch>
+    <branch>Thread2</branch>
+  </sib>
+  <sib>
+    <id>156321d4-dd78-4675-877c-97285613c76e</id>
+    <name>JoinSIB</name>
+    <label>&lt;br&gt;&lt;br&gt;</label>
+    <sib-uid>c0a8b214:363235313638323032:1133357461172</sib-uid>
+    <taxonomy>de.metaframe.jabc.sib.controlsib.JoinSIB</taxonomy>
+    <position>293.0,310.0</position>
+    <finalbranches>default</finalbranches>
+  </sib>
+  <sib>
+    <id>bff14c9d-4744-4471-a314-43d893f536ec</id>
+    <name>PutInteger_5</name>
+    <label>Volumenlimit</label>
+    <sib-uid>basic-sibs/PutInteger</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.PutInteger</taxonomy>
+    <position>431.5,212.5</position>
+    <parameter name="value">
+      <int>50</int>
+    </parameter>
+    <parameter name="variable">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>limit</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>default</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <edge>
+    <source>ceabc368-76bc-493a-b747-38d116516e99</source>
+    <target>b620d353-4548-465c-97e4-628433d61fb2</target>
+    <point>315.0,150.0</point>
+    <point>210.0,240.0</point>
+    <branch>Thread1</branch>
+  </edge>
+  <edge>
+    <source>ceabc368-76bc-493a-b747-38d116516e99</source>
+    <target>bff14c9d-4744-4471-a314-43d893f536ec</target>
+    <point>315.0,150.0</point>
+    <point>393.0,229.0</point>
+    <branch>Thread2</branch>
+  </edge>
+  <edge>
+    <source>b620d353-4548-465c-97e4-628433d61fb2</source>
+    <target>156321d4-dd78-4675-877c-97285613c76e</target>
+    <point>210.0,240.0</point>
+    <point>300.0,310.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>bff14c9d-4744-4471-a314-43d893f536ec</source>
+    <target>156321d4-dd78-4675-877c-97285613c76e</target>
+    <point>390.0,240.0</point>
+    <point>310.0,328.0</point>
+    <branch>default</branch>
+  </edge>
+  <values/>
+  <branch>
+    <name>ok</name>
+    <branch>ok</branch>
+    <sib>ddd353ce-1c91-4a10-a7d8-25dc1689f798</sib>
+  </branch>
+</model>

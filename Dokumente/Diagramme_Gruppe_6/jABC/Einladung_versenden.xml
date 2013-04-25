@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<model version="2.1">
+  <id>fffae29e-e5a5-42af-9b37-d8fdf4af870b</id>
+  <name>Einladung versenden</name>
+  <changecounter>6</changecounter>
+  <sib>
+    <id>e2f0701b-b1d7-4fdf-ae68-d9c0727c981d</id>
+    <name>Prototype</name>
+    <label>Benutzer ist an Sharebox angemeldet und möchte jemanden zu seiner Sharebox einladen</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>141.0,32.5</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+    <userobject key="ABC$START">
+      <boolean>true</boolean>
+    </userobject>
+  </sib>
+  <sib>
+    <id>742b2c02-24b9-4a00-9eda-f71dfc15d358</id>
+    <name>ShowBranchingDialog</name>
+    <label>Auf &quot;Einladung versenden&quot; klicken</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>273.5,122.5</position>
+    <parameter name="dialogTitle">
+      <string>Klick</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Benutzer ist in Sharebox angemeldet und möchte zu seiner Sharebox einladen:</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Einladung versenden</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>bbc3c63d-ebfa-4f27-8981-52d713f2fd75</id>
+    <name>ShowEmailDialog</name>
+    <label>Einladungstext schreiben und E-Mail-Adressen der Einzuladenen angeben</label>
+    <sib-uid>gui-sibs/ShowEmailDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowEmailDialog</taxonomy>
+    <position>178.0,422.5</position>
+    <parameter name="bodyIn">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>[Optionaler Text]</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="bodyOut">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>new_body</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Schreib Email</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="recipientIn">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Empfaenger</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="recipientOut">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>recipient</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <parameter name="subjectIn">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Betreff</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="subjectOut">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>new_subject</key>
+          <scope>LOCAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+    <finalbranches>send</finalbranches>
+  </sib>
+  <sib>
+    <id>3cf11fda-7ecd-4bb3-8805-6c1a563ac29a</id>
+    <name>ShowInputDialog</name>
+    <label>Rechte vergeben</label>
+    <sib-uid>gui-sibs/ShowInputDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowInputDialog</taxonomy>
+    <position>314.5,317.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Rechte</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="initialValue">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Schreiben-Lesen-Löschen-Bearbeiten</expression>
+          <clazz>java.lang.String</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Rechte vergeben:</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>2</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <parameter name="possibleValues">
+      <list/>
+    </parameter>
+    <parameter name="selection">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>rechte</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>346a51a2-f682-43f6-819a-18414dc4f675</id>
+    <name>ShowInputDialog_1</name>
+    <label>Verzeichnis auswählen</label>
+    <sib-uid>gui-sibs/ShowInputDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowInputDialog</taxonomy>
+    <position>298.5,227.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Verzeichnis</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="initialValue">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>/mySharebox/</expression>
+          <clazz>java.lang.String</clazz>
+          <classMutable>true</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Verzeichnis auswählen:</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>2</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <parameter name="possibleValues">
+      <list/>
+    </parameter>
+    <parameter name="selection">
+      <de.metaframe.jabc.framework.sib.parameter.ContextKey>
+        <ContextKeyFoundation>
+          <key>verzeichnis</key>
+          <scope>GLOBAL</scope>
+          <scopeMutable>true</scopeMutable>
+        </ContextKeyFoundation>
+      </de.metaframe.jabc.framework.sib.parameter.ContextKey>
+    </parameter>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>edec0742-0300-4627-8c08-ecfd77269f7c</id>
+    <name>ShowMessageDialog</name>
+    <label>Einladungen bestätigen und abschicken</label>
+    <sib-uid>gui-sibs/ShowMessageDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowMessageDialog</taxonomy>
+    <position>261.0,512.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Bestätigung</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>${verzeichnis} wird mit folgenden Rechten ${rechte} an ${recipient} freigeben</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>2</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <sib>
+    <id>8d4ac9fb-499a-4280-8027-c09e6299432a</id>
+    <name>ShowBranchingDialog_1</name>
+    <label>Für jeden Eingeladenen&lt;br&gt;prüft das System ob,&lt;br&gt;Eingeladener bereits registriert (Test)</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>266.5,602.5</position>
+    <parameter name="dialogTitle">
+      <string>System-Prüfung (Test)</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Ist die E-Mail-Adresse in der Benutzerdatenbank?</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Benutzer ist in Datenbank enthalten (registriert)</branch>
+    <branch>Benutzer ist nicht in Datenbank enthalten (nicht registriert)</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>2f12c706-3361-47f5-949b-632289bdf7c2</id>
+    <name>Prototype_1</name>
+    <label>Eine E-Mail mit jeweiliger Anfrage versenden</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>264.0,992.5</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+  </sib>
+  <sib>
+    <id>bd2440a8-3e3b-4087-b0b9-2acb80f20e34</id>
+    <name>ShowBranchingDialog_2</name>
+    <label>Noch weitere Benutzer eingeladen? (System-Prüfung Test)</label>
+    <sib-uid>gui-sibs/ShowBranchingDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowBranchingDialog</taxonomy>
+    <position>228.0,1097.5</position>
+    <parameter name="dialogTitle">
+      <string>Alle Einladungen versendet?</string>
+    </parameter>
+    <parameter name="messageText">
+      <string>Alle eingeladen?</string>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>2</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <branch>Alle eingeladen</branch>
+    <branch>Noch Einzuladene offen</branch>
+    <finalbranches>cancel</finalbranches>
+    <finalbranches>error</finalbranches>
+  </sib>
+  <sib>
+    <id>55b5a23c-2636-4c16-a57c-574b2a56b9ca</id>
+    <name>Prototype_2</name>
+    <label>Registrierungsanfrage vom&lt;br&gt;System erstellen</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>410.5,715.0</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+  </sib>
+  <sib>
+    <id>89ab353c-562a-4574-87de-828e73a361c7</id>
+    <name>Prototype_3</name>
+    <label>E-Mail-Adresse des Eingeladenen und die Einladung&lt;br&gt;in Benutzerdatenbank vormerken&lt;br&gt;(Sobald Benutzer sich registriert, erhält er die&lt;br&gt;vorgemerkte Einladung in seiner Sharebox)</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>576.5,715.0</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+  </sib>
+  <sib>
+    <id>db852471-9ccf-4ab7-9d47-7bc0537690fd</id>
+    <name>Prototype_4</name>
+    <label>Einladunganfrage wird erstellt</label>
+    <sib-uid>basic-sibs/Prototype</sib-uid>
+    <taxonomy>de.jabc.sib.common.basic.Prototype</taxonomy>
+    <position>59.0,722.5</position>
+    <parameter name="branch">
+      <string>default</string>
+    </parameter>
+    <branch>default</branch>
+  </sib>
+  <sib>
+    <id>ad4d3b0f-7937-4e86-9c40-276ae55a9f8e</id>
+    <name>ForkSIB</name>
+    <label>&lt;br&gt;</label>
+    <sib-uid>c0a8b214:2d323631393935303131:1133275548672</sib-uid>
+    <taxonomy>de.metaframe.jabc.sib.controlsib.ForkSIB</taxonomy>
+    <position>683.0,602.5</position>
+    <branch>Thread1</branch>
+    <branch>Thread2</branch>
+  </sib>
+  <sib>
+    <id>f51e333e-5d3a-4f8d-83db-4ae1371ececc</id>
+    <name>JoinSIB</name>
+    <label>&lt;br&gt;</label>
+    <sib-uid>c0a8b214:363235313638323032:1133357461172</sib-uid>
+    <taxonomy>de.metaframe.jabc.sib.controlsib.JoinSIB</taxonomy>
+    <position>623.0,887.5</position>
+    <finalbranches>default</finalbranches>
+  </sib>
+  <sib>
+    <id>0a1fb864-b89c-443b-9228-ec9ae8a996cb</id>
+    <name>ShowMessageDialog_1</name>
+    <label>Vorgang abgeschlossen</label>
+    <sib-uid>gui-sibs/ShowMessageDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowMessageDialog</taxonomy>
+    <position>303.5,1202.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Vorgang abgeschlossen</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Vorgang abgeschlossen</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <edge>
+    <source>e2f0701b-b1d7-4fdf-ae68-d9c0727c981d</source>
+    <target>742b2c02-24b9-4a00-9eda-f71dfc15d358</target>
+    <point>360.0,75.0</point>
+    <point>360.0,150.0</point>
+    <labelposition>500.0,0.0</labelposition>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>742b2c02-24b9-4a00-9eda-f71dfc15d358</source>
+    <target>346a51a2-f682-43f6-819a-18414dc4f675</target>
+    <point>270.0,135.0</point>
+    <point>270.0,210.0</point>
+    <branch>Einladung versenden</branch>
+  </edge>
+  <edge>
+    <source>346a51a2-f682-43f6-819a-18414dc4f675</source>
+    <target>3cf11fda-7ecd-4bb3-8805-6c1a563ac29a</target>
+    <point>270.0,255.0</point>
+    <point>276.0,321.0</point>
+    <branch>ok</branch>
+  </edge>
+  <edge>
+    <source>3cf11fda-7ecd-4bb3-8805-6c1a563ac29a</source>
+    <target>bbc3c63d-ebfa-4f27-8981-52d713f2fd75</target>
+    <point>270.0,345.0</point>
+    <point>270.0,450.0</point>
+    <branch>ok</branch>
+  </edge>
+  <edge>
+    <source>bbc3c63d-ebfa-4f27-8981-52d713f2fd75</source>
+    <target>edec0742-0300-4627-8c08-ecfd77269f7c</target>
+    <point>270.0,450.0</point>
+    <point>271.0,521.0</point>
+    <branch>send</branch>
+  </edge>
+  <edge>
+    <source>edec0742-0300-4627-8c08-ecfd77269f7c</source>
+    <target>8d4ac9fb-499a-4280-8027-c09e6299432a</target>
+    <point>270.0,540.0</point>
+    <point>261.0,604.0</point>
+    <branch>ok</branch>
+  </edge>
+  <edge>
+    <source>8d4ac9fb-499a-4280-8027-c09e6299432a</source>
+    <target>db852471-9ccf-4ab7-9d47-7bc0537690fd</target>
+    <spline/>
+    <point>342.0,626.4571428571429</point>
+    <point>150.0,690.0</point>
+    <point>140.34653465346534,722.5</point>
+    <labelposition>634.7170948909604,-13.937075579889015</labelposition>
+    <branch>Benutzer ist in Datenbank enthalten (registriert)</branch>
+  </edge>
+  <edge>
+    <source>8d4ac9fb-499a-4280-8027-c09e6299432a</source>
+    <target>ad4d3b0f-7937-4e86-9c40-276ae55a9f8e</target>
+    <point>378.0,620.9956521739131</point>
+    <point>687.0,621.7782608695652</point>
+    <labelposition>501.0,-16.0</labelposition>
+    <branch>Benutzer ist nicht in Datenbank enthalten (nicht registriert)</branch>
+  </edge>
+  <edge>
+    <source>ad4d3b0f-7937-4e86-9c40-276ae55a9f8e</source>
+    <target>55b5a23c-2636-4c16-a57c-574b2a56b9ca</target>
+    <point>705.0,630.0</point>
+    <point>365.0,727.0</point>
+    <branch>Thread1</branch>
+  </edge>
+  <edge>
+    <source>ad4d3b0f-7937-4e86-9c40-276ae55a9f8e</source>
+    <target>89ab353c-562a-4574-87de-828e73a361c7</target>
+    <point>705.0,630.0</point>
+    <point>705.0,765.0</point>
+    <branch>Thread2</branch>
+  </edge>
+  <edge>
+    <source>55b5a23c-2636-4c16-a57c-574b2a56b9ca</source>
+    <target>f51e333e-5d3a-4f8d-83db-4ae1371ececc</target>
+    <point>480.0,785.0</point>
+    <point>480.0,900.0</point>
+    <point>623.0,900.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>89ab353c-562a-4574-87de-828e73a361c7</source>
+    <target>f51e333e-5d3a-4f8d-83db-4ae1371ececc</target>
+    <point>705.0,815.0</point>
+    <point>705.0,900.0</point>
+    <point>667.0,900.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>f51e333e-5d3a-4f8d-83db-4ae1371ececc</source>
+    <target>2f12c706-3361-47f5-949b-632289bdf7c2</target>
+    <point>645.0,915.0</point>
+    <point>375.0,1020.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>db852471-9ccf-4ab7-9d47-7bc0537690fd</source>
+    <target>2f12c706-3361-47f5-949b-632289bdf7c2</target>
+    <point>135.0,750.0</point>
+    <point>375.0,1020.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>2f12c706-3361-47f5-949b-632289bdf7c2</source>
+    <target>bd2440a8-3e3b-4087-b0b9-2acb80f20e34</target>
+    <point>375.0,1020.0</point>
+    <point>373.0,1117.0</point>
+    <branch>default</branch>
+  </edge>
+  <edge>
+    <source>bd2440a8-3e3b-4087-b0b9-2acb80f20e34</source>
+    <target>0a1fb864-b89c-443b-9228-ec9ae8a996cb</target>
+    <point>375.0,1125.0</point>
+    <point>364.0,1231.0</point>
+    <branch>Alle eingeladen</branch>
+  </edge>
+  <edge>
+    <source>bd2440a8-3e3b-4087-b0b9-2acb80f20e34</source>
+    <target>8d4ac9fb-499a-4280-8027-c09e6299432a</target>
+    <spline/>
+    <point>357.0,1100.4727272727273</point>
+    <point>45.0,840.0</point>
+    <point>135.0,585.0</point>
+    <point>342.0,617.66</point>
+    <labelposition>196.0,-205.0</labelposition>
+    <branch>Noch Einzuladene offen</branch>
+  </edge>
+  <sib>
+    <id>88ef363e-a2f3-462e-b833-60094c9f7800</id>
+    <name>ShowMessageDialog_2</name>
+    <label>Vorgang abgebrochen</label>
+    <sib-uid>gui-sibs/ShowMessageDialog</sib-uid>
+    <taxonomy>de.jabc.sib.common.gui.ShowMessageDialog</taxonomy>
+    <position>654.5,287.5</position>
+    <parameter name="dialogTitle">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>Abbruch</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageText">
+      <de.metaframe.common.sib.parameter.ContextExpression>
+        <ContextExpressionFoundation>
+          <expression>MessageVorgang abgebrochen</expression>
+          <clazz>java.lang.Object</clazz>
+          <classMutable>false</classMutable>
+        </ContextExpressionFoundation>
+      </de.metaframe.common.sib.parameter.ContextExpression>
+    </parameter>
+    <parameter name="messageType">
+      <de.metaframe.common.sib.parameter.ListBox>
+        <ListBoxFoundation>
+          <list>
+            <string>Plain</string>
+            <string>Information</string>
+            <string>Question</string>
+            <string>Warning</string>
+            <string>Error</string>
+          </list>
+          <selected>1</selected>
+        </ListBoxFoundation>
+      </de.metaframe.common.sib.parameter.ListBox>
+    </parameter>
+    <finalbranches>error</finalbranches>
+    <finalbranches>ok</finalbranches>
+  </sib>
+  <edge>
+    <source>742b2c02-24b9-4a00-9eda-f71dfc15d358</source>
+    <target>88ef363e-a2f3-462e-b833-60094c9f7800</target>
+    <point>360.0,150.0</point>
+    <point>732.0,287.0</point>
+    <branch>cancel</branch>
+  </edge>
+  <edge>
+    <source>346a51a2-f682-43f6-819a-18414dc4f675</source>
+    <target>88ef363e-a2f3-462e-b833-60094c9f7800</target>
+    <point>360.0,255.0</point>
+    <point>729.0,295.0</point>
+    <branch>cancel</branch>
+  </edge>
+  <edge>
+    <source>3cf11fda-7ecd-4bb3-8805-6c1a563ac29a</source>
+    <target>88ef363e-a2f3-462e-b833-60094c9f7800</target>
+    <point>360.0,345.0</point>
+    <point>750.0,300.0</point>
+    <branch>cancel</branch>
+  </edge>
+  <edge>
+    <source>bbc3c63d-ebfa-4f27-8981-52d713f2fd75</source>
+    <target>88ef363e-a2f3-462e-b833-60094c9f7800</target>
+    <point>360.0,450.0</point>
+    <point>749.0,297.0</point>
+    <branch>cancel</branch>
+  </edge>
+  <values/>
+  <branch>
+    <name>ok</name>
+    <branch>ok</branch>
+    <sib>0a1fb864-b89c-443b-9228-ec9ae8a996cb</sib>
+  </branch>
+  <branch>
+    <name>ok</name>
+    <branch>ok</branch>
+    <sib>88ef363e-a2f3-462e-b833-60094c9f7800</sib>
+  </branch>
+</model>
