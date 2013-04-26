@@ -3,4 +3,7 @@
 	<output-test url="file://$MODULE_DIR$/out/test/ShareBox"/>
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="$MODULE_DIR$/swixml.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/swixml.jar!/"/>
+	</lib>
 </component>
