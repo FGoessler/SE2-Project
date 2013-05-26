@@ -2,8 +2,25 @@
 <component inherit-compiler-output="true" inheritJdk="true">
 	<output-test url="file://$MODULE_DIR$/out/test/ShareBox"/>
 	<exclude-output/>
-	<contentEntry url="file://$MODULE_DIR$"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/test"/>
+	</contentEntry>
 	<lib name="swixml.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/swixml.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/jars/swixml.jar!/"/>
+	</lib>
+	<lib name="fest-assert-1.4.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/jars/fest-assert-1.4.jar!/"/>
+		<relative-module-javadoc project-related="jar://$PROJECT_DIR$/jars/fest-assert-1.4-javadoc.jar!/"/>
+	</lib>
+	<lib name="fest-util-1.1.6.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/jars/fest-util-1.1.6.jar!/"/>
+		<relative-module-javadoc project-related="jar://$PROJECT_DIR$/jars/fest-util-1.1.6-javadoc.jar!/"/>
+	</lib>
+	<lib name="junit-4.11.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/jars/junit-4.11.jar!/"/>
+		<relative-module-javadoc project-related="jar://$PROJECT_DIR$/jars/junit-4.11-javadoc.jar!/"/>
+	</lib>
+	<lib name="mockito-all-1.9.5.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/jars/mockito-all-1.9.5.jar!/"/>
 	</lib>
 </component>

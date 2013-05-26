@@ -2,6 +2,31 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="swixml.jar"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="jars/swixml.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.swixml.org/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/fest-assert-1.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/ShareBox/jars/fest-assert-1.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/fest-util-1.1.6.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/ShareBox/jars/fest-util-1.1.6-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/junit-4.11.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/ShareBox/jars/junit-4.11-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/mockito-all-1.9.5.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://docs.mockito.googlecode.com/hg/latest/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="out/production/ShareBox"/>
 </classpath>
