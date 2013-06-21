@@ -1,0 +1,18 @@
+SE Texte 
+
+Datei ändern:
+
+Dieses Diagramm beschreibt den Prozess der Veränderung einer Datei.
+Zunächst stellt der Actor die Anfrage, dass er eine Datei ändern möchte, daraufhin wird überprüft, ob dieser auch die nötigen Rechte dafür besitzt. Ist dies nicht der Fall wird der gesamte Vorgang sofort abgebrochen, falls er die nötigen Rechte besitzt, wird zunächst eine neue Version und ein neues Log für die Datei erstellt.
+Anschließend werden die Rechte neu gesetzt und abschließend die Datei geändert. Nun wird überprüft, ob dieser Vorgang einwandfrei funktioniert hat, wenn dies der Fall ist, wird eine Meldung and den Observer geschickt, der dann dafür sorgt, dass die Share-Box auf den neusten Stand gebracht wird. Schlägt das verändern der Datei widerum fehl, wird der Vorgang abgebrochen und die neue Version und das neue Log werden wieder entfernt.
+Am Ende wird noch ein Feedback gegeben an den User gegeben, ob der Vorgang erolgreich oder nicht wahr.
+
+Datei/Ordner sharen:
+
+Dieses Diagramm beschreibt den Prozess des sharen eines Ordners oder einer Datei.
+Hier sendet der Actor zunächst eine Anfrage, dass er eine bestimmte Datei sharen will. Daraufhin werden seine Zugriffsrechte überprüft, wenn seine Rechte nicht ausreichen wird der gesamte Vorgang abgebrochen. In dem Fall, dass der Actor die notwendigen Rechte besitzt wird der Prozess fortgesetzt. Zunächst wird eine E-Mail an den zweiten User versendet. Wenn es sich um ein Ordner handelt, werden rekursiv die Rechte für alle Unterdateien vergeben und anschließend werden diese Änderungen an den Observer geschickt.
+Wenn es sich um eine Datei handelt, werden die neuen Rechte für diese Datei auf den neusten Stand gebracht. Wenn dieser Vorgang funktioniert wird an positives Feedback zurück gegeben. In dem Fall, dass der Vorgang fehlschlägt, werden die neuen Rechte wieder entfernt und es wird ein negatives Feedback zurückgegeben.
+
+Rechte ändern:
+
+Dieses Diagramm wie die Rechte einer Datei verändert werden. Hier sendet der Actor zunächst eine Anfrage, dass er bei einer Datei die Rechte ändern will. Daraufhin werden seine Zugriffsrechte überprüft, wenn seine Rechte nicht ausreichen wird der gesamte Vorgang abgebrochen. In dem Fall, dass der Actor die notwendigen Rechte besitzt wird der Prozess fortgesetzt. Zunächst werden die Rechte geändert, im Falle eines Ordners rekursiv für alle Unterodernen und Dateien. Daraufhin wird die Datei mit den veränderten Rechten an den Filemanager geschickt und die Rechte werde auf den neusten Stand gebracht. Wenn dieser Vorgang funktioniert wird an positives Feedback zurück gegeben. In dem Fall, dass der Vorgang fehlschlägt, werden die neuen Rechte wieder entfernt und es wird ein negatives Feedback zurückgegeben.
