@@ -1,4 +1,4 @@
-﻿Datei anlegen:
+Datei anlegen:
 Bei dem Anlegen der Datei stellt der User zuerst die Anfrage, Wonach das dazugehörige
 gegebene Directory die Zugriffsbefugnisse des Users überprüft. Sollten diese nicht
 zureichend sein, wird der Anlegeprozess abgebrochen. Ansonsten wird ein neues File
@@ -18,5 +18,5 @@ Das Löschen einer Datei Verläuft ähnlich dem Anlegen, jedoch wird nach
 erfolgreicher Überprüfung der Befugnisse der Delete-Befehl an alle Unterdateien
 und -Verzeichnisse gesendet, sollte der zu löschende Ursprungseintrag ein
 Verzeichnis selbst sein. Daraufhin wird das Objekt auch bei dem File Observer
-entfernt, oder der gesamte Prozess, wieder - bei fehlgeschlagender API operation -
+entfernt, oder der gesamte Prozess, wieder - bei fehlgeschlagener API Operation -
 abgebrochen.
