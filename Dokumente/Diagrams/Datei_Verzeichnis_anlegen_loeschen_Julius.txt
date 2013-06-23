@@ -1,0 +1,22 @@
+﻿Datei anlegen:
+Bei dem Anlegen der Datei stellt der User zuerst die Anfrage, Wonach das dazugehörige
+gegebene Directory die Zugriffsbefugnisse des Users überprüft. Sollten diese nicht
+zureichend sein, wird der Anlegeprozess abgebrochen. Ansonsten wird ein neues File
+Objekt erstellt, Und die dazugehörigen Log-Einträge getätigt, inklusive eines
+neuen Eintrags in der Versionsliste. Danach wird, je nachdem, ob auf der API-Seite
+der Vorgang funktioniert, entweder ein Erfolgssignal gegeben oder das bereits
+erarbeitete File zerstört, wonach der Directory Observer informiert wird.
+
+
+Verzeichnis anlegen:
+Ein Verzeichnis Anzulegen ist identisch mit dem Anlegen einer Datei, bis auf das
+in allen Fällen ein Directory anstelle eines Files versucht wird zu erstellen.
+
+
+Datei/Verzeichnis löschen:
+Das Löschen einer Datei Verläuft ähnlich dem Anlegen, jedoch wird nach
+erfolgreicher Überprüfung der Befugnisse der Delete-Befehl an alle Unterdateien
+und -Verzeichnisse gesendet, sollte der zu löschende Ursprungseintrag ein
+Verzeichnis selbst sein. Daraufhin wird das Objekt auch bei dem File Observer
+entfernt, oder der gesamte Prozess, wieder - bei fehlgeschlagender API operation -
+abgebrochen.
