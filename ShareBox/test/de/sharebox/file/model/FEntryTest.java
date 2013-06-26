@@ -19,19 +19,19 @@ public class FEntryTest {
     private FEntryObserver observer;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         fEntry = new FEntry();
     }
 
     @Test
-    public void hasAnUniqueID() throws Exception {
+    public void hasAnUniqueID() {
         fEntry.setId(1234);
 
         assertThat(fEntry.getId()).isEqualTo(1234);
     }
 
     @Test
-    public void canRegisterObserversForChangeNotification() throws Exception {
+    public void canRegisterObserversForChangeNotification() {
         fEntry.addObserver(observer);
         fEntry.fireChangeNotification();
 
@@ -43,7 +43,7 @@ public class FEntryTest {
     }
 
     @Test
-    public void canRegisterObserversForDeletionNotification() throws Exception {
+    public void canRegisterObserversForDeletionNotification() {
         fEntry.addObserver(observer);
         fEntry.fireDeleteNotification();
 
