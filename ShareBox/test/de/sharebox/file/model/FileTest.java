@@ -23,6 +23,8 @@ public class FileTest {
         file.setFileName("testFile");
 
         assertThat(file.getFileName()).isEqualTo("testFile");
+
+        //TODO: notifications!
     }
 
 

@@ -53,4 +53,10 @@ public class FEntryTest {
         //notification should only have been fired once (not fired after removeObserver)
         verify(observer, times(1)).fEntryDeletedNotification(fEntry);
     }
+
+    @Test
+    public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
+        fEntry.fireDeleteNotification();
+        fEntry.fireChangeNotification();
+    }
 }
