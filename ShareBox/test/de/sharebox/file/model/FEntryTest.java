@@ -1,0 +1,56 @@
+package de.sharebox.file.model;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
+public class FEntryTest {
+
+    private FEntry fEntry;
+
+    @Mock
+    private FEntryObserver observer;
+
+    @Before
+    public void setUp() throws Exception {
+        fEntry = new FEntry();
+    }
+
+    @Test
+    public void hasAnUniqueID() throws Exception {
+        fEntry.setId(1234);
+
+        assertThat(fEntry.getId()).isEqualTo(1234);
+    }
+
+    @Test
+    public void canRegisterObserversForChangeNotification() throws Exception {
+        fEntry.addObserver(observer);
+        fEntry.fireChangeNotification();
+
+        fEntry.removeObserver(observer);
+        fEntry.fireChangeNotification();
+
+        //notification should have only been fired once (not fired after removeObserver)
+        verify(observer, times(1)).fEntryChangedNotification(fEntry);
+    }
+
+    @Test
+    public void canRegisterObserversForDeletionNotification() throws Exception {
+        fEntry.addObserver(observer);
+        fEntry.fireDeleteNotification();
+
+        fEntry.removeObserver(observer);
+        fEntry.fireDeleteNotification();
+
+        //notification should only have been fired once (not fired after removeObserver)
+        verify(observer, times(1)).fEntryDeletedNotification(fEntry);
+    }
+}
