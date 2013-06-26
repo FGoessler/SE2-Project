@@ -4,49 +4,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Directory extends FEntry {
-    private List<FEntry> fEntries = new ArrayList<FEntry>();
-    private String name;
+	private List<FEntry> fEntries = new ArrayList<FEntry>();
+	private String name;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
 
-    public String getName() {
-        return name;
-    }
+		fireChangeNotification();
+	}
 
-    public File createNewFile(String filename) {
-        File newFile = new File();
-        newFile.setFileName(filename);
+	public String getName() {
+		return name;
+	}
 
-        fEntries.add(newFile);
+	public File createNewFile(String filename) {
+		File newFile = new File();
+		newFile.setFileName(filename);
 
-        return newFile;
-    }
+		fEntries.add(newFile);
 
-    public Directory createNewDirectory(String dirname) {
-        Directory newDir = new Directory();
-        newDir.setName(dirname);
+		fireChangeNotification();
 
-        fEntries.add(newDir);
+		return newFile;
+	}
 
-        return newDir;
-    }
+	public Directory createNewDirectory(String dirname) {
+		Directory newDir = new Directory();
+		newDir.setName(dirname);
 
-    public List<FEntry> getFEntries() {
-        return fEntries;
-    }
+		fEntries.add(newDir);
 
-    public void deleteFEntry(FEntry fEntry) {
-        if(fEntry instanceof Directory) {
-            Directory dir = (Directory) fEntry;
-            while(dir.getFEntries().size() > 0) {
-                dir.deleteFEntry(dir.getFEntries().get(0));
-            }
-        }
+		fireChangeNotification();
 
-        fEntry.fireDeleteNotification();
+		return newDir;
+	}
 
-        fEntries.remove(fEntry);
-    }
+	public List<FEntry> getFEntries() {
+		return fEntries;
+	}
+
+	public void deleteFEntry(FEntry fEntry) {
+		if(fEntry instanceof Directory) {
+			Directory dir = (Directory) fEntry;
+			while(dir.getFEntries().size() > 0) {
+				dir.deleteFEntry(dir.getFEntries().get(0));
+			}
+		}
+
+		fEntry.fireDeleteNotification();
+		fireChangeNotification();
+
+		fEntries.remove(fEntry);
+	}
 }

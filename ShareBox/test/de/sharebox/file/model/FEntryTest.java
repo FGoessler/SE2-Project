@@ -13,50 +13,50 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTest {
 
-    private FEntry fEntry;
+	private FEntry fEntry;
 
-    @Mock
-    private FEntryObserver observer;
+	@Mock
+	private FEntryObserver observer;
 
-    @Before
-    public void setUp() {
-        fEntry = new FEntry();
-    }
+	@Before
+	public void setUp() {
+		fEntry = new FEntry();
+	}
 
-    @Test
-    public void hasAnUniqueID() {
-        fEntry.setId(1234);
+	@Test
+	public void hasAnUniqueID() {
+		fEntry.setId(1234);
 
-        assertThat(fEntry.getId()).isEqualTo(1234);
-    }
+		assertThat(fEntry.getId()).isEqualTo(1234);
+	}
 
-    @Test
-    public void canRegisterObserversForChangeNotification() {
-        fEntry.addObserver(observer);
-        fEntry.fireChangeNotification();
+	@Test
+	public void canRegisterObserversForChangeNotification() {
+		fEntry.addObserver(observer);
+		fEntry.fireChangeNotification();
 
-        fEntry.removeObserver(observer);
-        fEntry.fireChangeNotification();
+		fEntry.removeObserver(observer);
+		fEntry.fireChangeNotification();
 
-        //notification should have only been fired once (not fired after removeObserver)
-        verify(observer, times(1)).fEntryChangedNotification(fEntry);
-    }
+		//notification should have only been fired once (not fired after removeObserver)
+		verify(observer, times(1)).fEntryChangedNotification(fEntry);
+	}
 
-    @Test
-    public void canRegisterObserversForDeletionNotification() {
-        fEntry.addObserver(observer);
-        fEntry.fireDeleteNotification();
+	@Test
+	public void canRegisterObserversForDeletionNotification() {
+		fEntry.addObserver(observer);
+		fEntry.fireDeleteNotification();
 
-        fEntry.removeObserver(observer);
-        fEntry.fireDeleteNotification();
+		fEntry.removeObserver(observer);
+		fEntry.fireDeleteNotification();
 
-        //notification should only have been fired once (not fired after removeObserver)
-        verify(observer, times(1)).fEntryDeletedNotification(fEntry);
-    }
+		//notification should only have been fired once (not fired after removeObserver)
+		verify(observer, times(1)).fEntryDeletedNotification(fEntry);
+	}
 
-    @Test
-    public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
-        fEntry.fireDeleteNotification();
-        fEntry.fireChangeNotification();
-    }
+	@Test
+	public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
+		fEntry.fireDeleteNotification();
+		fEntry.fireChangeNotification();
+	}
 }
