@@ -13,6 +13,9 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTest {
 
+	//class to have a real class to test (FEntry is abstract and cannot be instantiated directly!)
+	private class FEntryTestImpl extends FEntry {}
+
 	private FEntry fEntry;
 
 	@Mock
@@ -20,7 +23,7 @@ public class FEntryTest {
 
 	@Before
 	public void setUp() {
-		fEntry = new FEntry();
+		fEntry = new FEntryTestImpl();
 	}
 
 	@Test
