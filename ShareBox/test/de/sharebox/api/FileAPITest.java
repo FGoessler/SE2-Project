@@ -10,17 +10,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import de.sharebox.file.model.*;
-import static de.sharebox.api.FileAPI.*;
+import de.sharebox.api.FileAPI.*;
 
 //@RunWith(MockitoJUnitRunner.class)
 public class FileAPITest {
+    FileAPI fa = new FileAPI();
     File tFile;
     File tFile2;
 
     @Before
 	public void setUp() {
-        if (DEBUG) System.out.println("\n--anew.\n");
-        getStats();
+        if (fa.DEBUG) {System.out.println("\n--anew.\n");}
+        fa.getStats();
         tFile = new File();
         tFile.setId(42);
         tFile.setFileName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
@@ -31,37 +32,37 @@ public class FileAPITest {
 
     @Test
     public void creation() {
-        if (DEBUG) System.out.println("creation:");
-        int oldSize=getStorageSize();
-        createNewFile(tFile);
-        assertEquals(getStorageSize(),oldSize+1);
-        getStats();
-        deleteFile(tFile);
+        if (fa.DEBUG) {System.out.println("creation:");}
+        int oldSize=fa.getStorageSize();
+        fa.createNewFile(tFile);
+        assertEquals(fa.getStorageSize(),oldSize+1);
+        fa.getStats();
+        fa.deleteFile(tFile);
     }
 
     @Test
     public void updateification() {
-        if (DEBUG) System.out.println("updateification:");
-        createNewFile(tFile);
-        createNewFile(tFile2);
-        int oldSize=fileCount();
-        updateFile(tFile);
-        assertEquals(fileCount(),(oldSize+1));
-        getStats();
-        deleteFile(tFile);
-        deleteFile(tFile2);
+        if (fa.DEBUG) {System.out.println("updateification:");}
+        fa.createNewFile(tFile);
+        fa.createNewFile(tFile2);
+        int oldSize=fa.fileCount();
+        fa.updateFile(tFile);
+        assertEquals(fa.fileCount(),(oldSize+1));
+        fa.getStats();
+        fa.deleteFile(tFile);
+        fa.deleteFile(tFile2);
     }
 
     @Test
     public void deletion() {
-        if (DEBUG) System.out.println("deletion:");
-        createNewFile(tFile);
-        createNewFile(tFile2);
-        updateFile(tFile);
-        int oldSize=getStorageSize();
-        deleteFile(tFile);
-        assertEquals(getStorageSize(),oldSize-1);
-        getStats();
+        if (fa.DEBUG) {System.out.println("deletion:");}
+        fa.createNewFile(tFile);
+        fa.createNewFile(tFile2);
+        fa.updateFile(tFile);
+        int oldSize=fa.getStorageSize();
+        fa.deleteFile(tFile);
+        assertEquals(fa.getStorageSize(),oldSize-1);
+        fa.getStats();
     }
 
 }

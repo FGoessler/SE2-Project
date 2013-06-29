@@ -4,7 +4,6 @@ import de.sharebox.file.model.*;
 import de.sharebox.user.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  *
@@ -13,23 +12,33 @@ import java.util.Date;
 
 public class FileAPI {
 
+    public class storageEntry {
+        public long timestamp;
+        public FEntry entry;
+        public storageEntry(long time, FEntry add) {
+            timestamp = time;
+            entry = add;
+        }
+    }
+
     //simulated storage; sublist of storage Entries is for versioning/etc. (list entry has timestamp and FEntry);
-    private static List<List<storageEntry>> storage = new ArrayList<List<storageEntry>>();
-    public static int getStorageSize() {return storage.size();}
+    private List<List<storageEntry>> storage = new ArrayList<List<storageEntry>>();
+    public int getStorageSize() {return storage.size();}
+    private String fnf = "File not found.";
 
     //debug flag
-    public static boolean DEBUG = true;
+    public boolean DEBUG = true;
 
     //various stat getters
-    public static void getStats () {
+    public void getStats () {
         if (DEBUG) {
             System.out.println("- Storage -\n    Entries: "+storage.size()+"\n    Files: "+fileCount()+"\n");
         }
     }
-    public static void getStats (int i) {
-        if (DEBUG) System.out.println("- Storage: File #"+i+" -\n    entries: "+storage.get(i).size()+"\n");
+    public void getStats (int i) {
+        if (DEBUG) {System.out.println("- Storage: File #"+i+" -\n    entries: "+storage.get(i).size()+"\n");}
     }
-    public static int fileCount() {
+    public int fileCount() {
             int storageSum = 0;
             for (int i = 0; i < storage.size(); i++) {
                 storageSum+=storage.get(i).size();
@@ -37,24 +46,29 @@ public class FileAPI {
             return storageSum;
     }
     //debug message shortcuts
-    public static void debugSuccess (String action) {
-        if (DEBUG) System.out.println(action+" successful at "+System.currentTimeMillis()+".");
+    public void debugSuccess (String action) {
+        if (DEBUG) {System.out.println(action+" successful at "+System.currentTimeMillis()+".");}
     }
-    public static void debugFailure (String action) {
-        if (DEBUG) System.out.println(action+" failed.");
+    public void debugFailure (String action) {
+        if (DEBUG) {System.out.println(action+" failed.");}
     }
-    public static void debugFailure (String action, String reason) {
-        if (DEBUG) System.out.println(action+" failed. Reason: "+reason);
+    public void debugFailure (String action, String reason) {
+        if (DEBUG) {System.out.println(action+" failed. Reason: "+reason);}
     }
 
     //actually relevant code-------------------------------------------------------------------------------
 
-    public static void getUniqueInstance() {
+    private static FileAPI instance = new FileAPI();
 
+    public static FileAPI getUniqueInstance() {
+        return instance;
     }
 
-    //creates new file by looking for existing file of same ID, otherwise adds one.
-    public static boolean createNewFile(File f) {
+    /**creates new file by looking for existing file of same ID, otherwise adds one.
+     * @param f zu erzeugendes File
+     * @return ob erfolgreich**/
+    public boolean createNewFile(File f) {
+        int pmdFriendyReturn = -1;
 
         //search through existing files to prevent duplicates, see updateFile
         for (int i = 0; i < storage.size(); i++) {
@@ -62,7 +76,7 @@ public class FileAPI {
                 storageEntry newEntry = new storageEntry(System.currentTimeMillis(),f);
                 storage.get(i).add(newEntry);
                 debugSuccess("File Creation (Update)");
-                return true;
+                if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
             }
         }
 
@@ -76,16 +90,21 @@ public class FileAPI {
         //if this check fails you are in serious trouble
         if (storage.add(flist)) {
             debugSuccess("File Creation");
-            return true;
+            if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
         }
         else {
             debugFailure("File Creation","Not enough magic.");
-            return false;
+            if(pmdFriendyReturn==-1) {pmdFriendyReturn = 0;}
         }
+        return pmdFriendyReturn==1;
     }
 
-    //updates file, if found in list of existing.
-    public static boolean updateFile(File f) {
+
+    /**updates file, if found in list of existing.
+     * @param f zu bearbeitendes File
+     * @return ob erfolgreich**/
+    public boolean updateFile(File f) {
+        int pmdFriendyReturn = -1;
 
         //search through existing files, see createNewFile....................
         for (int i = 0; i < storage.size(); i++) {
@@ -95,35 +114,42 @@ public class FileAPI {
                 storageEntry newEntry = new storageEntry(System.currentTimeMillis(),f);
                 storage.get(i).add(newEntry);
                 debugSuccess("File Update");
-                return true;
+                if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
             }
         }
-        debugFailure("File Update","File not found.");
-        return false;
+        debugFailure("File Update",fnf);
+        return pmdFriendyReturn==1;
     }
 
-    //deletes file by searching through list of existing files.
-    public static boolean deleteFile(File f) {
+    /**deletes file by searching through list of existing files.
+     * @param f zu löschendes File
+     * @return ob erfolgreich**/
+    public boolean deleteFile(File f) {
+        int pmdFriendyReturn = -1;
 
         //search through existing files, to see if you're just confused and/or still reading this
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).get(0).entry.getId()==f.getId()) {
                 storage.remove(i);
                 debugSuccess("File Deletion");
-                return true;
+                if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
             }
         }
-        debugFailure("File Deletion","File not found.");
-        return false;
+        debugFailure("File Deletion",fnf);
+        if(pmdFriendyReturn==-1) {pmdFriendyReturn = 0;}
+        return pmdFriendyReturn==1;
     }
 
-    public static boolean createNewDirectory(Directory d) {
+    /**@param d zu erzeugendes Directory
+     * @return ob erfolgreich**/
+    public boolean createNewDirectory(Directory d) {
+        int pmdFriendyReturn = -1;
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).get(0).entry.getId()==d.getId()) {
                 storage.get(i).get(0).entry=d;
                 storage.get(i).get(0).timestamp=System.currentTimeMillis();
                 debugSuccess("Directory Creation (Update)");
-                return true;
+                if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
             }
         }
         List<storageEntry> flist = new ArrayList<storageEntry>();
@@ -131,37 +157,46 @@ public class FileAPI {
         flist.add(newEntry);
         if (storage.add(flist)) {
             debugSuccess("Directory Creation");
-            return true;
+            if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
         }
         else {
             debugFailure("Directory Creation","Not enough magic.");
-            return false;
+            if(pmdFriendyReturn==-1) {pmdFriendyReturn = 0;}
         }
+        return pmdFriendyReturn==1;
     }
 
-    public static boolean updateDirectory(Directory d) {
+    /**@param d zu bearbeitendes Directory
+     * @return ob erfolgreich**/
+    public boolean updateDirectory(Directory d) {
+        int pmdFriendyReturn = -1;
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).get(0).entry.getId()==d.getId()) {
                 storage.get(i).get(0).entry=d;
                 storage.get(i).get(0).timestamp=System.currentTimeMillis();
                 debugSuccess("Directory Update");
-                return true;
+                if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
             }
         }
         debugFailure("Directory Update","File not found.");
-        return false;
+        if(pmdFriendyReturn==-1) {pmdFriendyReturn = 0;}
+        return pmdFriendyReturn==1;
     }
 
-    public static boolean deleteDiretory(Directory d) {
+    /**@param d zu löschendes Directory
+     * @return ob erfolgreich**/
+    public boolean deleteDiretory(Directory d) {
+        int pmdFriendyReturn = -1;
         for (int i = 0; i < storage.size(); i++) {
             if (storage.get(i).get(0).entry.getId()==d.getId()) {
                 storage.remove(i);
                 debugSuccess("Directory Deletion");
-                return true;
+                if(pmdFriendyReturn==-1) {pmdFriendyReturn = 1;}
             }
         }
-        debugFailure("Directory Deletion","File not found.");
-        return false;
+        debugFailure("Directory Deletion",fnf);
+        if(pmdFriendyReturn==-1) {pmdFriendyReturn = 0;}
+        return pmdFriendyReturn==1;
     }
 
     public static boolean addPermission(FEntry f, User u,FEntryPermission fp) {
@@ -179,8 +214,10 @@ public class FileAPI {
         return true;
     }
 
-    //searches through entries and picks out those with a timestamp later than the given one.
-    public static List getChangesSince(long x) {
+    /**searches through entries and picks out those with a timestamp later than the given one.
+     * @param x ist ein timestamp in ms
+     * @return ob erfolgreich**/
+    public List getChangesSince(long x) {
         List<FEntry> changedFiles = new ArrayList<FEntry>();
         for (int i = 0; i < storage.size(); i++) {
             for (int j = 0; j < storage.get(i).size(); j++) {
