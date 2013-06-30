@@ -13,10 +13,10 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryTest {
 
-	private Directory directory;
+	private transient Directory directory;
 
 	@Mock
-	private FEntryObserver observer;
+	private transient FEntryObserver observer;
 
 	private static final String TEST_FILENAME = "TestFile";
 	private static final String TEST_DIRNAME = "TestDirectory";

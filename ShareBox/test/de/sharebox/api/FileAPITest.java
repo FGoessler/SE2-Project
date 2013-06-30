@@ -10,7 +10,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import de.sharebox.file.model.*;
-import de.sharebox.api.FileAPI.*;
 
 //@RunWith(MockitoJUnitRunner.class)
 public class FileAPITest {
@@ -23,10 +22,10 @@ public class FileAPITest {
         if (fa.DEBUG) {System.out.println("\n--anew.\n");}
         fa.getStats();
         tFile = new File();
-        tFile.setId(42);
+        tFile.setIdentifier(42);
         tFile.setFileName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
         tFile2 = new File();
-        tFile2.setId(43);
+        tFile2.setIdentifier(43);
         tFile2.setFileName("Not quite.");
     }
 

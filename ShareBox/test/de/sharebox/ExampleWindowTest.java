@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
  */
 public class ExampleWindowTest {
 
-    private ExampleWindow window;
+    private transient ExampleWindow window;
 
     @Mock   //mit @Mock sagt man Mockito das er hier automatisch ein gemocktes Objekt erzeugt werden soll
-    private ExampleWindow anotherWindow;
+    private transient ExampleWindow anotherWindow;
 
     @Before
     /**
@@ -32,7 +32,7 @@ public class ExampleWindowTest {
      * Asserts sollten hier nicht hin!
      * Es kann auch mehrere @Before Methoden geben, diese werden dann alle nacheinander ausgeführt.
      */
-    public void setUp() throws Exception {
+    public void setUp() {
         window = new ExampleWindow();
     }
 
@@ -45,7 +45,7 @@ public class ExampleWindowTest {
      * man hier wieder rückgängig machen, da sich andere Test darauf verlassen könnten das sie bestimmte Standardsettings
      * vorfinden.
      */
-    public void tearDown() throws Exception {
+    public void tearDown() {
         //man braucht hier für diesen Test nix machen
     }
 
@@ -58,7 +58,7 @@ public class ExampleWindowTest {
      * die für diesen Typ auch möglich sind. Das geht bei JUnit nicht so schön - da muss man mehr wissen welche asserts
      * sich für was einigen und wie sie heißen.
      */
-    public void aSmallTest() throws Exception {
+    public void aSmallTest() {
         //JUnit native assert
         assertEquals("Textfield should have some value!", "Swixml", window.textField.getText());
 
@@ -80,7 +80,7 @@ public class ExampleWindowTest {
      * Verwendung des Singleton Patterns zu beachten! Siehe dazu auch das Konzept des "Singleton by Choice"!
      * (Generell sind Singletons zum testen etwas blöd und man sollte sie daher nur da einsetzen wo sie nötig sind.)
      */
-    public void aMockitoTest() throws Exception {
+    public void aMockitoTest() {
         when(anotherWindow.getCounterText()).thenReturn("Wadde hadde du de da?!");
 
         assertThat(anotherWindow.getCounterText()).isEqualTo("Wadde hadde du de da?!");

@@ -7,7 +7,7 @@ import java.util.List;
  * Diese Klasse repräsentiert ein Verzeichnis, das von der Sharebox verwaltet und mit dem Server synchronisiert wird.
  */
 public class Directory extends FEntry {
-	private List<FEntry> fEntries = new ArrayList<FEntry>();
+	private transient List<FEntry> fEntries = new ArrayList<FEntry>();
 	private String name;
 
 	/**

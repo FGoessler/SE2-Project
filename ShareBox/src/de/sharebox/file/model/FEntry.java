@@ -7,25 +7,25 @@ import java.util.List;
  * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories. Hauptsächlich implementiert
  * sie Observer Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
  */
-public abstract class FEntry {
-	private Integer id;
-	private List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
+public class FEntry {
+	private Integer identifier;
+	private transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
 	 * Die eindeutige ID des Objekts im ShareBox System. Wird vom Server vergeben und daher erst gesetzt wenn das Objekt
 	 * erfolgreich synchronisiert wurde.
 	 * @return Die eindeutige ID des Objekts.
 	 */
-	public Integer getId() {
-		return id;
+	public Integer getIdentifier() {
+		return identifier;
 	}
 
 	/**
 	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden falls der Server entsprechende Änderungen sendet.
-	 * @param id Die neue ID dieses Objekts.
+	 * @param identifier Die neue ID dieses Objekts.
 	 */
-	public void setId(Integer id) {
-		this.id = id;
+	public void setIdentifier(Integer identifier) {
+		this.identifier = identifier;
 	}
 
 	/**

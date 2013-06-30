@@ -9,17 +9,17 @@ import java.awt.event.ActionEvent;
  * Nur eine Testklasse um SWIxml, javadoc, TestCases usw. zu demonstrieren. Vor Abgabe löschen!
  */
 public class ExampleWindow {
-    private int clicks = 0;
+    private transient int clicks = 0;
 
     /**
      * Diese Textfield-Property wird aus dem weiter unten angegebenen XML gefüttert - das macht einfach SWIxml für uns!
      * Entscheidend hierbei ist das die Property genauso heißt wie die im id Attribut im XML angegeben!
      */
-    public JTextField textField;
+    public transient JTextField textField;
     /**
      * Hier passiert das gleiche wie für textField.
      */
-    public JLabel counter;
+    public transient JLabel counter;
 
     /**
      * Diese AbstractAction Subklasse/Property dient dazu auf Klicks auf den Button zu reagieren.
@@ -27,7 +27,7 @@ public class ExampleWindow {
      * im XML angegeben. Dieser Listener wird dann automatisch mit dem Button verbunden.
      */
     public Action submit = new AbstractAction() {
-		public void actionPerformed( ActionEvent e ) {
+		public void actionPerformed( ActionEvent event ) {
             textField.setText( textField.getText() + '#' );
             counter.setText(String.valueOf( ++clicks ));
         }
@@ -35,10 +35,14 @@ public class ExampleWindow {
 
     /**
      * Im Konstruktor wird mittels der SwingEngine unsere GUI aus dem XML geladen und entsprechend verlinkt.
-     * @throws Exception
      */
-    public ExampleWindow() throws Exception {
-        new SwingEngine( this ).render( "resources/xml/testlayout.xml" ).setVisible(true);
+    public ExampleWindow() {
+		try {
+			new SwingEngine( this ).render( "resources/xml/testlayout.xml" ).setVisible(true);
+		} catch(Exception e) {
+			System.out.println("Couldn't create Swing Window!");
+		}
+
     }
 
     /**

@@ -11,26 +11,23 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FEntryTest {
+public class AbstractFEntryTest {
 
-	//class to have a real class to test (FEntry is abstract and cannot be instantiated directly!)
-	private class FEntryTestImpl extends FEntry {}
-
-	private FEntry fEntry;
+	private transient FEntry fEntry;
 
 	@Mock
-	private FEntryObserver observer;
+	private transient FEntryObserver observer;
 
 	@Before
 	public void setUp() {
-		fEntry = new FEntryTestImpl();
+		fEntry = new FEntry();
 	}
 
 	@Test
 	public void hasAnUniqueID() {
-		fEntry.setId(1234);
+		fEntry.setIdentifier(1234);
 
-		assertThat(fEntry.getId()).isEqualTo(1234);
+		assertThat(fEntry.getIdentifier()).isEqualTo(1234);
 	}
 
 	@Test

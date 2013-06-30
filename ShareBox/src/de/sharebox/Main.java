@@ -6,10 +6,9 @@ package de.sharebox;
 public class Main {
     /** Dies ist nur die standard main method, die beim Programstart aufgerufen wird und das erste Fenster erzeugt.
      *
-     * @param args
-     * @throws Exception
+     * @param args Programargumente - nicht genutzt von uns.
      */
-    public static void main(String[] args) throws Exception
+    public static void main(String[] args)
     {
         new ExampleWindow();
     }
