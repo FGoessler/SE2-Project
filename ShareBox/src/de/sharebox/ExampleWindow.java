@@ -15,11 +15,11 @@ public class ExampleWindow {
      * Diese Textfield-Property wird aus dem weiter unten angegebenen XML gefüttert - das macht einfach SWIxml für uns!
      * Entscheidend hierbei ist das die Property genauso heißt wie die im id Attribut im XML angegeben!
      */
-    public transient JTextField textField;
+    public JTextField textField;
     /**
      * Hier passiert das gleiche wie für textField.
      */
-    public transient JLabel counter;
+    public JLabel counter;
 
     /**
      * Diese AbstractAction Subklasse/Property dient dazu auf Klicks auf den Button zu reagieren.
@@ -42,7 +42,6 @@ public class ExampleWindow {
 		} catch(Exception e) {
 			System.out.println("Couldn't create Swing Window!");
 		}
-
     }
 
     /**

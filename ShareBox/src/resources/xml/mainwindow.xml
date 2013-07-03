@@ -1,0 +1,15 @@
+<frame size="1024,768" title="ShareBox Ultimate" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+    <menubar name="menubar">
+        <menu text="Verwaltung">
+            <menuitem text="Profil bearbeiten" action="showEditProfile"/>
+            <menuitem text="Accounting bearbeiten" action="showEditAccounting"/>
+            <separator />
+            <menuitem text="Nutzer einladen" action="showInvitationView"/>
+            <separator />
+            <menuitem text="Ausloggen" action="logout"/>
+        </menu>
+    </menubar>
+    <panel id="contentView">
+
+    </panel>
+</frame>
