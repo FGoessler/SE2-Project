@@ -7,11 +7,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AbstractFEntryTest {
+public class FEntryTest {
 
 	private transient FEntry fEntry;
 
@@ -56,7 +57,11 @@ public class AbstractFEntryTest {
 
 	@Test
 	public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
-		fEntry.fireDeleteNotification();
-		fEntry.fireChangeNotification();
+		try {
+			fEntry.fireDeleteNotification();
+			fEntry.fireChangeNotification();
+		} catch(Exception exception) {
+			fail("Should not have thrown an error! " + exception.getLocalizedMessage());
+		}
 	}
 }

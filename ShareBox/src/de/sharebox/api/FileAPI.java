@@ -79,10 +79,18 @@ public class FileAPI {
 	}
 
 	/**
-	 * Privater Konstruktor um Verwendung des Singletons zu erzwingen.
+	 * Setzt die Singleton Instanz von außen. Soll nur in Test Cases verwendet werden, um die die FileAPI zu mocken.
+	 * @param newFileAPI Das neue FileAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurückgegeben werden soll.
 	 */
-	private FileAPI() {}
+	public static void injectSingletonInstance(FileAPI newFileAPI) {
+		instance = newFileAPI;
+	}
 
+	/**
+	 * Liefert den FEntry mit der gegebenen ID.
+	 * @param fEntryId Die ID des FEntries.
+	 * @return Der aktuellste FEntry mit dieser ID.
+	 */
 	public FEntry getFEntryWithId(long fEntryId) {
 		FEntry foundFEntry = null;
 

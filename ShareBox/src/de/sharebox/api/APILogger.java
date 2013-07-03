@@ -29,7 +29,7 @@ public final class APILogger {
 	 * Erstellt einen Action String (zur Verwendung in debugSuccess und CO.) der die gegebene Action und den FEntry benennt.
 	 * @param action Die Aktion, die geloggt werden soll.
 	 * @param fEntry Der FEntry auf dem die Aktion ausgeführt wurde.
-	 * @return
+	 * @return Der String der die Aktion und Information über den FEntry enthält.
 	 */
 	public static String actionStringForFEntryAction(String action, FEntry fEntry) {
 		String newString = "";

@@ -9,10 +9,13 @@ import de.sharebox.file.model.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FileAPITest {
     private transient FileAPI fileAPI;
 	private transient File tFile;
@@ -37,6 +40,16 @@ public class FileAPITest {
 		fileAPI.deleteFile(tFile2);
 
 		assertThat(fileAPI.getFileCount()).isEqualTo(0);
+	}
+
+	@Test
+	public void isASingletonButCanInjectMocks() {
+		assertThat(FileAPI.getUniqueInstance()).isNotNull();
+
+		FileAPI mockedFileAPI = mock(FileAPI.class);
+		FileAPI.injectSingletonInstance(mockedFileAPI);
+
+		assertThat(FileAPI.getUniqueInstance()).isSameAs(mockedFileAPI);
 	}
 
 	@Test
@@ -82,7 +95,7 @@ public class FileAPITest {
 	}
 
 	@Test
-    public void deletion() {
+    public void testDeleteFile() {
         fileAPI.createNewFile(tFile);
         fileAPI.createNewFile(tFile2);
         fileAPI.updateFile(tFile);
