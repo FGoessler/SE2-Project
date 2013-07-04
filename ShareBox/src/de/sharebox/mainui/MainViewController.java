@@ -36,9 +36,9 @@ public class MainViewController extends WindowAdapter {
 	protected InvitationController invitationController;
 
 	/**
-	 * Der Container, in dem der DirectoryViewController seine Darstellungen vornimmt.
+	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
 	 */
-	public JPanel contentContainer;
+	public JTree tree;
 
 	/**
 	 * Handler um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
@@ -79,6 +79,7 @@ public class MainViewController extends WindowAdapter {
 	/**
 	 * Reagiert auf das Schließen des Fensters und beendet das Program.
 	 */
+	@Override
 	public void windowClosing( WindowEvent event ) {
 		super.windowClosing( event );
 		System.exit(0);
@@ -101,7 +102,7 @@ public class MainViewController extends WindowAdapter {
 			System.out.println("Couldn't create Swing Window!");
 		}
 
-		directoryViewController = new DirectoryViewController(contentContainer);
+		directoryViewController = new DirectoryViewController(tree);
 	}
 
 	/**

@@ -9,7 +9,9 @@
             <menuitem text="Ausloggen" action="logout"/>
         </menu>
     </menubar>
-    <panel id="contentView">
-
+    <panel layout="borderlayout" background="666666" constraints="BorderLayout.CENTER" id="contentContainer">
+        <scrollPane>
+            <tree id="tree"/>
+        </scrollPane>
     </panel>
 </frame>
