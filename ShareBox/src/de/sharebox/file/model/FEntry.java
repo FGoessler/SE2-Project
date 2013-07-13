@@ -15,6 +15,7 @@ public class FEntry {
 	}
 
 	private Integer identifier;
+	private String name;
 	private transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
@@ -32,6 +33,24 @@ public class FEntry {
 	 */
 	public void setIdentifier(Integer identifier) {
 		this.identifier = identifier;
+	}
+
+	/**
+	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.
+	 * @param name Der neue Name.
+	 */
+	public void setName(String name) {
+		this.name = name;
+
+		fireChangeNotification(ChangeType.NAME_CHANGED);
+	}
+
+	/**
+	 * Liefert den aktuellen Namen des FEntries('Dateiname').
+	 * @return Der aktuelle Name des FEntries('Dateiname')
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**

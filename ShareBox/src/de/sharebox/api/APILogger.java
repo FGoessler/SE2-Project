@@ -1,8 +1,6 @@
 package de.sharebox.api;
 
-import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.File;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -32,13 +30,7 @@ public final class APILogger {
 	 * @return Der String der die Aktion und Information über den FEntry enthält.
 	 */
 	public static String actionStringForFEntryAction(String action, FEntry fEntry) {
-		String newString = "";
-		if(fEntry instanceof File) {
-			newString = action + " (" + ((File) fEntry).getFileName() + ")";
-		} else if(fEntry instanceof Directory) {
-			newString = action + " (" + ((Directory) fEntry).getName() + ")";
-		}
-		return newString;
+		return action + " (" + fEntry.getName() + ")";
 	}
 
 	/**

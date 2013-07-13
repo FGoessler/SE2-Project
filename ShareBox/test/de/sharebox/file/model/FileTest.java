@@ -30,9 +30,9 @@ public class FileTest {
 
 	@Test
 	public void providesAccessToAFileName() {
-		file.setFileName("testFile");
+		file.setName("testFile");
 
-		assertThat(file.getFileName()).isEqualTo("testFile");
+		assertThat(file.getName()).isEqualTo("testFile");
 
 		verify(observer, times(1)).fEntryChangedNotification(file, FEntry.ChangeType.NAME_CHANGED);         	//assert that notification was sent
 	}

@@ -107,11 +107,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
 		FEntry changedEntry = ((TreeNode)path.getLastPathComponent()).getFEntry();
-		if(changedEntry instanceof Directory) {
-			((Directory) changedEntry).setName((String)newValue);
-		} else if(changedEntry instanceof  File) {
-			((File) changedEntry).setFileName((String)newValue);
-		}
+		changedEntry.setName((String) newValue);
 	}
 
 	@Override
@@ -212,15 +208,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 		@Override
 		public String toString() {
-			String text = "";
-
-			if(fEntry instanceof File) {
-				text = ((File) fEntry).getFileName();
-			} else if(fEntry instanceof Directory) {
-				text = ((Directory) fEntry).getName();
-			}
-
-			return text;
+			return fEntry.getName();
 		}
 	}
 }

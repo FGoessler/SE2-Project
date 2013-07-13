@@ -44,7 +44,7 @@ public class DirectoryTest {
 	public void canCreateNewSubFiles() {
 		File createdFile = directory.createNewFile(TEST_FILENAME);
 
-		assertThat(createdFile.getFileName()).isEqualTo(TEST_FILENAME);
+		assertThat(createdFile.getName()).isEqualTo(TEST_FILENAME);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent

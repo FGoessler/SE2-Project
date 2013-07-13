@@ -8,25 +8,6 @@ import java.util.List;
  */
 public class Directory extends FEntry {
 	private transient List<FEntry> fEntries = new ArrayList<FEntry>();
-	private String name;
-
-	/**
-	 * Ändert den Namen des Verzeichnisses und benachrichtigt alle Observer über die Änderung.
-	 * @param name Der neue Name.
-	 */
-	public void setName(String name) {
-		this.name = name;
-
-		fireChangeNotification(ChangeType.NAME_CHANGED);
-	}
-
-	/**
-	 * Liefert den aktuellen Namen des Verzeichnisses.
-	 * @return Der aktuelle Name des Verzeichnisses
-	 */
-	public String getName() {
-		return name;
-	}
 
 	/**
 	 * Liefert eine Liste aller Unterdateien und -verzeichnisse.
@@ -43,7 +24,7 @@ public class Directory extends FEntry {
 	 */
 	public File createNewFile(String filename) {
 		File newFile = new File();
-		newFile.setFileName(filename);
+		newFile.setName(filename);
 
 		fEntries.add(newFile);
 

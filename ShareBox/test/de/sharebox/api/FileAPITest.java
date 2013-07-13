@@ -27,11 +27,11 @@ public class FileAPITest {
 
         tFile = new File();
         tFile.setIdentifier(42);
-        tFile.setFileName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+        tFile.setName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
 
         tFile2 = new File();
         tFile2.setIdentifier(43);
-        tFile2.setFileName("Not quite.");
+        tFile2.setName("Not quite.");
     }
 
 	@After
@@ -58,7 +58,7 @@ public class FileAPITest {
 
 		assertThat(fileAPI.getFileCount()).isEqualTo(1);
 		assertThat(fileAPI.getFEntryWithId(42)).isInstanceOf(File.class);
-		assertThat(((File)fileAPI.getFEntryWithId(42)).getFileName()).isEqualTo("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+		assertThat(fileAPI.getFEntryWithId(42).getName()).isEqualTo("The answer to the Ultimate Question of Life, the Universe, and Everything.");
     }
 
 	@Test
@@ -77,14 +77,14 @@ public class FileAPITest {
         fileAPI.createNewFile(tFile2);
 		assertThat(fileAPI.getFileCount()).isEqualTo(2);
 		assertThat(fileAPI.getVersionCount()).isEqualTo(2);
-		assertThat(((File)fileAPI.getFEntryWithId(42)).getFileName()).isEqualTo("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+		assertThat(fileAPI.getFEntryWithId(42).getName()).isEqualTo("The answer to the Ultimate Question of Life, the Universe, and Everything.");
 
-		tFile.setFileName("An other name");
+		tFile.setName("An other name");
 		fileAPI.updateFile(tFile);
 
         assertThat(fileAPI.getFileCount()).isEqualTo(2);
         assertThat(fileAPI.getVersionCount()).isEqualTo(3);
-		assertThat(((File)fileAPI.getFEntryWithId(42)).getFileName()).isEqualTo("An other name");
+		assertThat(fileAPI.getFEntryWithId(42).getName()).isEqualTo("An other name");
     }
 
 	@Test
