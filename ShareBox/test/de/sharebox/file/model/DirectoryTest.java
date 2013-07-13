@@ -37,7 +37,7 @@ public class DirectoryTest {
 		directory.setName(TEST_DIRNAME);
 		assertThat(directory.getName()).isEqualTo(TEST_DIRNAME);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory);    //assert that notification was sent
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.NAME_CHANGED);    //assert that notification was sent
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class DirectoryTest {
 		assertThat(createdFile.getFileName()).isEqualTo(TEST_FILENAME);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory);    //assert that notification was sent
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class DirectoryTest {
 		assertThat(createdDirectory.getName()).isEqualTo(TEST_DIRNAME);
 		assertThat(directory.getFEntries()).contains(createdDirectory);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory);    //assert that notification was sent
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
 	}
 
 	@Test
@@ -80,7 +80,9 @@ public class DirectoryTest {
 		assertThat(createdFile).isNotIn(directory.getFEntries());
 
 		verify(observer, times(1)).fEntryDeletedNotification(createdFile);    	//assert that notification was sent
-		verify(observer, times(2)).fEntryChangedNotification(directory);        //assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
+		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
 	}
 
 	@Test
@@ -98,6 +100,8 @@ public class DirectoryTest {
 
 		verify(observer, times(1)).fEntryDeletedNotification(createdFile);         	//assert that notification was sent
 		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);    	//assert that notification was sent
-		verify(observer, times(2)).fEntryChangedNotification(directory);         	//assert that notification was sent - 2 times - one for createNewDirectory and one for the deletion of sub objects
+		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
 	}
 }

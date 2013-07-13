@@ -34,7 +34,7 @@ public class FileTest {
 
 		assertThat(file.getFileName()).isEqualTo("testFile");
 
-		verify(observer, times(1)).fEntryChangedNotification(file);         	//assert that notification was sent
+		verify(observer, times(1)).fEntryChangedNotification(file, FEntry.ChangeType.NAME_CHANGED);         	//assert that notification was sent
 	}
 
 

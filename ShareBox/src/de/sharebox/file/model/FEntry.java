@@ -8,6 +8,12 @@ import java.util.List;
  * sie Observer Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
  */
 public class FEntry {
+
+	public enum ChangeType {
+		NAME_CHANGED,
+		REMOVED_CHILDREN, ADDED_CHILDREN
+	}
+
 	private Integer identifier;
 	private transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
@@ -47,9 +53,9 @@ public class FEntry {
 	/**
 	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
 	 */
-	protected void fireChangeNotification() {
+	protected void fireChangeNotification(ChangeType reason) {
 		for(FEntryObserver observer : observers) {
-			observer.fEntryChangedNotification(this);
+			observer.fEntryChangedNotification(this, reason);
 		}
 	}
 

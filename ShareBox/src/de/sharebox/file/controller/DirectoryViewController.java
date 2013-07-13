@@ -2,26 +2,34 @@ package de.sharebox.file.controller;
 
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
+import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.File;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class DirectoryViewController implements TreeModel {
-	protected JTree treeView;
+public class DirectoryViewController implements TreeModel, FEntryObserver {
+	private transient List<TreeModelListener> treeModelListener = new ArrayList<TreeModelListener>();
 
-	protected Directory rootDirectory;
+	protected transient JTree treeView;
+
+	protected transient Directory rootDirectory;
 
 	public DirectoryViewController(JTree treeView) {
-		//rootDirectory = createMockDirectoryTree();
+		rootDirectory = createMockDirectoryTree();
 
 		this.treeView = treeView;
 		this.treeView.setModel(this);
 	}
 
-	/*
 	//use this method to set up some mock data for the tree view
 	private Directory createMockDirectoryTree() {
 		Directory root = new Directory();
@@ -36,10 +44,13 @@ public class DirectoryViewController implements TreeModel {
 
 		return root;
 	}
-	*/
 
 	@Override
 	public TreeNode getRoot() {
+		//lazily add observer - get sure to not add the observer twice!
+		rootDirectory.removeObserver(this);
+		rootDirectory.addObserver(this);
+
 		return new TreeNode(rootDirectory);
 	}
 
@@ -49,7 +60,12 @@ public class DirectoryViewController implements TreeModel {
 		FEntry parentFEntry = ((TreeNode)parent).getFEntry();
 
 		if(parentFEntry instanceof Directory) {
-			child = new TreeNode( ((Directory)parentFEntry).getFEntries().get(index) );
+			FEntry childFEntry = ((Directory) parentFEntry).getFEntries().get(index);
+			child = new TreeNode(childFEntry);
+
+			//lazily add observer - get sure to not add the observer twice!
+			childFEntry.removeObserver(this);
+			childFEntry.addObserver(this);
 		}
 
 		return child;
@@ -69,7 +85,7 @@ public class DirectoryViewController implements TreeModel {
 
 	@Override
 	public boolean isLeaf(Object node) {
-		return ((TreeNode)node).getFEntry() instanceof File;	//only Files are leafs
+		return ((TreeNode)node).getFEntry() instanceof File;	//only File-Objects are leafs
 	}
 
 	@Override
@@ -90,14 +106,84 @@ public class DirectoryViewController implements TreeModel {
 
 	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
+		FEntry changedEntry = ((TreeNode)path.getLastPathComponent()).getFEntry();
+		if(changedEntry instanceof Directory) {
+			((Directory) changedEntry).setName((String)newValue);
+		} else if(changedEntry instanceof  File) {
+			((File) changedEntry).setFileName((String)newValue);
+		}
 	}
 
 	@Override
-	public void addTreeModelListener(TreeModelListener l) {
+	public void addTreeModelListener(TreeModelListener listener) {
+		treeModelListener.add(listener);
 	}
 
 	@Override
-	public void removeTreeModelListener(TreeModelListener l) {
+	public void removeTreeModelListener(TreeModelListener listener) {
+		treeModelListener.remove(listener);
+	}
+
+	@Override
+	public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
+		if(reason.equals(FEntry.ChangeType.NAME_CHANGED)) {
+			TreePath treePath = treePathForFEntry(fEntry);
+			TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
+			for(TreeModelListener listener : treeModelListener) {
+				listener.treeNodesChanged(event);
+			}
+		} else if(reason.equals(FEntry.ChangeType.ADDED_CHILDREN)) {
+			TreePath treePath = treePathForFEntry(fEntry);
+			TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
+			for(TreeModelListener listener : treeModelListener) {
+				listener.treeNodesInserted(event);
+			}
+		} else if(reason.equals(FEntry.ChangeType.REMOVED_CHILDREN)) {
+			TreePath treePath = treePathForFEntry(fEntry);
+			TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
+			for(TreeModelListener listener : treeModelListener) {
+				listener.treeNodesRemoved(event);
+			}
+		}
+	}
+
+	@Override
+	public void fEntryDeletedNotification(FEntry fEntry) {
+		//wird ignoriert, da bereits die Informationen aus einer fEntryChangedNotification ausreichen um den Baum zu aktualisieren.
+	}
+
+	/**
+	 * Generiert einen TreePath für den gegebenen FEntry - dazu wird eine Breitensuche durchgeführt! Diese Methode bei
+	 * großen Bäumen daher möglichst wenig nutzen!
+	 * @param fEntry Der FEntry dessen Position im Baum gefunden werden soll.
+	 * @return Ein TreePath der die Position des FEntries bestimmt. Die Komponenten des TreePaths sind jeweils TreeNode Objekte.
+	 */
+	private TreePath treePathForFEntry(FEntry fEntry) {
+		TreeNode nodeOfRequestedFEntry = null;
+
+		//Breitensuche nach dem FEntry im Baum
+		Queue<TreeNode> nodesToCheck = new LinkedBlockingQueue<TreeNode>();
+		nodesToCheck.add(new TreeNode(rootDirectory, null));
+		while(nodesToCheck.size() > 0) {
+			TreeNode currentNode = nodesToCheck.poll();
+
+			if(currentNode.getFEntry().equals(fEntry)) {
+				nodeOfRequestedFEntry = currentNode;
+				break;
+			} else if(currentNode.getFEntry() instanceof Directory) {
+				for(FEntry subFEntry : ((Directory) currentNode.getFEntry()).getFEntries()) {
+					nodesToCheck.add(new TreeNode(subFEntry, currentNode));
+				}
+			}
+		}
+
+		//create TreePath
+		Stack<TreeNode> pathToFoundFEntry = new Stack<TreeNode>();
+		pathToFoundFEntry.push(nodeOfRequestedFEntry);
+		while (pathToFoundFEntry.peek().getParent() != null) {
+			pathToFoundFEntry.push(pathToFoundFEntry.peek().getParent());
+		}
+		return new TreePath(pathToFoundFEntry.toArray());
 	}
 
 	/**
@@ -106,9 +192,18 @@ public class DirectoryViewController implements TreeModel {
 	 */
 	public class TreeNode {
 		private FEntry fEntry;
+		private TreeNode parent;
 
 		public TreeNode(FEntry fEntry) {
 			this.fEntry = fEntry;
+		}
+		public TreeNode(FEntry fEntry, TreeNode parent) {
+			this.parent = parent;
+			this.fEntry = fEntry;
+		}
+
+		public TreeNode getParent() {
+			return parent;
 		}
 
 		public FEntry getFEntry() {

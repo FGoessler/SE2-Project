@@ -34,13 +34,13 @@ public class FEntryTest {
 	@Test
 	public void canRegisterObserversForChangeNotification() {
 		fEntry.addObserver(observer);
-		fEntry.fireChangeNotification();
+		fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
 
 		fEntry.removeObserver(observer);
-		fEntry.fireChangeNotification();
+		fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
 
 		//notification should have only been fired once (not fired after removeObserver)
-		verify(observer, times(1)).fEntryChangedNotification(fEntry);
+		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntry.ChangeType.NAME_CHANGED);
 	}
 
 	@Test
@@ -59,7 +59,7 @@ public class FEntryTest {
 	public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
 		try {
 			fEntry.fireDeleteNotification();
-			fEntry.fireChangeNotification();
+			fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
 		} catch(Exception exception) {
 			fail("Should not have thrown an error! " + exception.getLocalizedMessage());
 		}

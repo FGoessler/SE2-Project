@@ -13,7 +13,7 @@ public class File extends FEntry {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 
-		fireChangeNotification();
+		fireChangeNotification(ChangeType.NAME_CHANGED);
 	}
 
 	/**

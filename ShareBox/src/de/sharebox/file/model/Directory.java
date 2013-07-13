@@ -17,7 +17,7 @@ public class Directory extends FEntry {
 	public void setName(String name) {
 		this.name = name;
 
-		fireChangeNotification();
+		fireChangeNotification(ChangeType.NAME_CHANGED);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class Directory extends FEntry {
 
 		fEntries.add(newFile);
 
-		fireChangeNotification();
+		fireChangeNotification(ChangeType.ADDED_CHILDREN);
 
 		return newFile;
 	}
@@ -63,7 +63,7 @@ public class Directory extends FEntry {
 
 		fEntries.add(newDir);
 
-		fireChangeNotification();
+		fireChangeNotification(ChangeType.ADDED_CHILDREN);
 
 		return newDir;
 	}
@@ -84,7 +84,7 @@ public class Directory extends FEntry {
 		}
 
 		fEntry.fireDeleteNotification();
-		fireChangeNotification();
+		fireChangeNotification(ChangeType.REMOVED_CHILDREN);
 
 		fEntries.remove(fEntry);
 	}
