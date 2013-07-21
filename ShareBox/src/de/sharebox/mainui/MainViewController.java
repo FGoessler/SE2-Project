@@ -86,7 +86,8 @@ public class MainViewController extends WindowAdapter {
 	}
 
 	/**
-	 * Erstellt ein neues Hauptfenster und zeigt es an.
+	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml
+	 * Datei mittels SWIxml generiert.
 	 * @param user Der Nutzer dessen Daten angezeigt werden sollen.
 	 */
 	public MainViewController(User user) {

@@ -10,6 +10,8 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -20,17 +22,48 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	private transient List<TreeModelListener> treeModelListener = new ArrayList<TreeModelListener>();
 
 	protected transient JTree treeView;
+	protected transient ContextMenu contextMenu;
 
 	protected transient Directory rootDirectory;
 
-	public DirectoryViewController(JTree treeView) {
+	/**
+	 * Dieser MouseAdapter dient dazu das Kontextmenü anzuzeigen bzw. wieder auszublenden.
+	 */
+	protected transient MouseAdapter contextMenuMA = new MouseAdapter() {
+		@Override
+		public void mouseReleased(MouseEvent event) {
+			if(event.getButton()  == MouseEvent.BUTTON3 && !contextMenu.isMenuVisible()) {
+				TreePath currentContextMenuTreePath = treeView.getPathForLocation(event.getX(), event.getY());
+				if(currentContextMenuTreePath != null) {
+					contextMenu.showMenu(currentContextMenuTreePath, event.getX(), event.getY());
+				}
+			} else {
+				contextMenu.hideMenu();
+			}
+		}
+	};
+
+	/**
+	 * Erstellt einen neuen DirectoryViewController, der seinen Inhalt in dem gegebnen TreeView
+	 * darstellt.
+	 * @param tree Der TreeView, in dem der Inhalt dargestellt werden soll.
+	 */
+	public DirectoryViewController(JTree tree) {
 		rootDirectory = createMockDirectoryTree();
 
-		this.treeView = treeView;
+		this.treeView = tree;
 		this.treeView.setModel(this);
+		this.contextMenu = new ContextMenu();
+
+		this.treeView.addMouseListener(contextMenuMA);
 	}
 
-	//use this method to set up some mock data for the tree view
+
+	/**
+	 * Use this method to set up some mock data for the tree view.
+	 * @deprecated Is deprecated cause it shouldn't be used in production code!
+	 */
+	@Deprecated
 	private Directory createMockDirectoryTree() {
 		Directory root = new Directory();
 		root.setName("The main dir");
@@ -63,7 +96,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 			FEntry childFEntry = ((Directory) parentFEntry).getFEntries().get(index);
 			child = new TreeNode(childFEntry);
 
-			//lazily add observer - get sure to not add the observer twice!
+			//lazily add observer - get sure not to add the observer twice!
 			childFEntry.removeObserver(this);
 			childFEntry.addObserver(this);
 		}
@@ -141,6 +174,8 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 				listener.treeNodesRemoved(event);
 			}
 		}
+
+		treeView.updateUI();
 	}
 
 	@Override
@@ -182,33 +217,4 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 		return new TreePath(pathToFoundFEntry.toArray());
 	}
 
-	/**
-	 * Diese Klasse dient als Wrapper der FEntries, die im Tree dargestellt werden, um nicht die toString-Methode
-	 * der Directory- und File-Klasse für Darstellungsspezifische Zwecke zu missbrauchen.
-	 */
-	public class TreeNode {
-		private FEntry fEntry;
-		private TreeNode parent;
-
-		public TreeNode(FEntry fEntry) {
-			this.fEntry = fEntry;
-		}
-		public TreeNode(FEntry fEntry, TreeNode parent) {
-			this.parent = parent;
-			this.fEntry = fEntry;
-		}
-
-		public TreeNode getParent() {
-			return parent;
-		}
-
-		public FEntry getFEntry() {
-			return fEntry;
-		}
-
-		@Override
-		public String toString() {
-			return fEntry.getName();
-		}
-	}
 }

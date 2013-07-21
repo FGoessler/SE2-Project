@@ -63,10 +63,9 @@ public class Directory extends FEntry {
 				dir.deleteFEntry(dir.getFEntries().get(0));
 			}
 		}
+		fEntries.remove(fEntry);
 
 		fEntry.fireDeleteNotification();
 		fireChangeNotification(ChangeType.REMOVED_CHILDREN);
-
-		fEntries.remove(fEntry);
 	}
 }

@@ -4,16 +4,23 @@ import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import java.awt.event.MouseEvent;
+import java.util.Date;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DirectoryViewControllerTest {
 	private DirectoryViewController controller;
 
@@ -39,9 +46,9 @@ public class DirectoryViewControllerTest {
 		controller.rootDirectory = rootDirectory;
 	}
 
-	public void simulateTreeConstruction(DirectoryViewController.TreeNode parent) {
+	public void simulateTreeConstruction(TreeNode parent) {
 		for(int i = 0; i < controller.getChildCount(parent); i++) {
-			DirectoryViewController.TreeNode child = controller.getChild(parent, i);
+			TreeNode child = controller.getChild(parent, i);
 			if(child.getFEntry() instanceof Directory) {
 				simulateTreeConstruction(child);
 			}
@@ -127,5 +134,19 @@ public class DirectoryViewControllerTest {
 
 		controller.rootDirectory.createNewFile("This is a another new file!");
 		verify(mockedListener, times(1)).treeNodesInserted(any(TreeModelEvent.class));		//listener should only have been called while listening!
+	}
+
+	@Test
+	public void showsAContextMenuOnRightClick() {
+		controller.contextMenu = mock(ContextMenu.class);
+
+		//simulate click
+		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON3));
+
+		//validate TreePath
+		ArgumentCaptor<TreePath> capturedTreePath = ArgumentCaptor.forClass(TreePath.class);
+		verify(controller.contextMenu).showMenu(capturedTreePath.capture(), anyInt(), anyInt());
+		Directory selectedDirectory = (Directory)((TreeNode)capturedTreePath.getValue().getLastPathComponent()).getFEntry();
+		assertThat(selectedDirectory.getName()).isEqualTo("The main dir");
 	}
 }

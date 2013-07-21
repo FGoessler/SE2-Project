@@ -1,0 +1,9 @@
+<popupmenu text="Verwaltung" id="popupMenu">
+    <menuitem text="Löschen" action="deleteFEntry"/>
+    <menuitem text="Umbennen" action="renameFEntry"/>
+    <separator />
+    <menuitem text="Kopieren" action="copyFEntry"/>
+    <menuitem text="Einfügen" action="pasteFEntry"/>
+    <separator />
+    <menuitem text="Freigeben" action="shareFEntry"/>
+</popupmenu>
