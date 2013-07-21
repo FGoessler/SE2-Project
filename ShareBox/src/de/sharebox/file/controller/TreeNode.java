@@ -8,19 +8,9 @@ import de.sharebox.file.model.FEntry;
  */
 class TreeNode {
 	private FEntry fEntry;
-	private TreeNode parent;
 
 	public TreeNode(FEntry fEntry) {
 		this.fEntry = fEntry;
-	}
-
-	public TreeNode(FEntry fEntry, TreeNode parent) {
-		this.parent = parent;
-		this.fEntry = fEntry;
-	}
-
-	public TreeNode getParent() {
-		return parent;
 	}
 
 	public FEntry getFEntry() {

@@ -33,7 +33,7 @@ public class ContextMenuTest {
 		parentDirectory = new Directory();
 		parentDirectory.setName("A Test Dir");
 		FEntry child = parentDirectory.createNewFile("A Test File");
-		TreeNode[] nodes = {new TreeNode(parentDirectory), new TreeNode(child, new TreeNode(parentDirectory))};
+		TreeNode[] nodes = {new TreeNode(parentDirectory), new TreeNode(child)};
 		mockedTreePath = new TreePath(nodes);
 	}
 

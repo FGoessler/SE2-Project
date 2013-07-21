@@ -32,11 +32,11 @@ public class ContextMenu {
 	 * Zeigt das ContextMenu als Popup Menü an. Dazu muss ein TreePath zum angewählten Objekt im
 	 * TreeView übergeben werden, sowie die Koordinaten des Klicks, um das Menü zu positionieren.
 	 * @param treePath Der TreePath anhand dem das angewählte Objekt im TreeView gefunden werden kann.
-	 * @param x Die X Koordinate des Klicks.
-	 * @param y Die Y Koordinate des Klicks.
+	 * @param xPos Die X Koordinate des Klicks.
+	 * @param yPos Die Y Koordinate des Klicks.
 	 */
-	public void showMenu(TreePath treePath, int x, int y) {
-		popupMenu.setLocation(x, y);
+	public void showMenu(TreePath treePath, int xPos, int yPos) {
+		popupMenu.setLocation(xPos, yPos);
 		popupMenu.setVisible(true);
 		currentTreePath = treePath;
 	}

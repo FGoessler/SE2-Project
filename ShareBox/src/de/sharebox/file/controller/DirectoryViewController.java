@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DirectoryViewController implements TreeModel, FEntryObserver {
@@ -190,31 +189,26 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	 * @return Ein TreePath der die Position des FEntries bestimmt. Die Komponenten des TreePaths sind jeweils TreeNode Objekte.
 	 */
 	private TreePath treePathForFEntry(FEntry fEntry) {
-		TreeNode nodeOfRequestedFEntry = null;
+		TreePath foundPath = null;
 
 		//Breitensuche nach dem FEntry im Baum
-		Queue<TreeNode> nodesToCheck = new LinkedBlockingQueue<TreeNode>();
-		nodesToCheck.add(new TreeNode(rootDirectory, null));
-		while(nodesToCheck.size() > 0) {
-			TreeNode currentNode = nodesToCheck.poll();
+		Queue<TreePath> pathsToCheck = new LinkedBlockingQueue<TreePath>();
+		pathsToCheck.add(new TreePath(new TreeNode(rootDirectory)));
+		while(pathsToCheck.size() > 0) {
+			TreePath currentPath = pathsToCheck.poll();
+			TreeNode currentNode = (TreeNode)currentPath.getLastPathComponent();
 
 			if(currentNode.getFEntry().equals(fEntry)) {
-				nodeOfRequestedFEntry = currentNode;
+				foundPath = currentPath;
 				break;
 			} else if(currentNode.getFEntry() instanceof Directory) {
 				for(FEntry subFEntry : ((Directory) currentNode.getFEntry()).getFEntries()) {
-					nodesToCheck.add(new TreeNode(subFEntry, currentNode));
+					pathsToCheck.add(currentPath.pathByAddingChild(new TreeNode(subFEntry)));
 				}
 			}
 		}
 
-		//create TreePath
-		Stack<TreeNode> pathToFoundFEntry = new Stack<TreeNode>();
-		pathToFoundFEntry.push(nodeOfRequestedFEntry);
-		while (pathToFoundFEntry.peek().getParent() != null) {
-			pathToFoundFEntry.push(pathToFoundFEntry.peek().getParent());
-		}
-		return new TreePath(pathToFoundFEntry.toArray());
+		return foundPath;
 	}
 
 }
