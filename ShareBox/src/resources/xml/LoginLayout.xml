@@ -1,0 +1,22 @@
+<frame size="640,280" title="Hello SWIXML World" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+   
+   <panel constraints="BorderLayout.WEST">
+        <label font="Georgia-BOLD-36" text="E-Mail Adresse"/>
+    </panel>
+	<panel constraints="BorderLayout.SOUTHWEST">
+        <label font="Georgia-BOLD-36" text="Passwort"/>
+    </panel>
+   <panel constraints="BorderLayout.CENTER">
+        <textfield id="EMailField" columns="20" Text=""/>
+    </panel>
+	   <panel constraints="BorderLayout.SOUTH">
+        <textfield id="PasswordField" columns="20" Text=""/>
+    </panel>
+	<panel constraints="BorderLayout.EAST">
+		<button text="Login" action="submit"/>
+	</panel>
+    <panel constraints="BorderLayout.SOUTHEAST">
+		<button text="Registrieren" action="register"/>
+	</panel>
+	
+</frame>
