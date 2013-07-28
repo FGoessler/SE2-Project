@@ -58,12 +58,18 @@ public class UserAPITest {
 	}
 
 	@Test
-    public void testauthenticateUser() {
+    public void testLoginUser() {
 		userAPI = UserAPI.getUniqueInstance();
 		
-		assertThat(userAPI.authenticateUser(user)).isFalse();
+		assertThat(userAPI.login(user)).isFalse();
 		assertThat(userAPI.registerUser(user)).isTrue();
-		assertThat(userAPI.authenticateUser(user)).isTrue();
+		assertThat(userAPI.login(user)).isTrue();
+		assertThat(userAPI.registerUser(user2)).isTrue();
+
+		assertThat(userAPI.login(user2)).isFalse();
+		assertThat(userAPI.logout()).isTrue();
+		assertThat(userAPI.login(user2)).isTrue();
+		
     }
 
 	@Test
@@ -77,25 +83,45 @@ public class UserAPITest {
 	@Test
     public void testUpdatingFile() {
 		assertThat(userAPI.registerUser(user)).isTrue();
-		assertThat(userAPI.authenticateUser(user)).isTrue();
+		assertThat(userAPI.login(user)).isTrue();
+		
 		assertThat(userAPI.changeProfile(user2)).isTrue();
-		// überprüfe Änderung
+		
+		assertThat(userAPI.getCurrentUser().getFirstname() == user2.getFirstname()).isTrue();
+		assertThat(userAPI.getCurrentUser().getLastname() == user2.getLastname()).isTrue();
+		assertThat(userAPI.getCurrentUser().getGender() == user2.getGender()).isTrue();
+		
+		assertThat(userAPI.getCurrentUser().getStorageLimit() == user2.getStorageLimit()).isFalse();
+		assertThat(userAPI.getCurrentUser().getPaymentInfo() == user2.getPaymentInfo()).isFalse();
+		assertThat(userAPI.getCurrentUser().getEmail() == user2.getEmail()).isFalse();
+		assertThat(userAPI.getCurrentUser().getPassword() == user2.getPassword()).isFalse();
+		
 		assertThat(userAPI.changeAccountingSettings(user2)).isTrue();
-		// überprüfe Änderung
+		
+		assertThat(userAPI.getCurrentUser().getStorageLimit() == user2.getStorageLimit()).isTrue();
+		assertThat(userAPI.getCurrentUser().getPaymentInfo() == user2.getPaymentInfo()).isTrue();
+		
 		assertThat(userAPI.changeCredential(user, user2)).isTrue();
-		// überprüfe Änderung	
+		
+		assertThat(userAPI.getCurrentUser().getEmail() == user2.getEmail()).isTrue();
+		assertThat(userAPI.getCurrentUser().getPassword() == user2.getPassword()).isTrue();
     }
 
 	@Test
 	public void updatingNotExistingFileCannotBePerformed() {
-		assertThat(userAPI.authenticateUser(user)).isFalse();
+		assertThat(userAPI.login(user)).isFalse();
 		assertThat(userAPI.changeProfile(user2)).isFalse();
-		// überprüfe Änderung
 		assertThat(userAPI.changeAccountingSettings(user2)).isFalse();
-		// überprüfe Änderung
 		assertThat(userAPI.changeCredential(user, user2)).isFalse();
-		// überprüfe Änderung
-		// sinnvoll?
+		assertThat(userAPI.isLoggedIn()).isFalse();
+		
+		assertThat(userAPI.getCurrentUser().getFirstname() == user2.getFirstname()).isFalse();
+		assertThat(userAPI.getCurrentUser().getLastname() == user2.getLastname()).isFalse();
+		assertThat(userAPI.getCurrentUser().getGender() == user2.getGender()).isFalse();
+		assertThat(userAPI.getCurrentUser().getStorageLimit() == user2.getStorageLimit()).isFalse();
+		assertThat(userAPI.getCurrentUser().getPaymentInfo() == user2.getPaymentInfo()).isFalse();
+		assertThat(userAPI.getCurrentUser().getEmail() == user2.getEmail()).isFalse();
+		assertThat(userAPI.getCurrentUser().getPassword() == user2.getPassword()).isFalse();
 	}
 
 	@Test
