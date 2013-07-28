@@ -47,6 +47,7 @@ public class UserAPI {
 				back = true;
 			}
 		}
+		
 		if (back) {
 	        APILogger.logMessage("Authentication successful");
 		}

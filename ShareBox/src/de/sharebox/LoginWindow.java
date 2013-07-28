@@ -31,7 +31,9 @@ public class LoginWindow {
     
     public Action register = new AbstractAction() {
 		public void actionPerformed( ActionEvent event ) {
+			
 			//Browser öffnen
+			
         }
     };
 
