@@ -6,3 +6,4 @@
 *.ear
 /ShareBox/build/
 /ShareBox/dist/
+/ShareBox/nbproject/
