@@ -6,10 +6,11 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public final class APILogger {
-	/**
-	 * Logging flag.
-	 */
+
+    /**Logging flag.*/
 	public static final boolean LOGGING = true;
+    /**flag für Datumsoutput: TRUE wenn volles Datumsformat gewünscht, FALSE sonst.*/
+    public static final boolean READABLEDATE = false;
 
 	private APILogger() {}
 
@@ -19,7 +20,8 @@ public final class APILogger {
 	 */
 	public static void logMessage(String message) {
 		if(LOGGING) {
-			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
+			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
+            else System.out.println(System.currentTimeMillis() + ": " + message);
 		}
 	}
 
@@ -39,7 +41,8 @@ public final class APILogger {
 	 */
 	public static void debugSuccess(String action) {
 		if (LOGGING) {
-			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " successful.");
+			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " successful.");
+            else System.out.println(System.currentTimeMillis() + ": " + action + " successful.");
 		}
 	}
 
@@ -49,7 +52,8 @@ public final class APILogger {
 	 */
 	public static void debugFailure(String action) {
 		if (LOGGING) {
-			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed.");
+			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed.");
+            else System.out.println(System.currentTimeMillis() + ": " + action + " failed.");
 		}
 	}
 
@@ -60,7 +64,8 @@ public final class APILogger {
 	 */
 	public static void debugFailure(String action, String reason) {
 		if (LOGGING) {
-			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed. Reason: " + reason);
+			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed. Reason: " + reason);
+            else System.out.println(System.currentTimeMillis() + ": " + action + " failed. Reason: " + reason);
 		}
 	}
 }
