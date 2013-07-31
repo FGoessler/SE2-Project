@@ -5,6 +5,19 @@ package de.sharebox.file.model;
  */
 public class File extends FEntry {
 
-	//add file version and logs here...
+	/**
+	 * Konstruktor
+	 */
+	public File() {
+	}
 
+	/**
+	 * Copy Konstruktor
+	 * @param sourceFile Das Quell-Objekt.
+	 */
+	public File(File sourceFile) {
+		File newFile = new File();
+		newFile.setIdentifier(sourceFile.getIdentifier());
+		newFile.setName(sourceFile.getName());
+	}
 }
