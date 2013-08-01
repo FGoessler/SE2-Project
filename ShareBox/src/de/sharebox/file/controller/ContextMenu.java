@@ -108,6 +108,8 @@ public class ContextMenu {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			parentDirectoryController.createNewFileBasedOnUserSelection();
+
+			hideMenu();
 		}
 	};
 
@@ -118,6 +120,8 @@ public class ContextMenu {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			parentDirectoryController.createNewDirectoryBasedOnUserSelection();
+
+			hideMenu();
 		}
 	};
 

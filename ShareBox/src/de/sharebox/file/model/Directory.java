@@ -16,14 +16,21 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * clone Konstruktor
+	 * Copy Konstruktor
 	 *
 	 * @param sourceDirectory Das Quell-Objekt.
 	 */
 	public Directory(Directory sourceDirectory) {
-		Directory newDirectory = new Directory();
-		newDirectory.setIdentifier(sourceDirectory.getIdentifier());
-		newDirectory.setName(sourceDirectory.getName());
+		super(sourceDirectory);
+
+		this.fEntries = new ArrayList<FEntry>();
+		for(FEntry fEntry : sourceDirectory.fEntries) {
+			if(fEntry instanceof File) {
+				this.fEntries.add(new File((File) fEntry));
+			} else {
+				this.fEntries.add(new Directory((Directory) fEntry));
+			}
+		}
 	}
 
 	/**

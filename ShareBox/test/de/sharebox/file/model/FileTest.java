@@ -24,6 +24,18 @@ public class FileTest {
 	}
 
 	@Test
+	public void hasACopyConstructor() {
+		file.setName("TestFile");
+		file.setIdentifier(1234);
+
+		File copy = new File(file);
+
+		assertThat(copy).isNotSameAs(file);
+		assertThat(copy.getName()).isEqualTo(file.getName());
+		assertThat(copy.getIdentifier()).isEqualTo(file.getIdentifier());
+	}
+
+	@Test
 	public void isSubclassOfFEntry() {
 		assertThat(file).isInstanceOf(FEntry.class);
 	}

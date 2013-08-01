@@ -33,6 +33,25 @@ public class DirectoryTest {
 	}
 
 	@Test
+	public void hasACopyConstructor() {
+		directory.setName(TEST_DIRNAME);
+		directory.setIdentifier(1234);
+		directory.createNewFile(TEST_FILENAME);
+		directory.createNewDirectory(TEST_DIRNAME + "2");
+
+		Directory copy = new Directory(directory);
+
+		assertThat(copy).isNotSameAs(directory);
+		assertThat(copy.getFEntries()).isNotSameAs(directory.getFEntries());
+		assertThat(copy.getName()).isEqualTo(directory.getName());
+		assertThat(copy.getIdentifier()).isEqualTo(directory.getIdentifier());
+
+		assertThat(copy.getFEntries().size()).isEqualTo(directory.getFEntries().size());
+		assertThat(copy.getFEntries().get(0).getName()).isEqualTo(directory.getFEntries().get(0).getName());
+		assertThat(copy.getFEntries().get(1).getName()).isEqualTo(directory.getFEntries().get(1).getName());
+	}
+
+	@Test
 	public void hasAName() {
 		directory.setName(TEST_DIRNAME);
 		assertThat(directory.getName()).isEqualTo(TEST_DIRNAME);

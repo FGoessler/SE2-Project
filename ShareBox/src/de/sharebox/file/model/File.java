@@ -17,8 +17,6 @@ public class File extends FEntry {
 	 * @param sourceFile Das Quell-Objekt.
 	 */
 	public File(File sourceFile) {
-		File newFile = new File();
-		newFile.setIdentifier(sourceFile.getIdentifier());
-		newFile.setName(sourceFile.getName());
+		super(sourceFile);
 	}
 }

@@ -25,6 +25,18 @@ public class FEntryTest {
 	}
 
 	@Test
+	public void hasACopyConstructor() {
+		fEntry.setName("TestFile");
+		fEntry.setIdentifier(1234);
+
+		FEntry copy = new FEntry(fEntry);
+
+		assertThat(copy).isNotSameAs(fEntry);
+		assertThat(copy.getName()).isEqualTo(fEntry.getName());
+		assertThat(copy.getIdentifier()).isEqualTo(fEntry.getIdentifier());
+	}
+
+	@Test
 	public void hasAnUniqueID() {
 		fEntry.setIdentifier(1234);
 

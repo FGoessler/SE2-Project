@@ -18,6 +18,18 @@ public class FEntry {
 	private String name;
 	private transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
+	public FEntry() {
+	}
+
+	/**
+	 * Der Copy Konstruktor.
+	 * @param sourceFEntry Das zu kopierende Objekt.
+	 */
+	public FEntry(FEntry sourceFEntry) {
+		this.name = sourceFEntry.name;
+		this.identifier = sourceFEntry.identifier;
+	}
+
 	/**
 	 * Die eindeutige ID des Objekts im ShareBox System. Wird vom Server vergeben und daher erst gesetzt wenn das Objekt
 	 * erfolgreich synchronisiert wurde.
