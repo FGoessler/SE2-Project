@@ -1,5 +1,6 @@
 package de.sharebox.mainui;
 
+import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.user.User;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -11,6 +12,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.awt.event.ActionEvent;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainViewControllerTest {
@@ -37,6 +40,22 @@ public class MainViewControllerTest {
 		assertThat(mainView.directoryViewController).isNotNull();
 
 		assertThat(mainView.swix.getRootComponent().isVisible()).isTrue();
+	}
+
+	@Test
+	public void userCanCreateANewFile() {
+		mainView.directoryViewController = mock(DirectoryViewController.class);
+		mainView.createNewFile.actionPerformed(mock(ActionEvent.class));
+
+		verify(mainView.directoryViewController).createNewFileBasedOnUserSelection();
+	}
+
+	@Test
+	public void userCanCreateANewDirectory() {
+		mainView.directoryViewController = mock(DirectoryViewController.class);
+		mainView.createNewDirectory.actionPerformed(mock(ActionEvent.class));
+
+		verify(mainView.directoryViewController).createNewDirectoryBasedOnUserSelection();
 	}
 
 	@Test

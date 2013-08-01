@@ -35,11 +35,6 @@ public class Directory extends FEntry {
 		return fEntries;
 	}
 
-
-	public void setFEntries(List<FEntry> sourceList) {
-		fEntries = new ArrayList<FEntry>(sourceList);
-	}
-
 	/**
 	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.
 	 *

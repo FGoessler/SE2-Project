@@ -4,6 +4,7 @@ import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.File;
+import de.sharebox.helpers.OptionPaneHelper;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -18,6 +19,8 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DirectoryViewController implements TreeModel, FEntryObserver {
+	protected OptionPaneHelper optionPane = new OptionPaneHelper();
+
 	private transient List<TreeModelListener> treeModelListener = new ArrayList<TreeModelListener>();
 
 	protected transient JTree treeView;
@@ -53,7 +56,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 		this.treeView = tree;
 		this.treeView.setModel(this);
-		this.contextMenu = new ContextMenu();
+		this.contextMenu = new ContextMenu(this);
 
 		this.treeView.addMouseListener(contextMenuMA);
 	}
@@ -78,6 +81,57 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 		return root;
 	}
+
+	/**
+	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade
+	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses
+	 * erstellt.
+	 *
+	 * @return Die neu erstellte Datei.
+	 */
+	public File createNewFileBasedOnUserSelection() {
+		String newFilename = optionPane.showInputDialog("Geben Sie einen Namen für die neue Datei ein:", "");
+		Directory parentDirectory = getParentDirectoryForFEntryCreation();
+
+		return parentDirectory.createNewFile(newFilename);
+	}
+
+	/**
+	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der
+	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des
+	 * Root-Verzeichnisses erstellt.
+	 *
+	 * @return Das neu erstellte Verzeichnis.
+	 */
+	public Directory createNewDirectoryBasedOnUserSelection() {
+		String newDirectoryName = optionPane.showInputDialog("Geben Sie einen Namen für das neue Verzeichnis ein:", "");
+		Directory parentDirectory = getParentDirectoryForFEntryCreation();
+
+		return parentDirectory.createNewDirectory(newDirectoryName);
+	}
+
+	private Directory getParentDirectoryForFEntryCreation() {
+		Directory parentDirectory = null;
+
+		if (contextMenu.getSelectedFEntry() == null && treeView.isSelectionEmpty()) {
+			parentDirectory = (Directory) getRoot().getFEntry();
+		} else if (contextMenu.getSelectedFEntry() != null) {
+			if (contextMenu.getSelectedFEntry() instanceof Directory) {
+				parentDirectory = (Directory) contextMenu.getSelectedFEntry();
+			} else {
+				parentDirectory = contextMenu.getParentOfSelectedFEntry();
+			}
+		} else if (!treeView.isSelectionEmpty()) {
+			if (((TreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry() instanceof Directory) {
+				parentDirectory = (Directory) ((TreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry();
+			} else {
+				parentDirectory = (Directory) ((TreeNode) treeView.getSelectionPath().getParentPath().getLastPathComponent()).getFEntry();
+			}
+		}
+
+		return parentDirectory;
+	}
+
 
 	@Override
 	public TreeNode getRoot() {

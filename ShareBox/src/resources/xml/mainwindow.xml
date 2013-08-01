@@ -1,5 +1,9 @@
 <frame size="1024,768" title="ShareBox Ultimate" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
     <menubar name="menubar">
+        <menu text="Datei">
+            <menuitem text="Neue Datei" action="createNewFile"/>
+            <menuitem text="Neues Verzeichnis" action="createNewDirectory"/>
+        </menu>
         <menu text="Verwaltung">
             <menuitem text="Profil bearbeiten" action="showEditProfile"/>
             <menuitem text="Accounting bearbeiten" action="showEditAccounting"/>

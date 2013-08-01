@@ -41,6 +41,26 @@ public class MainViewController extends WindowAdapter {
 	public JTree tree;
 
 	/**
+	 * Handler um auf die Auswahl des "Neue Datei erstellen"-Buttons im "Datei"-Menü zu reagieren.
+	 */
+	public Action createNewFile = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			directoryViewController.createNewFileBasedOnUserSelection();
+		}
+	};
+
+	/**
+	 * Handler um auf die Auswahl des "Neues Verzeichnis erstellen"-Buttons im "Datei"-Menü zu reagieren.
+	 */
+	public Action createNewDirectory = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			directoryViewController.createNewDirectoryBasedOnUserSelection();
+		}
+	};
+
+	/**
 	 * Handler um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditProfile = new AbstractAction() {

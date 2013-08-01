@@ -10,6 +10,7 @@ import javax.swing.tree.TreePath;
 import java.awt.event.ActionEvent;
 
 public class ContextMenu {
+	private final DirectoryViewController parentDirectoryController;
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 
 	protected JPopupMenu popupMenu;
@@ -17,8 +18,12 @@ public class ContextMenu {
 
 	/**
 	 * Erstellt ein neues ContextMenu. Das Menü wird dazu aus der contextMenu.xml Datei generiert.
+	 *
+	 * @param parentDirectoryController
 	 */
-	public ContextMenu() {
+	public ContextMenu(DirectoryViewController parentDirectoryController) {
+		this.parentDirectoryController = parentDirectoryController;
+
 		try {
 			SwingEngine swix = new SwingEngine(this);
 			swix.render("resources/xml/contextMenu.xml").setVisible(true);
@@ -47,6 +52,7 @@ public class ContextMenu {
 	 */
 	public void hideMenu() {
 		popupMenu.setVisible(false);
+		currentTreePath = null;
 	}
 
 	/**
@@ -75,8 +81,45 @@ public class ContextMenu {
 	 * @return Der FEntry auf den sich alle Aktionen des Kontextmenüs beziehen.
 	 */
 	public FEntry getSelectedFEntry() {
-		return ((TreeNode) currentTreePath.getLastPathComponent()).getFEntry();
+		FEntry foundFEntry = null;
+		if (currentTreePath != null) {
+			foundFEntry = ((TreeNode) currentTreePath.getLastPathComponent()).getFEntry();
+		}
+		return foundFEntry;
 	}
+
+	/**
+	 * Gibt das Oververzeichnis des FEntry zurück, auf den sich alle Aktionen des Kontextmenüs beziehen.
+	 *
+	 * @return Das Oberverzeichnis des FEntries auf den sich alle Aktionen des Kontextmenüs beziehen.
+	 */
+	public Directory getParentOfSelectedFEntry() {
+		Directory foundDirectory = null;
+		if (currentTreePath != null) {
+			foundDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
+		}
+		return foundDirectory;
+	}
+
+	/**
+	 * ActionHandler um auf den Klick auf den "Neue Datei erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 */
+	public Action createNewFile = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			parentDirectoryController.createNewFileBasedOnUserSelection();
+		}
+	};
+
+	/**
+	 * ActionHandler um auf den Klick auf den "Neues Verzeichnis erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 */
+	public Action createNewDirectory = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			parentDirectoryController.createNewDirectoryBasedOnUserSelection();
+		}
+	};
 
 	/**
 	 * ActionHandler um auf den Klick auf den "Löschen"-Eintrag im Kontextmenü zu reagieren.

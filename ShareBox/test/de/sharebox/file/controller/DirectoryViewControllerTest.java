@@ -2,6 +2,8 @@ package de.sharebox.file.controller;
 
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
+import de.sharebox.file.model.File;
+import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryViewControllerTest {
 	private DirectoryViewController controller;
+	private Directory rootDirectory;
+	private Directory subDir1;
 
 	@Before
 	public void setUp() {
@@ -33,10 +37,10 @@ public class DirectoryViewControllerTest {
 
 	@Before
 	public void createMockDirectoryTree() {
-		Directory rootDirectory = new Directory();
+		rootDirectory = new Directory();
 		rootDirectory.setName("The main dir");
 
-		Directory subDir1 = rootDirectory.createNewDirectory("A Subdirectory");
+		subDir1 = rootDirectory.createNewDirectory("A Subdirectory");
 		subDir1.createNewFile("Subdirectory File");
 		rootDirectory.createNewDirectory("Another Subdirectory");
 
@@ -143,7 +147,7 @@ public class DirectoryViewControllerTest {
 
 		controller.valueForPathChanged(testTreePath, "A new value");
 
-		assertThat(controller.getChild(controller.getRoot(),0).getFEntry().getName()).isEqualTo("A new value");
+		assertThat(controller.getChild(controller.getRoot(), 0).getFEntry().getName()).isEqualTo("A new value");
 	}
 
 	@Test
@@ -163,5 +167,89 @@ public class DirectoryViewControllerTest {
 		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON1));
 
 		verify(controller.contextMenu).hideMenu();
+	}
+
+	@Test
+	public void canCreateFilesBasedOnUsersSelection() {
+		controller.contextMenu = mock(ContextMenu.class);
+		controller.optionPane = mock(OptionPaneHelper.class);
+		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new File name!");
+
+		//test without selection -> create as child of root
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+		File newFile = controller.createNewFileBasedOnUserSelection();
+		assertThat(rootDirectory.getFEntries()).contains(newFile);
+		assertThat(newFile.getName()).isEqualTo("A new File name!");
+
+		//test with directory selected -> create as child of directory
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(subDir1);
+		File secondNewFile = controller.createNewFileBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(secondNewFile);
+		assertThat(secondNewFile.getName()).isEqualTo("A new File name!");
+
+		//test with file selected -> create as sibling of file
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(secondNewFile);
+		when(controller.contextMenu.getParentOfSelectedFEntry()).thenReturn(subDir1);
+		File thirdNewFile = controller.createNewFileBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(thirdNewFile);
+		assertThat(thirdNewFile.getName()).isEqualTo("A new File name!");
+
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+
+		//test with directory selected -> create as child of directory
+		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
+		controller.treeView.setSelectionPath(new TreePath(treeNodes));
+		File fourthNewFile = controller.createNewFileBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(fourthNewFile);
+		assertThat(fourthNewFile.getName()).isEqualTo("A new File name!");
+
+		//test with file selected -> create as sibling of file
+		TreeNode[] treeNodes2 = {new TreeNode(rootDirectory), new TreeNode(subDir1), new TreeNode(subDir1.getFEntries().get(0))};
+		controller.treeView.setSelectionPath(new TreePath(treeNodes2));
+		File fifthNewFile = controller.createNewFileBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(fifthNewFile);
+		assertThat(fifthNewFile.getName()).isEqualTo("A new File name!");
+	}
+
+	@Test
+	public void canCreateDirectoriesBasedOnUsersSelection() {
+		controller.contextMenu = mock(ContextMenu.class);
+		controller.optionPane = mock(OptionPaneHelper.class);
+		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new Directory name!");
+
+		//test without selection -> create as child of root
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+		Directory newDirectory = controller.createNewDirectoryBasedOnUserSelection();
+		assertThat(rootDirectory.getFEntries()).contains(newDirectory);
+		assertThat(newDirectory.getName()).isEqualTo("A new Directory name!");
+
+		//test with directory right click selected -> create as child of directory
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(subDir1);
+		Directory secondNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(secondNewDirectory);
+		assertThat(secondNewDirectory.getName()).isEqualTo("A new Directory name!");
+
+		//test with file right click selected -> create as sibling of file
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(subDir1.getFEntries().get(0));
+		when(controller.contextMenu.getParentOfSelectedFEntry()).thenReturn(subDir1);
+		Directory thirdNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(thirdNewDirectory);
+		assertThat(thirdNewDirectory.getName()).isEqualTo("A new Directory name!");
+
+		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+
+		//test with directory selected -> create as child of directory
+		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
+		controller.treeView.setSelectionPath(new TreePath(treeNodes));
+		Directory fourthNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(fourthNewDirectory);
+		assertThat(fourthNewDirectory.getName()).isEqualTo("A new Directory name!");
+
+		//test with file selected -> create as sibling of file
+		TreeNode[] treeNodes2 = {new TreeNode(rootDirectory), new TreeNode(subDir1), new TreeNode(subDir1.getFEntries().get(0))};
+		controller.treeView.setSelectionPath(new TreePath(treeNodes2));
+		Directory fifthNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
+		assertThat(subDir1.getFEntries()).contains(fifthNewDirectory);
+		assertThat(fifthNewDirectory.getName()).isEqualTo("A new Directory name!");
 	}
 }
