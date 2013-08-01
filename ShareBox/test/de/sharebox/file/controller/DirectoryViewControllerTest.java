@@ -137,6 +137,16 @@ public class DirectoryViewControllerTest {
 	}
 
 	@Test
+	public void canHandleValueForTreePathChangedCalls() {
+		TreeNode[] treeNodes = {controller.getRoot(), controller.getChild(controller.getRoot(), 0)};
+		TreePath testTreePath = new TreePath(treeNodes);
+
+		controller.valueForPathChanged(testTreePath, "A new value");
+
+		assertThat(controller.getChild(controller.getRoot(),0).getFEntry().getName()).isEqualTo("A new value");
+	}
+
+	@Test
 	public void showsAContextMenuOnRightClick() {
 		controller.contextMenu = mock(ContextMenu.class);
 
@@ -148,5 +158,10 @@ public class DirectoryViewControllerTest {
 		verify(controller.contextMenu).showMenu(capturedTreePath.capture(), anyInt(), anyInt());
 		Directory selectedDirectory = (Directory)((TreeNode)capturedTreePath.getValue().getLastPathComponent()).getFEntry();
 		assertThat(selectedDirectory.getName()).isEqualTo("The main dir");
+
+		//simulate click to hide menu
+		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON1));
+
+		verify(controller.contextMenu).hideMenu();
 	}
 }

@@ -9,12 +9,30 @@ import java.util.List;
 public class Directory extends FEntry {
 	private transient List<FEntry> fEntries = new ArrayList<FEntry>();
 
+	/**Konstruktor*/
+    public Directory () {}
+
+    /**
+	 * clone Konstruktor
+	 * @param sourceDirectory Das Quell-Objekt.
+	 */
+    public Directory (Directory sourceDirectory) {
+        Directory newDirectory = new Directory();
+        newDirectory.setIdentifier(sourceDirectory.getIdentifier());
+        newDirectory.setName(sourceDirectory.getName());
+    }
+
 	/**
 	 * Liefert eine Liste aller Unterdateien und -verzeichnisse.
 	 * @return Eine Liste aller Unterdateien und -verzeichnisse.
 	 */
 	public List<FEntry> getFEntries() {
 		return fEntries;
+	}
+
+
+	public void setFEntries(List<FEntry> sourceList) {
+        fEntries = new ArrayList<FEntry>(sourceList);
 	}
 
 	/**

@@ -82,20 +82,20 @@ public class ContextMenuTest {
 	@Test
 	public void userCanCopyAnFEntry() {
 		//TODO: implement and test copy FEntries via ContextMenu!
-
+		contextMenu.copyFEntry.actionPerformed(mock(ActionEvent.class));
 	}
 
 	@Ignore
 	@Test
 	public void userCanPasteAnFEntry() {
 		//TODO: implement and test paste FEntries via ContextMenu!
-
+		contextMenu.pasteFEntry.actionPerformed(mock(ActionEvent.class));
 	}
 
 	@Ignore
 	@Test
 	public void userCanShareAnFEntry() {
 		//TODO: implement and test share FEntries via ContextMenu!
-
+		contextMenu.shareFEntry.actionPerformed(mock(ActionEvent.class));
 	}
 }
