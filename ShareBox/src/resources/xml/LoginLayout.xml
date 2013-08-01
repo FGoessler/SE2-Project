@@ -1,5 +1,4 @@
-<frame size="640,280" title="Hello SWIXML World" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
-   
+<frame size="640,280" title="Login" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
    <panel constraints="BorderLayout.WEST">
         <label font="Georgia-BOLD-36" text="E-Mail Adresse"/>
     </panel>
@@ -18,5 +17,4 @@
     <panel constraints="BorderLayout.SOUTHEAST">
 		<button text="Registrieren" action="register"/>
 	</panel>
-	
 </frame>

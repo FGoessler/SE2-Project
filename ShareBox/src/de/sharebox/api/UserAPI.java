@@ -160,11 +160,13 @@ public class UserAPI {
     	//search through existing users
 		if(currentUser != null){
     		for (User aUser : userList) {
-				if (aUser.getEmail().equals(user.getEmail())  ) {
+				if (aUser.getEmail().equals(currentUser.getEmail())  ) {
 					aUser.setFirstname(user.getFirstname());
 					aUser.setLastname(user.getLastname());
 					aUser.setGender(user.getGender());
 					back = true;
+					currentUser = aUser.copy(aUser);
+					
 				}
 			}
     	}	
@@ -188,10 +190,11 @@ public class UserAPI {
     	//search through existing users
 		if(currentUser != null){	
     		for (User aUser : userList) {
-				if (aUser.getEmail().equals(user.getEmail())  ) {
+				if (aUser.getEmail().equals(currentUser.getEmail())  ) {
 					aUser.setPaymentInfo(user.getPaymentInfo());
 					aUser.setStorageLimit(user.getStorageLimit());
 					back = true;
+					currentUser = aUser.copy(aUser);
 				}
 			}
 		}
@@ -220,6 +223,7 @@ public class UserAPI {
 					aUser.setEmail(newUser.getEmail());
 					aUser.setPassword(newUser.getPassword());
 					back = true;
+					currentUser = aUser.copy(aUser);
 				}
 			}
 		}

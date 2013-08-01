@@ -29,11 +29,16 @@ public class LoginWindow {
         }
     };
     
+    
+    
     public Action register = new AbstractAction() {
 		public void actionPerformed( ActionEvent event ) {
-			
-			//Browser öffnen
-			
+				try {
+					SwingEngine swix = new SwingEngine(this);
+					swix.render("resources/xml/registrieren.xml").setVisible(true);
+				} catch(Exception exception) {
+					System.out.println("Couldn't create register menu!");
+				}
         }
     };
 

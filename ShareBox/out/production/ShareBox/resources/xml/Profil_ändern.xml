@@ -1,0 +1,25 @@
+<frame size="640,280" title="Profil_ändern" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+   
+   <panel constraints="BorderLayout.NORTHWEST">
+        <label font="Georgia-BOLD-36" text="Vorname"/>
+    </panel>
+   <panel constraints="BorderLayout.WEST">
+        <label font="Georgia-BOLD-36" text="Name"/>
+    </panel>
+	<panel constraints="BorderLayout.SOUTHWEST">
+        <label font="Georgia-BOLD-36" text="Geschlecht"/>
+    </panel>
+    <panel constraints="BorderLayout.NORTH">
+        <textfield id="EMailField" columns="20" Text=""/>
+    </panel>
+   <panel constraints="BorderLayout.CENTER">
+        <textfield id="EMailField" columns="20" Text=""/>
+    </panel>
+	   <panel constraints="BorderLayout.SOUTH">
+        <textfield id="PasswordField" columns="20" Text=""/>
+    </panel>
+    <panel constraints="BorderLayout.SOUTHEAST">
+		<button text="Änderungen speichern" action="save"/>
+	</panel>
+	
+</frame>
