@@ -13,7 +13,8 @@ public class OptionPaneHelper {
 
 	/**
 	 * Erstellt und zeigt einen JOptionPane.showInputDialog() an.
-	 * @param msg Die angezeigte Meldung.
+	 *
+	 * @param msg         Die angezeigte Meldung.
 	 * @param placeholder Der Platzhalterwert des Eingabefeldes.
 	 * @return Der String, den der Nutzer eingegeben hat.
 	 */
@@ -23,9 +24,10 @@ public class OptionPaneHelper {
 
 	/**
 	 * Erstellt und zeigt einen JOptionPane.showMessageDialog()
+	 *
 	 * @param msg Die angezeigte Meldung.
 	 */
 	public void showMessageDialog(String msg) {
-		JOptionPane.showMessageDialog(JOptionPane.getRootFrame(),msg);
+		JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), msg);
 	}
 }

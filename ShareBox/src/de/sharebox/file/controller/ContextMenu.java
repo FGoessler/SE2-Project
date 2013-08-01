@@ -22,7 +22,7 @@ public class ContextMenu {
 		try {
 			SwingEngine swix = new SwingEngine(this);
 			swix.render("resources/xml/contextMenu.xml").setVisible(true);
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			System.out.println("Couldn't create context menu!");
 		}
 		popupMenu.setVisible(false);
@@ -31,9 +31,10 @@ public class ContextMenu {
 	/**
 	 * Zeigt das ContextMenu als Popup Menü an. Dazu muss ein TreePath zum angewählten Objekt im
 	 * TreeView übergeben werden, sowie die Koordinaten des Klicks, um das Menü zu positionieren.
+	 *
 	 * @param treePath Der TreePath anhand dem das angewählte Objekt im TreeView gefunden werden kann.
-	 * @param xPos Die X Koordinate des Klicks.
-	 * @param yPos Die Y Koordinate des Klicks.
+	 * @param xPos     Die X Koordinate des Klicks.
+	 * @param yPos     Die Y Koordinate des Klicks.
 	 */
 	public void showMenu(TreePath treePath, int xPos, int yPos) {
 		popupMenu.setLocation(xPos, yPos);
@@ -50,6 +51,7 @@ public class ContextMenu {
 
 	/**
 	 * Gibt aus ob das Kontextmenü gerade sichtbar ist oder nicht.
+	 *
 	 * @return True - das Kontextmenü ist sichtbar. False - sonst.
 	 */
 	public Boolean isMenuVisible() {
@@ -60,6 +62,7 @@ public class ContextMenu {
 	 * Gibt den TreePath zu dem Objekt zurück, das vom Nutzer angewählt wurde, also den TreePath,
 	 * der in der showMenu Methode übergeben wurde und auf dessen letzte Komponente sich alle Aktionen
 	 * dieses Kontextmenüs beziehen.
+	 *
 	 * @return Der TreePath zum aktuell ausgewählten Objekt.
 	 */
 	public TreePath getCurrentTreePath() {
@@ -68,10 +71,11 @@ public class ContextMenu {
 
 	/**
 	 * Gibt den FEntry zurück, auf den sich alle Aktionen des Kontextmenüs beziehen.
+	 *
 	 * @return Der FEntry auf den sich alle Aktionen des Kontextmenüs beziehen.
 	 */
 	public FEntry getSelectedFEntry() {
-		return ((TreeNode)currentTreePath.getLastPathComponent()).getFEntry();
+		return ((TreeNode) currentTreePath.getLastPathComponent()).getFEntry();
 	}
 
 	/**
@@ -81,7 +85,7 @@ public class ContextMenu {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			FEntry selectedFEntry = getSelectedFEntry();
-			Directory parentDirectory = (Directory)((TreeNode)currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
+			Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
 
 			parentDirectory.deleteFEntry(selectedFEntry);
 

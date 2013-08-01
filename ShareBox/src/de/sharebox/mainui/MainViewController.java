@@ -44,7 +44,7 @@ public class MainViewController extends WindowAdapter {
 	 * Handler um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditProfile = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed(ActionEvent event) {
 			editProfileController = new EditProfileController();
 		}
 	};
@@ -53,7 +53,7 @@ public class MainViewController extends WindowAdapter {
 	 * Handler um auf die Auswahl des "Accounting ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditAccounting = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed(ActionEvent event) {
 			accountController = new AccountingController();
 		}
 	};
@@ -62,7 +62,7 @@ public class MainViewController extends WindowAdapter {
 	 * Handler um auf die Auswahl des "Einladen"-Buttons im Menü zu reagieren.
 	 */
 	public Action showInvitationView = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed(ActionEvent event) {
 			invitationController = new InvitationController();
 		}
 	};
@@ -71,7 +71,7 @@ public class MainViewController extends WindowAdapter {
 	 * Handler um auf die Auswahl das "Ausloggen"-Buttons im Menü zu reagieren.
 	 */
 	public Action logout = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed(ActionEvent event) {
 			//TODO: logout Prozess starten
 		}
 	};
@@ -80,14 +80,15 @@ public class MainViewController extends WindowAdapter {
 	 * Reagiert auf das Schließen des Fensters und beendet das Program.
 	 */
 	@Override
-	public void windowClosing( WindowEvent event ) {
-		super.windowClosing( event );
+	public void windowClosing(WindowEvent event) {
+		super.windowClosing(event);
 		System.exit(0);
 	}
 
 	/**
 	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml
 	 * Datei mittels SWIxml generiert.
+	 *
 	 * @param user Der Nutzer dessen Daten angezeigt werden sollen.
 	 */
 	public MainViewController(User user) {
@@ -97,9 +98,9 @@ public class MainViewController extends WindowAdapter {
 
 		//create window
 		try {
-			swix = new SwingEngine( this );
+			swix = new SwingEngine(this);
 			swix.render("resources/xml/mainWindow.xml").setVisible(true);
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			System.out.println("Couldn't create Swing Window!");
 		}
 
@@ -108,6 +109,7 @@ public class MainViewController extends WindowAdapter {
 
 	/**
 	 * Liefert den aktuell eingeloggten Benutzer, dessen Daten angezeigt werden.
+	 *
 	 * @return Der aktuell eingeloggte Benutzer.
 	 */
 	public User getCurrentUser() {

@@ -31,9 +31,9 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	protected transient MouseAdapter contextMenuMA = new MouseAdapter() {
 		@Override
 		public void mouseReleased(MouseEvent event) {
-			if(event.getButton()  == MouseEvent.BUTTON3 && !contextMenu.isMenuVisible()) {
+			if (event.getButton() == MouseEvent.BUTTON3 && !contextMenu.isMenuVisible()) {
 				TreePath currentContextMenuTreePath = treeView.getPathForLocation(event.getX(), event.getY());
-				if(currentContextMenuTreePath != null) {
+				if (currentContextMenuTreePath != null) {
 					contextMenu.showMenu(currentContextMenuTreePath, event.getX(), event.getY());
 				}
 			} else {
@@ -45,6 +45,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	/**
 	 * Erstellt einen neuen DirectoryViewController, der seinen Inhalt in dem gegebnen TreeView
 	 * darstellt.
+	 *
 	 * @param tree Der TreeView, in dem der Inhalt dargestellt werden soll.
 	 */
 	public DirectoryViewController(JTree tree) {
@@ -60,6 +61,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 	/**
 	 * Use this method to set up some mock data for the tree view.
+	 *
 	 * @deprecated Is deprecated cause it shouldn't be used in production code!
 	 */
 	@Deprecated
@@ -89,9 +91,9 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	@Override
 	public TreeNode getChild(Object parent, int index) {
 		TreeNode child = null;
-		FEntry parentFEntry = ((TreeNode)parent).getFEntry();
+		FEntry parentFEntry = ((TreeNode) parent).getFEntry();
 
-		if(parentFEntry instanceof Directory) {
+		if (parentFEntry instanceof Directory) {
 			FEntry childFEntry = ((Directory) parentFEntry).getFEntries().get(index);
 			child = new TreeNode(childFEntry);
 
@@ -106,9 +108,9 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	@Override
 	public int getChildCount(Object parent) {
 		int childCount = 0;
-		FEntry parentFEntry = ((TreeNode)parent).getFEntry();
+		FEntry parentFEntry = ((TreeNode) parent).getFEntry();
 
-		if(parentFEntry instanceof Directory) {
+		if (parentFEntry instanceof Directory) {
 			childCount = ((Directory) parentFEntry).getFEntries().size();
 		}
 
@@ -117,18 +119,18 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 	@Override
 	public boolean isLeaf(Object node) {
-		return ((TreeNode)node).getFEntry() instanceof File;	//only File-Objects are leafs
+		return ((TreeNode) node).getFEntry() instanceof File;    //only File-Objects are leafs
 	}
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		int index;
 
-		if(parent == null || child == null) {
+		if (parent == null || child == null) {
 			index = -1;
 		} else {
-			Directory parentDirectory = (Directory)((TreeNode)parent).getFEntry();
-			FEntry childFEntry = ((TreeNode)child).getFEntry();
+			Directory parentDirectory = (Directory) ((TreeNode) parent).getFEntry();
+			FEntry childFEntry = ((TreeNode) child).getFEntry();
 
 			index = parentDirectory.getFEntries().indexOf(childFEntry);
 		}
@@ -138,7 +140,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
-		FEntry changedEntry = ((TreeNode)path.getLastPathComponent()).getFEntry();
+		FEntry changedEntry = ((TreeNode) path.getLastPathComponent()).getFEntry();
 		changedEntry.setName((String) newValue);
 	}
 
@@ -154,22 +156,22 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 
 	@Override
 	public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
-		if(reason.equals(FEntry.ChangeType.NAME_CHANGED)) {
+		if (reason.equals(FEntry.ChangeType.NAME_CHANGED)) {
 			TreePath treePath = treePathForFEntry(fEntry);
 			TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
-			for(TreeModelListener listener : treeModelListener) {
+			for (TreeModelListener listener : treeModelListener) {
 				listener.treeNodesChanged(event);
 			}
-		} else if(reason.equals(FEntry.ChangeType.ADDED_CHILDREN)) {
+		} else if (reason.equals(FEntry.ChangeType.ADDED_CHILDREN)) {
 			TreePath treePath = treePathForFEntry(fEntry);
 			TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
-			for(TreeModelListener listener : treeModelListener) {
+			for (TreeModelListener listener : treeModelListener) {
 				listener.treeNodesInserted(event);
 			}
-		} else if(reason.equals(FEntry.ChangeType.REMOVED_CHILDREN)) {
+		} else if (reason.equals(FEntry.ChangeType.REMOVED_CHILDREN)) {
 			TreePath treePath = treePathForFEntry(fEntry);
 			TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
-			for(TreeModelListener listener : treeModelListener) {
+			for (TreeModelListener listener : treeModelListener) {
 				listener.treeNodesRemoved(event);
 			}
 		}
@@ -185,6 +187,7 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 	/**
 	 * Generiert einen TreePath für den gegebenen FEntry - dazu wird eine Breitensuche durchgeführt! Diese Methode bei
 	 * großen Bäumen daher möglichst wenig nutzen!
+	 *
 	 * @param fEntry Der FEntry dessen Position im Baum gefunden werden soll.
 	 * @return Ein TreePath der die Position des FEntries bestimmt. Die Komponenten des TreePaths sind jeweils TreeNode Objekte.
 	 */
@@ -194,15 +197,15 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 		//Breitensuche nach dem FEntry im Baum
 		Queue<TreePath> pathsToCheck = new LinkedBlockingQueue<TreePath>();
 		pathsToCheck.add(new TreePath(new TreeNode(rootDirectory)));
-		while(pathsToCheck.size() > 0) {
+		while (pathsToCheck.size() > 0) {
 			TreePath currentPath = pathsToCheck.poll();
-			TreeNode currentNode = (TreeNode)currentPath.getLastPathComponent();
+			TreeNode currentNode = (TreeNode) currentPath.getLastPathComponent();
 
-			if(currentNode.getFEntry().equals(fEntry)) {
+			if (currentNode.getFEntry().equals(fEntry)) {
 				foundPath = currentPath;
 				break;
-			} else if(currentNode.getFEntry() instanceof Directory) {
-				for(FEntry subFEntry : ((Directory) currentNode.getFEntry()).getFEntries()) {
+			} else if (currentNode.getFEntry() instanceof Directory) {
+				for (FEntry subFEntry : ((Directory) currentNode.getFEntry()).getFEntries()) {
 					pathsToCheck.add(currentPath.pathByAddingChild(new TreeNode(subFEntry)));
 				}
 			}

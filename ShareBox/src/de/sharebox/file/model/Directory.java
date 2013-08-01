@@ -9,21 +9,26 @@ import java.util.List;
 public class Directory extends FEntry {
 	private transient List<FEntry> fEntries = new ArrayList<FEntry>();
 
-	/**Konstruktor*/
-    public Directory () {}
+	/**
+	 * Konstruktor
+	 */
+	public Directory() {
+	}
 
-    /**
+	/**
 	 * clone Konstruktor
+	 *
 	 * @param sourceDirectory Das Quell-Objekt.
 	 */
-    public Directory (Directory sourceDirectory) {
-        Directory newDirectory = new Directory();
-        newDirectory.setIdentifier(sourceDirectory.getIdentifier());
-        newDirectory.setName(sourceDirectory.getName());
-    }
+	public Directory(Directory sourceDirectory) {
+		Directory newDirectory = new Directory();
+		newDirectory.setIdentifier(sourceDirectory.getIdentifier());
+		newDirectory.setName(sourceDirectory.getName());
+	}
 
 	/**
 	 * Liefert eine Liste aller Unterdateien und -verzeichnisse.
+	 *
 	 * @return Eine Liste aller Unterdateien und -verzeichnisse.
 	 */
 	public List<FEntry> getFEntries() {
@@ -32,11 +37,12 @@ public class Directory extends FEntry {
 
 
 	public void setFEntries(List<FEntry> sourceList) {
-        fEntries = new ArrayList<FEntry>(sourceList);
+		fEntries = new ArrayList<FEntry>(sourceList);
 	}
 
 	/**
 	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.
+	 *
 	 * @param filename Der Name der neuen Datei.
 	 * @return Die neu erstellte Datei.
 	 */
@@ -53,6 +59,7 @@ public class Directory extends FEntry {
 
 	/**
 	 * Erstellt ein neues Verzeichnis in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.
+	 *
 	 * @param dirname Der Name des neuen Verzeichnisses.
 	 * @return Das neu erstellte Verzeichnis.
 	 */
@@ -72,12 +79,13 @@ public class Directory extends FEntry {
 	 * Unterdateien dieses Verzeichnisses gelöscht.
 	 * Es werden die Observer aller gelöschten Objekte mit einer Löschungs-Benachrichtigung informiert und der Observer
 	 * des Verzeichnisses auf dem die Methode aufgerufen wird erhält eine Änderungs-Benachrichtigung.
+	 *
 	 * @param fEntry Der zu löschende FEntry.
 	 */
 	public void deleteFEntry(FEntry fEntry) {
-		if(fEntry instanceof Directory) {
+		if (fEntry instanceof Directory) {
 			Directory dir = (Directory) fEntry;
-			while(dir.getFEntries().size() > 0) {
+			while (dir.getFEntries().size() > 0) {
 				dir.deleteFEntry(dir.getFEntries().get(0));
 			}
 		}

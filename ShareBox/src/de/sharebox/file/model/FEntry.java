@@ -21,6 +21,7 @@ public class FEntry {
 	/**
 	 * Die eindeutige ID des Objekts im ShareBox System. Wird vom Server vergeben und daher erst gesetzt wenn das Objekt
 	 * erfolgreich synchronisiert wurde.
+	 *
 	 * @return Die eindeutige ID des Objekts.
 	 */
 	public Integer getIdentifier() {
@@ -29,6 +30,7 @@ public class FEntry {
 
 	/**
 	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden falls der Server entsprechende Änderungen sendet.
+	 *
 	 * @param identifier Die neue ID dieses Objekts.
 	 */
 	public void setIdentifier(Integer identifier) {
@@ -37,6 +39,7 @@ public class FEntry {
 
 	/**
 	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.
+	 *
 	 * @param name Der neue Name.
 	 */
 	public void setName(String name) {
@@ -47,6 +50,7 @@ public class FEntry {
 
 	/**
 	 * Liefert den aktuellen Namen des FEntries('Dateiname').
+	 *
 	 * @return Der aktuelle Name des FEntries('Dateiname')
 	 */
 	public String getName() {
@@ -55,6 +59,7 @@ public class FEntry {
 
 	/**
 	 * Registriert ein Objekt als Observer. Dieses erhält dann Benachrichtigungen über Änderung und Läschung des Objekts.
+	 *
 	 * @param observer Der Observer der benachrichtigt werden soll.
 	 */
 	public void addObserver(FEntryObserver observer) {
@@ -63,6 +68,7 @@ public class FEntry {
 
 	/**
 	 * Entfernt den Observer, sodass dieser nicht mehr Benachrichtigt wird.
+	 *
 	 * @param observer Der Observer der entfernt werden soll.
 	 */
 	public void removeObserver(FEntryObserver observer) {
@@ -73,7 +79,7 @@ public class FEntry {
 	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
 	 */
 	protected void fireChangeNotification(ChangeType reason) {
-		for(FEntryObserver observer : observers) {
+		for (FEntryObserver observer : observers) {
 			observer.fEntryChangedNotification(this, reason);
 		}
 	}
@@ -83,7 +89,7 @@ public class FEntry {
 	 * aber noch nicht notwendigerweise gelöscht.
 	 */
 	protected void fireDeleteNotification() {
-		for(FEntryObserver observer : observers) {
+		for (FEntryObserver observer : observers) {
 			observer.fEntryDeletedNotification(this);
 		}
 	}

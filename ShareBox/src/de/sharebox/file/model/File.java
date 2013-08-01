@@ -13,6 +13,7 @@ public class File extends FEntry {
 
 	/**
 	 * Copy Konstruktor
+	 *
 	 * @param sourceFile Das Quell-Objekt.
 	 */
 	public File(File sourceFile) {
