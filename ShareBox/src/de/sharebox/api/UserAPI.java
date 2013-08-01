@@ -1,13 +1,14 @@
 package de.sharebox.api;
 
+import de.sharebox.user.User;
+
 import java.util.ArrayList;
 import java.util.List;
-import de.sharebox.user.*;
 
 /**
 *
 * @author Benjamin Barth
-* @author Kay Thorsten Meißner
+* @author Kay Thorsten MeiÃŸner
 */
 
 public class UserAPI {
@@ -29,7 +30,7 @@ public class UserAPI {
 	}
     
     /**
-	 * Erstellt Beispiel-Daten, die für Testzwecke benötigt werden.
+	 * Erstellt Beispiel-Daten, die fÃ¼r Testzwecke benÃ¶tigt werden.
 	 */
     public void createSampleContent() {
 
@@ -61,14 +62,14 @@ public class UserAPI {
     
     
     /**
-	 * Setzt die Singleton Instanz von auÃŸen. Soll nur in Test Cases verwendet werden, um die die UserAPI zu mocken.
-	 * @param newUserAPI Das neue UserAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurÃ¼ckgegeben wird.
+	 * Setzt die Singleton Instanz von auÃƒÂŸen. Soll nur in Test Cases verwendet werden, um die die UserAPI zu mocken.
+	 * @param newUserAPI Das neue UserAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurÃƒÂ¼ckgegeben wird.
 	 */
     public static void injectSingletonInstance(UserAPI newUserAPI) {
 		instance = newUserAPI;
 	}
     
-    /** Prüft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
+    /** PrÃ¼ft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
      * @param user zu authentifizierender user 
      * @return ob erfolgreich **/
     public boolean authenticateUser(User user){
@@ -152,8 +153,8 @@ public class UserAPI {
 		return back;
     }
     
-    /** Ändert Profil-Informationen
-     * @param user zu ändernder user 
+    /** Ã„ndert Profil-Informationen
+     * @param user zu Ã¤ndernder user 
      * @return ob erfolgreich **/
     public boolean changeProfile(User user){
     	Boolean back = false;
@@ -182,8 +183,8 @@ public class UserAPI {
 		return back;
     }
     
-    /** Ändert Zahlungs- und Speicherinformationen
-     * @param user zu ändernder user 
+    /** Ã„ndert Zahlungs- und Speicherinformationen
+     * @param user zu Ã¤ndernder user 
      * @return ob erfolgreich **/
     public boolean changeAccountingSettings(User user){
     	Boolean back = false;
@@ -210,9 +211,9 @@ public class UserAPI {
 		return back;
     }
     
-    /** Ändert E-Mailadresse und Password
-     * @param oldUser zu ändernder user 
-     * @param newUser zu übernehmende Informationen
+    /** Ã„ndert E-Mailadresse und Password
+     * @param oldUser zu Ã¤ndernder user 
+     * @param newUser zu Ã¼bernehmende Informationen
      * @return ob erfolgreich **/
     public boolean changeCredential(User oldUser, User newUser){
     	Boolean back = false;
@@ -236,7 +237,7 @@ public class UserAPI {
 		return back;
     }
     
-    /** Lädt neuen Benutzer zu Sharebox ein.
+    /** LÃ¤dt neuen Benutzer zu Sharebox ein.
      * @param oldUser werbende User 
      * @param newUser geworbene User
      * @return ob erfolgreich **/ 
@@ -258,7 +259,7 @@ public class UserAPI {
 		return back;
     }
 
-    /** prüft, ob ein User eingeloggt ist.
+    /** prÃ¼ft, ob ein User eingeloggt ist.
      * @return ob ein User eingeloggt ist **/ 
 	public boolean isLoggedIn(){
 		boolean back = false;
@@ -268,7 +269,7 @@ public class UserAPI {
 	return back;
 	}
 	
-	   /** gibt eingeloggten User zurück
+	   /** gibt eingeloggten User zurÃ¼ck
      * @return zur Zeit eingeloggter User **/ 
 	public User getCurrentUser(){
 		User backUser = new User();

@@ -3,20 +3,17 @@ package de.sharebox.api;
 /**
 *
 * @author Benjamin Barth
-* @author Kay Thorsten Meiﬂner
+* @author Kay Thorsten Mei√üner
 */
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
-import org.junit.After;
+import de.sharebox.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.sharebox.api.UserAPI;
-import de.sharebox.user.User;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAPITest {

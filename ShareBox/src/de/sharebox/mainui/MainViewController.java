@@ -2,7 +2,7 @@ package de.sharebox.mainui;
 
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.user.User;
-import de.sharebox.user.controller.AccountController;
+import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
 import org.swixml.SwingEngine;
@@ -32,7 +32,7 @@ public class MainViewController extends WindowAdapter {
 
 	protected DirectoryViewController directoryViewController;
 	protected EditProfileController editProfileController;
-	protected AccountController accountController;
+	protected AccountingController accountController;
 	protected InvitationController invitationController;
 
 	/**
@@ -54,7 +54,7 @@ public class MainViewController extends WindowAdapter {
 	 */
 	public Action showEditAccounting = new AbstractAction() {
 		public void actionPerformed( ActionEvent event ) {
-			accountController = new AccountController();
+			accountController = new AccountingController();
 		}
 	};
 
@@ -98,7 +98,7 @@ public class MainViewController extends WindowAdapter {
 		//create window
 		try {
 			swix = new SwingEngine( this );
-			swix.render("resources/xml/mainwindow.xml").setVisible(true);
+			swix.render("resources/xml/mainWindow.xml").setVisible(true);
 		} catch(Exception exception) {
 			System.out.println("Couldn't create Swing Window!");
 		}
