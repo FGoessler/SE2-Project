@@ -138,34 +138,9 @@ public class ContextMenu {
 			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
 
 			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
-				final List<Directory> selectedFEntriesParents =  new ArrayList<Directory>(parentDirectoryController.getParentsOfSelectedFEntries());
+				final List<Directory> selectedFEntriesParents =  parentDirectoryController.getParentsOfSelectedFEntries();
 
-				// Add observer to all elements in the list, so they can be removed from the list of items, that
-				// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
-				FEntryObserver observer = new FEntryObserver() {
-					@Override
-					public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {}
-
-					@Override
-					public void fEntryDeletedNotification(FEntry fEntry) {
-						//remove FEntry from list
-						int index = selectedFEntries.indexOf(fEntry);
-   						if(index >= 0) {
-							selectedFEntries.remove(index);		//FEntries verschwinden von alleine aus dem Array
-							selectedFEntriesParents.remove(index);
-						}
-					}
-				};
-				for(FEntry fEntry : selectedFEntries) {
-					fEntry.addObserver(observer);
-				}
-
-				//delete all selected FEntries
-				while(!selectedFEntriesParents.isEmpty()) {
-					if(selectedFEntriesParents.get(0) != null && selectedFEntries.get(0) != null) {
-						selectedFEntriesParents.get(0).deleteFEntry(selectedFEntries.get(0));
-					}
- 				}
+				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
 				Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
 				parentDirectory.deleteFEntry(selectedFEntry);
@@ -174,6 +149,40 @@ public class ContextMenu {
 			hideMenu();
 		}
 	};
+
+	/**
+	 * Löscht die gegebenen FEntries aus ihren entsprechenden Elternverzeichnissen.
+	 * @param fEntriesToDelete Die zu löschenden FEntries.
+	 * @param parentDirectories Die Elternverzeichnisse der zu löschenden FEntries.
+	 */
+	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Directory> parentDirectories) {
+		// Add observer to all elements in the list, so they can be removed from the list of items, that
+		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
+		FEntryObserver observer = new FEntryObserver() {
+			@Override
+			public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {}
+
+			@Override
+			public void fEntryDeletedNotification(FEntry fEntry) {
+				//remove FEntry from list
+				int index = fEntriesToDelete.indexOf(fEntry);
+				   if(index >= 0) {
+					fEntriesToDelete.remove(index);
+					parentDirectories.remove(index);
+				}
+			}
+		};
+		for(FEntry fEntry : fEntriesToDelete) {
+			fEntry.addObserver(observer);
+		}
+
+		//delete all selected FEntries
+		while(!parentDirectories.isEmpty()) {
+			if(parentDirectories.get(0) != null && fEntriesToDelete.get(0) != null) {
+				parentDirectories.get(0).deleteFEntry(fEntriesToDelete.get(0));
+			}
+		 }
+	}
 
 	/**
 	 * ActionHandler um auf den Klick auf den "Umbennen"-Eintrag im Kontextmenü zu reagieren.

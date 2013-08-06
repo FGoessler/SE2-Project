@@ -132,6 +132,10 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 		return parentDirectory;
 	}
 
+	/**
+	 * Liefert die aktuell im JTree ausgewählten FEntries.
+	 * @return Die im JTree ausgewählten FEntries.
+	 */
 	public List<FEntry> getSelectedFEntries() {
 		ArrayList<FEntry> selectedFEntries = new ArrayList<FEntry>();
 
@@ -141,23 +145,27 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 			}
 		}
 
-		return selectedFEntries;
+		return new ArrayList<FEntry>(selectedFEntries);
 	}
 
+	/**
+	 * Liefert die Elternverzeichnisse der aktuell im JTree ausgewählten FEntries in der selben Reihenfolge wie von getSelectedFEntries().
+	 * @return Die Elternverzeichnisse der im JTree ausgewählten FEntries.
+	 */
 	public List<Directory> getParentsOfSelectedFEntries() {
 		ArrayList<Directory> selectedFEntriesParents = new ArrayList<Directory>();
 
 		if(treeView.getSelectionCount() > 0) {
 			for(TreePath path : treeView.getSelectionPaths()) {
-				if(path.getParentPath() != null) {
-					selectedFEntriesParents.add((Directory) ((TreeNode)path.getParentPath().getLastPathComponent()).getFEntry());
-				} else {
+				if(path.getParentPath() == null) {
 					selectedFEntriesParents.add(null);
+				} else {
+					selectedFEntriesParents.add((Directory) ((TreeNode)path.getParentPath().getLastPathComponent()).getFEntry());
 				}
 			}
 		}
 
-		return selectedFEntriesParents;
+		return new ArrayList<Directory>(selectedFEntriesParents);
 	}
 
 
