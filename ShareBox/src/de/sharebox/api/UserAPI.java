@@ -21,6 +21,10 @@ public class UserAPI {
 	
 	private static UserAPI instance = new UserAPI();
 
+	public UserAPI() {
+		createSampleContent();
+	}
+
 	/**
 	 * Methode um das Singleton-Objekt zu erhalten.
 	 * @return Das Singleton-Objekt.
@@ -44,8 +48,8 @@ public class UserAPI {
         user.setGender("m");
     	
     	User user2 = new User();
-        user2.setEmail("Hans@Peter.de");
-        user2.setPassword("hans1234");
+        user2.setEmail("admin");
+        user2.setPassword("root");
         user2.setFirstname("Hans");
         user2.setLastname("Peter");
         user2.setPaymentInfo("BLZ");
@@ -90,7 +94,7 @@ public class UserAPI {
     }
     
     /** Versucht, den User einzuloggen, wenn Authentifizierung erfolgreich ist.
-     * @param user einzulogender user 
+     * @param user einzulogender user
      * @return ob erfolgreich **/
     public boolean login(User user){
     	boolean back;
@@ -119,8 +123,7 @@ public class UserAPI {
     		currentUser = null;
     		APILogger.logMessage("Logout successful");
     		back = true;
-    	}
-    	else{
+    	} else {
     		APILogger.logMessage("Logout failed: No User loged in");
     		back = false;
     	}
@@ -133,24 +136,24 @@ public class UserAPI {
      * @return ob erfolgreich **/
     public boolean registerUser(User user){
     	Boolean userAlreadyExists = false;
-    	Boolean back = false;
+    	Boolean success = false;
     	//search through existing users
 		for (User aUser : userList) {
 			if (aUser.getEmail().equals(user.getEmail())  ) {
 				userAlreadyExists = true;
 			}
-			if (userAlreadyExists == false) {
-				userList.add(user.copy(user));
-				back = true;
-			}
 		}
-		if (back) {
+		if (userAlreadyExists == false) {
+			userList.add(user.copy(user));
+			success = true;
+		}
+
+		if (success) {
 	        APILogger.logMessage("Registration successful");
-		}
-		else {
+		} else {
 			APILogger.logMessage("Registsration failed: User already exists");
 		}
-		return back;
+		return success;
     }
     
     /** Ändert Profil-Informationen

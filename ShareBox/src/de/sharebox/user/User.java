@@ -3,7 +3,7 @@ package de.sharebox.user;
 /**
 *
 * @author Benjamin Barth
-* @author Kay Thorsten Meißner
+* @author Kay Thorsten MeiÃŸner
 */
 
 public class User {
@@ -53,7 +53,7 @@ public class User {
 	
 	/**
 	 * 
-	 * @return Die Speicherkapazität des Users.
+	 * @return Die SpeicherkapazitÃ¤t des Users.
 	 */
 	public String getStorageLimit() {
 		return storageLimit;
@@ -69,7 +69,7 @@ public class User {
 
 	
 	/**
-	 * Ändert die E-Mailadresse des Objekts. 
+	 * Ã„ndert die E-Mailadresse des Objekts. 
 	 * @param email 
 	 */
 	public void setEmail(String email) {
@@ -77,7 +77,7 @@ public class User {
 	}
 	
 	/**
-	 * Ändert das Passwort des Objekts. 
+	 * Ã„ndert das Passwort des Objekts. 
 	 * @param password 
 	 */
 	public void setPassword(String password) {
@@ -85,7 +85,7 @@ public class User {
 	}
 	
 	/**
-	 * Ändert den Vornamen des Objekts. 
+	 * Ã„ndert den Vornamen des Objekts. 
 	 * @param firstname 
 	 */
 	public void setFirstname(String firstname) {
@@ -93,7 +93,7 @@ public class User {
 	}
 	
 	/**
-	 * Ändert den Nachnamen des Objekts. 
+	 * Ã„ndert den Nachnamen des Objekts. 
 	 * @param lastname 
 	 */
 	public void setLastname(String lastname) {
@@ -101,7 +101,7 @@ public class User {
 	}
 	
 	/**
-	 * Ändert die Zahlungsinformationen des Objekts. 
+	 * Ã„ndert die Zahlungsinformationen des Objekts. 
 	 * @param paymentInfo 
 	 */
 	public void setPaymentInfo(String paymentInfo) {
@@ -109,7 +109,7 @@ public class User {
 	}
 	
 	/**
-	 * Ändert die Speicherkapazität des Objekts. 
+	 * Ã„ndert die SpeicherkapazitÃ¤t des Objekts. 
 	 * @param storageLimit 
 	 */
 	public void setStorageLimit(String storageLimit) {
@@ -117,7 +117,7 @@ public class User {
 	}
 	
 	/**
-	 * Ändert das Geschlecht des Users. 
+	 * Ã„ndert das Geschlecht des Users. 
 	 * @param gender
 	 */
 	public void setGender(String gender) {

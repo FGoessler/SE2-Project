@@ -1,12 +1,16 @@
 package de.sharebox;
 
 import de.sharebox.mainui.MainViewController;
-import de.sharebox.user.User;
+import de.sharebox.user.controller.LoginController;
 
 /**
  * Dies ist die Main-Klasse, die sich nur um das initiale Erstellen des ersten Programfensters kümmert.
  */
 public final class Main {
+
+	public static LoginController loginController;
+	public static MainViewController mainWindowViewController;
+
 
 	private Main() {}
 
@@ -16,6 +20,6 @@ public final class Main {
      */
     public static void main(String[] args)
     {
-        new MainViewController(new User());
+        loginController = new LoginController();
     }
 }

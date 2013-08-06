@@ -77,6 +77,16 @@ public class Directory extends FEntry {
 	}
 
 	/**
+	 * Fügt dem Verzeichnis einen FEntry hinzu.
+	 * @param newFEntry Der hinzuzufügende FEntry.
+	 */
+	public void addFEntry(FEntry newFEntry) {
+		fEntries.add(newFEntry);
+
+		fireChangeNotification(ChangeType.ADDED_CHILDREN);
+	}
+
+	/**
 	 * Löscht den übergebenen FEntry aus dem Dateisystem. Handelt es sich um ein Verzeichnis werden rekursiv alle
 	 * Unterdateien dieses Verzeichnisses gelöscht.
 	 * Es werden die Observer aller gelöschten Objekte mit einer Löschungs-Benachrichtigung informiert und der Observer

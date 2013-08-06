@@ -1,20 +1,27 @@
 <frame size="640,280" title="Login" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
-   <panel constraints="BorderLayout.WEST">
-        <label font="Georgia-BOLD-36" text="E-Mail Adresse"/>
-    </panel>
-	<panel constraints="BorderLayout.SOUTHWEST">
-        <label font="Georgia-BOLD-36" text="Passwort"/>
-    </panel>
-   <panel constraints="BorderLayout.CENTER">
-        <textfield id="EMailField" columns="20" Text=""/>
-    </panel>
-	   <panel constraints="BorderLayout.SOUTH">
-        <textfield id="PasswordField" columns="20" Text=""/>
-    </panel>
-	<panel constraints="BorderLayout.EAST">
-		<button text="Login" action="submit"/>
-	</panel>
-    <panel constraints="BorderLayout.SOUTHEAST">
-		<button text="Registrieren" action="register"/>
+   <panel Layout="GridBagLayout">
+        <label font="Georgia-BOLD-18" text="E-Mail Adresse" >
+       <gridbagconstraints id="gbc_1" insets="2,2,2,2" gridx="0" gridy="0" ipadx="15" ipady="15" weightx="1" weighty="1"/>
+       </label>
+
+       <textfield id="mailField" columns="20" text="admin" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="0"/>
+       </textfield>
+
+       <label font="Georgia-BOLD-18" text="Passwort" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
+       </label>
+
+        <passwordfield id="passwordField" columns="20" text="root" >
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
+       </passwordfield>
+
+        <button text="Login" action="submit" >
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
+       </button>
+
+		<button text="Registrieren" action="register">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
+        </button>
 	</panel>
 </frame>
