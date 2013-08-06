@@ -2,12 +2,15 @@ package de.sharebox.file.controller;
 
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
+import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContextMenu {
 	private final DirectoryViewController parentDirectoryController;
@@ -19,7 +22,7 @@ public class ContextMenu {
 	/**
 	 * Erstellt ein neues ContextMenu. Das Menü wird dazu aus der contextMenu.xml Datei generiert.
 	 *
-	 * @param parentDirectoryController
+	 * @param parentDirectoryController Der DirectoryViewController auf den sich das Kontextmenü bezieht.
 	 */
 	public ContextMenu(DirectoryViewController parentDirectoryController) {
 		this.parentDirectoryController = parentDirectoryController;
@@ -132,9 +135,41 @@ public class ContextMenu {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			FEntry selectedFEntry = getSelectedFEntry();
-			Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
+			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
 
-			parentDirectory.deleteFEntry(selectedFEntry);
+			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
+				final List<Directory> selectedFEntriesParents =  new ArrayList<Directory>(parentDirectoryController.getParentsOfSelectedFEntries());
+
+				// Add observer to all elements in the list, so they can be removed from the list of items, that
+				// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
+				FEntryObserver observer = new FEntryObserver() {
+					@Override
+					public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {}
+
+					@Override
+					public void fEntryDeletedNotification(FEntry fEntry) {
+						//remove FEntry from list
+						int index = selectedFEntries.indexOf(fEntry);
+   						if(index >= 0) {
+							selectedFEntries.remove(index);		//FEntries verschwinden von alleine aus dem Array
+							selectedFEntriesParents.remove(index);
+						}
+					}
+				};
+				for(FEntry fEntry : selectedFEntries) {
+					fEntry.addObserver(observer);
+				}
+
+				//delete all selected FEntries
+				while(!selectedFEntriesParents.isEmpty()) {
+					if(selectedFEntriesParents.get(0) != null && selectedFEntries.get(0) != null) {
+						selectedFEntriesParents.get(0).deleteFEntry(selectedFEntries.get(0));
+					}
+ 				}
+			} else {
+				Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
+				parentDirectory.deleteFEntry(selectedFEntry);
+			}
 
 			hideMenu();
 		}

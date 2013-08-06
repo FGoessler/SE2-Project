@@ -132,6 +132,34 @@ public class DirectoryViewController implements TreeModel, FEntryObserver {
 		return parentDirectory;
 	}
 
+	public List<FEntry> getSelectedFEntries() {
+		ArrayList<FEntry> selectedFEntries = new ArrayList<FEntry>();
+
+		if(treeView.getSelectionCount() > 0) {
+			for(TreePath path : treeView.getSelectionPaths()) {
+				selectedFEntries.add(((TreeNode)path.getLastPathComponent()).getFEntry());
+			}
+		}
+
+		return selectedFEntries;
+	}
+
+	public List<Directory> getParentsOfSelectedFEntries() {
+		ArrayList<Directory> selectedFEntriesParents = new ArrayList<Directory>();
+
+		if(treeView.getSelectionCount() > 0) {
+			for(TreePath path : treeView.getSelectionPaths()) {
+				if(path.getParentPath() != null) {
+					selectedFEntriesParents.add((Directory) ((TreeNode)path.getParentPath().getLastPathComponent()).getFEntry());
+				} else {
+					selectedFEntriesParents.add(null);
+				}
+			}
+		}
+
+		return selectedFEntriesParents;
+	}
+
 
 	@Override
 	public TreeNode getRoot() {

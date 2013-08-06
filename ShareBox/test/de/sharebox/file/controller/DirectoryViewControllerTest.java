@@ -252,4 +252,15 @@ public class DirectoryViewControllerTest {
 		assertThat(subDir1.getFEntries()).contains(fifthNewDirectory);
 		assertThat(fifthNewDirectory.getName()).isEqualTo("A new Directory name!");
 	}
+
+	@Test
+	public void canReturnTheSelectedFEntriesAndTheirParents() {
+		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
+		TreePath[] treePaths = {new TreePath(treeNodes), new TreePath(new TreeNode(rootDirectory))};
+		controller.treeView.setSelectionPaths(treePaths);
+
+		assertThat(controller.getSelectedFEntries()).contains(rootDirectory, subDir1);
+
+		assertThat(controller.getParentsOfSelectedFEntries()).contains(null, rootDirectory);
+	}
 }

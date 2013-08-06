@@ -91,7 +91,8 @@ public class FEntry {
 	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
 	 */
 	protected void fireChangeNotification(ChangeType reason) {
-		for (FEntryObserver observer : observers) {
+		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
+		for (FEntryObserver observer : localObservers) {
 			observer.fEntryChangedNotification(this, reason);
 		}
 	}
@@ -101,7 +102,8 @@ public class FEntry {
 	 * aber noch nicht notwendigerweise gelöscht.
 	 */
 	protected void fireDeleteNotification() {
-		for (FEntryObserver observer : observers) {
+		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
+		for (FEntryObserver observer : localObservers) {
 			observer.fEntryDeletedNotification(this);
 		}
 	}
