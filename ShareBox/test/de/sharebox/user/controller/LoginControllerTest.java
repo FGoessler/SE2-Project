@@ -3,6 +3,7 @@ package de.sharebox.user.controller;
 import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.user.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,8 +30,14 @@ public class LoginControllerTest {
 	@Before
 	public void setUp() {
 		UserAPI.injectSingletonInstance(mockedAPI);
+		Main.mainWindowViewController = null;
 
 		loginController = new LoginController();
+	}
+
+	@After
+	public void tearDown() {
+		Main.mainWindowViewController = null;
 	}
 
 	@Test

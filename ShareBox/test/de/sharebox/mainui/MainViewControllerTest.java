@@ -1,9 +1,11 @@
 package de.sharebox.mainui;
 
+import de.sharebox.Main;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.user.User;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -21,13 +23,20 @@ public class MainViewControllerTest {
 
 	@Mock
 	private ActionEvent mockedActionEvent;
-
+	@Mock
+	private UserAPI mockedUserAPI;
 	@Mock
 	private User currentUser;
 
 	@Before
 	public void setUp() {
+		Main.loginController = null;
 		mainView = new MainViewController(currentUser);
+	}
+
+	@After
+	public void tearDown() {
+		Main.loginController = null;
 	}
 
 	@Test
@@ -79,11 +88,13 @@ public class MainViewControllerTest {
 		assertThat(mainView.invitationController).isNotNull();
 	}
 
-	@Ignore
 	@Test
 	public void clickingLogoutPerformsLogoutProcess() {
+		UserAPI.injectSingletonInstance(mockedUserAPI);
+
 		mainView.logout.actionPerformed(mockedActionEvent);
 
-		//TODO: implement and test!
+		verify(mockedUserAPI).logout();
+		assertThat(Main.loginController).isNotNull();
 	}
 }

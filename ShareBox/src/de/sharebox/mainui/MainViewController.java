@@ -1,10 +1,13 @@
 package de.sharebox.mainui;
 
+import de.sharebox.Main;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.user.User;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
+import de.sharebox.user.controller.LoginController;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;
@@ -19,6 +22,7 @@ import java.awt.event.WindowEvent;
  */
 public class MainViewController extends WindowAdapter {
 
+	private JFrame frame;
 	/**
 	 * Der aktuell eingeloggte Nutzer.
 	 */
@@ -92,7 +96,11 @@ public class MainViewController extends WindowAdapter {
 	 */
 	public Action logout = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			//TODO: logout Prozess starten
+			UserAPI.getUniqueInstance().logout();
+
+			frame.setVisible(false);
+
+			Main.loginController = new LoginController();
 		}
 	};
 
@@ -119,7 +127,8 @@ public class MainViewController extends WindowAdapter {
 		//create window
 		try {
 			swix = new SwingEngine(this);
-			swix.render("resources/xml/mainWindow.xml").setVisible(true);
+			frame = (JFrame)swix.render("resources/xml/mainWindow.xml");
+			frame.setVisible(true);
 		} catch (Exception exception) {
 			System.out.println("Couldn't create Swing Window!");
 		}
