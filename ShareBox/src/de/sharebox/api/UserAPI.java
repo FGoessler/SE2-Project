@@ -6,19 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-*
-* @author Benjamin Barth
-* @author Kay Thorsten Meißner
-*/
+ * @author Benjamin Barth
+ * @author Kay Thorsten Meißner
+ */
 
 public class UserAPI {
 	/**
-	 * simuliert Datenbank; 
+	 * simuliert Datenbank;
 	 */
 	protected transient List<User> userList = new ArrayList<User>();
-	
+
 	private transient User currentUser;
-	
+
 	private static UserAPI instance = new UserAPI();
 
 	public UserAPI() {
@@ -27,265 +26,274 @@ public class UserAPI {
 
 	/**
 	 * Methode um das Singleton-Objekt zu erhalten.
+	 *
 	 * @return Das Singleton-Objekt.
 	 */
-    public static UserAPI getUniqueInstance() {
-        return instance;
+	public static UserAPI getUniqueInstance() {
+		return instance;
 	}
-    
-    /**
-	 * Erstellt Beispiel-Daten, die für Testzwecke benötigt werden.
-	 */
-    public void createSampleContent() {
 
-    	User user = new User();
-        user.setEmail("Max@Mustermann.de");
-        user.setPassword("maxmuster");
-        user.setFirstname("Max");
-        user.setLastname("Mustermann");
-        user.setPaymentInfo("Kontonummer");
-        user.setStorageLimit("Zehn GB");
-        user.setGender("m");
-    	
-    	User user2 = new User();
-        user2.setEmail("admin");
-        user2.setPassword("root");
-        user2.setFirstname("Hans");
-        user2.setLastname("Peter");
-        user2.setPaymentInfo("BLZ");
-        user2.setStorageLimit("Zwanzig GB");
-        user2.setGender("m");
-        
-        if (registerUser(user) && registerUser(user2)) {
-    		APILogger.logMessage("Registered Sampledata");
-    	}
-        else {
-        	APILogger.logMessage("Registering Sampledata failed");
-        }
-	}
-    
-    
-    /**
-	 * Setzt die Singleton Instanz von auÃen. Soll nur in Test Cases verwendet werden, um die die UserAPI zu mocken.
-	 * @param newUserAPI Das neue UserAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurÃ¼ckgegeben wird.
+	/**
+	 * Setzt die Singleton Instanz von außen. Soll nur in Test Cases verwendet werden, um die die UserAPI zu mocken.
+	 *
+	 * @param newUserAPI Das neue UserAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurückgegeben wird.
 	 */
-    public static void injectSingletonInstance(UserAPI newUserAPI) {
+	public static void injectSingletonInstance(UserAPI newUserAPI) {
 		instance = newUserAPI;
 	}
-    
-    /** Prüft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
-     * @param user zu authentifizierender user 
-     * @return ob erfolgreich **/
-    public boolean authenticateUser(User user){
-    	boolean back = false;
-    	//search through existing users
+
+	/**
+	 * Erstellt Beispiel-Daten, die für Testzwecke benötigt werden.
+	 */
+	public final void createSampleContent() {
+
+		User user = new User();
+		user.setEmail("Max@Mustermann.de");
+		user.setPassword("maxmuster");
+		user.setFirstname("Max");
+		user.setLastname("Mustermann");
+		user.setPaymentInfo("Kontonummer");
+		user.setStorageLimit("Zehn GB");
+		user.setGender("m");
+
+		User user2 = new User();
+		user2.setEmail("admin");
+		user2.setPassword("root");
+		user2.setFirstname("Hans");
+		user2.setLastname("Peter");
+		user2.setPaymentInfo("BLZ");
+		user2.setStorageLimit("Zwanzig GB");
+		user2.setGender("m");
+
+		if (registerUser(user) && registerUser(user2)) {
+			APILogger.logMessage("Registered Sampledata");
+		} else {
+			APILogger.logMessage("Registering Sampledata failed");
+		}
+	}
+
+	/**
+	 * Prüft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
+	 *
+	 * @param user zu authentifizierender user
+	 * @return ob erfolgreich *
+	 */
+	public boolean authenticateUser(User user) {
+		boolean success = false;
+		//search through existing users
 		for (User aUser : userList) {
-			if ((aUser.getEmail().equals(user.getEmail())) && (aUser.getPassword().equals(user.getPassword())) ) {
-				back = true;
+			if ((aUser.getEmail().equals(user.getEmail())) && (aUser.getPassword().equals(user.getPassword()))) {
+				success = true;
 			}
 		}
-		if (back) {
-	        APILogger.logMessage("Authentication successful");
-		}
-		else {
+		if (success) {
+			APILogger.logMessage("Authentication successful");
+		} else {
 			APILogger.logMessage("Authentication failed: User not found");
 		}
-		return back;
-    }
-    
-    /** Versucht, den User einzuloggen, wenn Authentifizierung erfolgreich ist.
-     * @param user einzulogender user
-     * @return ob erfolgreich **/
-    public boolean login(User user){
-    	boolean back;
-    	if (authenticateUser(user) && !isLoggedIn()){
-    		currentUser = user.copy(user);
-    		APILogger.logMessage("Login successful");
-    		back = true;
-    	}
-    	else{
-    		if (isLoggedIn()){
-    			APILogger.logMessage("Login failed. Please Logout first.");
-    		}
-    		else{
-    			APILogger.logMessage("Login failed. Username/Password not correct.");
-    		}
-    		back = false;
-    	}
-    	return back;
-    }
-    
-    /** Logt den eingelogten User aus.
-     * @return ob erfolgreich **/
-    public boolean logout(){
-    	boolean back;
-    	if (currentUser != null ){
-    		currentUser = null;
-    		APILogger.logMessage("Logout successful");
-    		back = true;
-    	} else {
-    		APILogger.logMessage("Logout failed: No User loged in");
-    		back = false;
-    	}
-    	return back;
-    }
-    
-    
-    /** Erstellt neuen User, sofern noch nicht vorhanden.
-     * @param user zu registrierender user 
-     * @return ob erfolgreich **/
-    public boolean registerUser(User user){
-    	Boolean userAlreadyExists = false;
-    	Boolean success = false;
-    	//search through existing users
+		return success;
+	}
+
+	/**
+	 * Versucht, den User einzuloggen, wenn Authentifizierung erfolgreich ist.
+	 *
+	 * @param user einzulogender user
+	 * @return ob erfolgreich *
+	 */
+	public boolean login(User user) {
+		boolean success = false;
+		if (authenticateUser(user) && !isLoggedIn()) {
+			currentUser = new User(user);
+			APILogger.logMessage("Login successful");
+			success = true;
+		} else {
+			if (isLoggedIn()) {
+				APILogger.logMessage("Login failed. Please Logout first.");
+			} else {
+				APILogger.logMessage("Login failed. Username/Password not correct.");
+			}
+		}
+		return success;
+	}
+
+	/**
+	 * Logt den eingelogten User aus.
+	 *
+	 * @return ob erfolgreich *
+	 */
+	public boolean logout() {
+		boolean success = false;
+		if (currentUser != null) {
+			currentUser = null;
+			APILogger.logMessage("Logout successful");
+			success = true;
+		} else {
+			APILogger.logMessage("Logout failed: No User loged in");
+		}
+		return success;
+	}
+
+
+	/**
+	 * Erstellt neuen User, sofern noch nicht vorhanden.
+	 *
+	 * @param user zu registrierender user
+	 * @return ob erfolgreich *
+	 */
+	public boolean registerUser(User user) {
+		Boolean userAlreadyExists = false;
+		Boolean success = false;
+		//search through existing users
 		for (User aUser : userList) {
-			if (aUser.getEmail().equals(user.getEmail())  ) {
+			if (aUser.getEmail().equals(user.getEmail())) {
 				userAlreadyExists = true;
 			}
 		}
-		if (userAlreadyExists == false) {
-			userList.add(user.copy(user));
+		if (!userAlreadyExists) {
+			userList.add(new User(user));
 			success = true;
 		}
 
 		if (success) {
-	        APILogger.logMessage("Registration successful");
+			APILogger.logMessage("Registration successful");
 		} else {
-			APILogger.logMessage("Registsration failed: User already exists");
+			APILogger.logMessage("Registration failed: User already exists");
 		}
 		return success;
-    }
-    
-    /** Ändert Profil-Informationen
-     * @param user zu ändernder user 
-     * @return ob erfolgreich **/
-    public boolean changeProfile(User user){
-    	Boolean back = false;
-    	//search through existing users
-		if(currentUser != null){
-    		for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())  ) {
+	}
+
+	/**
+	 * Ändert Profil-Informationen.
+	 *
+	 * @param user zu ändernder user
+	 * @return ob erfolgreich *
+	 */
+	public boolean changeProfile(User user) {
+		Boolean success = false;
+		//search through existing users
+		if (currentUser != null) {
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(currentUser.getEmail())) {
 					aUser.setFirstname(user.getFirstname());
 					aUser.setLastname(user.getLastname());
 					aUser.setGender(user.getGender());
-					back = true;
-					currentUser = aUser.copy(aUser);
-					
+					success = true;
+					currentUser = new User(aUser);
+
 				}
 			}
-    	}	
-		else {
-			back = false;
 		}
-		if (back) {
-	        APILogger.logMessage("Profile updated");
-		}
-		else {
+		if (success) {
+			APILogger.logMessage("Profile updated");
+		} else {
 			APILogger.logMessage("Profile update failed");
 		}
-		return back;
-    }
-    
-    /** Ändert Zahlungs- und Speicherinformationen
-     * @param user zu ändernder user 
-     * @return ob erfolgreich **/
-    public boolean changeAccountingSettings(User user){
-    	Boolean back = false;
-    	//search through existing users
-		if(currentUser != null){	
-    		for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())  ) {
+		return success;
+	}
+
+	/**
+	 * Ändert Zahlungs- und Speicherinformationen
+	 *
+	 * @param user zu ändernder user
+	 * @return ob erfolgreich *
+	 */
+	public boolean changeAccountingSettings(User user) {
+		Boolean success = false;
+		//search through existing users
+		if (currentUser != null) {
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(currentUser.getEmail())) {
 					aUser.setPaymentInfo(user.getPaymentInfo());
 					aUser.setStorageLimit(user.getStorageLimit());
-					back = true;
-					currentUser = aUser.copy(aUser);
+					success = true;
+					currentUser = new User(aUser);
 				}
 			}
 		}
-		else{
-			back = false;
-		}
-		if (back) {
-	        APILogger.logMessage("Accounting settings changed");
-		}
-		else {
+		if (success) {
+			APILogger.logMessage("Accounting settings changed");
+		} else {
 			APILogger.logMessage("Accounting settings change failed");
 		}
-		return back;
-    }
-    
-    /** Ändert E-Mailadresse und Password
-     * @param oldUser zu ändernder user 
-     * @param newUser zu übernehmende Informationen
-     * @return ob erfolgreich **/
-    public boolean changeCredential(User oldUser, User newUser){
-    	Boolean back = false;
-    	//search through existing users
+		return success;
+	}
+
+	/**
+	 * Ändert E-Mailadresse und Password
+	 *
+	 * @param oldUser zu ändernder user
+	 * @param newUser zu übernehmende Informationen
+	 * @return ob erfolgreich *
+	 */
+	public boolean changeCredential(User oldUser, User newUser) {
+		Boolean success = false;
+		//search through existing users
 		for (User aUser : userList) {
-			if ((currentUser.getEmail().equals(oldUser.getEmail())) && (currentUser.getPassword().equals(oldUser.getPassword()))  ){
-				if ((aUser.getEmail().equals(oldUser.getEmail())) && (aUser.getPassword().equals(oldUser.getPassword()))  ) {
-					aUser.setEmail(newUser.getEmail());
-					aUser.setPassword(newUser.getPassword());
-					back = true;
-					currentUser = aUser.copy(aUser);
-				}
+			if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
+					&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) {
+				aUser.setEmail(newUser.getEmail());
+				aUser.setPassword(newUser.getPassword());
+				success = true;
+				currentUser = new User(aUser);
 			}
 		}
-		if (back) {
-	        APILogger.logMessage("Credentials changed");
-		}
-		else {
+
+		if (success) {
+			APILogger.logMessage("Credentials changed");
+		} else {
 			APILogger.logMessage("Credentials change failed");
 		}
-		return back;
-    }
-    
-    /** Lädt neuen Benutzer zu Sharebox ein.
-     * @param oldUser werbende User 
-     * @param newUser geworbene User
-     * @return ob erfolgreich **/ 
-    
-    public boolean inviteUser(User oldUser, User newUser){
-    	Boolean back = true;
-    	//search through existing users
+		return success;
+	}
+
+	/**
+	 * Lädt neuen Benutzer zu Sharebox ein.
+	 *
+	 * @param invitingUser werbende User
+	 * @param invitedUser  geworbene User
+	 * @return ob erfolgreich *
+	 */
+	public boolean inviteUser(User invitingUser, User invitedUser) {
+		Boolean success = true;
+		//search through existing users
 		for (User aUser : userList) {
-			if (aUser.getEmail().equals(newUser.getEmail())  ) {
-				back = false;
+			if (aUser.getEmail().equals(invitedUser.getEmail())) {
+				success = false;
 			}
 		}
-		if (back) {
-	        APILogger.logMessage("User invited");
-		}
-		else {
+		if (success) {
+			APILogger.logMessage("User invited");
+		} else {
 			APILogger.logMessage("Invitation failed: User already exists");
 		}
-		return back;
-    }
+		return success;
+	}
 
-    /** prüft, ob ein User eingeloggt ist.
-     * @return ob ein User eingeloggt ist **/ 
-	public boolean isLoggedIn(){
-		boolean back = false;
-	if (currentUser != null){
-		back = true;	
-		}
-	return back;
+	/**
+	 * prüft, ob ein User eingeloggt ist.
+	 *
+	 * @return ob ein User eingeloggt ist *
+	 */
+	public boolean isLoggedIn() {
+		return currentUser != null;
 	}
-	
-	   /** gibt eingeloggten User zurück
-     * @return zur Zeit eingeloggter User **/ 
-	public User getCurrentUser(){
-		User backUser = new User();
-		
-		if (isLoggedIn()){
-			backUser = currentUser.copy(currentUser);
-			backUser.setPassword("");
+
+	/**
+	 * gibt eingeloggten User zurück
+	 *
+	 * @return zur Zeit eingeloggter User *
+	 */
+	public User getCurrentUser() {
+		User user = null;
+
+		if (isLoggedIn()) {
+			user = new User(currentUser);
+			user.setPassword("");
 		}
-		
-		return backUser;
+
+		return user;
 	}
-	
-	
-	
+
+
 }
 	

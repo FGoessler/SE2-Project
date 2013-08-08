@@ -10,7 +10,26 @@ public class User {
 	
 	private String email, password, firstname, lastname, paymentInfo, storageLimit, gender;
 
-	
+	/**
+	 * Der Standard Konstruktor.
+	 */
+	public User() {
+	}
+
+	/**
+	 * Copy Konstruktor.
+	 * @param userToCopy Der zu kopierende Nutzer.
+	 */
+	public User(User userToCopy) {
+		this.setEmail(userToCopy.getEmail());
+		this.setPassword(userToCopy.getPassword());
+		this.setFirstname(userToCopy.getFirstname());
+		this.setLastname(userToCopy.getLastname());
+		this.setPaymentInfo(userToCopy.getPaymentInfo());
+		this.setStorageLimit(userToCopy.getStorageLimit());
+		this.setGender(userToCopy.getGender());
+	}
+
 	/**
 	 * 
 	 * @return Die Emailadresse des Users.
@@ -123,24 +142,4 @@ public class User {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	
-	/**
-	 * kopiert das Object 
-	 * @param oldUser 
-	 * @return Kopie des Users
-	 */
-	public User copy(User oldUser){
-		User newUser = new User();
-		
-		newUser.setEmail(oldUser.getEmail());
-		newUser.setPassword(oldUser.getPassword());
-		newUser.setFirstname(oldUser.getFirstname());
-		newUser.setLastname(oldUser.getLastname());
-		newUser.setPaymentInfo(oldUser.getPaymentInfo());
-		newUser.setStorageLimit(oldUser.getStorageLimit());
-		newUser.setGender(oldUser.getGender());
-		
-		return newUser;
-	}
-	
 }
