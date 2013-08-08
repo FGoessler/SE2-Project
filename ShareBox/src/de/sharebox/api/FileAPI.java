@@ -46,17 +46,24 @@ public class FileAPI {
 	private transient List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
 
 	//various stat getters
-    /**Generiert eine Meldung mit generellen Daten über den benutzten Storage.**/
+    /**
+     * Generiert eine Meldung mit generellen Daten über den benutzten Storage.
+     */
     public void logStatistics() {
         APILogger.logMessage("- Storage -\n    Entries: " + storage.size() + "\n    Files: " + getVersionCount() + "\n");
     }
-    /**Generiert eine Meldung mit generellen Daten über einen gegebenen Storage-Eintrag.
-     * @param indexOfStorage Index des gewünschten Objekts**/
+
+    /**
+     * Generiert eine Meldung mit generellen Daten über einen gegebenen Storage-Eintrag.
+     * @param indexOfStorage Index des gewünschten Objekts
+     */
     public void logStatistics(int indexOfStorage) {
 		APILogger.logMessage("- Storage: File #" + indexOfStorage + " -\n    entries: " + storage.get(indexOfStorage).size() + "\n");
     }
-    /**Zählt Versionen innerhalb des Storage.
-     * @return Anzahl der Versionen**/
+    /**
+     * Zählt Versionen innerhalb des Storage.
+     * @return Anzahl der Versionen
+     */
     public int getVersionCount() {
         int versionCount = 0;
 		for (List<StorageEntry> aStorage : storage) {
@@ -64,8 +71,10 @@ public class FileAPI {
 		}
         return versionCount;
     }
-    /**Methode um die Anzahl der Storage-Einträge zu erhalten.
-     * @return Größe von Storage**/
+    /**
+     * Methode um die Anzahl der Storage-Einträge zu erhalten.
+     * @return Größe von Storage
+     */
 	public int getFileCount() {
 		return storage.size();
 	}
@@ -77,21 +86,27 @@ public class FileAPI {
 	private static final String FILE_NOT_FOUND = "File not found.";
 	private static final String FILE_EXISTS = "File already exists!";
 
-	/**Methode um das Singleton-Objekt zu erhalten.
-	 * @return Das Singleton-Objekt.*/
+	/**
+     * Methode um das Singleton-Objekt zu erhalten.
+	 * @return Das Singleton-Objekt.
+     */
     public static FileAPI getUniqueInstance() {
         return instance;
 	}
 
-	/**Setzt die Singleton Instanz von außen. Soll nur in Test Cases verwendet werden, um die die FileAPI zu mocken.
-	 * @param newFileAPI Das neue FileAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurückgegeben werden soll.*/
+	/**
+     * Setzt die Singleton Instanz von außen. Soll nur in Test Cases verwendet werden, um die die FileAPI zu mocken.
+	 * @param newFileAPI Das neue FileAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurückgegeben werden soll.
+     */
 	public static void injectSingletonInstance(FileAPI newFileAPI) {
 		instance = newFileAPI;
 	}
 
-	/**Liefert den FEntry mit der gegebenen ID.
+	/**
+     * Liefert den FEntry mit der gegebenen ID.
 	 * @param fEntryId Die ID des FEntries.
-	 * @return Der aktuellste FEntry mit dieser ID.*/
+	 * @return Der aktuellste FEntry mit dieser ID.
+     */
 	public FEntry getFEntryWithId(long fEntryId) {
 		FEntry foundFEntry = null;
 
@@ -110,9 +125,11 @@ public class FileAPI {
 		return foundFEntry;
 	}
 
-	/**Erstellt einen neuen File-Eintrag im Storage.
+	/**
+     * Erstellt einen neuen File-Eintrag im Storage.
      * @param newFile zu erzeugendes File
-     * @return ob erfolgreich **/
+     * @return ob erfolgreich
+     */
     public boolean createNewFile(File newFile) {
 		Boolean fileAlreadyExists = false;
 
@@ -141,9 +158,11 @@ public class FileAPI {
     }
 
 
-    /**Überschreibt/updated einen FEntry vom Typ Directory.
+    /**
+     * Überschreibt/updated einen FEntry vom Typ Directory.
      * @param updatedFile zu bearbeitendes File
-     * @return ob erfolgreich**/
+     * @return ob erfolgreich
+     */
     public boolean updateFile(File updatedFile) {
 		List<StorageEntry> foundStorage = null;
 
@@ -169,9 +188,11 @@ public class FileAPI {
         return foundStorage != null;
     }
 
-    /**Löscht File mit ID des gegebenen Files.
+    /**
+     * Löscht File mit ID des gegebenen Files.
      * @param deletedFile zu löschendes File
-     * @return ob erfolgreich**/
+     * @return ob erfolgreich
+     */
     public boolean deleteFile(File deletedFile) {
 		Boolean fileExists = false;
 
@@ -192,9 +213,11 @@ public class FileAPI {
         return fileExists;
     }
 
-    /**Erstellt einen neuen Directory-Eintrag im Storage.
+    /**
+     * Erstellt einen neuen Directory-Eintrag im Storage.
      * @param newDirectory zu erzeugendes Directory
-     * @return ob erfolgreich**/
+     * @return ob erfolgreich
+     */
     public boolean createNewDirectory(Directory newDirectory) {
         Boolean dirAlreadyExists = false;
 
@@ -220,9 +243,11 @@ public class FileAPI {
         return !dirAlreadyExists;
     }
 
-    /**Überschreibt/updated einen FEntry vom Typ Directory.
+    /**
+     * Überschreibt/updated einen FEntry vom Typ Directory.
      * @param updatedDirectory zu bearbeitendes Directory
-     * @return ob erfolgreich**/
+     * @return ob erfolgreich
+     */
     public boolean updateDirectory(Directory updatedDirectory) {
 		Boolean directoryFound = false;
 
@@ -243,9 +268,11 @@ public class FileAPI {
         return directoryFound;
     }
 
-    /**Löscht Directory mit ID des gegebenen Directorys.
+    /**
+     * Löscht Directory mit ID des gegebenen Directorys.
      * @param deletedDirectory zu löschendes Directory
-     * @return ob erfolgreich**/
+     * @return ob erfolgreich
+     */
     public boolean deleteDirectory(Directory deletedDirectory) {
         Boolean directoryFound = false;
 
@@ -282,9 +309,11 @@ public class FileAPI {
     }
     */
 
-    /**Gibt die Liste der Storage-Einträge, welche nach einem bestimmten Timestamp erstellt worden sind.
+    /**
+     * Gibt die Liste der Storage-Einträge, welche nach einem bestimmten Timestamp erstellt worden sind.
      * @param timeOfLastChange ist ein timestamp in ms
-     * @return Liste von FEntries die sich geändert haben/neu erstellt wurden.**/
+     * @return Liste von FEntries die sich geändert haben/neu erstellt wurden.
+     */
     public List<FEntry> getChangesSince(long timeOfLastChange) {
         List<FEntry> changedFiles = new ArrayList<FEntry>();
 
