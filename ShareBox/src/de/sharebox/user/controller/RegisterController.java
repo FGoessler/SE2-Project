@@ -2,6 +2,7 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.user.User;
+import de.sharebox.helpers.ComboModelHelper;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ public class RegisterController {
 	public transient JTextField lastnameField;
 	public transient JTextField firstnameField;
 	public transient JTextField genderField;
-	public transient JTextField storageLimitField;
+	public transient JComboBox storageLimitField;
 	public transient JTextField paymentinfoField;
 
 	public Action register = new AbstractAction() {
@@ -25,9 +26,11 @@ public class RegisterController {
 			user.setLastname(lastnameField.getText());
 			user.setFirstname(firstnameField.getText());
 			user.setGender(genderField.getText());
-			user.setStorageLimit(storageLimitField.getText());
+			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
+			
 			user.setPaymentInfo(paymentinfoField.getText());
 
+			
 
 			if (userApi.registerUser(user)) {
 				System.out.println("Die Registrierung war erfolgreich!");
@@ -37,5 +40,12 @@ public class RegisterController {
 			}
 			// Fenster schlie�en
 		}
+		
+		public Action DO_SELECT = new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+		      System.out.println( ((JComboBox) e.getSource()).getSelectedItem().toString() );
+		    }
+		  };
+		
 	};
 }

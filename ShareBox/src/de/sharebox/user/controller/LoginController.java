@@ -20,6 +20,7 @@ public class LoginController extends WindowAdapter {
 	public Action submit = new AbstractAction() {
 		public void actionPerformed( ActionEvent event ) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
+			userApi.createSampleContent();
 			User user = new User();
 			user.setEmail(mailField.getText());
 			user.setPassword(new String(passwordField.getPassword()));

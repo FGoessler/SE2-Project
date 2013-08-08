@@ -7,6 +7,8 @@ package de.sharebox.api;
 */
 
 import de.sharebox.user.User;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +33,7 @@ public class UserAPITest {
         user.setFirstname("Max");
         user.setLastname("Mustermann");
         user.setPaymentInfo("Kontonummer");
-        user.setStorageLimit("Zehn GB");
+        user.setStorageLimit("10");
         user.setGender("m");
 
         user2 = new User();
@@ -40,7 +42,7 @@ public class UserAPITest {
         user2.setFirstname("Hans");
         user2.setLastname("Peter");
         user2.setPaymentInfo("BLZ");
-        user2.setStorageLimit("Zwanzig GB");
+        user2.setStorageLimit("20");
         user2.setGender("m");
     }
 
@@ -72,53 +74,55 @@ public class UserAPITest {
 	@Test
 	public void creatingDuplicatesCannotBePerformed() {
 		
-
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.registerUser(user)).isFalse();
+		
 	}
 
 	@Test
-    public void testUpdatingFile() {
+    public void testUpdatingUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.login(user)).isTrue();
 		
 		assertThat(userAPI.changeProfile(user2)).isTrue();
 		
-		assertThat(userAPI.getCurrentUser().getFirstname() == user2.getFirstname()).isTrue();
-		assertThat(userAPI.getCurrentUser().getLastname() == user2.getLastname()).isTrue();
-		assertThat(userAPI.getCurrentUser().getGender() == user2.getGender()).isTrue();
+		assertThat(userAPI.getCurrentUser().getFirstname()).isEqualTo(user2.getFirstname());
+		assertThat(userAPI.getCurrentUser().getLastname()).isEqualTo(user2.getLastname());
+		assertThat(userAPI.getCurrentUser().getGender()).isEqualTo(user2.getGender());
 		
-		assertThat(userAPI.getCurrentUser().getStorageLimit() == user2.getStorageLimit()).isFalse();
-		assertThat(userAPI.getCurrentUser().getPaymentInfo() == user2.getPaymentInfo()).isFalse();
-		assertThat(userAPI.getCurrentUser().getEmail() == user2.getEmail()).isFalse();
-		assertThat(userAPI.getCurrentUser().getPassword() == user2.getPassword()).isFalse();
+		assertThat(userAPI.getCurrentUser().getStorageLimit()).isNotEqualTo(user2.getStorageLimit());
+		assertThat(userAPI.getCurrentUser().getPaymentInfo()).isNotEqualTo(user2.getPaymentInfo());
+		assertThat(userAPI.getCurrentUser().getEmail()).isNotEqualTo(user2.getEmail());
+		assertThat(userAPI.getCurrentUser().getPassword()).isNotEqualTo(user2.getPassword());
 		
 		assertThat(userAPI.changeAccountingSettings(user2)).isTrue();
 		
-		assertThat(userAPI.getCurrentUser().getStorageLimit() == user2.getStorageLimit()).isTrue();
-		assertThat(userAPI.getCurrentUser().getPaymentInfo() == user2.getPaymentInfo()).isTrue();
+		assertThat(userAPI.getCurrentUser().getStorageLimit()).isEqualTo(user2.getStorageLimit());
+		assertThat(userAPI.getCurrentUser().getPaymentInfo()).isEqualTo(user2.getPaymentInfo());
 		
 		assertThat(userAPI.changeCredential(user, user2)).isTrue();
 		
-		assertThat(userAPI.getCurrentUser().getEmail() == user2.getEmail()).isTrue();
-		assertThat(userAPI.getCurrentUser().getPassword() == user2.getPassword()).isTrue();
+		assertThat(userAPI.getCurrentUser().getEmail()).isEqualTo(user2.getEmail());
+		
+		assertThat(userAPI.authenticateUser(user2)).isTrue();
     }
 
 	@Test
-	public void updatingNotExistingFileCannotBePerformed() {
+	public void updatingNotExistingUserCannotBePerformed() {
 		assertThat(userAPI.login(user)).isFalse();
 		assertThat(userAPI.changeProfile(user2)).isFalse();
 		assertThat(userAPI.changeAccountingSettings(user2)).isFalse();
 		assertThat(userAPI.changeCredential(user, user2)).isFalse();
 		assertThat(userAPI.isLoggedIn()).isFalse();
 		
-		assertThat(userAPI.getCurrentUser().getFirstname() == user2.getFirstname()).isFalse();
-		assertThat(userAPI.getCurrentUser().getLastname() == user2.getLastname()).isFalse();
-		assertThat(userAPI.getCurrentUser().getGender() == user2.getGender()).isFalse();
-		assertThat(userAPI.getCurrentUser().getStorageLimit() == user2.getStorageLimit()).isFalse();
-		assertThat(userAPI.getCurrentUser().getPaymentInfo() == user2.getPaymentInfo()).isFalse();
-		assertThat(userAPI.getCurrentUser().getEmail() == user2.getEmail()).isFalse();
-		assertThat(userAPI.getCurrentUser().getPassword() == user2.getPassword()).isFalse();
+		assertThat(userAPI.getCurrentUser().getFirstname()).isNotEqualTo(user2.getFirstname());
+		assertThat(userAPI.getCurrentUser().getLastname()).isNotEqualTo(user2.getLastname());
+		assertThat(userAPI.getCurrentUser().getGender()).isNotEqualTo(user2.getGender());
+		assertThat(userAPI.getCurrentUser().getStorageLimit()).isNotEqualTo(user2.getStorageLimit());
+		assertThat(userAPI.getCurrentUser().getPaymentInfo()).isNotEqualTo(user2.getPaymentInfo());
+		assertThat(userAPI.getCurrentUser().getEmail()).isNotEqualTo(user2.getEmail());
+		assertThat(userAPI.getCurrentUser().getPassword()).isNotEqualTo(user2.getPassword());
+		
 	}
 
 	@Test
@@ -126,6 +130,11 @@ public class UserAPITest {
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.authenticateUser(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user2)).isTrue();	
+	}
+	
+	@After
+	public void tearDown() {
+	  UserAPI.resetSingletonInstance();
 	}
 	
 }

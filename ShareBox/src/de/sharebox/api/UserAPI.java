@@ -21,7 +21,7 @@ public class UserAPI {
 	private static UserAPI instance = new UserAPI();
 
 	public UserAPI() {
-		createSampleContent();
+		//createSampleContent();
 	}
 
 	/**
@@ -284,7 +284,7 @@ public class UserAPI {
 	 * @return zur Zeit eingeloggter User *
 	 */
 	public User getCurrentUser() {
-		User user = null;
+		User user = new User();
 
 		if (isLoggedIn()) {
 			user = new User(currentUser);
@@ -293,6 +293,14 @@ public class UserAPI {
 
 		return user;
 	}
+	
+	 /**
+	  * Resettet die Singleton Instanz auf das Standard-Objekt.
+	  * Wird benötigt um einen injectSingletonInstance rückgängig zu machen.
+	  */
+	 public static void resetSingletonInstance() {
+	  instance = new UserAPI();
+	 }
 
 
 }
