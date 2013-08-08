@@ -128,18 +128,26 @@ public class ContextMenuTest {
 		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A new File name");
 	}
 
-	@Ignore
 	@Test
-	public void userCanCopyAnFEntry() {
-		//TODO: implement and test copy FEntries via ContextMenu!
-		contextMenu.copyFEntry.actionPerformed(mock(ActionEvent.class));
+	public void userCanCopyAndPasteAnFEntry() {
+		assertThat(parentDirectory.getFEntries()).hasSize(2);
+
+		performClickOnMenuItem(contextMenu.copyFEntry);
+		performClickOnMenuItem(contextMenu.pasteFEntry);
+
+		assertThat(parentDirectory.getFEntries()).hasSize(3);
 	}
 
-	@Ignore
 	@Test
-	public void userCanPasteAnFEntry() {
-		//TODO: implement and test paste FEntries via ContextMenu!
-		contextMenu.pasteFEntry.actionPerformed(mock(ActionEvent.class));
+	public void userCanCopyAndPasteMultipleFEntries() {
+		assertThat(parentDirectory.getFEntries()).hasSize(2);
+
+		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
+
+		performClickOnMenuItem(contextMenu.copyFEntry);
+		performClickOnMenuItem(contextMenu.pasteFEntry);
+
+		assertThat(parentDirectory.getFEntries()).hasSize(4);
 	}
 
 	@Ignore
