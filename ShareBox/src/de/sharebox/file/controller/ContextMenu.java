@@ -15,6 +15,7 @@ import java.util.List;
 public class ContextMenu {
 	private final DirectoryViewController parentDirectoryController;
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
+	protected DirectoryViewClipboardService clipboard = new DirectoryViewClipboardService();
 
 	protected JPopupMenu popupMenu;
 	private TreePath currentTreePath;
@@ -206,8 +207,16 @@ public class ContextMenu {
 	public Action copyFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			//TODO: Kopieren von FEntries
-			optionPane.showMessageDialog("This function is not yet supported!");
+			FEntry selectedFEntry = getSelectedFEntry();
+			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
+
+			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
+				clipboard.resetClipboard();
+				clipboard.addToClipboard(selectedFEntries);
+			} else {
+				clipboard.resetClipboard();
+				clipboard.addToClipboard(selectedFEntry);
+			}
 
 			hideMenu();
 		}
@@ -219,8 +228,14 @@ public class ContextMenu {
 	public Action pasteFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			//TODO: Einfügen von FEntries
-			optionPane.showMessageDialog("This function is not yet supported!");
+			Directory pasteDirectory;
+			if(getSelectedFEntry() instanceof Directory) {
+				pasteDirectory = (Directory)getSelectedFEntry();
+			} else {
+				pasteDirectory = getParentOfSelectedFEntry();
+			}
+
+			clipboard.pasteClipboardContent(pasteDirectory);
 
 			hideMenu();
 		}

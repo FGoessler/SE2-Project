@@ -51,8 +51,8 @@ public class DirectoryViewControllerTest {
 	}
 
 	public void simulateTreeConstruction(TreeNode parent) {
-		for(int i = 0; i < controller.getChildCount(parent); i++) {
-			TreeNode child = controller.getChild(parent, i);
+		for(int i = 0; i < controller.treeModel.getChildCount(parent); i++) {
+			TreeNode child = (TreeNode) controller.treeModel.getChild(parent, i);
 			if(child.getFEntry() instanceof Directory) {
 				simulateTreeConstruction(child);
 			}
@@ -65,44 +65,44 @@ public class DirectoryViewControllerTest {
 	}
 
 	@Test
-	public void isTreeModelAndDeliversContent() {
-		assertThat(controller).isInstanceOf(TreeModel.class);
-		assertThat(controller.treeView.getModel()).isSameAs(controller);
+	public void hasATreeModelAndDeliversContent() {
+		assertThat(controller.treeModel).isInstanceOf(TreeModel.class);
+		assertThat(controller.treeView.getModel()).isSameAs(controller.treeModel);
 
 		//test getRoot
-		Object root = controller.getRoot();
+		Object root = controller.treeModel.getRoot();
 		assertThat(root.toString()).isEqualTo("The main dir");
 
 		//test getChild - correct tree!
-		Object subDir = controller.getChild(root, 0);
+		Object subDir = controller.treeModel.getChild(root, 0);
 		assertThat(subDir.toString()).isEqualTo("A Subdirectory");
-		assertThat(controller.getChild(subDir,0).toString()).isEqualTo("Subdirectory File");
-		Object subDir2 = controller.getChild(root, 1);
+		assertThat(controller.treeModel.getChild(subDir,0).toString()).isEqualTo("Subdirectory File");
+		Object subDir2 = controller.treeModel.getChild(root, 1);
 		assertThat(subDir2.toString()).isEqualTo("Another Subdirectory");
-		assertThat(controller.getChild(root,2).toString()).isEqualTo("A file");
-		assertThat(controller.getChild(root,3).toString()).isEqualTo("Oho!");
+		assertThat(controller.treeModel.getChild(root,2).toString()).isEqualTo("A file");
+		assertThat(controller.treeModel.getChild(root,3).toString()).isEqualTo("Oho!");
 
 		//test getChildCount
-		assertThat(controller.getChildCount(root)).isEqualTo(4);
-		assertThat(controller.getChildCount(subDir)).isEqualTo(1);
-		assertThat(controller.getChildCount(subDir2)).isEqualTo(0);
+		assertThat(controller.treeModel.getChildCount(root)).isEqualTo(4);
+		assertThat(controller.treeModel.getChildCount(subDir)).isEqualTo(1);
+		assertThat(controller.treeModel.getChildCount(subDir2)).isEqualTo(0);
 
 		//test getIndexOfChild
-		assertThat(controller.getIndexOfChild(root, subDir2)).isEqualTo(1);
-		assertThat(controller.getIndexOfChild(subDir2, root)).isEqualTo(-1);	//invalid constellations should return -1
-		assertThat(controller.getIndexOfChild(null, root)).isEqualTo(-1);		//invalid constellations should return -1
+		assertThat(controller.treeModel.getIndexOfChild(root, subDir2)).isEqualTo(1);
+		assertThat(controller.treeModel.getIndexOfChild(subDir2, root)).isEqualTo(-1);	//invalid constellations should return -1
+		assertThat(controller.treeModel.getIndexOfChild(null, root)).isEqualTo(-1);		//invalid constellations should return -1
 	}
 
 	@Test
 	public void informsRegisteredTreeModelListenersAboutChanges() {
 		TreeModelListener mockedListener = mock(TreeModelListener.class);
-		controller.addTreeModelListener(mockedListener);
+		controller.treeModel.addTreeModelListener(mockedListener);
 
-		simulateTreeConstruction(controller.getRoot());
+		simulateTreeConstruction((TreeNode) controller.treeModel.getRoot());
 
 		controller.rootDirectory.setName("Changed Name");
 
-		controller.removeTreeModelListener(mockedListener);
+		controller.treeModel.removeTreeModelListener(mockedListener);
 
 		controller.rootDirectory.setName("Changed Again");
 		verify(mockedListener, times(1)).treeNodesChanged(any(TreeModelEvent.class));		//listener should only have been called while listening!
@@ -111,14 +111,14 @@ public class DirectoryViewControllerTest {
 	@Test
 	public void informsRegisteredTreeModelListenersAboutDeletions() {
 		TreeModelListener mockedListener = mock(TreeModelListener.class);
-		controller.addTreeModelListener(mockedListener);
+		controller.treeModel.addTreeModelListener(mockedListener);
 
-		simulateTreeConstruction(controller.getRoot());
+		simulateTreeConstruction((TreeNode) controller.treeModel.getRoot());
 
 		FEntry entryToDelete = controller.rootDirectory.getFEntries().get(1);
 		controller.rootDirectory.deleteFEntry(entryToDelete);								//delete a file
 
-		controller.removeTreeModelListener(mockedListener);
+		controller.treeModel.removeTreeModelListener(mockedListener);
 
 		entryToDelete = controller.rootDirectory.getFEntries().get(1);						//delete another file
 		controller.rootDirectory.deleteFEntry(entryToDelete);
@@ -128,13 +128,13 @@ public class DirectoryViewControllerTest {
 	@Test
 	public void informsRegisteredTreeModelListenersAboutInsertions() {
 		TreeModelListener mockedListener = mock(TreeModelListener.class);
-		controller.addTreeModelListener(mockedListener);
+		controller.treeModel.addTreeModelListener(mockedListener);
 
-		simulateTreeConstruction(controller.getRoot());
+		simulateTreeConstruction((TreeNode) controller.treeModel.getRoot());
 
 		controller.rootDirectory.createNewFile("This is a new file!");
 
-		controller.removeTreeModelListener(mockedListener);
+		controller.treeModel.removeTreeModelListener(mockedListener);
 
 		controller.rootDirectory.createNewFile("This is a another new file!");
 		verify(mockedListener, times(1)).treeNodesInserted(any(TreeModelEvent.class));		//listener should only have been called while listening!
@@ -142,12 +142,12 @@ public class DirectoryViewControllerTest {
 
 	@Test
 	public void canHandleValueForTreePathChangedCalls() {
-		TreeNode[] treeNodes = {controller.getRoot(), controller.getChild(controller.getRoot(), 0)};
+		TreeNode[] treeNodes = {(TreeNode) controller.treeModel.getRoot(), (TreeNode) controller.treeModel.getChild(controller.treeModel.getRoot(), 0)};
 		TreePath testTreePath = new TreePath(treeNodes);
 
-		controller.valueForPathChanged(testTreePath, "A new value");
+		controller.treeModel.valueForPathChanged(testTreePath, "A new value");
 
-		assertThat(controller.getChild(controller.getRoot(), 0).getFEntry().getName()).isEqualTo("A new value");
+		assertThat(((TreeNode)controller.treeModel.getChild(controller.treeModel.getRoot(), 0)).getFEntry().getName()).isEqualTo("A new value");
 	}
 
 	@Test
