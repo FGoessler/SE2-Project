@@ -14,19 +14,20 @@ import java.util.List;
 
 public class ContextMenu {
 	private final DirectoryViewController parentDirectoryController;
-	protected OptionPaneHelper optionPane = new OptionPaneHelper();
-	protected DirectoryViewClipboardService clipboard = new DirectoryViewClipboardService();
-
-	protected JPopupMenu popupMenu;
+	private final DirectoryViewClipboardService clipboard;
 	private TreePath currentTreePath;
+
+	protected OptionPaneHelper optionPane = new OptionPaneHelper();
+	protected JPopupMenu popupMenu;
 
 	/**
 	 * Erstellt ein neues ContextMenu. Das Menü wird dazu aus der contextMenu.xml Datei generiert.
 	 *
 	 * @param parentDirectoryController Der DirectoryViewController auf den sich das Kontextmenü bezieht.
 	 */
-	public ContextMenu(DirectoryViewController parentDirectoryController) {
+	public ContextMenu(DirectoryViewController parentDirectoryController, DirectoryViewClipboardService clipboard) {
 		this.parentDirectoryController = parentDirectoryController;
+		this.clipboard = clipboard;
 
 		try {
 			SwingEngine swix = new SwingEngine(this);

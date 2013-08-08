@@ -1,0 +1,8 @@
+<menu text="Verwaltung">
+    <menuitem text="Profil bearbeiten" action="showEditProfile"/>
+    <menuitem text="Accounting bearbeiten" action="showEditAccounting"/>
+    <separator />
+    <menuitem text="Nutzer einladen" action="showInvitationView"/>
+    <separator />
+    <menuitem text="Ausloggen" action="logout"/>
+</menu>
