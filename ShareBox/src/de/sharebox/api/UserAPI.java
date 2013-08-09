@@ -1,5 +1,6 @@
 package de.sharebox.api;
 
+import de.sharebox.user.PaymentInfo;
 import de.sharebox.user.User;
 
 import java.util.ArrayList;
@@ -52,7 +53,14 @@ public class UserAPI {
 		user.setPassword("maxmuster");
 		user.setFirstname("Max");
 		user.setLastname("Mustermann");
-		user.setPaymentInfo("Kontonummer");
+		
+		PaymentInfo paymentInfo = new PaymentInfo();
+		paymentInfo.setStreet("Mustersraße 1");
+		paymentInfo.setCity("Musterstadt");
+		paymentInfo.setCountry("Deutschland");
+		paymentInfo.setZipCode("01234");
+		user.setPaymentInfo(paymentInfo);
+		
 		user.setStorageLimit("Zehn GB");
 		user.setGender("m");
 
@@ -61,7 +69,14 @@ public class UserAPI {
 		user2.setPassword("root");
 		user2.setFirstname("Hans");
 		user2.setLastname("Peter");
-		user2.setPaymentInfo("BLZ");
+
+		paymentInfo.setStreet("Meinweg 2");
+		paymentInfo.setAdditionalStreet("Haus 4, Zimmer 15");
+		paymentInfo.setCity("Berlin");
+		paymentInfo.setCountry("Deutschland");
+		paymentInfo.setZipCode("14569");
+		user2.setPaymentInfo(paymentInfo);
+		
 		user2.setStorageLimit("Zwanzig GB");
 		user2.setGender("m");
 

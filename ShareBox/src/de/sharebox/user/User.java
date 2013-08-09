@@ -8,12 +8,14 @@ package de.sharebox.user;
 
 public class User {
 	
-	private String email, password, firstname, lastname, paymentInfo, storageLimit, gender;
+	private String email, password, firstname, lastname, storageLimit, gender;
+	private PaymentInfo paymentInfo;
 
 	/**
 	 * Der Standard Konstruktor.
 	 */
 	public User() {
+		this.setPaymentInfo(new PaymentInfo());
 	}
 
 	/**
@@ -25,9 +27,12 @@ public class User {
 		this.setPassword(userToCopy.getPassword());
 		this.setFirstname(userToCopy.getFirstname());
 		this.setLastname(userToCopy.getLastname());
-		this.setPaymentInfo(userToCopy.getPaymentInfo());
+
+		this.setPaymentInfo(new PaymentInfo(userToCopy.getPaymentInfo()));
+		
 		this.setStorageLimit(userToCopy.getStorageLimit());
 		this.setGender(userToCopy.getGender());
+		
 	}
 
 	/**
@@ -66,8 +71,8 @@ public class User {
 	 * 
 	 * @return Die Zahlungsinformationen des Users.
 	 */
-	public String getPaymentInfo() {
-		return paymentInfo;
+	public PaymentInfo getPaymentInfo() {
+		return new PaymentInfo(paymentInfo);
 	}
 	
 	/**
@@ -123,8 +128,8 @@ public class User {
 	 * Ändert die Zahlungsinformationen des Objekts. 
 	 * @param paymentInfo 
 	 */
-	public void setPaymentInfo(String paymentInfo) {
-		this.paymentInfo = paymentInfo;
+	public void setPaymentInfo(PaymentInfo paymentInfo) {
+		this.paymentInfo = new PaymentInfo(paymentInfo);
 	}
 	
 	/**
