@@ -1,6 +1,7 @@
 package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
+import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.PaymentInfo;
 import de.sharebox.user.User;
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class AccountingController {
 	public JTextField codeField;
 	public JTextField locationField;
 	public JTextField countryField;
+	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 	
 	
 	public AccountingController() {
@@ -30,10 +32,9 @@ public class AccountingController {
 		
 		User user = UserAPI.getUniqueInstance().getCurrentUser();
 		int index = 0;
-		
 		for(int i = 0; i < storageLimitField.getItemCount(); i++){
 			if(user.getStorageLimit() == storageLimitField.getItemAt(i).toString()){
-				index = storageLimitField.getSelectedIndex();
+				index = i;
 			}
 		}
 		PaymentInfo paymentinfo = user.getPaymentInfo();
@@ -62,13 +63,12 @@ public class AccountingController {
 
 
 			if (userApi.changeAccountingSettings(user)) {	
-				System.out.println("Die Änderung war erfolgreich");
+				frame.setVisible(false);
+				optionPane.showMessageDialog("Die Änderung war erfolgreich");
 			}
 			else {
-				System.out.println("Das ändern der Daten ist fehlgeschlagen!");
+				optionPane.showMessageDialog("Das ändern der Daten ist fehlgeschlagen!");
 			}
-			frame.setVisible(false);
-			// Fenster schließen
 		}
 		
 		public Action DO_SELECT = new AbstractAction() {
