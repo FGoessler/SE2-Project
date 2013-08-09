@@ -18,6 +18,7 @@ public class AccountingController {
 	public JTextField codeField;
 	public JTextField locationField;
 	public JTextField countryField;
+	public int paymentIndex;
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 	
 	
@@ -38,7 +39,8 @@ public class AccountingController {
 			}
 		}
 		PaymentInfo paymentinfo = user.getPaymentInfo();
-			
+		paymentIndex = index;	
+		
 		storageLimitField.setSelectedIndex(index);
 		streetField.setText(paymentinfo.getStreet());
 		additiveField.setText(paymentinfo.getAdditionalStreet());
@@ -61,9 +63,11 @@ public class AccountingController {
 			paymentinfo.setCountry(countryField.getText());
 			user.setPaymentInfo(paymentinfo);
 
-
-			if (userApi.changeAccountingSettings(user)) {	
-				frame.setVisible(false);
+			if (userApi.changeAccountingSettings(user)) {
+				if(paymentIndex < storageLimitField.getSelectedIndex()){
+					frame.setVisible(false);
+				}
+				
 				optionPane.showMessageDialog("Die Änderung war erfolgreich");
 			}
 			else {
