@@ -11,18 +11,18 @@ import java.awt.event.ActionEvent;
 
 public class RegisterController {
 	private JFrame frame;
-	public transient JTextField eMailField;
-	public transient JPasswordField password1Field;
-	public transient JTextField password2Field;
-	public transient JTextField lastnameField;
-	public transient JTextField firstnameField;
-	public transient JTextField genderField;
-	public transient JComboBox storageLimitField;
-	public transient JTextField streetField;
-	public transient JTextField additiveField;
-	public transient JTextField codeField;
-	public transient JTextField locationField;
-	public transient JTextField countryField;
+	public JTextField mailField;
+	public JPasswordField passwordField1;
+	public JPasswordField passwordField2;
+	public JTextField lastnameField;
+	public JTextField firstnameField;
+	public JTextField genderField;
+	public JComboBox storageLimitField;
+	public JTextField streetField;
+	public JTextField additiveField;
+	public JTextField codeField;
+	public JTextField locationField;
+	public JTextField countryField;
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 
 
@@ -38,11 +38,11 @@ public class RegisterController {
 
 	public Action register = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			frame.setVisible(false);
 			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
-			user.setEmail(eMailField.getText());
-			user.setPassword(password1Field.toString());
+			user.setEmail(mailField.getText());
+			user.setPassword(passwordField1.toString());
+			user.setPassword(passwordField2.toString());
 			user.setLastname(lastnameField.getText());
 			user.setFirstname(firstnameField.getText());
 			user.setGender(genderField.getText());
@@ -57,15 +57,13 @@ public class RegisterController {
 
 
 			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
-			String msg = "MESSAGE";
-			optionPane.showMessageDialog(msg);
 			if (userApi.registerUser(user)) {
-				optionPane.showMessageDialog("Ihre Registrierung war erfolgreich!");
 				frame.setVisible(false);
+				optionPane.showMessageDialog("Ihre Registrierung war erfolgreich!");
+				
 			} else {
-				optionPane.showMessageDialog("Ihre Registrierung ist fehlgeschlagen!");
+				optionPane.showMessageDialog("Ihre Registrierung ist fehlgeschlagen! Ihre E-Mail Adresse ist bereits vergeben.");
 			}
-			frame.setVisible(false);
 		}
 	};
 

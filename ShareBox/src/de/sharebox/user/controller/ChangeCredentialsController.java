@@ -1,18 +1,37 @@
 package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
+import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.User;
 
 import javax.swing.*;
+
+import org.swixml.SwingEngine;
+
 import java.awt.event.ActionEvent;
 
 public class ChangeCredentialsController {
-	public transient JTextField eMailField;
-	public transient JPasswordField oldPasswordField;
-	public transient JPasswordField newPasswordField;
-	public transient JPasswordField newPasswordField1;
+	private JFrame frame;
+	public JTextField eMailField;
+	public JPasswordField oldPasswordField;
+	public JPasswordField newPasswordField;
+	public JPasswordField newPasswordField1;
+	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 
 
+	public ChangeCredentialsController() {
+		try {
+			SwingEngine swix = new SwingEngine(this);
+			frame = (JFrame) swix.render("resources/xml/changeCredentials.xml");
+			frame.setVisible(true);
+		} catch (Exception exception) {
+			System.out.println("Couldn't create change credentials window!");
+		}
+		
+		User user = UserAPI.getUniqueInstance().getCurrentUser();
+		eMailField.setText(user.getEmail());
+	}
+	
 	public Action save = new AbstractAction() {
 		public void actionPerformed( ActionEvent save ) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
@@ -26,12 +45,12 @@ public class ChangeCredentialsController {
 			if (newPasswordField.toString() == newPasswordField1.toString()){
 				if (userApi.authenticateUser(currentUser)) {
 					if (userApi.changeCredential(currentUser, user)) {
-						System.out.println("Das ändern der Daten war erfolgreich!");
+						frame.setVisible(false);
+						optionPane.showMessageDialog("Ihre Änderungen wurden gespeichert!");
 					}
 					else {
-						System.out.println("Das ändern der Daten ist fehlgeschlagen!");
+						optionPane.showMessageDialog("Sie haben keine Daten verändert oder ihre neue E-Mail Adresse ist bereits vergeben!");
 					}
-					// Fenster schließen
 				}
 			}
 
