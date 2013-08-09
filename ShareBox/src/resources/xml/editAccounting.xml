@@ -1,19 +1,60 @@
-<frame size="640,280" title="Zahlungsinformationen_ändern" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
-   
-   <panel constraints="BorderLayout.NORTHWEST">
-        <label font="Georgia-BOLD-36" text="Zahlungsinformation"/>
-    </panel>
-   <panel constraints="BorderLayout.WEST">
-        <label font="Georgia-BOLD-36" text="Speichkapazität der ShareBox"/>
-    </panel>
-    <panel constraints="BorderLayout.NORTH">
-        <textfield id="EMailField" columns="20" Text=""/>
-    </panel>
-   <panel constraints="BorderLayout.CENTER">
-        <textfield id="EMailField" columns="20" Text=""/>
-    </panel>
-    <panel constraints="BorderLayout.SOUTHEAST">
-		<button text="Änderungen speichern" action="save"/>
+<frame name="changeAccounting" size="800,600" title="Speicherkapazität und Zahlungsinformationen ändern" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+
+   <panel Layout="GridBagLayout">
+       <label font="Georgia-BOLD-12" text="Rechnungsadresse:" >
+       		<gridbagconstraints id="gbc_1" insets="2,2,2,2" gridx="0" gridy="0" ipadx="15" ipady="15" weightx="1" weighty="1"/>
+       </label>
+
+      <label font="Georgia-BOLD-12" text="Straße, Hausnummer" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
+       </label>
+       
+       <textfield id="streetField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
+       </textfield>
+       
+       <label font="Georgia-BOLD-12" text="Adresszusatz" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
+       </label>
+
+        <textfield id="additiveField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
+       </textfield>
+              
+       <label font="Georgia-BOLD-12" text="Postleitzahl" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>
+       </label>
+
+        <textfield id="codeField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
+       </textfield>
+              
+       <label font="Georgia-BOLD-12" text="Ort" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="4"/>
+       </label>
+       
+         <textfield id="locationField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="4"/>
+       </textfield>
+             
+       <label font="Georgia-BOLD-12" text="Land" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
+       </label>
+
+        <textfield id="countryField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
+       </textfield>
+              
+      <label font="Georgia-BOLD-12" text="Speicherkapazität" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
+       </label>
+
+        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="DO_SELECT" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
+       </combobox>
+
+		<button text="Speichern" action="save">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="7"/>
+        </button>
 	</panel>
-	
 </frame>

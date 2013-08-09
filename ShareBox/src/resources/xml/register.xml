@@ -1,64 +1,110 @@
-<frame name="register" size="600,400" title="Registrieren" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+<frame name="register" size="800,600" title="Registrieren" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
 
-   <panel Layout="GridBagLayout">
-        <label font="Georgia-BOLD-12" text="E-Mail Adresse" >
-       <gridbagconstraints id="gbc_1" insets="2,2,2,2" gridx="0" gridy="0" ipadx="15" ipady="15" weightx="1" weighty="1"/>
-       </label>
+    <panel Layout="GridBagLayout">
+        <label font="Georgia-BOLD-12" text="E-Mail Adresse">
+            <gridbagconstraints id="gbc_1" insets="2,2,2,2" gridx="0" gridy="0" ipadx="15" ipady="15" weightx="1"
+                                weighty="1"/>
+        </label>
 
-       <textfield id="mailField" columns="20" text="" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="0"/>
-       </textfield>
+        <textfield id="mailField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="0"/>
+        </textfield>
 
-       <label font="Georgia-BOLD-12" text="Passwort" >
-           <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
-       </label>
+        <label font="Georgia-BOLD-12" text="Passwort">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
+        </label>
 
-        <passwordfield id="passwordField" columns="20" text="" >
+        <passwordfield id="passwordField1" columns="20" text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
-       </passwordfield>
-       
-       <label font="Georgia-BOLD-12" text="Vorname" >
-           <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
-       </label>
+        </passwordfield>
+        
+        <label font="Georgia-BOLD-12" text="Passwort">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
+        </label>
 
-       <textfield id="firstnameField" columns="20" text="" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
-       </textfield>
-       
-              <label font="Georgia-BOLD-12" text="Nachname" >
-           <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>
-       </label>
+        <passwordfield id="passwordField2" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
+        </passwordfield>
 
-        <textfield id="lastnameField" columns="20" text="" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
-       </textfield>
-       
-              <label font="Georgia-BOLD-12" text="Geschlecht" >
-           <gridbagconstraints refid="gbc_1" gridx="0" gridy="4"/>
-       </label>
+        <label font="Georgia-BOLD-12" text="Vorname">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>
+        </label>
 
-        <textfield id="genderField" columns="20" text="" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="4"/>
-       </textfield>
-       
-              <label font="Georgia-BOLD-12" text="Zahlungsinformationen" >
-           <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
-       </label>
+        <textfield id="firstnameField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
+        </textfield>
 
-        <textfield id="paymentInformationField" columns="20" text="" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
-       </textfield>
-       
-              <label font="Georgia-BOLD-12" text="Speicherkapazität" >
-           <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
-       </label>
+        <label font="Georgia-BOLD-12" text="Nachname">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="4"/>
+        </label>
 
-        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="DO_SELECT" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
-       </combobox>
+        <textfield id="lastnameField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="4"/>
+        </textfield>
 
-		<button text="Registrieren" action="register">
-            <gridbagconstraints refid="gbc_1" gridx="1" gridy="7"/>
+        <label font="Georgia-BOLD-12" text="Geschlecht">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
+        </label>
+
+        <textfield id="genderField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
+        </textfield>
+
+        <label font="Georgia-BOLD-12" text="Speicherkapazität">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
+        </label>
+
+        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="selectBoxAction">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
+        </combobox>
+
+
+        <label font="Georgia-BOLD-12" text="Rechnungsadresse:">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="7"/>
+        </label>
+
+        <label font="Georgia-BOLD-12" text="Straße, Hausnummer">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="8"/>
+        </label>
+
+        <textfield id="streetField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="8"/>
+        </textfield>
+
+        <label font="Georgia-BOLD-12" text="Adresszusatz (optional)">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="9"/>
+        </label>
+
+        <textfield id="additiveField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="9"/>
+        </textfield>
+
+        <label font="Georgia-BOLD-12" text="Postleitzahl">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="10"/>
+        </label>
+
+        <textfield id="codeField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="10"/>
+        </textfield>
+
+        <label font="Georgia-BOLD-12" text="Ort">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="11"/>
+        </label>
+
+        <textfield id="locationField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="11"/>
+        </textfield>
+
+        <label font="Georgia-BOLD-12" text="Land">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="12"/>
+        </label>
+
+        <textfield id="countryField" columns="20" text="">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="12"/>
+        </textfield>
+
+        <button text="Registrieren" action="register">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="13"/>
         </button>
-	</panel>
+    </panel>
 </frame>
