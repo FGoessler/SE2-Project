@@ -38,12 +38,7 @@ public class LoginController extends WindowAdapter {
 
 	public Action register = new AbstractAction() {
 		public void actionPerformed( ActionEvent event ) {
-			try {
-				SwingEngine swix = new SwingEngine(this);
-				swix.render("resources/xml/register.xml").setVisible(true);
-			} catch(Exception exception) {
-				System.out.println("Couldn't create register menu!");
-			}
+			new RegisterController();
 		}
 	};
 
@@ -51,8 +46,8 @@ public class LoginController extends WindowAdapter {
 		super();
 
 		try {
-			SwingEngine swix = new SwingEngine( this );
-			frame = (JFrame)swix.render("resources/xml/login.xml");
+			SwingEngine swix = new SwingEngine(this);
+			frame = (JFrame) swix.render("resources/xml/login.xml");
 			frame.setVisible(true);
 		} catch(Exception e) {
 			System.out.println("Couldn't create Swing Window!");
