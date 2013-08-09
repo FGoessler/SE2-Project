@@ -113,7 +113,7 @@ public class PaymentInfo {
 	}
 	
 	/**
-	 * Überprüft, ob die objekte den gleichen Inhalt haben 
+	 * Überprüft, ob die Objekte den gleichen Inhalt haben 
 	 * @param o 
 	 */
 	@Override
