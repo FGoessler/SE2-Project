@@ -1,25 +1,32 @@
-<frame size="640,280" title="Profil_ändern" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
-   
-   <panel constraints="BorderLayout.NORTHWEST">
-        <label font="Georgia-BOLD-36" text="Vorname"/>
-    </panel>
-   <panel constraints="BorderLayout.WEST">
-        <label font="Georgia-BOLD-36" text="Name"/>
-    </panel>
-	<panel constraints="BorderLayout.SOUTHWEST">
-        <label font="Georgia-BOLD-36" text="Geschlecht"/>
-    </panel>
-    <panel constraints="BorderLayout.NORTH">
-        <textfield id="EMailField" columns="20" Text=""/>
-    </panel>
-   <panel constraints="BorderLayout.CENTER">
-        <textfield id="EMailField" columns="20" Text=""/>
-    </panel>
-	   <panel constraints="BorderLayout.SOUTH">
-        <textfield id="PasswordField" columns="20" Text=""/>
-    </panel>
-    <panel constraints="BorderLayout.SOUTHEAST">
-		<button text="Änderungen speichern" action="save"/>
+<frame name="editProfile" size="600,400" title="Allgemeine Infortmationen ändern." defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+
+   <panel Layout="GridBagLayout">
+        <label font="Georgia-BOLD-12" text="Vorname" >
+       <gridbagconstraints id="gbc_1" insets="2,2,2,2" gridx="0" gridy="0" ipadx="15" ipady="15" weightx="1" weighty="1"/>
+       </label>
+
+       <textfield id="firstnameField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="0"/>
+       </textfield>
+       
+              <label font="Georgia-BOLD-12" text="Nachname" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
+       </label>
+
+        <textfield id="lastnameField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
+       </textfield>
+       
+              <label font="Georgia-BOLD-12" text="Geschlecht" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
+       </label>
+
+        <textfield id="genderField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
+       </textfield>
+
+		<button text="Speichern" action="save">
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
+        </button>
 	</panel>
-	
 </frame>

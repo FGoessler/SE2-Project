@@ -8,22 +8,22 @@ import java.awt.event.ActionEvent;
 
 public class ChangeCredentialsController {
 	public transient JTextField eMailField;
-	public transient JTextField password1Field;
-	public transient JTextField password2Field;
-	public transient JTextField oldpasswordField;
+	public transient JPasswordField oldPasswordField;
+	public transient JPasswordField newPasswordField;
+	public transient JPasswordField newPasswordField1;
 
 
 	public Action save = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed( ActionEvent save ) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
 			user.setEmail(eMailField.getText());
-			user.setPassword(password1Field.getText());
+			user.setPassword(newPasswordField.toString());
 
 			User currentUser = userApi.getCurrentUser();
-			currentUser.setPassword(oldpasswordField.getText());
+			currentUser.setPassword(oldPasswordField.toString());
 
-			if (password1Field.getText() == password2Field.getText()){
+			if (newPasswordField.toString() == newPasswordField1.toString()){
 				if (userApi.authenticateUser(currentUser)) {
 					if (userApi.changeCredential(currentUser, user)) {
 						System.out.println("Das ändern der Daten war erfolgreich!");

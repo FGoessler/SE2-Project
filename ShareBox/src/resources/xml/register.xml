@@ -1,4 +1,4 @@
-<frame name="register" size="600,400" title="Registrieren" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+<frame name="register" size="800,600" title="Registrieren" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
 
    <panel Layout="GridBagLayout">
         <label font="Georgia-BOLD-12" text="E-Mail Adresse" >
@@ -40,25 +40,62 @@
         <textfield id="genderField" columns="20" text="" >
            <gridbagconstraints refid="gbc_1" gridx="1" gridy="4"/>
        </textfield>
-       
-              <label font="Georgia-BOLD-12" text="Zahlungsinformationen" >
+              
+              <label font="Georgia-BOLD-12" text="Speicherkapazität" >
            <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
        </label>
 
-        <textfield id="paymentInformationField" columns="20" text="" >
+        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="DO_SELECT" >
            <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
-       </textfield>
+       </combobox>
        
-              <label font="Georgia-BOLD-12" text="Speicherkapazität" >
+       
+       <label font="Georgia-BOLD-12" text="Rechnungsadresse:" >
            <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
        </label>
-
-        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="DO_SELECT" >
-           <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
-       </combobox>
-
+       
+       <label font="Georgia-BOLD-12" text="Straße, Hausnummer" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="7"/>
+       </label>
+       
+       <textfield id="streetField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="7"/>
+       </textfield>
+       
+       <label font="Georgia-BOLD-12" text="Adresszusatz (optional)" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="8"/>
+       </label>
+       
+       <textfield id="additiveField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="8"/>
+       </textfield>
+       
+       <label font="Georgia-BOLD-12" text="Postleitzahl" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="9"/>
+       </label>
+       
+       <textfield id="codeField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="9"/>
+       </textfield>
+       
+       <label font="Georgia-BOLD-12" text="Ort" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="10"/>
+       </label>
+       
+       <textfield id="LocationField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="10"/>
+       </textfield>
+       
+       <label font="Georgia-BOLD-12" text="Land" >
+           <gridbagconstraints refid="gbc_1" gridx="0" gridy="11"/>
+       </label>
+       
+       <textfield id="countryField" columns="20" text="" >
+           <gridbagconstraints refid="gbc_1" gridx="1" gridy="11"/>
+       </textfield>
+       
 		<button text="Registrieren" action="register">
-            <gridbagconstraints refid="gbc_1" gridx="1" gridy="7"/>
+            <gridbagconstraints refid="gbc_1" gridx="1" gridy="12"/>
         </button>
 	</panel>
 </frame>
