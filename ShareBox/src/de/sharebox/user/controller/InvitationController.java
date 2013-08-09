@@ -28,8 +28,9 @@ public class InvitationController {
 			frame = (JFrame) swix.render("resources/xml/invite.xml");
 			frame.setVisible(true);
 		} catch (Exception exception) {
-			System.out.println("Couldn't create context menu!");
+			System.out.println("Couldn't create inivitation Window!");
 		}
+		
 	}
 	
 	
