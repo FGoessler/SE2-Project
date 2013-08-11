@@ -1,4 +1,4 @@
-package de.sharebox.user;
+package de.sharebox.user.model;
 
 
 /**
@@ -13,14 +13,14 @@ public class PaymentInfo {
 
 	/**
 	 * Copy Konstruktor.
-	 * @param PaymentInfoToCopy Die zu kopierenden Zahlungsinformationen.
+	 * @param paymentInfoToCopy Die zu kopierenden Zahlungsinformationen.
 	 */
-	public PaymentInfo(PaymentInfo PaymentInfoToCopy) {
-		this.setStreet(PaymentInfoToCopy.getStreet());
-		this.setAdditionalStreet(PaymentInfoToCopy.getAdditionalStreet());
-		this.setZipCode(PaymentInfoToCopy.getZipCode());
-		this.setCity(PaymentInfoToCopy.getCity());
-		this.setCountry(PaymentInfoToCopy.getCountry());
+	public PaymentInfo(PaymentInfo paymentInfoToCopy) {
+		this.setStreet(paymentInfoToCopy.getStreet());
+		this.setAdditionalStreet(paymentInfoToCopy.getAdditionalStreet());
+		this.setZipCode(paymentInfoToCopy.getZipCode());
+		this.setCity(paymentInfoToCopy.getCity());
+		this.setCountry(paymentInfoToCopy.getCountry());
 		
 	}
 	
@@ -114,16 +114,16 @@ public class PaymentInfo {
 	
 	/**
 	 * Überprüft, ob die Objekte den gleichen Inhalt haben 
-	 * @param o 
+	 * @param otherObj
 	 */
 	@Override
-	public boolean equals(Object o){
+	public boolean equals(Object otherObj){
 		boolean equal = true;
 		PaymentInfo otherPaymentInfo;
 		
-		if (o instanceof PaymentInfo){
+		if (otherObj instanceof PaymentInfo){
 			
-			otherPaymentInfo = (PaymentInfo) o;
+			otherPaymentInfo = (PaymentInfo) otherObj;
 			
 			if (!this.street.equals(otherPaymentInfo.getStreet())){
 				equal = false;

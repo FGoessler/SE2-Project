@@ -1,7 +1,7 @@
 package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
-import de.sharebox.user.User;
+import de.sharebox.user.model.User;
 import de.sharebox.helpers.OptionPaneHelper;
 import javax.swing.*;
 

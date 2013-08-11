@@ -1,4 +1,4 @@
-package de.sharebox.user;
+package de.sharebox.user.model;
 
 /**
 *

@@ -9,11 +9,10 @@ import javax.swing.JTextField;
 
 import org.swixml.SwingEngine;
 
-import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.helpers.OptionPaneHelper;
-import de.sharebox.user.User;
+import de.sharebox.user.model.User;
 
 public class InvitationController {
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();

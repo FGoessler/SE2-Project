@@ -1,7 +1,7 @@
 package de.sharebox.api;
 
-import de.sharebox.user.PaymentInfo;
-import de.sharebox.user.User;
+import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

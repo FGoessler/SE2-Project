@@ -2,7 +2,7 @@ package de.sharebox.user.controller;
 
 import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
-import de.sharebox.user.User;
+import de.sharebox.user.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

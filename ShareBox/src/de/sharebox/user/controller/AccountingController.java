@@ -2,12 +2,11 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
-import de.sharebox.user.PaymentInfo;
-import de.sharebox.user.User;
-import javax.swing.*;
-
+import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.User;
 import org.swixml.SwingEngine;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class AccountingController {
@@ -34,7 +33,7 @@ public class AccountingController {
 		User user = UserAPI.getUniqueInstance().getCurrentUser();
 		int index = 0;
 		for(int i = 0; i < storageLimitField.getItemCount(); i++){
-			if(user.getStorageLimit() == storageLimitField.getItemAt(i).toString()){
+			if(user.getStorageLimit().equals(storageLimitField.getItemAt(i).toString())){
 				index = i;
 			}
 		}
@@ -74,11 +73,11 @@ public class AccountingController {
 				optionPane.showMessageDialog("Das ändern der Daten ist fehlgeschlagen!");
 			}
 		}
-		
-		public Action DO_SELECT = new AbstractAction() {
-		    public void actionPerformed(ActionEvent e) {
-		      System.out.println( ((JComboBox) e.getSource()).getSelectedItem().toString() );
-		    }
-		  };
+	};
+
+	public Action selectBoxAction = new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+			System.out.println( ((JComboBox) e.getSource()).getSelectedItem().toString() );
+		}
 	};
 }

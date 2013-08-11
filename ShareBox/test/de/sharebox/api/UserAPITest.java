@@ -6,8 +6,8 @@ package de.sharebox.api;
 * @author Kay Thorsten Meißner
 */
 
-import de.sharebox.user.PaymentInfo;
-import de.sharebox.user.User;
+import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.User;
 
 import org.junit.After;
 import org.junit.Before;

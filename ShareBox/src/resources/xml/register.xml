@@ -54,7 +54,7 @@
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
         </label>
 
-        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="selectBoxAction">
+        <combobox id="storageLimitField" initclass="de.sharebox.user.model.StorageLimitComboBoxModel" Action="selectBoxAction">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
         </combobox>
 

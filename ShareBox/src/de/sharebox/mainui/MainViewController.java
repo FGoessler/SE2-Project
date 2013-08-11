@@ -3,7 +3,7 @@ package de.sharebox.mainui;
 import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
-import de.sharebox.user.User;
+import de.sharebox.user.model.User;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
