@@ -8,17 +8,15 @@ import org.swixml.SwingEngine;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-public class LoginController extends WindowAdapter {
+public class LoginController {
 	private JFrame frame;
 
 	public JTextField mailField;
 	public JPasswordField passwordField;
 
 	public Action submit = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed(ActionEvent event) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
 			userApi.createSampleContent();
 			User user = new User();
@@ -28,8 +26,7 @@ public class LoginController extends WindowAdapter {
 			if (userApi.login(user)) {
 				Main.mainWindowViewController = new MainViewController(user);
 				frame.setVisible(false);
-			}
-			else {
+			} else {
 				System.out.println("Error");
 			}
 		}
@@ -37,7 +34,7 @@ public class LoginController extends WindowAdapter {
 
 
 	public Action register = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed(ActionEvent event) {
 			new RegisterController();
 		}
 	};
@@ -49,14 +46,8 @@ public class LoginController extends WindowAdapter {
 			SwingEngine swix = new SwingEngine(this);
 			frame = (JFrame) swix.render("resources/xml/login.xml");
 			frame.setVisible(true);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println("Couldn't create Swing Window!");
 		}
-	}
-
-	@Override
-	public void windowClosing(WindowEvent event) {
-		super.windowClosing(event);
-		System.exit(0);
 	}
 }

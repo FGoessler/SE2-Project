@@ -3,23 +3,21 @@ package de.sharebox.mainui;
 import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
-import de.sharebox.user.model.User;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
 import de.sharebox.user.controller.LoginController;
+import de.sharebox.user.model.User;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * Dieser Controller kümmert sich um das Hauptfenster. Er erstellt das zentrale Menü und stellt dem
  * DirectoryVewController einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur durchzuführen.
  * Dieser Controller besitzt außerdem eine Referenz auf den aktuell eingeloggten User, dessen Daten dargestellt werden.
  */
-public class MainViewController extends WindowAdapter {
+public class MainViewController {
 
 	private JFrame frame;
 
@@ -66,7 +64,7 @@ public class MainViewController extends WindowAdapter {
 		//create window
 		try {
 			swix = new SwingEngine(this);
-			frame = (JFrame)swix.render("resources/xml/mainWindow.xml");
+			frame = (JFrame) swix.render("resources/xml/mainWindow.xml");
 			frame.setVisible(true);
 		} catch (Exception exception) {
 			System.out.println("Couldn't create Swing Window!");
@@ -118,14 +116,5 @@ public class MainViewController extends WindowAdapter {
 		frame.setVisible(false);
 
 		Main.loginController = new LoginController();
-	}
-
-	/**
-	 * Reagiert auf das Schließen des Fensters und beendet das Program.
-	 */
-	@Override
-	public void windowClosing(WindowEvent event) {
-		super.windowClosing(event);
-		System.exit(0);
 	}
 }
