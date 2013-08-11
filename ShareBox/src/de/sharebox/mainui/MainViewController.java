@@ -11,18 +11,18 @@ import de.sharebox.user.controller.LoginController;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Dieser Controller kümmert sich um das Hauptfenster. Er reagiert auf Events aus dem zentralen Menü und stellt dem
+ * Dieser Controller kümmert sich um das Hauptfenster. Er erstellt das zentrale Menü und stellt dem
  * DirectoryVewController einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur durchzuführen.
  * Dieser Controller besitzt außerdem eine Referenz auf den aktuell eingeloggten User, dessen Daten dargestellt werden.
  */
 public class MainViewController extends WindowAdapter {
 
 	private JFrame frame;
+
 	/**
 	 * Der aktuell eingeloggte Nutzer.
 	 */
@@ -41,77 +41,16 @@ public class MainViewController extends WindowAdapter {
 
 	/**
 	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
+	 * Wird über die SwingEngine gesetzt.
 	 */
 	public JTree tree;
 
 	/**
-	 * Handler um auf die Auswahl des "Neue Datei erstellen"-Buttons im "Datei"-Menü zu reagieren.
+	 * Die zentrale Menüleiste.
 	 */
-	public Action createNewFile = new AbstractAction() {
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			directoryViewController.createNewFileBasedOnUserSelection();
-		}
-	};
-
-	/**
-	 * Handler um auf die Auswahl des "Neues Verzeichnis erstellen"-Buttons im "Datei"-Menü zu reagieren.
-	 */
-	public Action createNewDirectory = new AbstractAction() {
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			directoryViewController.createNewDirectoryBasedOnUserSelection();
-		}
-	};
-
-	/**
-	 * Handler um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
-	 */
-	public Action showEditProfile = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			editProfileController = new EditProfileController();
-		}
-	};
-
-	/**
-	 * Handler um auf die Auswahl des "Accounting ändern"-Buttons im Menü zu reagieren.
-	 */
-	public Action showEditAccounting = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			accountController = new AccountingController();
-		}
-	};
-
-	/**
-	 * Handler um auf die Auswahl des "Einladen"-Buttons im Menü zu reagieren.
-	 */
-	public Action showInvitationView = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			invitationController = new InvitationController();
-		}
-	};
-
-	/**
-	 * Handler um auf die Auswahl das "Ausloggen"-Buttons im Menü zu reagieren.
-	 */
-	public Action logout = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			UserAPI.getUniqueInstance().logout();
-
-			frame.setVisible(false);
-
-			Main.loginController = new LoginController();
-		}
-	};
-
-	/**
-	 * Reagiert auf das Schließen des Fensters und beendet das Program.
-	 */
-	@Override
-	public void windowClosing(WindowEvent event) {
-		super.windowClosing(event);
-		System.exit(0);
-	}
+	protected final JMenuBar menuBar;
+	protected final FileMenu fileMenu;
+	protected final AdministrationMenu administrationMenu;
 
 	/**
 	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml
@@ -134,6 +73,10 @@ public class MainViewController extends WindowAdapter {
 		}
 
 		directoryViewController = new DirectoryViewController(tree);
+
+		menuBar = frame.getJMenuBar();
+		fileMenu = new FileMenu(menuBar, directoryViewController);
+		administrationMenu = new AdministrationMenu(menuBar, this);
 	}
 
 	/**
@@ -145,4 +88,44 @@ public class MainViewController extends WindowAdapter {
 		return currentUser;
 	}
 
+	/**
+	 * Erstellt und öfnet ein EditProfile-Fenster zum Bearbeiten der Profildaten.
+	 */
+	public void openEditProfileController() {
+		editProfileController = new EditProfileController();
+	}
+
+	/**
+	 * Erstellt und öffnet ein Accounting-Fenster zum Ändern der AccoutingDaten.
+	 */
+	public void openAccountController() {
+		accountController = new AccountingController();
+	}
+
+	/**
+	 * Erstellt und öffnet ein Invitation-Fenster zum Einladen neuer Benutzer.
+	 */
+	public void openInvitationController() {
+		invitationController = new InvitationController();
+	}
+
+	/**
+	 * Schließt das Hauptfenster und loggt den Benutzer aus.
+	 */
+	public void close() {
+		UserAPI.getUniqueInstance().logout();
+
+		frame.setVisible(false);
+
+		Main.loginController = new LoginController();
+	}
+
+	/**
+	 * Reagiert auf das Schließen des Fensters und beendet das Program.
+	 */
+	@Override
+	public void windowClosing(WindowEvent event) {
+		super.windowClosing(event);
+		System.exit(0);
+	}
 }

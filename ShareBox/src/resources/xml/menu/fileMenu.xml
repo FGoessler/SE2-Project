@@ -1,0 +1,7 @@
+<menu text="Datei">
+    <menuitem text="Neue Datei" action="createNewFile"/>
+    <menuitem text="Neues Verzeichnis" action="createNewDirectory"/>
+    <separator />
+    <menuitem text="Kopieren" action="copyFEntry"/>
+    <menuitem text="Einfügen" action="pasteFEntry"/>
+</menu>

@@ -22,10 +22,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Diese Klasse verwaltet den zentralen JTree in dem das Verzeichnis des Nutzers angezeigt wird.
  */
 public class DirectoryViewController {
-	protected OptionPaneHelper optionPane = new OptionPaneHelper();
+	protected transient OptionPaneHelper optionPane = new OptionPaneHelper();
+	protected transient DirectoryViewClipboardService clipboard = new DirectoryViewClipboardService();
+	protected transient ContextMenu contextMenu = new ContextMenu(this, clipboard);
 
 	protected transient JTree treeView;
-	protected transient ContextMenu contextMenu;
 
 	protected transient Directory rootDirectory;
 
@@ -57,7 +58,6 @@ public class DirectoryViewController {
 
 		this.treeView = tree;
 		this.treeView.setModel(treeModel);
-		this.contextMenu = new ContextMenu(this);
 
 		this.treeView.addMouseListener(contextMenuMA);
 	}
@@ -171,6 +171,10 @@ public class DirectoryViewController {
 		return new ArrayList<Directory>(selectedFEntriesParents);
 	}
 
+
+	public DirectoryViewClipboardService getClipboard() {
+		return clipboard;
+	}
 
 	protected transient List<TreeModelListener> treeModelListener = new ArrayList<TreeModelListener>();
 	protected transient TreeModel treeModel = new TreeModel() {
