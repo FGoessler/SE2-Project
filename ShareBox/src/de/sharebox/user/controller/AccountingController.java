@@ -33,7 +33,7 @@ public class AccountingController {
 		User user = UserAPI.getUniqueInstance().getCurrentUser();
 		int index = 0;
 		for(int i = 0; i < storageLimitField.getItemCount(); i++){
-			if(user.getStorageLimit().equals(storageLimitField.getItemAt(i).toString())){
+			if(user.getStorageLimit() != null && user.getStorageLimit().equals(storageLimitField.getItemAt(i).toString())){
 				index = i;
 			}
 		}
