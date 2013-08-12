@@ -1,5 +1,7 @@
 package de.sharebox.file.model;
 
+import de.sharebox.api.UserAPI;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class Directory extends FEntry {
 	 * Konstruktor
 	 */
 	public Directory() {
+		super();
 	}
 
 	/**
@@ -51,6 +54,7 @@ public class Directory extends FEntry {
 	public File createNewFile(String filename) {
 		File newFile = new File();
 		newFile.setName(filename);
+		newFile.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
 
 		fEntries.add(newFile);
 
@@ -68,6 +72,7 @@ public class Directory extends FEntry {
 	public Directory createNewDirectory(String dirname) {
 		Directory newDir = new Directory();
 		newDir.setName(dirname);
+		newDir.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
 
 		fEntries.add(newDir);
 

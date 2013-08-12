@@ -1,5 +1,7 @@
 package de.sharebox.file.model;
 
+import de.sharebox.user.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,23 +13,38 @@ public class FEntry {
 
 	public enum ChangeType {
 		NAME_CHANGED,
-		REMOVED_CHILDREN, ADDED_CHILDREN
+		REMOVED_CHILDREN,
+		ADDED_CHILDREN,
+		PERMISSION_CHANGED
 	}
 
 	private Integer identifier;
 	private String name;
+	private transient List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
 	private transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	public FEntry() {
+		super();
 	}
 
 	/**
 	 * Der Copy Konstruktor.
+	 *
 	 * @param sourceFEntry Das zu kopierende Objekt.
 	 */
 	public FEntry(FEntry sourceFEntry) {
 		this.name = sourceFEntry.name;
 		this.identifier = sourceFEntry.identifier;
+
+		//copy permissions
+		for (FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
+			FEntryPermission newPermission = new FEntryPermission(oldPermission.getUser(), this);
+			newPermission.setReadAllowed(oldPermission.getReadAllowed());
+			newPermission.setWriteAllowed(oldPermission.getWriteAllowed());
+			newPermission.setManageAllowed(oldPermission.getManageAllowed());
+
+			permissions.add(newPermission);
+		}
 	}
 
 	/**
@@ -107,4 +124,63 @@ public class FEntry {
 			observer.fEntryDeletedNotification(this);
 		}
 	}
+
+	/**
+	 *
+	 * @param user
+	 * @param read
+	 * @param write
+	 * @param manage
+	 */
+	public void setPermission(User user, boolean read, boolean write, boolean manage) {
+		FEntryPermission permission = getPermissionOfUser(user);
+
+		if (read || write || manage) {
+			if (!permissions.contains(permission)) {
+				permissions.add(permission);
+			}
+
+			permission.setReadAllowed(read);
+			permission.setWriteAllowed(write);
+			permission.setManageAllowed(manage);
+
+			fireChangeNotification(ChangeType.PERMISSION_CHANGED);
+		} else {
+			permissions.remove(permission);
+		}
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public List<FEntryPermission> getPermissions() {
+		return permissions;
+	}
+
+	/**
+	 *
+	 * @param user
+	 * @return
+	 */
+	public FEntryPermission getPermissionOfUser(User user) {
+		FEntryPermission permission = null;
+
+		for (FEntryPermission perm : permissions) {
+			if (perm.getUser().getEmail().equals(user.getEmail())) {
+				permission = perm;
+			}
+		}
+
+		if (permission == null) {
+			permission = new FEntryPermission(user, this);
+			permission.setReadAllowed(false);
+			permission.setWriteAllowed(false);
+			permission.setManageAllowed(false);
+		}
+
+		return permission;
+	}
+
+
 }

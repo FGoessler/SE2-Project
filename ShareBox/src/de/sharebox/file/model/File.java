@@ -9,6 +9,7 @@ public class File extends FEntry {
 	 * Konstruktor
 	 */
 	public File() {
+		super();
 	}
 
 	/**
@@ -19,4 +20,5 @@ public class File extends FEntry {
 	public File(File sourceFile) {
 		super(sourceFile);
 	}
+
 }

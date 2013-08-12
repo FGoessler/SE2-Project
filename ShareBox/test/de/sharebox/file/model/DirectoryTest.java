@@ -1,5 +1,8 @@
 package de.sharebox.file.model;
 
+import de.sharebox.api.UserAPI;
+import de.sharebox.user.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,8 +10,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryTest {
@@ -17,6 +19,10 @@ public class DirectoryTest {
 
 	@Mock
 	private transient FEntryObserver observer;
+	@Mock
+	private transient User mockedUser;
+	@Mock
+	private transient UserAPI mockedUserAPI;
 
 	private static final String TEST_FILENAME = "TestFile";
 	private static final String TEST_DIRNAME = "TestDirectory";
@@ -25,6 +31,14 @@ public class DirectoryTest {
 	public void setUp() {
 		directory = new Directory();
 		directory.addObserver(observer);
+
+		UserAPI.injectSingletonInstance(mockedUserAPI);
+		when(mockedUserAPI.getCurrentUser()).thenReturn(mockedUser);
+	}
+
+	@After
+	public void tearDown() {
+		UserAPI.resetSingletonInstance();
 	}
 
 	@Test
@@ -66,6 +80,15 @@ public class DirectoryTest {
 		assertThat(createdFile.getName()).isEqualTo(TEST_FILENAME);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
+		//check permission
+		assertThat(createdFile.getPermissions()).hasSize(1);
+		FEntryPermission permission = createdFile.getPermissions().get(0);
+		assertThat(permission.getUser()).isSameAs(mockedUser);
+		assertThat(permission.getFEntry()).isSameAs(createdFile);
+		assertThat(permission.getReadAllowed()).isTrue();
+		assertThat(permission.getWriteAllowed()).isTrue();
+		assertThat(permission.getManageAllowed()).isTrue();
+
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
 	}
 
@@ -75,6 +98,15 @@ public class DirectoryTest {
 
 		assertThat(createdDirectory.getName()).isEqualTo(TEST_DIRNAME);
 		assertThat(directory.getFEntries()).contains(createdDirectory);
+
+		//check permission
+		assertThat(createdDirectory.getPermissions()).hasSize(1);
+		FEntryPermission permission = createdDirectory.getPermissions().get(0);
+		assertThat(permission.getUser()).isSameAs(mockedUser);
+		assertThat(permission.getFEntry()).isSameAs(createdDirectory);
+		assertThat(permission.getReadAllowed()).isTrue();
+		assertThat(permission.getWriteAllowed()).isTrue();
+		assertThat(permission.getManageAllowed()).isTrue();
 
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
 	}
