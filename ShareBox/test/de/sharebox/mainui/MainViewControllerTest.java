@@ -50,28 +50,35 @@ public class MainViewControllerTest {
 	}
 
 	@Test
-	public void clickingEditAccountingShowsAccountingController() {
+	public void canOpenAAccountingController() {
 		mainView.openAccountController();
 
 		assertThat(mainView.accountController).isNotNull();
 	}
 
 	@Test
-	public void clickingEditProfileShowsEditProfileController() {
+	public void canOpenAChangeCredentialsController() {
+		mainView.openEditCredentialsController();
+
+		assertThat(mainView.editCredentialsController).isNotNull();
+	}
+
+	@Test
+	public void canOpenAEditProfileController() {
 		mainView.openEditProfileController();
 
 		assertThat(mainView.editProfileController).isNotNull();
 	}
 
 	@Test
-	public void clickingInviteUserShowsInvitationController() {
+	public void canOpenAInvitationController() {
 		mainView.openInvitationController();
 
 		assertThat(mainView.invitationController).isNotNull();
 	}
 
 	@Test
-	public void clickingLogoutPerformsLogoutProcess() {
+	public void canPerformALogoutProcess() {
 		UserAPI.injectSingletonInstance(mockedUserAPI);
 
 		mainView.close();

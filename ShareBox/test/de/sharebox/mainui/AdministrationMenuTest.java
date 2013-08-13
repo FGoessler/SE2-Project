@@ -32,6 +32,12 @@ public class AdministrationMenuTest {
 	}
 
 	@Test
+	public void testShowEditCredentials() {
+		menu.showEditCredentials.actionPerformed(mock(ActionEvent.class));
+		verify(mockedMainViewController).openEditCredentialsController();
+	}
+
+	@Test
 	public void testShowEditProfile() {
 		menu.showEditProfile.actionPerformed(mock(ActionEvent.class));
 		verify(mockedMainViewController).openEditProfileController();

@@ -3,10 +3,7 @@ package de.sharebox.mainui;
 import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
-import de.sharebox.user.controller.AccountingController;
-import de.sharebox.user.controller.EditProfileController;
-import de.sharebox.user.controller.InvitationController;
-import de.sharebox.user.controller.LoginController;
+import de.sharebox.user.controller.*;
 import de.sharebox.user.model.User;
 import org.swixml.SwingEngine;
 
@@ -36,6 +33,7 @@ public class MainViewController {
 	protected EditProfileController editProfileController;
 	protected AccountingController accountController;
 	protected InvitationController invitationController;
+	protected ChangeCredentialsController editCredentialsController;
 
 	/**
 	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
@@ -87,7 +85,14 @@ public class MainViewController {
 	}
 
 	/**
-	 * Erstellt und öfnet ein EditProfile-Fenster zum Bearbeiten der Profildaten.
+	 * Erstellt und öffnet ein ChangeCredentials-Fenster zum Bearbeiten der Logindaten.
+	 */
+	public void openEditCredentialsController() {
+		editCredentialsController = new ChangeCredentialsController();
+	}
+
+	/**
+	 * Erstellt und öffnet ein EditProfile-Fenster zum Bearbeiten der Profildaten.
 	 */
 	public void openEditProfileController() {
 		editProfileController = new EditProfileController();

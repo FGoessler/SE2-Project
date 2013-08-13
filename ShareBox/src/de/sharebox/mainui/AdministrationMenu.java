@@ -29,6 +29,15 @@ public class AdministrationMenu {
 	}
 
 	/**
+	 * Handler um auf die Auswahl des "Logindaten ändern"-Buttons im Menü zu reagieren.
+	 */
+	public Action showEditCredentials = new AbstractAction() {
+		public void actionPerformed(ActionEvent event) {
+			mainViewController.openEditCredentialsController();
+		}
+	};
+
+	/**
 	 * Handler um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditProfile = new AbstractAction() {

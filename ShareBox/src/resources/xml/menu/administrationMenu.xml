@@ -1,4 +1,5 @@
 <menu text="Verwaltung">
+    <menuitem text="Logindaten bearbeiten" action="showEditCredentials"/>
     <menuitem text="Profil bearbeiten" action="showEditProfile"/>
     <menuitem text="Accounting bearbeiten" action="showEditAccounting"/>
     <separator />
