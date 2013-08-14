@@ -1,4 +1,4 @@
-package de.sharebox.file.controller;
+package de.sharebox.file.services;
 
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;

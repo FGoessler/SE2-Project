@@ -3,6 +3,7 @@ package de.sharebox.file.controller;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.services.SharingService;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;

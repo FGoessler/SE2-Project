@@ -4,6 +4,8 @@ import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.file.controller.PermissionViewController;
+import de.sharebox.mainui.menu.AdministrationMenu;
+import de.sharebox.mainui.menu.FileMenu;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;

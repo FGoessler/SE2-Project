@@ -1,4 +1,4 @@
-package de.sharebox.mainui;
+package de.sharebox.mainui.menu;
 
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.file.model.Directory;

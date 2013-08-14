@@ -2,6 +2,7 @@ package de.sharebox.file.controller;
 
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
+import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,8 +22,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ContextMenuTest {
-	private ContextMenu contextMenu;
+public class ContextMenuControllerTest {
+	private ContextMenuController contextMenuController;
 	private Directory parentDirectory;
 	private TreePath mockedTreePath1;
 	private TreePath mockedTreePath2;
@@ -32,7 +33,7 @@ public class ContextMenuTest {
 
 	@Before
 	public void setUp() {
-		contextMenu = new ContextMenu(directoryViewController, new DirectoryViewClipboardService());
+		contextMenuController = new ContextMenuController(directoryViewController, new DirectoryViewClipboardService());
 	}
 
 	@Before
@@ -49,45 +50,45 @@ public class ContextMenuTest {
 
 	@Test
 	public void returnsTheSelectedFEntryBasedOnTheGivenTreePath() {
-		assertThat(contextMenu.getSelectedFEntry()).isNull();
+		assertThat(contextMenuController.getSelectedFEntry()).isNull();
 
-		contextMenu.showMenu(mockedTreePath1, 20, 20);
-		assertThat(contextMenu.getSelectedFEntry()).isSameAs(parentDirectory.getFEntries().get(0));
+		contextMenuController.showMenu(mockedTreePath1, 20, 20);
+		assertThat(contextMenuController.getSelectedFEntry()).isSameAs(parentDirectory.getFEntries().get(0));
 	}
 
 	@Test
 	public void returnsTheSelectedFEntriesParentBasedOnTheGivenTreePath() {
-		assertThat(contextMenu.getSelectedFEntry()).isNull();
+		assertThat(contextMenuController.getSelectedFEntry()).isNull();
 
-		contextMenu.showMenu(mockedTreePath1, 20, 20);
-		assertThat(contextMenu.getParentOfSelectedFEntry()).isSameAs(parentDirectory);
+		contextMenuController.showMenu(mockedTreePath1, 20, 20);
+		assertThat(contextMenuController.getParentOfSelectedFEntry()).isSameAs(parentDirectory);
 	}
 
 	@Test
 	public void canShowAndHideThePopUpMenu() {
-		contextMenu.showMenu(mockedTreePath1, 20, 20);
+		contextMenuController.showMenu(mockedTreePath1, 20, 20);
 
-		assertThat(contextMenu.isMenuVisible()).isTrue();
-		assertThat(contextMenu.popupMenu.isVisible()).isTrue();
-		assertThat(contextMenu.getCurrentTreePath()).isEqualTo(mockedTreePath1);
+		assertThat(contextMenuController.isMenuVisible()).isTrue();
+		assertThat(contextMenuController.popupMenu.isVisible()).isTrue();
+		assertThat(contextMenuController.getCurrentTreePath()).isEqualTo(mockedTreePath1);
 
-		contextMenu.hideMenu();
+		contextMenuController.hideMenu();
 
-		assertThat(contextMenu.isMenuVisible()).isFalse();
-		assertThat(contextMenu.popupMenu.isVisible()).isFalse();
-		assertThat(contextMenu.getCurrentTreePath()).isNull();
+		assertThat(contextMenuController.isMenuVisible()).isFalse();
+		assertThat(contextMenuController.popupMenu.isVisible()).isFalse();
+		assertThat(contextMenuController.getCurrentTreePath()).isNull();
 	}
 
 	@Test
 	public void userCanCreateANewFile() {
-		performClickOnMenuItem(contextMenu.createNewFile);
+		performClickOnMenuItem(contextMenuController.createNewFile);
 
 		verify(directoryViewController).createNewFileBasedOnUserSelection();
 	}
 
 	@Test
 	public void userCanCreateANewDirectory() {
-		performClickOnMenuItem(contextMenu.createNewDirectory);
+		performClickOnMenuItem(contextMenuController.createNewDirectory);
 
 		verify(directoryViewController).createNewDirectoryBasedOnUserSelection();
 	}
@@ -96,7 +97,7 @@ public class ContextMenuTest {
 	public void userCanDeleteAnFEntry() {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
-		performClickOnMenuItem(contextMenu.deleteFEntry);
+		performClickOnMenuItem(contextMenuController.deleteFEntry);
 
 		assertThat(parentDirectory.getFEntries()).hasSize(1);
 	}
@@ -111,19 +112,19 @@ public class ContextMenuTest {
 		parents.add(parentDirectory);
 		when(directoryViewController.getParentsOfSelectedFEntries()).thenReturn(parents);
 
-		performClickOnMenuItem(contextMenu.deleteFEntry);
+		performClickOnMenuItem(contextMenuController.deleteFEntry);
 
 		assertThat(parentDirectory.getFEntries()).hasSize(0);
 	}
 
 	@Test
 	public void userCanRenameAnFEntry() {
-		contextMenu.optionPane = mock(OptionPaneHelper.class);
-		when(contextMenu.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new File name");
+		contextMenuController.optionPane = mock(OptionPaneHelper.class);
+		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new File name");
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
 
-		performClickOnMenuItem(contextMenu.renameFEntry);
+		performClickOnMenuItem(contextMenuController.renameFEntry);
 
 		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A new File name");
 	}
@@ -132,8 +133,8 @@ public class ContextMenuTest {
 	public void userCanCopyAndPasteAnFEntry() {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
-		performClickOnMenuItem(contextMenu.copyFEntry);
-		performClickOnMenuItem(contextMenu.pasteFEntry);
+		performClickOnMenuItem(contextMenuController.copyFEntry);
+		performClickOnMenuItem(contextMenuController.pasteFEntry);
 
 		assertThat(parentDirectory.getFEntries()).hasSize(3);
 	}
@@ -144,8 +145,8 @@ public class ContextMenuTest {
 
 		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
 
-		performClickOnMenuItem(contextMenu.copyFEntry);
-		performClickOnMenuItem(contextMenu.pasteFEntry);
+		performClickOnMenuItem(contextMenuController.copyFEntry);
+		performClickOnMenuItem(contextMenuController.pasteFEntry);
 
 		assertThat(parentDirectory.getFEntries()).hasSize(4);
 	}
@@ -154,11 +155,11 @@ public class ContextMenuTest {
 	@Test
 	public void userCanShareAnFEntry() {
 		//TODO: implement and test share FEntries via ContextMenu!
-		contextMenu.shareFEntry.actionPerformed(mock(ActionEvent.class));
+		contextMenuController.shareFEntry.actionPerformed(mock(ActionEvent.class));
 	}
 
 	private void performClickOnMenuItem(Action menuItemAction) {
-		contextMenu.showMenu(mockedTreePath1, 20, 20);
+		contextMenuController.showMenu(mockedTreePath1, 20, 20);
 
 		menuItemAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Action"));
 	}

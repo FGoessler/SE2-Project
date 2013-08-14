@@ -1,8 +1,9 @@
-package de.sharebox.file.controller;
+package de.sharebox.file.services;
 
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
+import de.sharebox.file.services.DirectoryViewClipboardService;
 import org.junit.Before;
 import org.junit.Test;
 

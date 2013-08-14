@@ -2,6 +2,7 @@ package de.sharebox.file.controller;
 
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
+import de.sharebox.file.services.SharingService;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;

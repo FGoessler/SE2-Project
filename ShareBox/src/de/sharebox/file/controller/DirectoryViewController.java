@@ -4,6 +4,7 @@ import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.File;
+import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.helpers.OptionPaneHelper;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DirectoryViewController {
 	protected transient OptionPaneHelper optionPane = new OptionPaneHelper();
 	protected transient DirectoryViewClipboardService clipboard = new DirectoryViewClipboardService();
-	protected transient ContextMenu contextMenu = new ContextMenu(this, clipboard);
+	protected transient ContextMenuController contextMenuController = new ContextMenuController(this, clipboard);
 
 	protected transient JTree treeView;
 
@@ -37,13 +38,13 @@ public class DirectoryViewController {
 	protected transient MouseAdapter contextMenuMA = new MouseAdapter() {
 		@Override
 		public void mouseReleased(MouseEvent event) {
-			if (event.getButton() == MouseEvent.BUTTON3 && !contextMenu.isMenuVisible()) {
+			if (event.getButton() == MouseEvent.BUTTON3 && !contextMenuController.isMenuVisible()) {
 				TreePath currentContextMenuTreePath = treeView.getPathForLocation(event.getX(), event.getY());
 				if (currentContextMenuTreePath != null) {
-					contextMenu.showMenu(currentContextMenuTreePath, event.getX(), event.getY());
+					contextMenuController.showMenu(currentContextMenuTreePath, event.getX(), event.getY());
 				}
 			} else {
-				contextMenu.hideMenu();
+				contextMenuController.hideMenu();
 			}
 		}
 	};
@@ -115,13 +116,13 @@ public class DirectoryViewController {
 	private Directory getParentDirectoryForFEntryCreation() {
 		Directory parentDirectory = null;
 
-		if (contextMenu.getSelectedFEntry() == null && treeView.isSelectionEmpty()) {
+		if (contextMenuController.getSelectedFEntry() == null && treeView.isSelectionEmpty()) {
 			parentDirectory = (Directory) ((TreeNode) treeModel.getRoot()).getFEntry();
-		} else if (contextMenu.getSelectedFEntry() != null) {
-			if (contextMenu.getSelectedFEntry() instanceof Directory) {
-				parentDirectory = (Directory) contextMenu.getSelectedFEntry();
+		} else if (contextMenuController.getSelectedFEntry() != null) {
+			if (contextMenuController.getSelectedFEntry() instanceof Directory) {
+				parentDirectory = (Directory) contextMenuController.getSelectedFEntry();
 			} else {
-				parentDirectory = contextMenu.getParentOfSelectedFEntry();
+				parentDirectory = contextMenuController.getParentOfSelectedFEntry();
 			}
 		} else if (!treeView.isSelectionEmpty()) {
 			if (((TreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry() instanceof Directory) {

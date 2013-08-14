@@ -164,49 +164,49 @@ public class DirectoryViewControllerTest {
 
 	@Test
 	public void showsAContextMenuOnRightClick() {
-		controller.contextMenu = mock(ContextMenu.class);
+		controller.contextMenuController = mock(ContextMenuController.class);
 
 		//simulate click
 		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON3));
 
 		//validate TreePath
 		ArgumentCaptor<TreePath> capturedTreePath = ArgumentCaptor.forClass(TreePath.class);
-		verify(controller.contextMenu).showMenu(capturedTreePath.capture(), anyInt(), anyInt());
+		verify(controller.contextMenuController).showMenu(capturedTreePath.capture(), anyInt(), anyInt());
 		Directory selectedDirectory = (Directory) ((TreeNode) capturedTreePath.getValue().getLastPathComponent()).getFEntry();
 		assertThat(selectedDirectory.getName()).isEqualTo("The main dir");
 
 		//simulate click to hide menu
 		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON1));
 
-		verify(controller.contextMenu).hideMenu();
+		verify(controller.contextMenuController).hideMenu();
 	}
 
 	@Test
 	public void canCreateFilesBasedOnUsersSelection() {
-		controller.contextMenu = mock(ContextMenu.class);
+		controller.contextMenuController = mock(ContextMenuController.class);
 		controller.optionPane = mock(OptionPaneHelper.class);
 		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new File name!");
 
 		//test without selection -> create as child of root
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(null);
 		File newFile = controller.createNewFileBasedOnUserSelection();
 		assertThat(rootDirectory.getFEntries()).contains(newFile);
 		assertThat(newFile.getName()).isEqualTo("A new File name!");
 
 		//test with directory selected -> create as child of directory
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(subDir1);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(subDir1);
 		File secondNewFile = controller.createNewFileBasedOnUserSelection();
 		assertThat(subDir1.getFEntries()).contains(secondNewFile);
 		assertThat(secondNewFile.getName()).isEqualTo("A new File name!");
 
 		//test with file selected -> create as sibling of file
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(secondNewFile);
-		when(controller.contextMenu.getParentOfSelectedFEntry()).thenReturn(subDir1);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(secondNewFile);
+		when(controller.contextMenuController.getParentOfSelectedFEntry()).thenReturn(subDir1);
 		File thirdNewFile = controller.createNewFileBasedOnUserSelection();
 		assertThat(subDir1.getFEntries()).contains(thirdNewFile);
 		assertThat(thirdNewFile.getName()).isEqualTo("A new File name!");
 
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(null);
 
 		//test with directory selected -> create as child of directory
 		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
@@ -225,30 +225,30 @@ public class DirectoryViewControllerTest {
 
 	@Test
 	public void canCreateDirectoriesBasedOnUsersSelection() {
-		controller.contextMenu = mock(ContextMenu.class);
+		controller.contextMenuController = mock(ContextMenuController.class);
 		controller.optionPane = mock(OptionPaneHelper.class);
 		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new Directory name!");
 
 		//test without selection -> create as child of root
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(null);
 		Directory newDirectory = controller.createNewDirectoryBasedOnUserSelection();
 		assertThat(rootDirectory.getFEntries()).contains(newDirectory);
 		assertThat(newDirectory.getName()).isEqualTo("A new Directory name!");
 
 		//test with directory right click selected -> create as child of directory
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(subDir1);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(subDir1);
 		Directory secondNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
 		assertThat(subDir1.getFEntries()).contains(secondNewDirectory);
 		assertThat(secondNewDirectory.getName()).isEqualTo("A new Directory name!");
 
 		//test with file right click selected -> create as sibling of file
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(subDir1.getFEntries().get(0));
-		when(controller.contextMenu.getParentOfSelectedFEntry()).thenReturn(subDir1);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(subDir1.getFEntries().get(0));
+		when(controller.contextMenuController.getParentOfSelectedFEntry()).thenReturn(subDir1);
 		Directory thirdNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
 		assertThat(subDir1.getFEntries()).contains(thirdNewDirectory);
 		assertThat(thirdNewDirectory.getName()).isEqualTo("A new Directory name!");
 
-		when(controller.contextMenu.getSelectedFEntry()).thenReturn(null);
+		when(controller.contextMenuController.getSelectedFEntry()).thenReturn(null);
 
 		//test with directory selected -> create as child of directory
 		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};

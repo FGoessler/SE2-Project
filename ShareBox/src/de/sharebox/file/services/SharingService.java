@@ -1,4 +1,4 @@
-package de.sharebox.file.controller;
+package de.sharebox.file.services;
 
 import de.sharebox.file.model.FEntry;
 import de.sharebox.helpers.OptionPaneHelper;

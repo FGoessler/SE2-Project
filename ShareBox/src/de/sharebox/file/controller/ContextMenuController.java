@@ -3,6 +3,7 @@ package de.sharebox.file.controller;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
+import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.swixml.SwingEngine;
 
@@ -12,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContextMenu {
+public class ContextMenuController {
 	private final DirectoryViewController parentDirectoryController;
 	private final DirectoryViewClipboardService clipboard;
 	private TreePath currentTreePath;
@@ -25,7 +26,7 @@ public class ContextMenu {
 	 *
 	 * @param parentDirectoryController Der DirectoryViewController auf den sich das Kontextmenü bezieht.
 	 */
-	public ContextMenu(DirectoryViewController parentDirectoryController, DirectoryViewClipboardService clipboard) {
+	public ContextMenuController(DirectoryViewController parentDirectoryController, DirectoryViewClipboardService clipboard) {
 		this.parentDirectoryController = parentDirectoryController;
 		this.clipboard = clipboard;
 

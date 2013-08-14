@@ -1,7 +1,8 @@
-package de.sharebox.file.controller;
+package de.sharebox.file.services;
 
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Test;

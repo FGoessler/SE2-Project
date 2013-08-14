@@ -1,5 +1,6 @@
-package de.sharebox.mainui;
+package de.sharebox.mainui.menu;
 
+import de.sharebox.mainui.MainViewController;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;

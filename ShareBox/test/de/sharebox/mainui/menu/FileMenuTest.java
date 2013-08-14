@@ -1,10 +1,11 @@
-package de.sharebox.mainui;
+package de.sharebox.mainui.menu;
 
-import de.sharebox.file.controller.DirectoryViewClipboardService;
+import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
+import de.sharebox.mainui.menu.FileMenu;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
