@@ -221,6 +221,15 @@ public class DirectoryViewControllerTest {
 		File fifthNewFile = controller.createNewFileBasedOnUserSelection();
 		assertThat(subDir1.getFEntries()).contains(fifthNewFile);
 		assertThat(fifthNewFile.getName()).isEqualTo("A new File name!");
+
+
+		//handle dialog cancel
+		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn(null);
+		assertThat(controller.createNewFileBasedOnUserSelection()).isNull();
+
+		//handle invalid file name
+		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn("");
+		assertThat(controller.createNewFileBasedOnUserSelection()).isNull();
 	}
 
 	@Test
@@ -263,6 +272,15 @@ public class DirectoryViewControllerTest {
 		Directory fifthNewDirectory = controller.createNewDirectoryBasedOnUserSelection();
 		assertThat(subDir1.getFEntries()).contains(fifthNewDirectory);
 		assertThat(fifthNewDirectory.getName()).isEqualTo("A new Directory name!");
+
+
+		//handle dialog cancel
+		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn(null);
+		assertThat(controller.createNewDirectoryBasedOnUserSelection()).isNull();
+
+		//handle invalid file name
+		when(controller.optionPane.showInputDialog(anyString(), anyString())).thenReturn("");
+		assertThat(controller.createNewDirectoryBasedOnUserSelection()).isNull();
 	}
 
 	@Test

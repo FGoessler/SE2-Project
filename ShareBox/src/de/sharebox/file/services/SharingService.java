@@ -11,6 +11,8 @@ import java.util.List;
  * Dieser Klasse stellt Methoden zur Verfügung um FEntries für andere Nutzer freizugeben.
  */
 public class SharingService {
+	private static final String EMAIL_PATTERN ="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
 	protected OptionPaneHelper optionPaneHelper = new OptionPaneHelper();
 
 	/**
@@ -34,12 +36,14 @@ public class SharingService {
 	public void showShareFEntryDialog(List<FEntry> fEntries) {
 		String newUserMail = optionPaneHelper.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
 
-		//TODO: call API to invite/set permissions for the user!
-		User newUser = new User();
-		newUser.setEmail(newUserMail);
+		if (newUserMail != null && !newUserMail.equals("") && newUserMail.matches(EMAIL_PATTERN)) {
+			//TODO: call API to invite/set permissions for the user!
+			User newUser = new User();
+			newUser.setEmail(newUserMail);
 
-		for (FEntry fEntry : fEntries) {
-			fEntry.setPermission(newUser, true, true, false);
+			for (FEntry fEntry : fEntries) {
+				fEntry.setPermission(newUser, true, true, false);
+			}
 		}
 	}
 }

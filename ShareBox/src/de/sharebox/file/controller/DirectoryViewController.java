@@ -93,10 +93,14 @@ public class DirectoryViewController {
 	 * @return Die neu erstellte Datei.
 	 */
 	public File createNewFileBasedOnUserSelection() {
+		File createdFile = null;
 		String newFilename = optionPane.showInputDialog("Geben Sie einen Namen für die neue Datei ein:", "");
-		Directory parentDirectory = getParentDirectoryForFEntryCreation();
 
-		return parentDirectory.createNewFile(newFilename);
+		if (newFilename != null && !newFilename.equals("")) {
+			Directory parentDirectory = getParentDirectoryForFEntryCreation();
+			createdFile = parentDirectory.createNewFile(newFilename);
+		}
+		return createdFile;
 	}
 
 	/**
@@ -107,10 +111,14 @@ public class DirectoryViewController {
 	 * @return Das neu erstellte Verzeichnis.
 	 */
 	public Directory createNewDirectoryBasedOnUserSelection() {
+		Directory createdDir = null;
 		String newDirectoryName = optionPane.showInputDialog("Geben Sie einen Namen für das neue Verzeichnis ein:", "");
-		Directory parentDirectory = getParentDirectoryForFEntryCreation();
 
-		return parentDirectory.createNewDirectory(newDirectoryName);
+		if (newDirectoryName != null && !newDirectoryName.equals("")) {
+			Directory parentDirectory = getParentDirectoryForFEntryCreation();
+			createdDir = parentDirectory.createNewDirectory(newDirectoryName);
+		}
+		return createdDir;
 	}
 
 	private Directory getParentDirectoryForFEntryCreation() {

@@ -74,4 +74,19 @@ public class SharingServiceTest {
 
 		//TODO: implement and test API calls!
 	}
+
+	@Test
+	public void canHandleCanceledDialogAndInvalidData() {
+		when(mockedOptionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn(null);
+		sharingService.showShareFEntryDialog(fEntry1);
+		assertThat(fEntry1.getPermissions()).hasSize(0);
+
+		when(mockedOptionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("");
+		sharingService.showShareFEntryDialog(fEntry1);
+		assertThat(fEntry1.getPermissions()).hasSize(0);
+
+		when(mockedOptionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("keine-email");
+		sharingService.showShareFEntryDialog(fEntry1);
+		assertThat(fEntry1.getPermissions()).hasSize(0);
+	}
 }
