@@ -76,7 +76,7 @@ public class FEntryTest {
 		try {
 			fEntry.fireDeleteNotification();
 			fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			fail("Should not have thrown an error! " + exception.getLocalizedMessage());
 		}
 	}
@@ -99,10 +99,15 @@ public class FEntryTest {
 
 	@Test
 	public void settingAPermissionToAllFalseRemovesItFromTheListOfPermissions() {
+		fEntry.addObserver(observer);
+
 		fEntry.setPermission(user, true, true, true);
 		assertThat(fEntry.getPermissions()).hasSize(1);
+		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
 
 		fEntry.setPermission(user, false, false, false);
+
+		verify(observer, times(2)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(0);
 		FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);

@@ -1,8 +1,12 @@
-<frame size="1024,768" title="ShareBox Ultimate" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
-    <menubar />
-    <panel layout="borderlayout" background="666666" constraints="BorderLayout.CENTER" id="contentContainer">
-        <scrollPane>
-            <tree id="tree"/>
-        </scrollPane>
+<frame size="1000,768" minimumSize="300,200" title="ShareBox Ultimate" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+    <menubar/>
+
+    <panel layout="borderlayout" background="666666" constraints="BorderLayout.CENTER">
+        <splitPane oneTouchExpandable="true" dividerLocation="800" resizeWeight="1" orientation="VERTICAL"
+                   id="splitPane">
+            <scrollPane>
+                <tree id="tree"/>
+            </scrollPane>
+        </splitPane>
     </panel>
 </frame>

@@ -9,6 +9,7 @@ import de.sharebox.helpers.OptionPaneHelper;
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
@@ -115,7 +116,7 @@ public class DirectoryViewController {
 		Directory parentDirectory = null;
 
 		if (contextMenu.getSelectedFEntry() == null && treeView.isSelectionEmpty()) {
-			parentDirectory = (Directory) ((TreeNode)treeModel.getRoot()).getFEntry();
+			parentDirectory = (Directory) ((TreeNode) treeModel.getRoot()).getFEntry();
 		} else if (contextMenu.getSelectedFEntry() != null) {
 			if (contextMenu.getSelectedFEntry() instanceof Directory) {
 				parentDirectory = (Directory) contextMenu.getSelectedFEntry();
@@ -171,12 +172,29 @@ public class DirectoryViewController {
 		return new ArrayList<Directory>(selectedFEntriesParents);
 	}
 
+	/**
+	 * Fügt den gegebenen TreeSelectionListener dem JTree hinzu.
+	 *
+	 * @param selectionListener Ein TreeSelectionListener um auf Änderungen der Selktierung im JTree zu reagieren.
+	 */
+	public void addTreeSelectionListener(TreeSelectionListener selectionListener) {
+		treeView.addTreeSelectionListener(selectionListener);
+	}
 
+	/**
+	 * Gibt den aktuell genutzten ClipboardService zurück mit dem Copy-Paste-Operationen von FEntries durchegführt
+	 * werden können, die mit diesem DirectoryViewController dargestellt werden.
+	 *
+	 * @return Der aktuell genutzte ClipboardService.
+	 */
 	public DirectoryViewClipboardService getClipboard() {
 		return clipboard;
 	}
 
 	protected transient List<TreeModelListener> treeModelListener = new ArrayList<TreeModelListener>();
+	/**
+	 * Dieses TreeModel ist für die darstellung der Files und Directories als JTree verantwortlich.
+	 */
 	protected transient TreeModel treeModel = new TreeModel() {
 
 		@Override
@@ -257,6 +275,9 @@ public class DirectoryViewController {
 	};
 
 
+	/**
+	 * Dieser FEntryObserver reagiert auf Veränderungen der dargestellten FEntries und updated das UI entsprechend.
+	 */
 	protected transient FEntryObserver observer = new FEntryObserver() {
 		@Override
 		public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {

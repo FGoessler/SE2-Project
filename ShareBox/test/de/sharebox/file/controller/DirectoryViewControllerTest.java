@@ -13,6 +13,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseEvent;
@@ -51,9 +53,9 @@ public class DirectoryViewControllerTest {
 	}
 
 	public void simulateTreeConstruction(TreeNode parent) {
-		for(int i = 0; i < controller.treeModel.getChildCount(parent); i++) {
+		for (int i = 0; i < controller.treeModel.getChildCount(parent); i++) {
 			TreeNode child = (TreeNode) controller.treeModel.getChild(parent, i);
-			if(child.getFEntry() instanceof Directory) {
+			if (child.getFEntry() instanceof Directory) {
 				simulateTreeConstruction(child);
 			}
 		}
@@ -76,11 +78,11 @@ public class DirectoryViewControllerTest {
 		//test getChild - correct tree!
 		Object subDir = controller.treeModel.getChild(root, 0);
 		assertThat(subDir.toString()).isEqualTo("A Subdirectory");
-		assertThat(controller.treeModel.getChild(subDir,0).toString()).isEqualTo("Subdirectory File");
+		assertThat(controller.treeModel.getChild(subDir, 0).toString()).isEqualTo("Subdirectory File");
 		Object subDir2 = controller.treeModel.getChild(root, 1);
 		assertThat(subDir2.toString()).isEqualTo("Another Subdirectory");
-		assertThat(controller.treeModel.getChild(root,2).toString()).isEqualTo("A file");
-		assertThat(controller.treeModel.getChild(root,3).toString()).isEqualTo("Oho!");
+		assertThat(controller.treeModel.getChild(root, 2).toString()).isEqualTo("A file");
+		assertThat(controller.treeModel.getChild(root, 3).toString()).isEqualTo("Oho!");
 
 		//test getChildCount
 		assertThat(controller.treeModel.getChildCount(root)).isEqualTo(4);
@@ -89,8 +91,18 @@ public class DirectoryViewControllerTest {
 
 		//test getIndexOfChild
 		assertThat(controller.treeModel.getIndexOfChild(root, subDir2)).isEqualTo(1);
-		assertThat(controller.treeModel.getIndexOfChild(subDir2, root)).isEqualTo(-1);	//invalid constellations should return -1
-		assertThat(controller.treeModel.getIndexOfChild(null, root)).isEqualTo(-1);		//invalid constellations should return -1
+		assertThat(controller.treeModel.getIndexOfChild(subDir2, root)).isEqualTo(-1);    //invalid constellations should return -1
+		assertThat(controller.treeModel.getIndexOfChild(null, root)).isEqualTo(-1);        //invalid constellations should return -1
+	}
+
+	@Test
+	public void canAddTreeSelectionListeners() {
+		TreeSelectionListener treeSelectionListener = mock(TreeSelectionListener.class);
+		controller.addTreeSelectionListener(treeSelectionListener);
+
+		assertThat(controller.treeView.getTreeSelectionListeners()).contains(treeSelectionListener);
+		controller.treeView.setSelectionRow(0);
+		verify(treeSelectionListener).valueChanged(any(TreeSelectionEvent.class));
 	}
 
 	@Test
@@ -105,7 +117,7 @@ public class DirectoryViewControllerTest {
 		controller.treeModel.removeTreeModelListener(mockedListener);
 
 		controller.rootDirectory.setName("Changed Again");
-		verify(mockedListener, times(1)).treeNodesChanged(any(TreeModelEvent.class));		//listener should only have been called while listening!
+		verify(mockedListener, times(1)).treeNodesChanged(any(TreeModelEvent.class));        //listener should only have been called while listening!
 	}
 
 	@Test
@@ -116,13 +128,13 @@ public class DirectoryViewControllerTest {
 		simulateTreeConstruction((TreeNode) controller.treeModel.getRoot());
 
 		FEntry entryToDelete = controller.rootDirectory.getFEntries().get(1);
-		controller.rootDirectory.deleteFEntry(entryToDelete);								//delete a file
+		controller.rootDirectory.deleteFEntry(entryToDelete);                                //delete a file
 
 		controller.treeModel.removeTreeModelListener(mockedListener);
 
-		entryToDelete = controller.rootDirectory.getFEntries().get(1);						//delete another file
+		entryToDelete = controller.rootDirectory.getFEntries().get(1);                        //delete another file
 		controller.rootDirectory.deleteFEntry(entryToDelete);
-		verify(mockedListener, times(1)).treeNodesRemoved(any(TreeModelEvent.class));		//listener should only have been called while listening!
+		verify(mockedListener, times(1)).treeNodesRemoved(any(TreeModelEvent.class));        //listener should only have been called while listening!
 	}
 
 	@Test
@@ -137,7 +149,7 @@ public class DirectoryViewControllerTest {
 		controller.treeModel.removeTreeModelListener(mockedListener);
 
 		controller.rootDirectory.createNewFile("This is a another new file!");
-		verify(mockedListener, times(1)).treeNodesInserted(any(TreeModelEvent.class));		//listener should only have been called while listening!
+		verify(mockedListener, times(1)).treeNodesInserted(any(TreeModelEvent.class));        //listener should only have been called while listening!
 	}
 
 	@Test
@@ -147,7 +159,7 @@ public class DirectoryViewControllerTest {
 
 		controller.treeModel.valueForPathChanged(testTreePath, "A new value");
 
-		assertThat(((TreeNode)controller.treeModel.getChild(controller.treeModel.getRoot(), 0)).getFEntry().getName()).isEqualTo("A new value");
+		assertThat(((TreeNode) controller.treeModel.getChild(controller.treeModel.getRoot(), 0)).getFEntry().getName()).isEqualTo("A new value");
 	}
 
 	@Test
@@ -160,7 +172,7 @@ public class DirectoryViewControllerTest {
 		//validate TreePath
 		ArgumentCaptor<TreePath> capturedTreePath = ArgumentCaptor.forClass(TreePath.class);
 		verify(controller.contextMenu).showMenu(capturedTreePath.capture(), anyInt(), anyInt());
-		Directory selectedDirectory = (Directory)((TreeNode)capturedTreePath.getValue().getLastPathComponent()).getFEntry();
+		Directory selectedDirectory = (Directory) ((TreeNode) capturedTreePath.getValue().getLastPathComponent()).getFEntry();
 		assertThat(selectedDirectory.getName()).isEqualTo("The main dir");
 
 		//simulate click to hide menu
@@ -262,5 +274,10 @@ public class DirectoryViewControllerTest {
 		assertThat(controller.getSelectedFEntries()).contains(rootDirectory, subDir1);
 
 		assertThat(controller.getParentsOfSelectedFEntries()).contains(null, rootDirectory);
+	}
+
+	@Test
+	public void providesAClipboardService() {
+		assertThat(controller.getClipboard()).isNotNull();
 	}
 }

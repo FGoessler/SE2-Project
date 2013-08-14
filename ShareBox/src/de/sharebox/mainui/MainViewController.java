@@ -3,6 +3,7 @@ package de.sharebox.mainui;
 import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewController;
+import de.sharebox.file.controller.PermissionViewController;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
@@ -33,6 +34,8 @@ public class MainViewController {
 	protected SwingEngine swix;
 
 	protected DirectoryViewController directoryViewController;
+	protected PermissionViewController permissionViewController;
+
 	protected EditProfileController editProfileController;
 	protected AccountingController accountController;
 	protected InvitationController invitationController;
@@ -42,6 +45,7 @@ public class MainViewController {
 	 * Wird über die SwingEngine gesetzt.
 	 */
 	public JTree tree;
+	public JSplitPane splitPane;
 
 	/**
 	 * Die zentrale Menüleiste.
@@ -75,6 +79,8 @@ public class MainViewController {
 		menuBar = frame.getJMenuBar();
 		fileMenu = new FileMenu(menuBar, directoryViewController);
 		administrationMenu = new AdministrationMenu(menuBar, this);
+
+		permissionViewController = new PermissionViewController(splitPane, directoryViewController);
 	}
 
 	/**

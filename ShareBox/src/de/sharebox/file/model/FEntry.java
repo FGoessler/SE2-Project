@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class FEntry {
 
+	/**
+	 * Diese Enum wird verwendet um die Art der Änderung bei einer fEntryChangedNotification zu spezifizieren.
+	 */
 	public enum ChangeType {
 		NAME_CHANGED,
 		REMOVED_CHILDREN,
@@ -39,9 +42,7 @@ public class FEntry {
 		//copy permissions
 		for (FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
 			FEntryPermission newPermission = new FEntryPermission(oldPermission.getUser(), this);
-			newPermission.setReadAllowed(oldPermission.getReadAllowed());
-			newPermission.setWriteAllowed(oldPermission.getWriteAllowed());
-			newPermission.setManageAllowed(oldPermission.getManageAllowed());
+			newPermission.setPermissions(oldPermission.getReadAllowed(), oldPermission.getWriteAllowed(), oldPermission.getManageAllowed());
 
 			permissions.add(newPermission);
 		}
@@ -107,7 +108,7 @@ public class FEntry {
 	/**
 	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
 	 */
-	protected void fireChangeNotification(ChangeType reason) {
+	public void fireChangeNotification(ChangeType reason) {
 		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
 		for (FEntryObserver observer : localObservers) {
 			observer.fEntryChangedNotification(this, reason);
@@ -118,7 +119,7 @@ public class FEntry {
 	 * Benachrichtigt alle Observer das dieses Objekt aus dem Dateisystem gelöscht wurde. Das Java-Objekt an sich ist
 	 * aber noch nicht notwendigerweise gelöscht.
 	 */
-	protected void fireDeleteNotification() {
+	public void fireDeleteNotification() {
 		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
 		for (FEntryObserver observer : localObservers) {
 			observer.fEntryDeletedNotification(this);
@@ -126,11 +127,13 @@ public class FEntry {
 	}
 
 	/**
+	 * Setzt die Rechte eines Nutzers an diesem FEntry.
+	 * Löst entsprechende PERMISSION_CHANGED Notifications aus.
 	 *
-	 * @param user
-	 * @param read
-	 * @param write
-	 * @param manage
+	 * @param user   Der Nutzer der die Rechte erhält.
+	 * @param read   Der neue Wert für Leserechte.
+	 * @param write  Der neue Wert für Schreibrechte.
+	 * @param manage Der neue Wert für Verwaltungsrechte.
 	 */
 	public void setPermission(User user, boolean read, boolean write, boolean manage) {
 		FEntryPermission permission = getPermissionOfUser(user);
@@ -140,28 +143,31 @@ public class FEntry {
 				permissions.add(permission);
 			}
 
-			permission.setReadAllowed(read);
-			permission.setWriteAllowed(write);
-			permission.setManageAllowed(manage);
-
-			fireChangeNotification(ChangeType.PERMISSION_CHANGED);
+			permission.setPermissions(read, write, manage);        //Notification wird vom FEntryPermission Objekt ausgelöst
 		} else {
 			permissions.remove(permission);
+
+			fireChangeNotification(ChangeType.PERMISSION_CHANGED);
 		}
 	}
 
 	/**
+	 * Liefert eine Liste aller an Nutzer vergebenen Permissions. Nutzer die keinerlei Rechte an einem FEntry besitzen
+	 * werden in der Liste nicht mit einem eigenen fEntryPermission Objekt aufgeführt.
+	 * ACHTUNG: Direkte Änderungen an dieser Liste haben feuern keine Notifications und können somit auch nicht
+	 * verfolgt werden. UI, API und andere Teile des Programms können dadurch außer Sync kommen!
 	 *
-	 * @return
+	 * @return Liste aller vergebenen FEntryPermissions.
 	 */
 	public List<FEntryPermission> getPermissions() {
 		return permissions;
 	}
 
 	/**
+	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission Objekt zurück.
 	 *
-	 * @param user
-	 * @return
+	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
+	 * @return das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
 	public FEntryPermission getPermissionOfUser(User user) {
 		FEntryPermission permission = null;
@@ -174,13 +180,8 @@ public class FEntry {
 
 		if (permission == null) {
 			permission = new FEntryPermission(user, this);
-			permission.setReadAllowed(false);
-			permission.setWriteAllowed(false);
-			permission.setManageAllowed(false);
 		}
 
 		return permission;
 	}
-
-
 }
