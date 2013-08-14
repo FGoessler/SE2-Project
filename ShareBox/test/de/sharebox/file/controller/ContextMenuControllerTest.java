@@ -3,9 +3,9 @@ package de.sharebox.file.controller;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewClipboardService;
+import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -94,7 +94,7 @@ public class ContextMenuControllerTest {
 	}
 
 	@Test
-	public void userCanDeleteAnFEntry() {
+	public void userCanDeleteAFEntry() {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
 		performClickOnMenuItem(contextMenuController.deleteFEntry);
@@ -118,7 +118,7 @@ public class ContextMenuControllerTest {
 	}
 
 	@Test
-	public void userCanRenameAnFEntry() {
+	public void userCanRenameAFEntry() {
 		contextMenuController.optionPane = mock(OptionPaneHelper.class);
 		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new File name");
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
@@ -130,7 +130,7 @@ public class ContextMenuControllerTest {
 	}
 
 	@Test
-	public void userCanCopyAndPasteAnFEntry() {
+	public void userCanCopyAndPasteAFEntry() {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
 		performClickOnMenuItem(contextMenuController.copyFEntry);
@@ -151,11 +151,30 @@ public class ContextMenuControllerTest {
 		assertThat(parentDirectory.getFEntries()).hasSize(4);
 	}
 
-	@Ignore
 	@Test
-	public void userCanShareAnFEntry() {
-		//TODO: implement and test share FEntries via ContextMenu!
-		contextMenuController.shareFEntry.actionPerformed(mock(ActionEvent.class));
+	public void userCanShareMultipleFEntries() {
+		contextMenuController.optionPane = mock(OptionPaneHelper.class);
+		contextMenuController.sharingService = mock(SharingService.class);
+		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
+		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
+
+		performClickOnMenuItem(contextMenuController.shareFEntry);
+
+		verify(contextMenuController.sharingService).showShareFEntryDialog(parentDirectory.getFEntries());
+	}
+
+	@Test
+	public void userCanShareAFEntry() {
+		contextMenuController.optionPane = mock(OptionPaneHelper.class);
+		contextMenuController.sharingService = mock(SharingService.class);
+		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
+		List<FEntry> selectionNotIncludingClickPosition = new ArrayList<FEntry>();
+		selectionNotIncludingClickPosition.add(parentDirectory.getFEntries().get(1));
+		when(directoryViewController.getSelectedFEntries()).thenReturn(selectionNotIncludingClickPosition);
+
+		performClickOnMenuItem(contextMenuController.shareFEntry);
+
+		verify(contextMenuController.sharingService).showShareFEntryDialog(parentDirectory.getFEntries().get(0));
 	}
 
 	private void performClickOnMenuItem(Action menuItemAction) {

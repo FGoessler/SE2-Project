@@ -4,6 +4,7 @@ import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewClipboardService;
+import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.swixml.SwingEngine;
 
@@ -19,6 +20,7 @@ public class ContextMenuController {
 	private TreePath currentTreePath;
 
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
+	protected SharingService sharingService = new SharingService();
 	protected JPopupMenu popupMenu;
 
 	/**
@@ -249,8 +251,14 @@ public class ContextMenuController {
 	public Action shareFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			//TODO: Teilen von FEntries
-			optionPane.showMessageDialog("This function is not yet supported!");
+			FEntry selectedFEntry = getSelectedFEntry();
+			final List<FEntry> selectedFEntries = parentDirectoryController.getSelectedFEntries();
+
+			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
+				sharingService.showShareFEntryDialog(parentDirectoryController.getSelectedFEntries());
+			} else {
+				sharingService.showShareFEntryDialog(selectedFEntry);
+			}
 
 			hideMenu();
 		}
