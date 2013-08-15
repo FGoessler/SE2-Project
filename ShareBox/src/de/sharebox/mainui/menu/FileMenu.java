@@ -71,7 +71,7 @@ public class FileMenu {
 				if(directoryViewController.getSelectedFEntries().get(0) instanceof Directory) {
 					targetDirectory = (Directory) directoryViewController.getSelectedFEntries().get(0);
 				} else {
-					targetDirectory = directoryViewController.getParentsOfSelectedFEntries().get(0);
+					targetDirectory = directoryViewController.getParentsOfSelectedFEntries().get(0).get();
 				}
 				directoryViewController.getClipboard().pasteClipboardContent(targetDirectory);
 			}

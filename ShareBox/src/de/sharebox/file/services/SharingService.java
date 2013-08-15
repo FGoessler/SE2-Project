@@ -7,6 +7,8 @@ import de.sharebox.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * Dieser Klasse stellt Methoden zur Verfügung um FEntries für andere Nutzer freizugeben.
  */
@@ -36,7 +38,7 @@ public class SharingService {
 	public void showShareFEntryDialog(List<FEntry> fEntries) {
 		String newUserMail = optionPaneHelper.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
 
-		if (newUserMail != null && !newUserMail.equals("") && newUserMail.matches(EMAIL_PATTERN)) {
+		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
 			//TODO: call API to invite/set permissions for the user!
 			User newUser = new User();
 			newUser.setEmail(newUserMail);

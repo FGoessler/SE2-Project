@@ -1,5 +1,6 @@
 package de.sharebox.file.controller;
 
+import com.google.common.base.Optional;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
@@ -18,7 +19,7 @@ import java.util.List;
  * Dieser Controller ist für die Darstellung der Rechte in der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
  */
 public class PermissionViewController {
-	private FEntry currentFEntry;
+	private Optional<FEntry> currentFEntry = Optional.absent();
 
 	private DirectoryViewController directoryViewController;
 
@@ -72,19 +73,19 @@ public class PermissionViewController {
 	protected TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
 		@Override
 		public void valueChanged(TreeSelectionEvent event) {
-			if (currentFEntry != null) {
-				currentFEntry.removeObserver(fEntryObserver);
+			if (currentFEntry.isPresent()) {
+				currentFEntry.get().removeObserver(fEntryObserver);
 			}
 
 			List<FEntry> selectedFEntries = directoryViewController.getSelectedFEntries();
 			if (selectedFEntries.size() > 1) {
-				currentFEntry = null;
+				currentFEntry = Optional.absent();
 
 				buttonPanel.setVisible(false);
 				messageTextArea.setText("Mehrere Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
 				messageTextArea.setVisible(true);
 			} else if (selectedFEntries.isEmpty()) {
-				currentFEntry = null;
+				currentFEntry = Optional.absent();
 
 				buttonPanel.setVisible(false);
 				messageTextArea.setText("Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
@@ -93,8 +94,8 @@ public class PermissionViewController {
 				buttonPanel.setVisible(true);
 				messageTextArea.setVisible(false);
 
-				currentFEntry = selectedFEntries.get(0);
-				currentFEntry.addObserver(fEntryObserver);
+				currentFEntry = Optional.of(selectedFEntries.get(0));
+				currentFEntry.get().addObserver(fEntryObserver);
 			}
 			tableModel.fireTableDataChanged();
 		}
@@ -114,7 +115,7 @@ public class PermissionViewController {
 
 		@Override
 		public void fEntryDeletedNotification(FEntry fEntry) {
-			currentFEntry = null;
+			currentFEntry = Optional.absent();
 
 			buttonPanel.setVisible(false);
 			messageTextArea.setText("Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
@@ -153,15 +154,15 @@ public class PermissionViewController {
 		@Override
 		public int getRowCount() {
 			int rowCount = 0;
-			if (currentFEntry != null) {
-				rowCount = currentFEntry.getPermissions().size();
+			if (currentFEntry.isPresent()) {
+				rowCount = currentFEntry.get().getPermissions().size();
 			}
 			return rowCount;
 		}
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			FEntryPermission permission = currentFEntry.getPermissions().get(rowIndex);
+			FEntryPermission permission = currentFEntry.get().getPermissions().get(rowIndex);
 			Object value;
 			switch (columnIndex) {
 				case 0:
@@ -187,7 +188,7 @@ public class PermissionViewController {
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			super.setValueAt(aValue, rowIndex, columnIndex);
 
-			FEntryPermission permission = currentFEntry.getPermissions().get(rowIndex);
+			FEntryPermission permission = currentFEntry.get().getPermissions().get(rowIndex);
 
 			switch (columnIndex) {
 				case 1:
@@ -221,7 +222,7 @@ public class PermissionViewController {
 	public Action addUserPermission = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			sharingService.showShareFEntryDialog(currentFEntry);
+			sharingService.showShareFEntryDialog(currentFEntry.get());
 		}
 	};
 
@@ -236,10 +237,10 @@ public class PermissionViewController {
 			int[] selectedRows = permissionTable.getSelectedRows();
 			List<FEntryPermission> selectedPermissions = new ArrayList<FEntryPermission>();
 			for (int index : selectedRows) {
-				selectedPermissions.add(currentFEntry.getPermissions().get(index));
+				selectedPermissions.add(currentFEntry.get().getPermissions().get(index));
 			}
 			for (FEntryPermission permission : selectedPermissions) {
-				currentFEntry.setPermission(permission.getUser(), false, false, false);
+				currentFEntry.get().setPermission(permission.getUser(), false, false, false);
 			}
 		}
 	};

@@ -1,11 +1,11 @@
 package de.sharebox.mainui.menu;
 
-import de.sharebox.file.services.DirectoryViewClipboardService;
+import com.google.common.base.Optional;
 import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
-import de.sharebox.mainui.menu.FileMenu;
+import de.sharebox.file.services.DirectoryViewClipboardService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,13 +69,13 @@ public class FileMenuTest {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new File());
 		when(mockedDirectoryViewController.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
-		List<Directory> mockedSelectedParentDirectories = new ArrayList<Directory>();
-		mockedSelectedParentDirectories.add(new Directory());
+		List<Optional<Directory>> mockedSelectedParentDirectories = new ArrayList<Optional<Directory>>();
+		mockedSelectedParentDirectories.add(Optional.of(new Directory()));
 		when(mockedDirectoryViewController.getParentsOfSelectedFEntries()).thenReturn(mockedSelectedParentDirectories);
 
 		menu.pasteFEntry.actionPerformed(mock(ActionEvent.class));
 
-		verify(clipboard).pasteClipboardContent(mockedSelectedParentDirectories.get(0));
+		verify(clipboard).pasteClipboardContent(mockedSelectedParentDirectories.get(0).get());
 	}
 
 	@Test

@@ -1,5 +1,7 @@
 package de.sharebox.file.controller;
 
+import com.google.common.base.Optional;
+import com.sun.istack.internal.NotNull;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
@@ -17,7 +19,7 @@ import java.util.List;
 public class ContextMenuController {
 	private final DirectoryViewController parentDirectoryController;
 	private final DirectoryViewClipboardService clipboard;
-	private TreePath currentTreePath;
+	private Optional<TreePath> currentTreePath = Optional.absent();
 
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 	protected SharingService sharingService = new SharingService();
@@ -49,10 +51,10 @@ public class ContextMenuController {
 	 * @param xPos     Die X Koordinate des Klicks.
 	 * @param yPos     Die Y Koordinate des Klicks.
 	 */
-	public void showMenu(TreePath treePath, int xPos, int yPos) {
+	public void showMenu(@NotNull TreePath treePath, int xPos, int yPos) {
 		popupMenu.setLocation(xPos, yPos);
 		popupMenu.setVisible(true);
-		currentTreePath = treePath;
+		currentTreePath = Optional.of(treePath);
 	}
 
 	/**
@@ -60,7 +62,7 @@ public class ContextMenuController {
 	 */
 	public void hideMenu() {
 		popupMenu.setVisible(false);
-		currentTreePath = null;
+		currentTreePath = Optional.absent();
 	}
 
 	/**
@@ -79,7 +81,7 @@ public class ContextMenuController {
 	 *
 	 * @return Der TreePath zum aktuell ausgewählten Objekt.
 	 */
-	public TreePath getCurrentTreePath() {
+	public Optional<TreePath> getCurrentTreePath() {
 		return currentTreePath;
 	}
 
@@ -88,10 +90,10 @@ public class ContextMenuController {
 	 *
 	 * @return Der FEntry auf den sich alle Aktionen des Kontextmenüs beziehen.
 	 */
-	public FEntry getSelectedFEntry() {
-		FEntry foundFEntry = null;
-		if (currentTreePath != null) {
-			foundFEntry = ((TreeNode) currentTreePath.getLastPathComponent()).getFEntry();
+	public Optional<FEntry> getSelectedFEntry() {
+		Optional<FEntry> foundFEntry = Optional.absent();
+		if (currentTreePath.isPresent()) {
+			foundFEntry = Optional.of(((TreeNode) currentTreePath.get().getLastPathComponent()).getFEntry());
 		}
 		return foundFEntry;
 	}
@@ -101,10 +103,10 @@ public class ContextMenuController {
 	 *
 	 * @return Das Oberverzeichnis des FEntries auf den sich alle Aktionen des Kontextmenüs beziehen.
 	 */
-	public Directory getParentOfSelectedFEntry() {
-		Directory foundDirectory = null;
-		if (currentTreePath != null) {
-			foundDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
+	public Optional<Directory> getParentOfSelectedFEntry() {
+		Optional<Directory> foundDirectory = Optional.absent();
+		if (currentTreePath.isPresent()) {
+			foundDirectory = Optional.of((Directory) ((TreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry());
 		}
 		return foundDirectory;
 	}
@@ -139,16 +141,16 @@ public class ContextMenuController {
 	public Action deleteFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			FEntry selectedFEntry = getSelectedFEntry();
+			Optional<FEntry> selectedFEntry = getSelectedFEntry();
 			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
 
-			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
-				final List<Directory> selectedFEntriesParents =  parentDirectoryController.getParentsOfSelectedFEntries();
+			if(selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
+				final List<Optional<Directory>> selectedFEntriesParents =  parentDirectoryController.getParentsOfSelectedFEntries();
 
 				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
-				Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.getParentPath().getLastPathComponent()).getFEntry();
-				parentDirectory.deleteFEntry(selectedFEntry);
+				Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
+				parentDirectory.deleteFEntry(selectedFEntry.get());
 			}
 
 			hideMenu();
@@ -160,7 +162,7 @@ public class ContextMenuController {
 	 * @param fEntriesToDelete Die zu löschenden FEntries.
 	 * @param parentDirectories Die Elternverzeichnisse der zu löschenden FEntries.
 	 */
-	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Directory> parentDirectories) {
+	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Optional<Directory>> parentDirectories) {
 		// Add observer to all elements in the list, so they can be removed from the list of items, that
 		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
 		FEntryObserver observer = new FEntryObserver() {
@@ -183,9 +185,7 @@ public class ContextMenuController {
 
 		//delete all selected FEntries
 		while(!parentDirectories.isEmpty()) {
-			if(parentDirectories.get(0) != null && fEntriesToDelete.get(0) != null) {
-				parentDirectories.get(0).deleteFEntry(fEntriesToDelete.get(0));
-			}
+			parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
 		 }
 	}
 
@@ -195,11 +195,11 @@ public class ContextMenuController {
 	public Action renameFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			FEntry selectedFEntry = getSelectedFEntry();
+			Optional<FEntry> selectedFEntry = getSelectedFEntry();
 
-			String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", getSelectedFEntry().getName());
+			String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", selectedFEntry.get().getName());
 
-			selectedFEntry.setName(newName);
+			selectedFEntry.get().setName(newName);
 
 			hideMenu();
 		}
@@ -211,15 +211,15 @@ public class ContextMenuController {
 	public Action copyFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			FEntry selectedFEntry = getSelectedFEntry();
+			Optional<FEntry> selectedFEntry = getSelectedFEntry();
 			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
 
-			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
+			if(selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
 				clipboard.resetClipboard();
 				clipboard.addToClipboard(selectedFEntries);
 			} else {
 				clipboard.resetClipboard();
-				clipboard.addToClipboard(selectedFEntry);
+				clipboard.addToClipboard(selectedFEntry.get());
 			}
 
 			hideMenu();
@@ -233,10 +233,10 @@ public class ContextMenuController {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			Directory pasteDirectory;
-			if(getSelectedFEntry() instanceof Directory) {
-				pasteDirectory = (Directory)getSelectedFEntry();
+			if(getSelectedFEntry().get() instanceof Directory) {
+				pasteDirectory = (Directory)getSelectedFEntry().get();
 			} else {
-				pasteDirectory = getParentOfSelectedFEntry();
+				pasteDirectory = getParentOfSelectedFEntry().get();
 			}
 
 			clipboard.pasteClipboardContent(pasteDirectory);
@@ -251,13 +251,13 @@ public class ContextMenuController {
 	public Action shareFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			FEntry selectedFEntry = getSelectedFEntry();
+			Optional<FEntry> selectedFEntry = getSelectedFEntry();
 			final List<FEntry> selectedFEntries = parentDirectoryController.getSelectedFEntries();
 
-			if(selectedFEntries.contains(selectedFEntry) && selectedFEntries.size() > 1) {
+			if(selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
 				sharingService.showShareFEntryDialog(parentDirectoryController.getSelectedFEntries());
 			} else {
-				sharingService.showShareFEntryDialog(selectedFEntry);
+				sharingService.showShareFEntryDialog(selectedFEntry.get());
 			}
 
 			hideMenu();

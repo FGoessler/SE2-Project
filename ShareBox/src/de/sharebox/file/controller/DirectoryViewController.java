@@ -1,5 +1,6 @@
 package de.sharebox.file.controller;
 
+import com.google.common.base.Optional;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Diese Klasse verwaltet den zentralen JTree in dem das Verzeichnis des Nutzers angezeigt wird.
@@ -96,7 +99,7 @@ public class DirectoryViewController {
 		File createdFile = null;
 		String newFilename = optionPane.showInputDialog("Geben Sie einen Namen für die neue Datei ein:", "");
 
-		if (newFilename != null && !newFilename.equals("")) {
+		if (!isNullOrEmpty(newFilename)) {
 			Directory parentDirectory = getParentDirectoryForFEntryCreation();
 			createdFile = parentDirectory.createNewFile(newFilename);
 		}
@@ -114,7 +117,7 @@ public class DirectoryViewController {
 		Directory createdDir = null;
 		String newDirectoryName = optionPane.showInputDialog("Geben Sie einen Namen für das neue Verzeichnis ein:", "");
 
-		if (newDirectoryName != null && !newDirectoryName.equals("")) {
+		if (!isNullOrEmpty(newDirectoryName)) {
 			Directory parentDirectory = getParentDirectoryForFEntryCreation();
 			createdDir = parentDirectory.createNewDirectory(newDirectoryName);
 		}
@@ -124,13 +127,13 @@ public class DirectoryViewController {
 	private Directory getParentDirectoryForFEntryCreation() {
 		Directory parentDirectory = null;
 
-		if (contextMenuController.getSelectedFEntry() == null && treeView.isSelectionEmpty()) {
+		if (!contextMenuController.getSelectedFEntry().isPresent() && treeView.isSelectionEmpty()) {
 			parentDirectory = (Directory) ((TreeNode) treeModel.getRoot()).getFEntry();
-		} else if (contextMenuController.getSelectedFEntry() != null) {
-			if (contextMenuController.getSelectedFEntry() instanceof Directory) {
-				parentDirectory = (Directory) contextMenuController.getSelectedFEntry();
+		} else if (contextMenuController.getSelectedFEntry().isPresent()) {
+			if (contextMenuController.getSelectedFEntry().get() instanceof Directory) {
+				parentDirectory = (Directory) contextMenuController.getSelectedFEntry().get();
 			} else {
-				parentDirectory = contextMenuController.getParentOfSelectedFEntry();
+				parentDirectory = contextMenuController.getParentOfSelectedFEntry().get();
 			}
 		} else if (!treeView.isSelectionEmpty()) {
 			if (((TreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry() instanceof Directory) {
@@ -165,20 +168,20 @@ public class DirectoryViewController {
 	 *
 	 * @return Die Elternverzeichnisse der im JTree ausgewählten FEntries.
 	 */
-	public List<Directory> getParentsOfSelectedFEntries() {
-		ArrayList<Directory> selectedFEntriesParents = new ArrayList<Directory>();
+	public List<Optional<Directory>> getParentsOfSelectedFEntries() {
+		ArrayList<Optional<Directory>> selectedFEntriesParents = new ArrayList<Optional<Directory>>();
 
 		if (treeView.getSelectionCount() > 0) {
 			for (TreePath path : treeView.getSelectionPaths()) {
 				if (path.getParentPath() == null) {
-					selectedFEntriesParents.add(null);
+					selectedFEntriesParents.add(Optional.<Directory>absent());
 				} else {
-					selectedFEntriesParents.add((Directory) ((TreeNode) path.getParentPath().getLastPathComponent()).getFEntry());
+					selectedFEntriesParents.add(Optional.of((Directory) ((TreeNode) path.getParentPath().getLastPathComponent()).getFEntry()));
 				}
 			}
 		}
 
-		return new ArrayList<Directory>(selectedFEntriesParents);
+		return new ArrayList<Optional<Directory>>(selectedFEntriesParents);
 	}
 
 	/**
@@ -291,19 +294,19 @@ public class DirectoryViewController {
 		@Override
 		public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
 			if (reason.equals(FEntry.ChangeType.NAME_CHANGED)) {
-				TreePath treePath = treePathForFEntry(fEntry);
+				TreePath treePath = treePathForFEntry(fEntry).get();
 				TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
 				for (TreeModelListener listener : treeModelListener) {
 					listener.treeNodesChanged(event);
 				}
 			} else if (reason.equals(FEntry.ChangeType.ADDED_CHILDREN)) {
-				TreePath treePath = treePathForFEntry(fEntry);
+				TreePath treePath = treePathForFEntry(fEntry).get();
 				TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
 				for (TreeModelListener listener : treeModelListener) {
 					listener.treeNodesInserted(event);
 				}
 			} else if (reason.equals(FEntry.ChangeType.REMOVED_CHILDREN)) {
-				TreePath treePath = treePathForFEntry(fEntry);
+				TreePath treePath = treePathForFEntry(fEntry).get();
 				TreeModelEvent event = new TreeModelEvent(fEntry, treePath);
 				for (TreeModelListener listener : treeModelListener) {
 					listener.treeNodesRemoved(event);
@@ -322,11 +325,12 @@ public class DirectoryViewController {
 		 * Generiert einen TreePath für den gegebenen FEntry - dazu wird eine Breitensuche durchgeführt! Diese Methode bei
 		 * großen Bäumen daher möglichst wenig nutzen!
 		 *
+		 *
 		 * @param fEntry Der FEntry dessen Position im Baum gefunden werden soll.
 		 * @return Ein TreePath der die Position des FEntries bestimmt. Die Komponenten des TreePaths sind jeweils TreeNode Objekte.
 		 */
-		private TreePath treePathForFEntry(FEntry fEntry) {
-			TreePath foundPath = null;
+		private Optional<TreePath> treePathForFEntry(FEntry fEntry) {
+			Optional<TreePath> foundPath = Optional.absent();
 
 			//Breitensuche nach dem FEntry im Baum
 			Queue<TreePath> pathsToCheck = new LinkedBlockingQueue<TreePath>();
@@ -336,7 +340,7 @@ public class DirectoryViewController {
 				TreeNode currentNode = (TreeNode) currentPath.getLastPathComponent();
 
 				if (currentNode.getFEntry().equals(fEntry)) {
-					foundPath = currentPath;
+					foundPath = Optional.of(currentPath);
 					break;
 				} else if (currentNode.getFEntry() instanceof Directory) {
 					for (FEntry subFEntry : ((Directory) currentNode.getFEntry()).getFEntries()) {

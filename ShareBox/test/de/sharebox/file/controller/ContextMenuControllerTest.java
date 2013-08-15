@@ -1,5 +1,6 @@
 package de.sharebox.file.controller;
 
+import com.google.common.base.Optional;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewClipboardService;
@@ -50,18 +51,18 @@ public class ContextMenuControllerTest {
 
 	@Test
 	public void returnsTheSelectedFEntryBasedOnTheGivenTreePath() {
-		assertThat(contextMenuController.getSelectedFEntry()).isNull();
+		assertThat(contextMenuController.getSelectedFEntry()).isEqualTo(Optional.absent());
 
 		contextMenuController.showMenu(mockedTreePath1, 20, 20);
-		assertThat(contextMenuController.getSelectedFEntry()).isSameAs(parentDirectory.getFEntries().get(0));
+		assertThat(contextMenuController.getSelectedFEntry().get()).isSameAs(parentDirectory.getFEntries().get(0));
 	}
 
 	@Test
 	public void returnsTheSelectedFEntriesParentBasedOnTheGivenTreePath() {
-		assertThat(contextMenuController.getSelectedFEntry()).isNull();
+		assertThat(contextMenuController.getSelectedFEntry()).isEqualTo(Optional.absent());
 
 		contextMenuController.showMenu(mockedTreePath1, 20, 20);
-		assertThat(contextMenuController.getParentOfSelectedFEntry()).isSameAs(parentDirectory);
+		assertThat(contextMenuController.getParentOfSelectedFEntry().get()).isSameAs(parentDirectory);
 	}
 
 	@Test
@@ -70,13 +71,13 @@ public class ContextMenuControllerTest {
 
 		assertThat(contextMenuController.isMenuVisible()).isTrue();
 		assertThat(contextMenuController.popupMenu.isVisible()).isTrue();
-		assertThat(contextMenuController.getCurrentTreePath()).isEqualTo(mockedTreePath1);
+		assertThat(contextMenuController.getCurrentTreePath().get()).isEqualTo(mockedTreePath1);
 
 		contextMenuController.hideMenu();
 
 		assertThat(contextMenuController.isMenuVisible()).isFalse();
 		assertThat(contextMenuController.popupMenu.isVisible()).isFalse();
-		assertThat(contextMenuController.getCurrentTreePath()).isNull();
+		assertThat(contextMenuController.getCurrentTreePath()).isEqualTo(Optional.absent());
 	}
 
 	@Test
@@ -107,9 +108,9 @@ public class ContextMenuControllerTest {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
 		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
-		List<Directory> parents = new ArrayList<Directory>();
-		parents.add(parentDirectory);
-		parents.add(parentDirectory);
+		List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
+		parents.add(Optional.of(parentDirectory));
+		parents.add(Optional.of(parentDirectory));
 		when(directoryViewController.getParentsOfSelectedFEntries()).thenReturn(parents);
 
 		performClickOnMenuItem(contextMenuController.deleteFEntry);

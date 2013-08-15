@@ -1,5 +1,7 @@
 package de.sharebox.file.model;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
@@ -152,15 +154,15 @@ public class FEntry {
 	}
 
 	/**
-	 * Liefert eine Liste aller an Nutzer vergebenen Permissions. Nutzer die keinerlei Rechte an einem FEntry besitzen
-	 * werden in der Liste nicht mit einem eigenen fEntryPermission Objekt aufgeführt.
-	 * ACHTUNG: Direkte Änderungen an dieser Liste haben feuern keine Notifications und können somit auch nicht
-	 * verfolgt werden. UI, API und andere Teile des Programms können dadurch außer Sync kommen!
+	 * Liefert eine unveränderbare Liste aller an Nutzer vergebenen Permissions. Nutzer die keinerlei Rechte an einem
+	 * FEntry besitzen werden in der Liste nicht mit einem eigenen fEntryPermission Objekt aufgeführt.
+	 * Um Änderungen an den Rechten vorzunehmen sollten die Objekte direkt manipuliert oder die setPermission Methode
+	 * verwendet werden.
 	 *
 	 * @return Liste aller vergebenen FEntryPermissions.
 	 */
-	public List<FEntryPermission> getPermissions() {
-		return permissions;
+	public ImmutableList<FEntryPermission> getPermissions() {
+		return ImmutableList.copyOf(permissions);
 	}
 
 	/**
@@ -170,18 +172,18 @@ public class FEntry {
 	 * @return das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
 	public FEntryPermission getPermissionOfUser(User user) {
-		FEntryPermission permission = null;
+		Optional<FEntryPermission> permission = Optional.absent();
 
 		for (FEntryPermission perm : permissions) {
 			if (perm.getUser().getEmail().equals(user.getEmail())) {
-				permission = perm;
+				permission = Optional.of(perm);
 			}
 		}
 
-		if (permission == null) {
-			permission = new FEntryPermission(user, this);
+		if (!permission.isPresent()) {
+			permission = Optional.of(new FEntryPermission(user, this));
 		}
 
-		return permission;
+		return permission.get();
 	}
 }

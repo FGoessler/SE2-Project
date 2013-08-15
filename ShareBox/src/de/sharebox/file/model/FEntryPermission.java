@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import com.sun.istack.internal.NotNull;
 import de.sharebox.user.model.User;
 
 /**
@@ -20,7 +21,7 @@ public class FEntryPermission {
 	 * @param user   Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
 	 */
-	public FEntryPermission(User user, FEntry fEntry) {
+	public FEntryPermission(@NotNull User user, @NotNull FEntry fEntry) {
 		this.user = user;
 		this.fEntry = fEntry;
 	}
@@ -60,9 +61,7 @@ public class FEntryPermission {
 	public void setReadAllowed(Boolean readAllowed) {
 		this.readAllowed = readAllowed;
 
-		if (fEntry != null) {
-			fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
-		}
+		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
 	}
 
 	/**
@@ -82,9 +81,7 @@ public class FEntryPermission {
 	public void setWriteAllowed(Boolean writeAllowed) {
 		this.writeAllowed = writeAllowed;
 
-		if (fEntry != null) {
-			fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
-		}
+		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
 	}
 
 	/**
@@ -104,9 +101,7 @@ public class FEntryPermission {
 	public void setManageAllowed(Boolean manageAllowed) {
 		this.manageAllowed = manageAllowed;
 
-		if (fEntry != null) {
-			fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
-		}
+		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
 	}
 
 	/**
@@ -121,8 +116,6 @@ public class FEntryPermission {
 		writeAllowed = write;
 		manageAllowed = manage;
 
-		if (fEntry != null) {
-			fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
-		}
+		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
 	}
 }
