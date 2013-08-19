@@ -1,4 +1,4 @@
-<frame name="register" size="800,600" title="Registrieren" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+<frame name="register" size="800,600" title="Registrieren" defaultCloseOperation="JFrame.DO_NOTHING_ON_CLOSE">
 
     <panel Layout="GridBagLayout">
         <label font="Georgia-BOLD-12" text="E-Mail Adresse">
@@ -54,7 +54,7 @@
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
         </label>
 
-        <combobox id="storageLimitField" initclass="de.sharebox.helpers.ComboModelHelper" Action="selectBoxAction">
+        <combobox id="storageLimitField" initclass="de.sharebox.user.model.StorageLimitComboBoxModel" Action="selectBoxAction">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
         </combobox>
 

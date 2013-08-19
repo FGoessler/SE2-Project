@@ -1,7 +1,7 @@
 package de.sharebox.api;
 
-import de.sharebox.user.PaymentInfo;
-import de.sharebox.user.User;
+import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class UserAPI {
 		paymentInfo.setZipCode("01234");
 		user.setPaymentInfo(paymentInfo);
 		
-		user.setStorageLimit("Zehn GB");
+		user.setStorageLimit("10GB");
 		user.setGender("m");
 
 		User user2 = new User();
@@ -77,7 +77,7 @@ public class UserAPI {
 		paymentInfo.setZipCode("14569");
 		user2.setPaymentInfo(paymentInfo);
 		
-		user2.setStorageLimit("Zwanzig GB");
+		user2.setStorageLimit("20GB");
 		user2.setGender("m");
 
 		if (registerUser(user) && registerUser(user2)) {
@@ -159,20 +159,28 @@ public class UserAPI {
 		Boolean userAlreadyExists = false;
 		Boolean success = false;
 		//search through existing users
-		for (User aUser : userList) {
-			if (aUser.getEmail().equals(user.getEmail())) {
-				userAlreadyExists = true;
+		
+		if (user.getEmail() != "" && user.getPassword() != ""){
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(user.getEmail())) {
+					userAlreadyExists = true;
+				}
+			}
+			if (!userAlreadyExists) {
+				
+				userList.add(new User(user));
+				
+				success = true;
 			}
 		}
-		if (!userAlreadyExists) {
-			userList.add(new User(user));
-			success = true;
+		else {
+			success = false;
 		}
-
+			
 		if (success) {
 			APILogger.logMessage("Registration successful");
 		} else {
-			APILogger.logMessage("Registration failed: User already exists");
+			APILogger.logMessage("Registration failed.");
 		}
 		return success;
 	}
@@ -245,7 +253,8 @@ public class UserAPI {
 		//search through existing users
 		for (User aUser : userList) {
 			if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
-					&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) {
+					&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())
+					&& newUser.getEmail() != "" && newUser.getPassword() != "") {
 				aUser.setEmail(newUser.getEmail());
 				aUser.setPassword(newUser.getPassword());
 				success = true;
@@ -271,6 +280,7 @@ public class UserAPI {
 	public boolean inviteUser(User invitingUser, User invitedUser) {
 		Boolean success = true;
 		//search through existing users
+		
 		for (User aUser : userList) {
 			if (aUser.getEmail().equals(invitedUser.getEmail())) {
 				success = false;
@@ -302,6 +312,11 @@ public class UserAPI {
 		User user = new User();
 
 		if (isLoggedIn()) {
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(currentUser.getEmail())) {
+					currentUser = new User (aUser);
+				}
+			}
 			user = new User(currentUser);
 			user.setPassword("");
 		}

@@ -32,7 +32,7 @@ public class ContextMenuTest {
 
 	@Before
 	public void setUp() {
-		contextMenu = new ContextMenu(directoryViewController);
+		contextMenu = new ContextMenu(directoryViewController, new DirectoryViewClipboardService());
 	}
 
 	@Before
