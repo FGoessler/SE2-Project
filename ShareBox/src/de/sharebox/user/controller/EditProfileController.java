@@ -1,12 +1,11 @@
 package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
-import de.sharebox.user.model.User;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.user.model.User;
+
 import javax.swing.*;
-
-import org.swixml.SwingEngine;
-
 import java.awt.event.ActionEvent;
 
 public class EditProfileController {
@@ -18,14 +17,9 @@ public class EditProfileController {
 
 	
 	public EditProfileController() {
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			frame = (JFrame) swix.render("resources/xml/editProfile.xml");
-			frame.setVisible(true);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create register window!");
-		}
-		
+		frame = (JFrame) new SwingEngineHelper().render(this, "editProfile");
+		frame.setVisible(true);
+
 		User user = UserAPI.getUniqueInstance().getCurrentUser();
 		lastnameField.setText(user.getLastname());
 		firstnameField.setText(user.getFirstname());

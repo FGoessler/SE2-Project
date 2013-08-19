@@ -5,13 +5,13 @@ import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
+import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenuFactory;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
 import de.sharebox.user.model.User;
-import org.swixml.SwingEngine;
 
 import javax.swing.*;
 
@@ -70,13 +70,8 @@ public class MainViewController {
 		this.currentUser = user;
 
 		//create window
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			frame = (JFrame) swix.render("resources/xml/mainWindow.xml");
-			frame.setVisible(true);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create Swing Window!");
-		}
+		frame = (JFrame) new SwingEngineHelper().render(this, "mainWindow");
+		frame.setVisible(true);
 
 		directoryViewControllerFactory.create(tree);
 

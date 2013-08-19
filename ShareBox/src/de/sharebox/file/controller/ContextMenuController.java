@@ -11,7 +11,7 @@ import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
-import org.swixml.SwingEngine;
+import de.sharebox.helpers.SwingEngineHelper;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -58,12 +58,8 @@ public class ContextMenuController {
 		this.sharingService = sharingService;
 		this.optionPane = optionPaneHelper;
 
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			swix.render("resources/xml/contextMenu.xml").setVisible(true);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create context menu!");
-		}
+		new SwingEngineHelper().render(this, "contextMenu");
+
 		popupMenu.setVisible(false);
 	}
 

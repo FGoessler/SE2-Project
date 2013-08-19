@@ -2,8 +2,8 @@ package de.sharebox.mainui.menu;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.mainui.MainViewController;
-import org.swixml.SwingEngine;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,13 +24,9 @@ public class AdministrationMenu {
 	@Inject
 	AdministrationMenu(@Assisted JMenuBar menuBar, @Assisted MainViewController mainViewController) {
 		this.mainViewController = mainViewController;
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			JMenu menu = (JMenu) swix.render("resources/xml/menu/administrationMenu.xml");
-			menuBar.add(menu);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create Swing AdministrationMenu!");
-		}
+
+		JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/administrationMenu");
+		menuBar.add(menu);
 	}
 
 	/**

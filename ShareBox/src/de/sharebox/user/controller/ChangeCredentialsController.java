@@ -2,12 +2,10 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
-
-import org.swixml.SwingEngine;
-
 import java.awt.event.ActionEvent;
 
 public class ChangeCredentialsController {
@@ -20,14 +18,9 @@ public class ChangeCredentialsController {
 
 
 	public ChangeCredentialsController() {
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			frame = (JFrame) swix.render("resources/xml/changeCredentials.xml");
-			frame.setVisible(true);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create change credentials window!");
-		}
-		
+		frame = (JFrame) new SwingEngineHelper().render(this, "changeCredentials");
+		frame.setVisible(true);
+
 		User user = UserAPI.getUniqueInstance().getCurrentUser();
 		eMailField.setText(user.getEmail());
 	}

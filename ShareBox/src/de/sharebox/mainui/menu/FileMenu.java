@@ -7,7 +7,7 @@ import de.sharebox.file.controller.ContextMenuController;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.file.services.DirectoryViewSelectionService;
-import org.swixml.SwingEngine;
+import de.sharebox.helpers.SwingEngineHelper;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -35,13 +35,9 @@ public class FileMenu {
 			 DirectoryViewClipboardService clipboard) {
 		this.selectionService = selectionService;
 		this.clipboard = clipboard;
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			JMenu menu = (JMenu) swix.render("resources/xml/menu/fileMenu.xml");
-			menuBar.add(menu);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create Swing FileMenu!");
-		}
+
+		JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/fileMenu");
+		menuBar.add(menu);
 	}
 
 	/**

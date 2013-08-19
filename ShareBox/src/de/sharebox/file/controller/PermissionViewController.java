@@ -8,7 +8,7 @@ import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
-import org.swixml.SwingEngine;
+import de.sharebox.helpers.SwingEngineHelper;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -45,13 +45,9 @@ public class PermissionViewController {
 							 DirectoryViewSelectionService selectionService,
 							 SharingService sharingService) {
 
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			JComponent panel = (JComponent) swix.render("resources/xml/permissionView.xml");
-			splitPane.setRightComponent(panel);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create Permission View!");
-		}
+		JComponent panel = (JComponent) new SwingEngineHelper().render(this, "permissionView");
+		splitPane.setRightComponent(panel);
+
 		this.sharingService = sharingService;
 
 		this.selectionService = selectionService;
