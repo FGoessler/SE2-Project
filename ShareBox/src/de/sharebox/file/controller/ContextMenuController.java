@@ -1,12 +1,15 @@
 package de.sharebox.file.controller;
 
 import com.google.common.base.Optional;
+import com.google.inject.Inject;
 import com.sun.istack.internal.NotNull;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewClipboardService;
+import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
+import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.swixml.SwingEngine;
 
@@ -16,23 +19,44 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dieser Controller ist für das Kontextmenü verantwortlich, das per Rechtsklick auf einen Eintrag im JTree des
+ * DirectoryViewControllers aufgerufen werden kann.
+ */
 public class ContextMenuController {
-	private final DirectoryViewController parentDirectoryController;
+	private final DirectoryViewSelectionService selectionService;
 	private final DirectoryViewClipboardService clipboard;
+	private final SharingService sharingService;
+	private final OptionPaneHelper optionPane;
+
 	private Optional<TreePath> currentTreePath = Optional.absent();
 
-	protected OptionPaneHelper optionPane = new OptionPaneHelper();
-	protected SharingService sharingService = new SharingService();
+	/**
+	 * Das JPopupMenu dieses Kontextmenüs.
+	 * Wird mittels SWIxml gesetzt.
+	 */
 	protected JPopupMenu popupMenu;
 
 	/**
-	 * Erstellt ein neues ContextMenu. Das Menü wird dazu aus der contextMenu.xml Datei generiert.
+	 * Erstellt ein neues ContextMenu. Das Menü wird dazu aus der contextMenu.xml Datei generiert.<br/>
+	 * Dieses Objekt sollte im Produktivcode nur per Dependency Injection von Guice erstellt werden.
 	 *
-	 * @param parentDirectoryController Der DirectoryViewController auf den sich das Kontextmenü bezieht.
+	 * @param selectionService Ein DirectoryViewSelectionService um die aktuelle Auswahl im JTree erhalten zu können.
+	 * @param clipboard        Ein DirectoryViewClipboardService um Zugriff auf den Inhalt der Zwischenablage für FEntries zu
+	 *                         erhalten.
+	 * @param sharingService   Ein SharingService mit dem FEntries für andere Nutzer freigegeben werden können.
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Erzeugen von Dialogfenstern.
 	 */
-	public ContextMenuController(DirectoryViewController parentDirectoryController, DirectoryViewClipboardService clipboard) {
-		this.parentDirectoryController = parentDirectoryController;
+	@Inject
+	ContextMenuController(DirectoryViewSelectionService selectionService,
+						  DirectoryViewClipboardService clipboard,
+						  SharingService sharingService,
+						  OptionPaneHelper optionPaneHelper) {
+
+		this.selectionService = selectionService;
 		this.clipboard = clipboard;
+		this.sharingService = sharingService;
+		this.optionPane = optionPaneHelper;
 
 		try {
 			SwingEngine swix = new SwingEngine(this);
@@ -117,7 +141,7 @@ public class ContextMenuController {
 	public Action createNewFile = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			parentDirectoryController.createNewFileBasedOnUserSelection();
+			selectionService.createNewFileBasedOnUserSelection(Optional.of(ContextMenuController.this));
 
 			hideMenu();
 		}
@@ -129,7 +153,7 @@ public class ContextMenuController {
 	public Action createNewDirectory = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			parentDirectoryController.createNewDirectoryBasedOnUserSelection();
+			selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(ContextMenuController.this));
 
 			hideMenu();
 		}
@@ -142,10 +166,10 @@ public class ContextMenuController {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			Optional<FEntry> selectedFEntry = getSelectedFEntry();
-			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
+			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(selectionService.getSelectedFEntries());
 
-			if(selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
-				final List<Optional<Directory>> selectedFEntriesParents =  parentDirectoryController.getParentsOfSelectedFEntries();
+			if (selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
+				final List<Optional<Directory>> selectedFEntriesParents = selectionService.getParentsOfSelectedFEntries();
 
 				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
@@ -159,7 +183,8 @@ public class ContextMenuController {
 
 	/**
 	 * Löscht die gegebenen FEntries aus ihren entsprechenden Elternverzeichnissen.
-	 * @param fEntriesToDelete Die zu löschenden FEntries.
+	 *
+	 * @param fEntriesToDelete  Die zu löschenden FEntries.
 	 * @param parentDirectories Die Elternverzeichnisse der zu löschenden FEntries.
 	 */
 	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Optional<Directory>> parentDirectories) {
@@ -167,26 +192,28 @@ public class ContextMenuController {
 		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
 		FEntryObserver observer = new FEntryObserver() {
 			@Override
-			public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {}
+			public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
+				//not used here
+			}
 
 			@Override
 			public void fEntryDeletedNotification(FEntry fEntry) {
 				//remove FEntry from list
 				int index = fEntriesToDelete.indexOf(fEntry);
-				   if(index >= 0) {
+				if (index >= 0) {
 					fEntriesToDelete.remove(index);
 					parentDirectories.remove(index);
 				}
 			}
 		};
-		for(FEntry fEntry : fEntriesToDelete) {
+		for (FEntry fEntry : fEntriesToDelete) {
 			fEntry.addObserver(observer);
 		}
 
 		//delete all selected FEntries
-		while(!parentDirectories.isEmpty()) {
+		while (!parentDirectories.isEmpty()) {
 			parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
-		 }
+		}
 	}
 
 	/**
@@ -212,9 +239,9 @@ public class ContextMenuController {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			Optional<FEntry> selectedFEntry = getSelectedFEntry();
-			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(parentDirectoryController.getSelectedFEntries());
+			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(selectionService.getSelectedFEntries());
 
-			if(selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
+			if (selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
 				clipboard.resetClipboard();
 				clipboard.addToClipboard(selectedFEntries);
 			} else {
@@ -233,8 +260,8 @@ public class ContextMenuController {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			Directory pasteDirectory;
-			if(getSelectedFEntry().get() instanceof Directory) {
-				pasteDirectory = (Directory)getSelectedFEntry().get();
+			if (getSelectedFEntry().get() instanceof Directory) {
+				pasteDirectory = (Directory) getSelectedFEntry().get();
 			} else {
 				pasteDirectory = getParentOfSelectedFEntry().get();
 			}
@@ -252,10 +279,10 @@ public class ContextMenuController {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			Optional<FEntry> selectedFEntry = getSelectedFEntry();
-			final List<FEntry> selectedFEntries = parentDirectoryController.getSelectedFEntries();
+			final List<FEntry> selectedFEntries = selectionService.getSelectedFEntries();
 
-			if(selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
-				sharingService.showShareFEntryDialog(parentDirectoryController.getSelectedFEntries());
+			if (selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
+				sharingService.showShareFEntryDialog(selectionService.getSelectedFEntries());
 			} else {
 				sharingService.showShareFEntryDialog(selectedFEntry.get());
 			}

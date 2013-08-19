@@ -1,22 +1,15 @@
 package de.sharebox.user.controller;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-
-import org.swixml.SwingEngine;
-
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
+import org.swixml.SwingEngine;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class InvitationController {
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
-	private DirectoryViewController parentDirectoryController;
 	private JFrame frame;
 	public JTextField mailField;
 
@@ -29,7 +22,6 @@ public class InvitationController {
 		} catch (Exception exception) {
 			System.out.println("Couldn't create inivitation Window!");
 		}
-		
 	}
 	
 	

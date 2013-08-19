@@ -1,6 +1,7 @@
 package de.sharebox;
 
-import de.sharebox.mainui.MainViewController;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import de.sharebox.user.controller.LoginController;
 
 /**
@@ -8,18 +9,20 @@ import de.sharebox.user.controller.LoginController;
  */
 public final class Main {
 
-	public static LoginController loginController;
-	public static MainViewController mainWindowViewController;
+	/**
+	 * Dies ist der zentrale Injector um erste Objekte mittels Dependency Injection zu erstellen.
+	 */
+	private static Injector injector = Guice.createInjector(new ShareboxModule());
 
+	private Main() {
+	}
 
-	private Main() {}
-
-	/** Dies ist nur die standard main method, die beim Programstart aufgerufen wird und das erste Fenster erzeugt.
-     *
-     * @param args Programargumente - nicht genutzt von uns.
-     */
-    public static void main(String[] args)
-    {
-        loginController = new LoginController();
-    }
+	/**
+	 * Dies ist die standard main-method, die beim Programstart aufgerufen wird und das erste Fenster erzeugt.
+	 *
+	 * @param args Programargumente - von uns nicht genutzt.
+	 */
+	public static void main(String[] args) {
+		injector.getInstance(LoginController.class);
+	}
 }

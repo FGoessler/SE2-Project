@@ -130,7 +130,7 @@ public class DirectoryTest {
 		directory.deleteFEntry(createdFile);
 		assertThat(createdFile).isNotIn(directory.getFEntries());
 
-		verify(observer, times(1)).fEntryDeletedNotification(createdFile);    	//assert that notification was sent
+		verify(observer, times(1)).fEntryDeletedNotification(createdFile);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
@@ -149,8 +149,8 @@ public class DirectoryTest {
 		directory.deleteFEntry(createdDirectory);
 		assertThat(createdDirectory).isNotIn(directory.getFEntries());
 
-		verify(observer, times(1)).fEntryDeletedNotification(createdFile);         	//assert that notification was sent
-		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);    	//assert that notification was sent
+		verify(observer, times(1)).fEntryDeletedNotification(createdFile);            //assert that notification was sent
+		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
 		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);

@@ -1,7 +1,6 @@
 package de.sharebox.mainui.menu;
 
 import de.sharebox.mainui.MainViewController;
-import de.sharebox.mainui.menu.AdministrationMenu;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

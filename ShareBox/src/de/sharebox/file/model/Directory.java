@@ -27,8 +27,8 @@ public class Directory extends FEntry {
 		super(sourceDirectory);
 
 		this.fEntries = new ArrayList<FEntry>();
-		for(FEntry fEntry : sourceDirectory.fEntries) {
-			if(fEntry instanceof File) {
+		for (FEntry fEntry : sourceDirectory.fEntries) {
+			if (fEntry instanceof File) {
 				this.fEntries.add(new File((File) fEntry));
 			} else {
 				this.fEntries.add(new Directory((Directory) fEntry));
@@ -83,6 +83,7 @@ public class Directory extends FEntry {
 
 	/**
 	 * Fügt dem Verzeichnis einen FEntry hinzu.
+	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
 	 */
 	public void addFEntry(FEntry newFEntry) {

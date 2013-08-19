@@ -4,12 +4,16 @@ import com.google.common.base.Optional;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewClipboardService;
+import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
+import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.swing.*;
@@ -20,22 +24,26 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextMenuControllerTest {
-	private ContextMenuController contextMenuController;
 	private Directory parentDirectory;
 	private TreePath mockedTreePath1;
 	private TreePath mockedTreePath2;
 
 	@Mock
-	private DirectoryViewController directoryViewController;
+	private DirectoryViewSelectionService selectionService;
+	@Mock
+	private OptionPaneHelper optionPaneHelper;
+	@Mock
+	private SharingService sharingService;
+	@Spy
+	private DirectoryViewClipboardService clipboardService;
 
-	@Before
-	public void setUp() {
-		contextMenuController = new ContextMenuController(directoryViewController, new DirectoryViewClipboardService());
-	}
+	@InjectMocks
+	private ContextMenuController contextMenuController;
 
 	@Before
 	public void createMockedTreePath() {
@@ -84,14 +92,14 @@ public class ContextMenuControllerTest {
 	public void userCanCreateANewFile() {
 		performClickOnMenuItem(contextMenuController.createNewFile);
 
-		verify(directoryViewController).createNewFileBasedOnUserSelection();
+		verify(selectionService).createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
 	}
 
 	@Test
 	public void userCanCreateANewDirectory() {
 		performClickOnMenuItem(contextMenuController.createNewDirectory);
 
-		verify(directoryViewController).createNewDirectoryBasedOnUserSelection();
+		verify(selectionService).createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
 	}
 
 	@Test
@@ -107,11 +115,11 @@ public class ContextMenuControllerTest {
 	public void userCanDeleteMultipleFEntriesAtOnce() {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
-		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
+		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
 		List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
 		parents.add(Optional.of(parentDirectory));
 		parents.add(Optional.of(parentDirectory));
-		when(directoryViewController.getParentsOfSelectedFEntries()).thenReturn(parents);
+		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
 
 		performClickOnMenuItem(contextMenuController.deleteFEntry);
 
@@ -120,8 +128,7 @@ public class ContextMenuControllerTest {
 
 	@Test
 	public void userCanRenameAFEntry() {
-		contextMenuController.optionPane = mock(OptionPaneHelper.class);
-		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("A new File name");
+		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("A new File name");
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
 
@@ -144,7 +151,7 @@ public class ContextMenuControllerTest {
 	public void userCanCopyAndPasteMultipleFEntries() {
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
 
-		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
+		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
 
 		performClickOnMenuItem(contextMenuController.copyFEntry);
 		performClickOnMenuItem(contextMenuController.pasteFEntry);
@@ -154,28 +161,24 @@ public class ContextMenuControllerTest {
 
 	@Test
 	public void userCanShareMultipleFEntries() {
-		contextMenuController.optionPane = mock(OptionPaneHelper.class);
-		contextMenuController.sharingService = mock(SharingService.class);
-		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
-		when(directoryViewController.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
+		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
+		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
 
 		performClickOnMenuItem(contextMenuController.shareFEntry);
 
-		verify(contextMenuController.sharingService).showShareFEntryDialog(parentDirectory.getFEntries());
+		verify(sharingService).showShareFEntryDialog(parentDirectory.getFEntries());
 	}
 
 	@Test
 	public void userCanShareAFEntry() {
-		contextMenuController.optionPane = mock(OptionPaneHelper.class);
-		contextMenuController.sharingService = mock(SharingService.class);
-		when(contextMenuController.optionPane.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
+		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
 		List<FEntry> selectionNotIncludingClickPosition = new ArrayList<FEntry>();
 		selectionNotIncludingClickPosition.add(parentDirectory.getFEntries().get(1));
-		when(directoryViewController.getSelectedFEntries()).thenReturn(selectionNotIncludingClickPosition);
+		when(selectionService.getSelectedFEntries()).thenReturn(selectionNotIncludingClickPosition);
 
 		performClickOnMenuItem(contextMenuController.shareFEntry);
 
-		verify(contextMenuController.sharingService).showShareFEntryDialog(parentDirectory.getFEntries().get(0));
+		verify(sharingService).showShareFEntryDialog(parentDirectory.getFEntries().get(0));
 	}
 
 	private void performClickOnMenuItem(Action menuItemAction) {

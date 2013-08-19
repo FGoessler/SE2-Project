@@ -1,9 +1,12 @@
 package de.sharebox.file.controller;
 
 import com.google.common.base.Optional;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import org.swixml.SwingEngine;
 
@@ -19,26 +22,29 @@ import java.util.List;
  * Dieser Controller ist für die Darstellung der Rechte in der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
  */
 public class PermissionViewController {
-	private Optional<FEntry> currentFEntry = Optional.absent();
+	private final DirectoryViewSelectionService selectionService;
+	private final SharingService sharingService;
 
-	private DirectoryViewController directoryViewController;
+	private Optional<FEntry> currentFEntry = Optional.absent();
 
 	public JTable permissionTable;
 	public JTextArea messageTextArea;
 	public JPanel buttonPanel;
-	private SharingService sharingService = new SharingService();
 
 	/**
-	 * Erstellt einen neuen PermissionViewController.
-	 * Dieser Konstruktor kann zum injecten aller vorkommenden Abhängigkeiten verwendet werden. Um eine Instantz mit
-	 * Default-Abhängigkeiten zu erhalten ist der public Konstruktor zu verwenden!
+	 * Erstellt einen neuen PermissionViewController.<br/>
+	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden. Siehe auch PermissionViewControllerFactory.
 	 *
-	 * @param splitPane               Der SplitPane in dessen rechter Hälfte der Controller seien Inhalte darstellen soll.
-	 * @param directoryViewController Der DirectoryViewController auf den sich diser PermissionViewController bezieht.
-	 *                                Wird benötigt um die aktuell ausgewählte Datei/Verzeichnis im JTree zu erhalten.
-	 * @param sharingService          Eine SharingService Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
+	 * @param splitPane        Der SplitPane in dessen rechter Hälfte der Controller seien Inhalte darstellen soll.
+	 * @param selectionService Ein DirectoryViewSelectionService mittels dessen die aktuelle Auswahl des Nutzer im JTree
+	 *                         festgestellt werden kann.
+	 * @param sharingService   Eine SharingService Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
 	 */
-	protected PermissionViewController(JSplitPane splitPane, DirectoryViewController directoryViewController, SharingService sharingService) {
+	@Inject
+	PermissionViewController(@Assisted JSplitPane splitPane,
+							 DirectoryViewSelectionService selectionService,
+							 SharingService sharingService) {
+
 		try {
 			SwingEngine swix = new SwingEngine(this);
 			JComponent panel = (JComponent) swix.render("resources/xml/permissionView.xml");
@@ -48,21 +54,10 @@ public class PermissionViewController {
 		}
 		this.sharingService = sharingService;
 
-		this.directoryViewController = directoryViewController;
-		this.directoryViewController.addTreeSelectionListener(treeSelectionListener);
+		this.selectionService = selectionService;
+		this.selectionService.addTreeSelectionListener(treeSelectionListener);
 
 		this.permissionTable.setModel(tableModel);
-	}
-
-	/**
-	 * Erstellt einen neuen PermissionViewController.
-	 *
-	 * @param splitPane               Der SplitPane in dessen rechter Hälfte der Controller seien Inhalte darstellen soll.
-	 * @param directoryViewController Der DirectoryViewController auf den sich diser PermissionViewController bezieht.
-	 *                                Wird benötigt um die aktuell ausgewählte Datei/Verzeichnis im JTree zu erhalten.
-	 */
-	public PermissionViewController(JSplitPane splitPane, DirectoryViewController directoryViewController) {
-		this(splitPane, directoryViewController, new SharingService());
 	}
 
 	/**
@@ -77,7 +72,7 @@ public class PermissionViewController {
 				currentFEntry.get().removeObserver(fEntryObserver);
 			}
 
-			List<FEntry> selectedFEntries = directoryViewController.getSelectedFEntries();
+			List<FEntry> selectedFEntries = selectionService.getSelectedFEntries();
 			if (selectedFEntries.size() > 1) {
 				currentFEntry = Optional.absent();
 

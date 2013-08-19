@@ -1,5 +1,6 @@
 package de.sharebox.file.services;
 
+import com.google.inject.Inject;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
@@ -13,9 +14,23 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * Dieser Klasse stellt Methoden zur Verfügung um FEntries für andere Nutzer freizugeben.
  */
 public class SharingService {
-	private static final String EMAIL_PATTERN ="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	/**
+	 * RegEx-Pattern zum Erkennen einer (vom Format her) gültigen Email-Addresse.
+	 */
+	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	protected OptionPaneHelper optionPaneHelper = new OptionPaneHelper();
+	private final OptionPaneHelper optionPaneHelper;
+
+	/**
+	 * Erstellt einen neuen SharingService.<br/>
+	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 *
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialog-Fenstern.
+	 */
+	@Inject
+	SharingService(OptionPaneHelper optionPaneHelper) {
+		this.optionPaneHelper = optionPaneHelper;
+	}
 
 	/**
 	 * Zeigt einen Input-Dialog an und gibt den gegebenen FEntry für den Nutzer mit der im Dialog eingegebenen

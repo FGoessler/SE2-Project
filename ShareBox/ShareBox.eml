@@ -25,5 +25,8 @@
 	<levels>
 		<level name="guava-14.0.1" value="project"/>
 		<level name="guice-3.0" value="project"/>
+		<level name="guice-assistedinject-3.0" value="project"/>
+		<level name="javax.inject" value="project"/>
+		<level name="aopalliance" value="project"/>
 	</levels>
 </component>

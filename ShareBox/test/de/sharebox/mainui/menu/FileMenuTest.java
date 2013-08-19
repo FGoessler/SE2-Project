@@ -1,14 +1,15 @@
 package de.sharebox.mainui.menu;
 
 import com.google.common.base.Optional;
-import de.sharebox.file.controller.DirectoryViewController;
+import de.sharebox.file.controller.ContextMenuController;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
 import de.sharebox.file.services.DirectoryViewClipboardService;
-import org.junit.Before;
+import de.sharebox.file.services.DirectoryViewSelectionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -22,19 +23,15 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileMenuTest {
-	private FileMenu menu;
 	@Mock
 	private JMenuBar mockedMenuBar;
 	@Mock
-	private DirectoryViewController mockedDirectoryViewController;
+	private DirectoryViewSelectionService selectionService;
 	@Mock
 	private DirectoryViewClipboardService clipboard;
 
-	@Before
-	public void setUp() {
-		menu = new FileMenu(mockedMenuBar, mockedDirectoryViewController);
-		when(mockedDirectoryViewController.getClipboard()).thenReturn(clipboard);
-	}
+	@InjectMocks
+	private FileMenu menu;
 
 	@Test
 	public void creatingMenu() {
@@ -44,20 +41,20 @@ public class FileMenuTest {
 	@Test
 	public void testCreateNewFile() {
 		menu.createNewFile.actionPerformed(mock(ActionEvent.class));
-		verify(mockedDirectoryViewController).createNewFileBasedOnUserSelection();
+		verify(selectionService).createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 	}
 
 	@Test
 	public void testCreateNewDirectory() {
 		menu.createNewDirectory.actionPerformed(mock(ActionEvent.class));
-		verify(mockedDirectoryViewController).createNewDirectoryBasedOnUserSelection();
+		verify(selectionService).createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 	}
 
 	@Test
 	public void testCopyFEntry() {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new File());
-		when(mockedDirectoryViewController.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 
 		menu.copyFEntry.actionPerformed(mock(ActionEvent.class));
 
@@ -68,10 +65,10 @@ public class FileMenuTest {
 	public void testPasteFEntryOntoFile() {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new File());
-		when(mockedDirectoryViewController.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 		List<Optional<Directory>> mockedSelectedParentDirectories = new ArrayList<Optional<Directory>>();
 		mockedSelectedParentDirectories.add(Optional.of(new Directory()));
-		when(mockedDirectoryViewController.getParentsOfSelectedFEntries()).thenReturn(mockedSelectedParentDirectories);
+		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(mockedSelectedParentDirectories);
 
 		menu.pasteFEntry.actionPerformed(mock(ActionEvent.class));
 
@@ -82,10 +79,10 @@ public class FileMenuTest {
 	public void testPasteFEntryOntoDirectory() {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new Directory());
-		when(mockedDirectoryViewController.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 
 		menu.pasteFEntry.actionPerformed(mock(ActionEvent.class));
 
-		verify(clipboard).pasteClipboardContent((Directory)mockedSelectedFEntries.get(0));
+		verify(clipboard).pasteClipboardContent((Directory) mockedSelectedFEntries.get(0));
 	}
 }

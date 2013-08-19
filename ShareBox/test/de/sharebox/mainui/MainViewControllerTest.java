@@ -1,24 +1,25 @@
 package de.sharebox.mainui;
 
-import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.controller.DirectoryViewControllerFactory;
+import de.sharebox.file.controller.PermissionViewControllerFactory;
+import de.sharebox.mainui.menu.FileMenuFactory;
 import de.sharebox.user.model.User;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainViewControllerTest {
-	private MainViewController mainView;
-
 	@Mock
 	private ActionEvent mockedActionEvent;
 	@Mock
@@ -26,16 +27,15 @@ public class MainViewControllerTest {
 	@Mock
 	private User currentUser;
 
-	@Before
-	public void setUp() {
-		Main.loginController = null;
-		mainView = new MainViewController(currentUser);
-	}
+	@Mock
+	private PermissionViewControllerFactory permissionViewControllerFactory;
+	@Mock
+	private DirectoryViewControllerFactory directoryViewControllerFactory;
+	@Mock
+	private FileMenuFactory fileMenuFactory;
 
-	@After
-	public void tearDown() {
-		Main.loginController = null;
-	}
+	@InjectMocks
+	private MainViewController mainView;
 
 	@Test
 	public void providesAUserObject() {
@@ -43,10 +43,8 @@ public class MainViewControllerTest {
 	}
 
 	@Test
-	public void containsADirectoryViewControllerAndIsVisible() {
-		assertThat(mainView.directoryViewController).isNotNull();
-
-		assertThat(mainView.swix.getRootComponent().isVisible()).isTrue();
+	public void containsADirectoryViewController() {
+		verify(directoryViewControllerFactory).create(any(JTree.class));
 	}
 
 	@Test
@@ -77,6 +75,5 @@ public class MainViewControllerTest {
 		mainView.close();
 
 		verify(mockedUserAPI).logout();
-		assertThat(Main.loginController).isNotNull();
 	}
 }

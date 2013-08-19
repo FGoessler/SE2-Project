@@ -30,5 +30,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava-14.0.1"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guice-3.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guice-assistedinject-3.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javax.inject"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/aopalliance"/>
 	<classpathentry kind="output" path="out/production/ShareBox"/>
 </classpath>

@@ -77,6 +77,9 @@
     </orderEntry>
     <orderEntry type="library" name="guava-14.0.1" level="project" />
     <orderEntry type="library" name="guice-3.0" level="project" />
+    <orderEntry type="library" name="guice-assistedinject-3.0" level="project" />
+    <orderEntry type="library" name="javax.inject" level="project" />
+    <orderEntry type="library" name="aopalliance" level="project" />
   </component>
 </module>
 

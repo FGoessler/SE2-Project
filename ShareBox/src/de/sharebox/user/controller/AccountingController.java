@@ -76,8 +76,8 @@ public class AccountingController {
 	};
 
 	public Action selectBoxAction = new AbstractAction() {
-		public void actionPerformed(ActionEvent e) {
-			System.out.println( ((JComboBox) e.getSource()).getSelectedItem().toString() );
+		public void actionPerformed(ActionEvent event) {
+			System.out.println( ((JComboBox) event.getSource()).getSelectedItem().toString() );
 		}
 	};
 }

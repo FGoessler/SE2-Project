@@ -1,15 +1,15 @@
 package de.sharebox.mainui;
 
-import de.sharebox.Main;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.controller.DirectoryViewController;
-import de.sharebox.file.controller.PermissionViewController;
+import de.sharebox.file.controller.DirectoryViewControllerFactory;
+import de.sharebox.file.controller.PermissionViewControllerFactory;
 import de.sharebox.mainui.menu.AdministrationMenu;
-import de.sharebox.mainui.menu.FileMenu;
+import de.sharebox.mainui.menu.FileMenuFactory;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
 import de.sharebox.user.controller.InvitationController;
-import de.sharebox.user.controller.LoginController;
 import de.sharebox.user.model.User;
 import org.swixml.SwingEngine;
 
@@ -29,15 +29,6 @@ public class MainViewController {
 	 */
 	private User currentUser;
 
-	/**
-	 * Referenz auf die SwingEngine, die das generieren der Swing Objekte übernimmt und später nach diversen
-	 * Eigenschaften gefragt werden kann. (siehe swixml.org)
-	 */
-	protected SwingEngine swix;
-
-	protected DirectoryViewController directoryViewController;
-	protected PermissionViewController permissionViewController;
-
 	protected EditProfileController editProfileController;
 	protected AccountingController accountController;
 	protected InvitationController invitationController;
@@ -53,36 +44,46 @@ public class MainViewController {
 	 * Die zentrale Menüleiste.
 	 */
 	protected final JMenuBar menuBar;
-	protected final FileMenu fileMenu;
 	protected final AdministrationMenu administrationMenu;
 
 	/**
-	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml
-	 * Datei mittels SWIxml generiert.
+	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml
+	 * generiert.<br/>
+	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Siehe auch MainViewControllerFactory.
 	 *
-	 * @param user Der Nutzer dessen Daten angezeigt werden sollen.
+	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen.
+	 * @param permissionViewControllerFactory
+	 *                                       Mittels dieser Factory wird ein PermissionViewController erzeugt,
+	 *                                       der in der rechten Hälfte des JSplitPanes dargestellt wird.
+	 * @param directoryViewControllerFactory Mittels dieser Factory wird ein DirectoryViewController erzeugt,
+	 *                                       der im JTree in der linken Hälfte des JSplitPane seinen Inhalt darstellt.
+	 * @param fileMenuFactory                Mittels dieser Factory wird das FileMenu erzeugt.
 	 */
-	public MainViewController(User user) {
-		super();
+	@Inject
+	MainViewController(@Assisted User user,
+					   PermissionViewControllerFactory permissionViewControllerFactory,
+					   DirectoryViewControllerFactory directoryViewControllerFactory,
+					   FileMenuFactory fileMenuFactory) {
 
 		this.currentUser = user;
 
 		//create window
 		try {
-			swix = new SwingEngine(this);
+			SwingEngine swix = new SwingEngine(this);
 			frame = (JFrame) swix.render("resources/xml/mainWindow.xml");
 			frame.setVisible(true);
 		} catch (Exception exception) {
 			System.out.println("Couldn't create Swing Window!");
 		}
 
-		directoryViewController = new DirectoryViewController(tree);
+		directoryViewControllerFactory.create(tree);
 
 		menuBar = frame.getJMenuBar();
-		fileMenu = new FileMenu(menuBar, directoryViewController);
+		fileMenuFactory.create(menuBar);
 		administrationMenu = new AdministrationMenu(menuBar, this);
 
-		permissionViewController = new PermissionViewController(splitPane, directoryViewController);
+		permissionViewControllerFactory.create(splitPane);
 	}
 
 	/**
@@ -122,7 +123,5 @@ public class MainViewController {
 		UserAPI.getUniqueInstance().logout();
 
 		frame.setVisible(false);
-
-		Main.loginController = new LoginController();
 	}
 }

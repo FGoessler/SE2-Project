@@ -2,11 +2,13 @@ package de.sharebox.file.controller;
 
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
+import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -23,13 +25,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PermissionViewControllerTest {
-	private PermissionViewController permissionViewController;
-
-	@Mock
-	private DirectoryViewController directoryViewController;
-	@Mock
-	private SharingService sharingService;
-
 	private FEntry fEntry;
 	@Mock
 	private User user1;
@@ -41,9 +36,19 @@ public class PermissionViewControllerTest {
 	@Mock
 	private TableModelListener tableModelListener;
 
+
+	@Mock
+	private JSplitPane jSplitPane;
+	@Mock
+	private DirectoryViewSelectionService selectionService;
+	@Mock
+	private SharingService sharingService;
+
+	@InjectMocks
+	private PermissionViewController permissionViewController;
+
 	@Before
 	public void setUp() {
-		permissionViewController = new PermissionViewController(mock(JSplitPane.class), directoryViewController, sharingService);
 		permissionViewController.tableModel.addTableModelListener(tableModelListener);
 
 		//create TestFEntry
@@ -57,7 +62,7 @@ public class PermissionViewControllerTest {
 		//preselect FEntry
 		List<FEntry> selectedFEntries = new ArrayList<FEntry>();
 		selectedFEntries.add(fEntry);
-		when(directoryViewController.getSelectedFEntries()).thenReturn(selectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
 	}
 
@@ -117,7 +122,7 @@ public class PermissionViewControllerTest {
 
 		//no selection -> show message and hide buttons
 		List<FEntry> selectedFEntries = new ArrayList<FEntry>();
-		when(directoryViewController.getSelectedFEntries()).thenReturn(selectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
 
@@ -129,7 +134,7 @@ public class PermissionViewControllerTest {
 		//single selection -> don't show message and show buttons
 		selectedFEntries = new ArrayList<FEntry>();
 		selectedFEntries.add(fEntry);
-		when(directoryViewController.getSelectedFEntries()).thenReturn(selectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
 
@@ -142,7 +147,7 @@ public class PermissionViewControllerTest {
 		selectedFEntries = new ArrayList<FEntry>();
 		selectedFEntries.add(fEntry);
 		selectedFEntries.add(fEntry);
-		when(directoryViewController.getSelectedFEntries()).thenReturn(selectedFEntries);
+		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
 

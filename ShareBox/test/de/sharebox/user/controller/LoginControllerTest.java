@@ -1,20 +1,19 @@
 package de.sharebox.user.controller;
 
-import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
+import de.sharebox.mainui.MainViewControllerFactory;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.awt.event.ActionEvent;
 
-import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -23,21 +22,16 @@ public class LoginControllerTest {
 
 	@Mock
 	private UserAPI mockedAPI;
+	@Mock
+	private MainViewControllerFactory mainViewControllerFactory;
 
+	@InjectMocks
 	private LoginController loginController;
 
 
 	@Before
 	public void setUp() {
 		UserAPI.injectSingletonInstance(mockedAPI);
-		Main.mainWindowViewController = null;
-
-		loginController = new LoginController();
-	}
-
-	@After
-	public void tearDown() {
-		Main.mainWindowViewController = null;
 	}
 
 	@Test
@@ -50,7 +44,6 @@ public class LoginControllerTest {
 		loginController.submit.actionPerformed(mock(ActionEvent.class));
 
 		verify(mockedAPI).login(any(User.class));
-		assertThat(Main.mainWindowViewController.getCurrentUser().getEmail()).isEqualTo("Nutzername");
 	}
 
 	@Ignore

@@ -6,6 +6,7 @@ import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -18,18 +19,16 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SharingServiceTest {
-	private SharingService sharingService;
 	private FEntry fEntry1;
 	private FEntry fEntry2;
-
 	@Mock
 	private OptionPaneHelper mockedOptionPaneHelper;
 
+	@InjectMocks
+	private SharingService sharingService;
+
 	@Before
 	public void setUp() {
-		sharingService = new SharingService();
-		sharingService.optionPaneHelper = mockedOptionPaneHelper;
-
 		when(mockedOptionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
 
 		fEntry1 = new FEntry();

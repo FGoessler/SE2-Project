@@ -3,7 +3,6 @@ package de.sharebox.file.services;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
-import de.sharebox.file.services.DirectoryViewClipboardService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +46,7 @@ public class DirectoryViewClipboardServiceTest {
 		assertThat(targetDirectory.getFEntries().get(2).getName()).isEqualTo(testFile.getName());
 		assertThat(targetDirectory.getFEntries().get(2)).isNotSameAs(testFile);
 		assertThat(targetDirectory.getFEntries().get(1).getName()).isEqualTo(testDirectory.getName());
-		FEntry child = ((Directory)targetDirectory.getFEntries().get(1)).getFEntries().get(0);
+		FEntry child = ((Directory) targetDirectory.getFEntries().get(1)).getFEntries().get(0);
 		assertThat(child.getName()).isEqualTo(testDirectory.getFEntries().get(0).getName());
 		assertThat(targetDirectory.getFEntries().get(1)).isNotSameAs(testDirectory);
 	}
