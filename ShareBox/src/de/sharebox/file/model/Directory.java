@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class Directory extends FEntry {
 
 		fEntries.add(newFile);
 
-		fireChangeNotification(ChangeType.ADDED_CHILDREN);
+		fireAddedChildrenNotification(newFile);
 
 		return newFile;
 	}
@@ -76,7 +77,7 @@ public class Directory extends FEntry {
 
 		fEntries.add(newDir);
 
-		fireChangeNotification(ChangeType.ADDED_CHILDREN);
+		fireAddedChildrenNotification(newDir);
 
 		return newDir;
 	}
@@ -89,7 +90,7 @@ public class Directory extends FEntry {
 	public void addFEntry(FEntry newFEntry) {
 		fEntries.add(newFEntry);
 
-		fireChangeNotification(ChangeType.ADDED_CHILDREN);
+		fireAddedChildrenNotification(newFEntry);
 	}
 
 	/**
@@ -110,6 +111,26 @@ public class Directory extends FEntry {
 		fEntries.remove(fEntry);
 
 		fEntry.fireDeleteNotification();
-		fireChangeNotification(ChangeType.REMOVED_CHILDREN);
+		fireRemovedChildrenNotification(fEntry);
+	}
+
+	public void fireAddedChildrenNotification(FEntry addedFEntry) {
+		ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
+
+		for(FEntryObserver observer : observers) {
+			if(observer instanceof DirectoryObserver) {
+				((DirectoryObserver) observer).addedChildrenNotification(this,addedFEntries);
+			}
+		}
+	}
+
+	public void fireRemovedChildrenNotification(FEntry removedFEntry) {
+		ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
+
+		for(FEntryObserver observer : observers) {
+			if(observer instanceof DirectoryObserver) {
+				((DirectoryObserver) observer).removedChildrenNotification(this,removedFEntries);
+			}
+		}
 	}
 }

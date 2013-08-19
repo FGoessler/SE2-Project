@@ -6,7 +6,6 @@ import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
-import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +16,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -34,6 +34,8 @@ public class ContextMenuControllerTest {
 	private TreePath mockedTreePath2;
 
 	@Mock
+	private DefaultTreeModel treeModel;
+	@Mock
 	private DirectoryViewSelectionService selectionService;
 	@Mock
 	private OptionPaneHelper optionPaneHelper;
@@ -50,10 +52,10 @@ public class ContextMenuControllerTest {
 		parentDirectory = new Directory();
 		parentDirectory.setName("A Test Dir");
 		FEntry child1 = parentDirectory.createNewFile("A Test File");
-		TreeNode[] nodes1 = {new TreeNode(parentDirectory), new TreeNode(child1)};
+		FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
 		mockedTreePath1 = new TreePath(nodes1);
 		FEntry child2 = parentDirectory.createNewFile("An other Test File");
-		TreeNode[] nodes2 = {new TreeNode(parentDirectory), new TreeNode(child2)};
+		FEntryTreeNode[] nodes2 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child2)};
 		mockedTreePath2 = new TreePath(nodes2);
 	}
 

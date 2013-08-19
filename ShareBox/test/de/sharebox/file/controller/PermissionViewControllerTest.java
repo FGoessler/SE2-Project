@@ -159,8 +159,6 @@ public class PermissionViewControllerTest {
 	@Test
 	public void updatesUIOnFEntryNotifications() {
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));            //one initial invocation already happened
-		fEntry.fireChangeNotification(FEntry.ChangeType.ADDED_CHILDREN);
-		fEntry.fireChangeNotification(FEntry.ChangeType.REMOVED_CHILDREN);
 		fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));
 

@@ -9,7 +9,6 @@ import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
-import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
 
@@ -113,7 +112,7 @@ public class ContextMenuController {
 	public Optional<FEntry> getSelectedFEntry() {
 		Optional<FEntry> foundFEntry = Optional.absent();
 		if (currentTreePath.isPresent()) {
-			foundFEntry = Optional.of(((TreeNode) currentTreePath.get().getLastPathComponent()).getFEntry());
+			foundFEntry = Optional.of(((FEntryTreeNode) currentTreePath.get().getLastPathComponent()).getFEntry());
 		}
 		return foundFEntry;
 	}
@@ -126,7 +125,7 @@ public class ContextMenuController {
 	public Optional<Directory> getParentOfSelectedFEntry() {
 		Optional<Directory> foundDirectory = Optional.absent();
 		if (currentTreePath.isPresent()) {
-			foundDirectory = Optional.of((Directory) ((TreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry());
+			foundDirectory = Optional.of((Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry());
 		}
 		return foundDirectory;
 	}
@@ -169,7 +168,7 @@ public class ContextMenuController {
 
 				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
-				Directory parentDirectory = (Directory) ((TreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
+				Directory parentDirectory = (Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
 				parentDirectory.deleteFEntry(selectedFEntry.get());
 			}
 

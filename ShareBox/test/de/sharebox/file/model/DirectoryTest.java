@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
 import de.sharebox.user.model.User;
 import org.junit.After;
@@ -18,7 +19,7 @@ public class DirectoryTest {
 	private transient Directory directory;
 
 	@Mock
-	private transient FEntryObserver observer;
+	private transient DirectoryObserver observer;
 	@Mock
 	private transient User mockedUser;
 	@Mock
@@ -89,7 +90,7 @@ public class DirectoryTest {
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
 
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));    //assert that notification was sent
 	}
 
 	@Test
@@ -108,7 +109,7 @@ public class DirectoryTest {
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
 
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));    //assert that notification was sent
 	}
 
 	@Test
@@ -132,8 +133,8 @@ public class DirectoryTest {
 
 		verify(observer, times(1)).fEntryDeletedNotification(createdFile);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
+		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
 	}
 
 	@Test
@@ -152,7 +153,7 @@ public class DirectoryTest {
 		verify(observer, times(1)).fEntryDeletedNotification(createdFile);            //assert that notification was sent
 		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
+		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
 	}
 }

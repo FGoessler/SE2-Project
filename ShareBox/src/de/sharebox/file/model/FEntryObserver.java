@@ -17,7 +17,7 @@ public interface FEntryObserver {
 	/**
 	 * Der übergebene FEntry wurde aus seinem Elternverzeichnis gelöscht.
 	 *
-	 * @param fEntry Der gelöscht FEntry.
+	 * @param fEntry Der gelöschte FEntry.
 	 */
 	void fEntryDeletedNotification(FEntry fEntry);
 

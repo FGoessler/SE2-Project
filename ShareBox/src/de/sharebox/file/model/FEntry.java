@@ -18,15 +18,13 @@ public class FEntry {
 	 */
 	public enum ChangeType {
 		NAME_CHANGED,
-		REMOVED_CHILDREN,
-		ADDED_CHILDREN,
 		PERMISSION_CHANGED
 	}
 
 	private Integer identifier;
 	private String name;
 	private transient List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
-	private transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
+	protected transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	public FEntry() {
 		super();

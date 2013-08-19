@@ -2,11 +2,10 @@ package de.sharebox.file.services;
 
 import com.google.common.base.Optional;
 import de.sharebox.file.controller.ContextMenuController;
+import de.sharebox.file.controller.FEntryTreeNode;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
-import de.sharebox.file.uimodel.DirectoryViewTreeModel;
-import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -40,6 +40,7 @@ public class DirectoryViewSelectionServiceTest {
 
 	@InjectMocks
 	private DirectoryViewSelectionService selectionService;
+	private DefaultTreeModel treeModel;
 
 	@Before
 	public void createMockDirectoryTree() {
@@ -53,8 +54,8 @@ public class DirectoryViewSelectionServiceTest {
 		rootDirectory.createNewFile("A file");
 		rootDirectory.createNewFile("Oho!");
 
-		DirectoryViewTreeModel treeModel = new DirectoryViewTreeModel();
-		treeModel.setRootDirectory(rootDirectory);
+		treeModel = new DefaultTreeModel(null);
+		treeModel.setRoot(new FEntryTreeNode(treeModel, rootDirectory));
 		selectionService.setTreeView(new JTree(treeModel));
 	}
 
@@ -95,14 +96,14 @@ public class DirectoryViewSelectionServiceTest {
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
 		//test with directory selected -> create as child of directory
-		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
+		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
 		File fourthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fourthNewFile);
 		assertThat(fourthNewFile.getName()).isEqualTo(NEW_FILE_NAME);
 
 		//test with file selected -> create as sibling of file
-		TreeNode[] treeNodes2 = {new TreeNode(rootDirectory), new TreeNode(subDir1), new TreeNode(subDir1.getFEntries().get(0))};
+		FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
 		File fifthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fifthNewFile);
@@ -145,14 +146,14 @@ public class DirectoryViewSelectionServiceTest {
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
 		//test with directory selected -> create as child of directory
-		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
+		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
 		Directory fourthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fourthNewDirectory);
 		assertThat(fourthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
 		//test with file selected -> create as sibling of file
-		TreeNode[] treeNodes2 = {new TreeNode(rootDirectory), new TreeNode(subDir1), new TreeNode(subDir1.getFEntries().get(0))};
+		FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
 		Directory fifthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fifthNewDirectory);
@@ -170,8 +171,8 @@ public class DirectoryViewSelectionServiceTest {
 
 	@Test
 	public void canReturnTheSelectedFEntriesAndTheirParents() {
-		TreeNode[] treeNodes = {new TreeNode(rootDirectory), new TreeNode(subDir1)};
-		TreePath[] treePaths = {new TreePath(treeNodes), new TreePath(new TreeNode(rootDirectory))};
+		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
+		TreePath[] treePaths = {new TreePath(treeNodes), new TreePath(new FEntryTreeNode(treeModel, rootDirectory))};
 		selectionService.getTreeView().setSelectionPaths(treePaths);
 
 		assertThat(selectionService.getSelectedFEntries()).contains(rootDirectory, subDir1);

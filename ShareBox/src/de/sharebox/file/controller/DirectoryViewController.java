@@ -5,9 +5,10 @@ import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.services.DirectoryViewSelectionService;
-import de.sharebox.file.uimodel.DirectoryViewTreeModel;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -31,7 +32,6 @@ public class DirectoryViewController {
 	 *
 	 * @param tree                          Der TreeView, in dem der Inhalt dargestellt werden soll - muss über die Factory gesetzt werden und
 	 *                                      kann nicht automatisch injectet werden.
-	 * @param directoryViewTreeModel        Das TreeModel das dür die Inhalte des JTree verantwortlich ist.
 	 * @param directoryViewSelectionService Ein DirectoryViewSelectionService der von Guice als Singleton erstelt wird
 	 *                                      und hier lediglich mit dem JTree verbunden wird.
 	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü
@@ -39,16 +39,15 @@ public class DirectoryViewController {
 	 */
 	@Inject
 	DirectoryViewController(@Assisted JTree tree,
-							DirectoryViewTreeModel directoryViewTreeModel,
 							DirectoryViewSelectionService directoryViewSelectionService,
 							ContextMenuController contextMenuController) {
 
 		this.contextMenuController = contextMenuController;
 
-		directoryViewTreeModel.setRootDirectory(createMockDirectoryTree());
-
 		this.treeView = tree;
-		this.treeView.setModel(directoryViewTreeModel);
+		DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Root"), true);
+		this.treeView.setModel(treeModel);
+		treeModel.setRoot(new FEntryTreeNode(treeModel, createMockDirectoryTree()));
 
 		this.treeView.addMouseListener(contextMenuMA);
 

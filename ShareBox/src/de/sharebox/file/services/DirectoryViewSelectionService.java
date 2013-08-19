@@ -4,10 +4,10 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.sharebox.file.controller.ContextMenuController;
+import de.sharebox.file.controller.FEntryTreeNode;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
-import de.sharebox.file.uimodel.TreeNode;
 import de.sharebox.helpers.OptionPaneHelper;
 
 import javax.swing.*;
@@ -70,7 +70,7 @@ public class DirectoryViewSelectionService {
 
 		if (treeView.getSelectionCount() > 0) {
 			for (TreePath path : treeView.getSelectionPaths()) {
-				selectedFEntries.add(((TreeNode) path.getLastPathComponent()).getFEntry());
+				selectedFEntries.add(((FEntryTreeNode) path.getLastPathComponent()).getFEntry());
 			}
 		}
 
@@ -90,7 +90,7 @@ public class DirectoryViewSelectionService {
 				if (path.getParentPath() == null) {
 					selectedFEntriesParents.add(Optional.<Directory>absent());
 				} else {
-					selectedFEntriesParents.add(Optional.of((Directory) ((TreeNode) path.getParentPath().getLastPathComponent()).getFEntry()));
+					selectedFEntriesParents.add(Optional.of((Directory) ((FEntryTreeNode) path.getParentPath().getLastPathComponent()).getFEntry()));
 				}
 			}
 		}
@@ -154,7 +154,7 @@ public class DirectoryViewSelectionService {
 
 		if ((!contextMenuController.isPresent() || !contextMenuController.get().getSelectedFEntry().isPresent())
 				&& treeView.isSelectionEmpty()) {
-			parentDirectory = (Directory) ((TreeNode) treeView.getModel().getRoot()).getFEntry();
+			parentDirectory = (Directory) ((FEntryTreeNode) treeView.getModel().getRoot()).getFEntry();
 		} else if (contextMenuController.isPresent() && contextMenuController.get().getSelectedFEntry().isPresent()) {
 			if (contextMenuController.get().getSelectedFEntry().get() instanceof Directory) {
 				parentDirectory = (Directory) contextMenuController.get().getSelectedFEntry().get();
@@ -162,10 +162,10 @@ public class DirectoryViewSelectionService {
 				parentDirectory = contextMenuController.get().getParentOfSelectedFEntry().get();
 			}
 		} else if (!treeView.isSelectionEmpty()) {
-			if (((TreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry() instanceof Directory) {
-				parentDirectory = (Directory) ((TreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry();
+			if (((FEntryTreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry() instanceof Directory) {
+				parentDirectory = (Directory) ((FEntryTreeNode) treeView.getSelectionPath().getLastPathComponent()).getFEntry();
 			} else {
-				parentDirectory = (Directory) ((TreeNode) treeView.getSelectionPath().getParentPath().getLastPathComponent()).getFEntry();
+				parentDirectory = (Directory) ((FEntryTreeNode) treeView.getSelectionPath().getParentPath().getLastPathComponent()).getFEntry();
 			}
 		}
 
