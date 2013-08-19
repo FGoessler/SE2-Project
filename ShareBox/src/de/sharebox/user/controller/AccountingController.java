@@ -66,8 +66,7 @@ public class AccountingController {
 			if (userApi.changeAccountingSettings(user)) {
 				if(paymentIndex < storageLimitField.getSelectedIndex()){
 					frame.setVisible(false);
-				}
-				
+				}	
 				optionPane.showMessageDialog("Die Änderung war erfolgreich");
 			}
 			else {
@@ -79,6 +78,6 @@ public class AccountingController {
 		    public void actionPerformed(ActionEvent e) {
 		      System.out.println( ((JComboBox) e.getSource()).getSelectedItem().toString() );
 		    }
-		  };
+		};
 	};
 }
