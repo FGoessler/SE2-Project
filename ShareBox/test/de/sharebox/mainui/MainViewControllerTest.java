@@ -3,6 +3,7 @@ package de.sharebox.mainui;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
+import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenuFactory;
 import de.sharebox.user.model.User;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import java.awt.event.ActionEvent;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -33,6 +35,8 @@ public class MainViewControllerTest {
 	private DirectoryViewControllerFactory directoryViewControllerFactory;
 	@Mock
 	private FileMenuFactory fileMenuFactory;
+	@Mock
+	private AdministrationMenuFactory administrationMenuFactory;
 
 	@InjectMocks
 	private MainViewController mainView;
@@ -43,8 +47,11 @@ public class MainViewControllerTest {
 	}
 
 	@Test
-	public void containsADirectoryViewController() {
+	public void containsSeveralController() {
 		verify(directoryViewControllerFactory).create(any(JTree.class));
+		verify(permissionViewControllerFactory).create(any(JSplitPane.class));
+		verify(fileMenuFactory).create(any(JMenuBar.class));
+		verify(administrationMenuFactory).create(any(JMenuBar.class), same(mainView));
 	}
 
 	@Test

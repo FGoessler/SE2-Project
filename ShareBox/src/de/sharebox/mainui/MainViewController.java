@@ -5,7 +5,7 @@ import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
-import de.sharebox.mainui.menu.AdministrationMenu;
+import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenuFactory;
 import de.sharebox.user.controller.AccountingController;
 import de.sharebox.user.controller.EditProfileController;
@@ -44,7 +44,6 @@ public class MainViewController {
 	 * Die zentrale Menüleiste.
 	 */
 	protected final JMenuBar menuBar;
-	protected final AdministrationMenu administrationMenu;
 
 	/**
 	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml
@@ -59,12 +58,14 @@ public class MainViewController {
 	 * @param directoryViewControllerFactory Mittels dieser Factory wird ein DirectoryViewController erzeugt,
 	 *                                       der im JTree in der linken Hälfte des JSplitPane seinen Inhalt darstellt.
 	 * @param fileMenuFactory                Mittels dieser Factory wird das FileMenu erzeugt.
+	 * @param administrationMenuFactory      Mittels dieser Factory wird das AdministrationMenu erzeugt.
 	 */
 	@Inject
 	MainViewController(@Assisted User user,
 					   PermissionViewControllerFactory permissionViewControllerFactory,
 					   DirectoryViewControllerFactory directoryViewControllerFactory,
-					   FileMenuFactory fileMenuFactory) {
+					   FileMenuFactory fileMenuFactory,
+					   AdministrationMenuFactory administrationMenuFactory) {
 
 		this.currentUser = user;
 
@@ -81,7 +82,7 @@ public class MainViewController {
 
 		menuBar = frame.getJMenuBar();
 		fileMenuFactory.create(menuBar);
-		administrationMenu = new AdministrationMenu(menuBar, this);
+		administrationMenuFactory.create(menuBar, this);
 
 		permissionViewControllerFactory.create(splitPane);
 	}

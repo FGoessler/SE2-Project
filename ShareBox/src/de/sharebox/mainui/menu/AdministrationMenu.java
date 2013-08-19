@@ -1,5 +1,7 @@
 package de.sharebox.mainui.menu;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import de.sharebox.mainui.MainViewController;
 import org.swixml.SwingEngine;
 
@@ -19,7 +21,8 @@ public class AdministrationMenu {
 	 * @param menuBar            Die JMenuBar zu dem das Menü hinzugefügt werden soll.
 	 * @param mainViewController Der MainViewController dessen Methoden durch die Aktionen im Menü aufgerufen werden.
 	 */
-	public AdministrationMenu(JMenuBar menuBar, MainViewController mainViewController) {
+	@Inject
+	AdministrationMenu(@Assisted JMenuBar menuBar, @Assisted MainViewController mainViewController) {
 		this.mainViewController = mainViewController;
 		try {
 			SwingEngine swix = new SwingEngine(this);

@@ -133,6 +133,6 @@ public class DirectoryViewTreeModelTest {
 
 		treeModel.valueForPathChanged(testTreePath, "A new value");
 
-		assertThat((treeModel.getChild(treeModel.getRoot(), 0)).getFEntry().getName()).isEqualTo("A new value");
+		assertThat(treeModel.getChild(treeModel.getRoot(), 0).getFEntry().getName()).isEqualTo("A new value");
 	}
 }

@@ -8,5 +8,11 @@ import de.sharebox.user.model.User;
  * Die Implementierung dieses Interface geschiet automatisch durch Assisted-Inject von Guice.
  */
 public interface MainViewControllerFactory {
+	/**
+	 * Erstellt einen neuen MainViewController. Alle Abhängigkeiten werden dabei von Guice aufgelöst.
+	 *
+	 * @param user Der aktuell eingeloggte Nutzer, dessen Daten im MainViewController angezeigt werden sollen.
+	 * @return Ein neuer MainViewController.
+	 */
 	MainViewController create(User user);
 }

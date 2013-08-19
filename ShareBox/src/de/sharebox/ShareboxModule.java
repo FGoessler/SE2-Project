@@ -8,6 +8,8 @@ import de.sharebox.file.controller.PermissionViewController;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
 import de.sharebox.mainui.MainViewController;
 import de.sharebox.mainui.MainViewControllerFactory;
+import de.sharebox.mainui.menu.AdministrationMenu;
+import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenu;
 import de.sharebox.mainui.menu.FileMenuFactory;
 
@@ -32,9 +34,14 @@ public class ShareboxModule extends AbstractModule {
 				.implement(PermissionViewController.class, PermissionViewController.class)
 				.build(PermissionViewControllerFactory.class));
 
+
 		//Menu Factories
 		install(new FactoryModuleBuilder()
 				.implement(FileMenu.class, FileMenu.class)
 				.build(FileMenuFactory.class));
+
+		install(new FactoryModuleBuilder()
+				.implement(AdministrationMenu.class, AdministrationMenu.class)
+				.build(AdministrationMenuFactory.class));
 	}
 }
