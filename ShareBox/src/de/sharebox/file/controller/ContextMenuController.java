@@ -169,7 +169,7 @@ public class ContextMenuController {
 				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
 				Directory parentDirectory = (Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
-				parentDirectory.deleteFEntry(selectedFEntry.get());
+				parentDirectory.deleteFEntry(selectedFEntry.get());		//TODO: evaluate success
 			}
 
 			hideMenu();
@@ -187,7 +187,7 @@ public class ContextMenuController {
 		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
 		FEntryObserver observer = new FEntryObserver() {
 			@Override
-			public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
+			public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
 				//not used here
 			}
 
@@ -207,7 +207,7 @@ public class ContextMenuController {
 
 		//delete all selected FEntries
 		while (!parentDirectories.isEmpty()) {
-			parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
+			parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));		//TODO: evaluate success
 		}
 	}
 
@@ -221,7 +221,7 @@ public class ContextMenuController {
 
 			String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", selectedFEntry.get().getName());
 
-			selectedFEntry.get().setName(newName);
+			selectedFEntry.get().setName(newName);		//TODO: evaluate success!
 
 			hideMenu();
 		}

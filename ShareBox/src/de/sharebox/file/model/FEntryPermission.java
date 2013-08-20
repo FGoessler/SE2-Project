@@ -61,7 +61,7 @@ public class FEntryPermission {
 	public void setReadAllowed(Boolean readAllowed) {
 		this.readAllowed = readAllowed;
 
-		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class FEntryPermission {
 	public void setWriteAllowed(Boolean writeAllowed) {
 		this.writeAllowed = writeAllowed;
 
-		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class FEntryPermission {
 	public void setManageAllowed(Boolean manageAllowed) {
 		this.manageAllowed = manageAllowed;
 
-		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 
 	/**
@@ -116,6 +116,6 @@ public class FEntryPermission {
 		writeAllowed = write;
 		manageAllowed = manage;
 
-		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 }

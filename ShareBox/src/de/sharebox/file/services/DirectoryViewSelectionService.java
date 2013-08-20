@@ -123,7 +123,7 @@ public class DirectoryViewSelectionService {
 
 		if (!isNullOrEmpty(newFilename)) {
 			Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
-			createdFile = parentDirectory.createNewFile(newFilename);
+			createdFile = parentDirectory.createNewFile(newFilename);		//TODO: evaluate success
 		}
 		return createdFile;
 	}
@@ -144,7 +144,7 @@ public class DirectoryViewSelectionService {
 
 		if (!isNullOrEmpty(newDirectoryName)) {
 			Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
-			createdDir = parentDirectory.createNewDirectory(newDirectoryName);
+			createdDir = parentDirectory.createNewDirectory(newDirectoryName);		//TODO: evaluate success
 		}
 		return createdDir;
 	}

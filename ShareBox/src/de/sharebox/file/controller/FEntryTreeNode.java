@@ -70,8 +70,8 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 	 */
 	private final transient DirectoryObserver observer = new DirectoryObserver() {
 		@Override
-		public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
-			if (reason.equals(FEntry.ChangeType.NAME_CHANGED)) {
+		public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
+			if (reason.equals(ChangeType.NAME_CHANGED)) {
 				setUserObject(fEntry);		//set to trigger UI update
 			}
 		}

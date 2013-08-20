@@ -60,7 +60,7 @@ public class DirectoryViewClipboardService {
 	public Directory pasteClipboardContent(Directory targetDirectory) {
 		if (!clipboard.isEmpty()) {
 			for (FEntry pasteFEntry : clipboard) {
-				targetDirectory.addFEntry(pasteFEntry);
+				targetDirectory.addFEntry(pasteFEntry);		//TODO: evaluate success
 			}
 		}
 		return targetDirectory;

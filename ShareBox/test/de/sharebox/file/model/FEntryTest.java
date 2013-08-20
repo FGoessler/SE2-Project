@@ -50,13 +50,13 @@ public class FEntryTest {
 	@Test
 	public void canRegisterObserversForChangeNotification() {
 		fEntry.addObserver(observer);
-		fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
 
 		fEntry.removeObserver(observer);
-		fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
 
 		//notification should have only been fired once (not fired after removeObserver)
-		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntry.ChangeType.NAME_CHANGED);
+		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.NAME_CHANGED);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class FEntryTest {
 	public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
 		try {
 			fEntry.fireDeleteNotification();
-			fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
+			fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
 		} catch (Exception exception) {
 			fail("Should not have thrown an error! " + exception.getLocalizedMessage());
 		}
@@ -87,7 +87,7 @@ public class FEntryTest {
 
 		fEntry.setPermission(user, true, true, true);
 
-		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(1);
 		FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
@@ -103,11 +103,11 @@ public class FEntryTest {
 
 		fEntry.setPermission(user, true, true, true);
 		assertThat(fEntry.getPermissions()).hasSize(1);
-		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 
 		fEntry.setPermission(user, false, false, false);
 
-		verify(observer, times(2)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(observer, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(0);
 		FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);

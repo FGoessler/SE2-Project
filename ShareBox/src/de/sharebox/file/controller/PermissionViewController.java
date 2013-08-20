@@ -98,8 +98,8 @@ public class PermissionViewController {
 	 */
 	protected FEntryObserver fEntryObserver = new FEntryObserver() {
 		@Override
-		public void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason) {
-			if (reason.equals(FEntry.ChangeType.PERMISSION_CHANGED)) {
+		public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
+			if (reason.equals(ChangeType.PERMISSION_CHANGED)) {
 				tableModel.fireTableDataChanged();
 			}
 		}
@@ -231,7 +231,7 @@ public class PermissionViewController {
 				selectedPermissions.add(currentFEntry.get().getPermissions().get(index));
 			}
 			for (FEntryPermission permission : selectedPermissions) {
-				currentFEntry.get().setPermission(permission.getUser(), false, false, false);
+				currentFEntry.get().setPermission(permission.getUser(), false, false, false);	//TODO: evaluate success
 			}
 		}
 	};

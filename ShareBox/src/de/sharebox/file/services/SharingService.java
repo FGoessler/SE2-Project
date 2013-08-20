@@ -59,7 +59,7 @@ public class SharingService {
 			newUser.setEmail(newUserMail);
 
 			for (FEntry fEntry : fEntries) {
-				fEntry.setPermission(newUser, true, true, false);
+				fEntry.setPermission(newUser, true, true, false);		//TODO: evaluate success
 			}
 		}
 	}

@@ -112,7 +112,7 @@ public class PermissionViewControllerTest {
 		assertThat(fEntry.getPermissions().get(0).getManageAllowed()).isTrue();
 		assertThat(fEntry.getPermissions().get(1).getReadAllowed()).isFalse();
 
-		verify(fEntryObserver, times(2)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(fEntryObserver, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 
 	@Test
@@ -159,10 +159,10 @@ public class PermissionViewControllerTest {
 	@Test
 	public void updatesUIOnFEntryNotifications() {
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));            //one initial invocation already happened
-		fEntry.fireChangeNotification(FEntry.ChangeType.NAME_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));
 
-		fEntry.fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		verify(tableModelListener, times(2)).tableChanged(any(TableModelEvent.class));
 
 		fEntry.fireDeleteNotification();
@@ -191,6 +191,6 @@ public class PermissionViewControllerTest {
 		assertThat(fEntry.getPermissionOfUser(user2).getWriteAllowed()).isFalse();
 		assertThat(fEntry.getPermissionOfUser(user2).getManageAllowed()).isTrue();
 
-		verify(fEntryObserver, times(1)).fEntryChangedNotification(fEntry, FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(fEntryObserver, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 }

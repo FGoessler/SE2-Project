@@ -71,7 +71,7 @@ public class DirectoryTest {
 		directory.setName(TEST_DIRNAME);
 		assertThat(directory.getName()).isEqualTo(TEST_DIRNAME);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.NAME_CHANGED);    //assert that notification was sent
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntryObserver.ChangeType.NAME_CHANGED);    //assert that notification was sent
 	}
 
 	@Test

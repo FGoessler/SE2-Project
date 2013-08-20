@@ -13,19 +13,15 @@ import java.util.List;
  */
 public class FEntry {
 
-	/**
-	 * Diese Enum wird verwendet um die Art der Änderung bei einer fEntryChangedNotification zu spezifizieren.
-	 */
-	public enum ChangeType {
-		NAME_CHANGED,
-		PERMISSION_CHANGED
-	}
-
 	private Integer identifier;
 	private String name;
+
 	private transient List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
 	protected transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
+	/**
+	 * Der Standard-Konstruktor.
+	 */
 	public FEntry() {
 		super();
 	}
@@ -64,6 +60,8 @@ public class FEntry {
 	 * @param identifier Die neue ID dieses Objekts.
 	 */
 	public void setIdentifier(Integer identifier) {
+		//TODO: check permission
+
 		this.identifier = identifier;
 	}
 
@@ -73,9 +71,11 @@ public class FEntry {
 	 * @param name Der neue Name.
 	 */
 	public void setName(String name) {
+		//TODO: check permission
+
 		this.name = name;
 
-		fireChangeNotification(ChangeType.NAME_CHANGED);
+		fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class FEntry {
 	/**
 	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
 	 */
-	public void fireChangeNotification(ChangeType reason) {
+	public void fireChangeNotification(FEntryObserver.ChangeType reason) {
 		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
 		for (FEntryObserver observer : localObservers) {
 			observer.fEntryChangedNotification(this, reason);
@@ -136,6 +136,8 @@ public class FEntry {
 	 * @param manage Der neue Wert für Verwaltungsrechte.
 	 */
 	public void setPermission(User user, boolean read, boolean write, boolean manage) {
+		//TODO: check permission
+
 		FEntryPermission permission = getPermissionOfUser(user);
 
 		if (read || write || manage) {
@@ -147,7 +149,7 @@ public class FEntry {
 		} else {
 			permissions.remove(permission);
 
-			fireChangeNotification(ChangeType.PERMISSION_CHANGED);
+			fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		}
 	}
 
@@ -167,7 +169,7 @@ public class FEntry {
 	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission Objekt zurück.
 	 *
 	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
-	 * @return das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
+	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
 	public FEntryPermission getPermissionOfUser(User user) {
 		Optional<FEntryPermission> permission = Optional.absent();

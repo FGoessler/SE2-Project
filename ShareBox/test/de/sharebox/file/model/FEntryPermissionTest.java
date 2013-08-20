@@ -51,15 +51,15 @@ public class FEntryPermissionTest {
 	@Test
 	public void settingValuesFiresEventOnFEntry() {
 		permission.setReadAllowed(true);
-		verify(fEntry, times(1)).fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(1)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 
 		permission.setWriteAllowed(true);
-		verify(fEntry, times(2)).fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(2)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 
 		permission.setManageAllowed(true);
-		verify(fEntry, times(3)).fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(3)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 
 		permission.setPermissions(false, false, false);
-		verify(fEntry, times(4)).fireChangeNotification(FEntry.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(4)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 }

@@ -6,13 +6,21 @@ package de.sharebox.file.model;
  */
 public interface FEntryObserver {
 	/**
+	 * Diese Enum wird verwendet um die Art der Änderung bei einer fEntryChangedNotification zu spezifizieren.
+	 */
+	enum ChangeType {
+		NAME_CHANGED,
+		PERMISSION_CHANGED
+	}
+
+	/**
 	 * Der übergebene FEntry wurde auf irgendeine Art und Weise geändert (zB.: Name wurde geändert, Unterdateien wurde
 	 * hinzugefügt, Dateiinhalt hat sich geändert)
 	 *
 	 * @param fEntry Der FEntry, der sich geändert hat.
 	 * @param reason Die Art der Änderung.
 	 */
-	void fEntryChangedNotification(FEntry fEntry, FEntry.ChangeType reason);
+	void fEntryChangedNotification(FEntry fEntry, ChangeType reason);
 
 	/**
 	 * Der übergebene FEntry wurde aus seinem Elternverzeichnis gelöscht.
@@ -20,5 +28,4 @@ public interface FEntryObserver {
 	 * @param fEntry Der gelöschte FEntry.
 	 */
 	void fEntryDeletedNotification(FEntry fEntry);
-
 }

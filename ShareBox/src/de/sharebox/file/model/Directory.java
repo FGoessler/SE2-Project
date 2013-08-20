@@ -53,6 +53,8 @@ public class Directory extends FEntry {
 	 * @return Die neu erstellte Datei.
 	 */
 	public File createNewFile(String filename) {
+		//TODO: check permission
+
 		File newFile = new File();
 		newFile.setName(filename);
 		newFile.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
@@ -71,7 +73,9 @@ public class Directory extends FEntry {
 	 * @return Das neu erstellte Verzeichnis.
 	 */
 	public Directory createNewDirectory(String dirname) {
-		Directory newDir = new Directory();
+		//TODO: check permission
+
+		Directory newDir = new Directory();		//TODO: create constructor which automatically sets a user as the owner of the file!
 		newDir.setName(dirname);
 		newDir.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
 
@@ -88,6 +92,8 @@ public class Directory extends FEntry {
 	 * @param newFEntry Der hinzuzufügende FEntry.
 	 */
 	public void addFEntry(FEntry newFEntry) {
+		//TODO: check permission
+
 		fEntries.add(newFEntry);
 
 		fireAddedChildrenNotification(newFEntry);
@@ -102,10 +108,12 @@ public class Directory extends FEntry {
 	 * @param fEntry Der zu löschende FEntry.
 	 */
 	public void deleteFEntry(FEntry fEntry) {
+		//TODO: check permission
+
 		if (fEntry instanceof Directory) {
 			Directory dir = (Directory) fEntry;
 			while (dir.getFEntries().size() > 0) {
-				dir.deleteFEntry(dir.getFEntries().get(0));
+				dir.deleteFEntry(dir.getFEntries().get(0));		//TODO: evaluate success
 			}
 		}
 		fEntries.remove(fEntry);
@@ -114,6 +122,10 @@ public class Directory extends FEntry {
 		fireRemovedChildrenNotification(fEntry);
 	}
 
+	/**
+	 * TODO: Docu!
+	 * @param addedFEntry
+	 */
 	public void fireAddedChildrenNotification(FEntry addedFEntry) {
 		ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
 
@@ -124,6 +136,10 @@ public class Directory extends FEntry {
 		}
 	}
 
+	/**
+	 * TODO: Docu!
+	 * @param removedFEntry
+	 */
 	public void fireRemovedChildrenNotification(FEntry removedFEntry) {
 		ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
 
