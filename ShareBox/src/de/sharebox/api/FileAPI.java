@@ -7,11 +7,6 @@ import de.sharebox.file.model.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Julius Mertens
- */
-
 public class FileAPI {
 
 	public class StorageEntry {
@@ -319,7 +314,7 @@ public class FileAPI {
 
 		for (List<StorageEntry> aStorage : storage) {
 			for (StorageEntry storageEntry : aStorage) {
-				if (storageEntry.timestamp > timeOfLastChange) {
+				if (storageEntry.timestamp >= timeOfLastChange) {
 					changedFiles.add(storageEntry.fEntry);
 				}
 			}
