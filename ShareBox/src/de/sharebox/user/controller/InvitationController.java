@@ -1,76 +1,66 @@
 package de.sharebox.user.controller;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-
-import org.swixml.SwingEngine;
-
+import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.user.model.User;
 
-/**
- * @author Benjamin Barth
- * @author Kay Thorsten Meißner
- */
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class InvitationController {
-	protected OptionPaneHelper optionPane = new OptionPaneHelper();
-	private DirectoryViewController parentDirectoryController;
+	private final OptionPaneHelper optionPane;
+
 	private JFrame frame;
 	public JTextField mailField;
 
-	/*
-	 * Öffnen des Einladen Fensters. 
+	/**
+	 * Erstellt einen neuen InvitationController.<br/>
+	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 *
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern
 	 */
-	
-	public InvitationController() {
-		
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			frame = (JFrame) swix.render("resources/xml/invite.xml");
-			frame.setVisible(true);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create inivitation Window!");
-		}
-		
+	@Inject
+	InvitationController(OptionPaneHelper optionPaneHelper) {
+		this.optionPane = optionPaneHelper;
 	}
-	
-	
+
+	/**
+	 * Öffnen des Einladen Fensters.
+	 */
+	public void show() {
+		frame = (JFrame) new SwingEngineHelper().render(this, "invite");
+		frame.setVisible(true);
+	}
+
 	/**
 	 * Handler um auf die Auswahl das "Einladen"-Buttons zu reagieren.
-	 * die eingegebene E-Mail Adresse wird eingeladen, außerdem wird geprüft, ob die E-Mail Adresse bereits im System 
-	 * bekannt ist. 
+	 * Die eingegebene E-Mail Adresse wird eingeladen, außerdem wird geprüft, ob die E-Mail Adresse bereits im System
+	 * bekannt ist.
 	 */
 	public Action invite = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
+			User invitedUser = new User();
+			invitedUser.setEmail(mailField.getText());
 
-			User user = new User();
-			user.setEmail(mailField.getText());
-			if(UserAPI.getUniqueInstance().inviteUser(UserAPI.getUniqueInstance().getCurrentUser(), user)){
+			if (UserAPI.getUniqueInstance().inviteUser(UserAPI.getUniqueInstance().getCurrentUser(), invitedUser)) {
 				frame.setVisible(false);
-				optionPane.showMessageDialog(mailField.getText() + " wurde eingeladen!");
+				optionPane.showMessageDialog(invitedUser.getEmail() + " wurde eingeladen!");
+			} else {
+				optionPane.showMessageDialog(invitedUser.getEmail() + " ist bereits registriert.");
 			}
-			else {
-				optionPane.showMessageDialog(mailField.getText() + " ist bereits registriert.");
-			}	
 		}
 	};
-	
-	/*
+
+	/**
 	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
 	 */
-	
 	public Action stop = new AbstractAction() {
-		public void actionPerformed( ActionEvent event ) {
-				frame.setVisible(false);
-				optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
+		public void actionPerformed(ActionEvent event) {
+			frame.setVisible(false);
+			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
 		}
 	};
-	
+
 }

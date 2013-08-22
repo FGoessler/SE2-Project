@@ -1,49 +1,49 @@
 package de.sharebox.user.controller;
 
-import de.sharebox.Main;
+import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
-import de.sharebox.mainui.MainViewController;
+import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.mainui.MainViewControllerFactory;
 import de.sharebox.user.model.User;
-import org.swixml.SwingEngine;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/**
- * @author Benjamin Barth
- * @author Kay Thorsten Meißner
- */
-
 public class LoginController {
+	private final MainViewControllerFactory mainViewControllerFactory;
+	private final OptionPaneHelper optionPane;
+	private final RegisterController registerController;
+
 	private JFrame frame;
 
 	public JTextField mailField;
 	public JPasswordField passwordField;
-	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 
-	/*
-	 * Öffnen des Login Fensters. Hierbei wird zunächst ein Testprofil als Standard in den TextFields
-	 * übernommen.
+	/**
+	 * Erstellt einen neuen LoginController.<br/>
+	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 *
+	 * @param mainViewControllerFactory Mittels dieser Factory wird nach einem erfolgreichen Login das Hauptfenster
+	 *                                  (MainViewController) erzeugt und der eingeloggte Benutzer gesetzt.
+	 * @param optionPaneHelper          Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern
 	 */
-	
-	public LoginController() {
-		super();
+	@Inject
+	LoginController(MainViewControllerFactory mainViewControllerFactory,
+					OptionPaneHelper optionPaneHelper,
+					RegisterController registerController) {
+		this.mainViewControllerFactory = mainViewControllerFactory;
+		this.optionPane = optionPaneHelper;
+		this.registerController = registerController;
 
-		try {
-			SwingEngine swix = new SwingEngine(this);
-			frame = (JFrame) swix.render("resources/xml/login.xml");
-			frame.setVisible(true);
-		} catch (Exception e) {
-			optionPane.showMessageDialog("Ein Fehler ist aufgetreten!");
-		}
+		frame = (JFrame) new SwingEngineHelper().render(this, "login");
+		frame.setVisible(true);
 	}
-	
-	/*
-	 * Bei richtigen Login-Informationen wird der Nutzer eingeloggt und das Main-Fenster wird geöffnet. 
-	 * Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
+
+	/**
+	 * Handler um auf einen Klick auf den Login-Button zu reagieren. Überprüft die eingegebenen Daten und erstellt im
+	 * Erfolgsfall das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
 	 */
-	
 	public Action submit = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
@@ -53,7 +53,7 @@ public class LoginController {
 			user.setPassword(new String(passwordField.getPassword()));
 
 			if (userApi.login(user)) {
-				Main.mainWindowViewController = new MainViewController(user);
+				mainViewControllerFactory.create(user);
 				frame.setVisible(false);
 			} else {
 				optionPane.showMessageDialog("Login-Informationen falsch! Bitte geben sie ihre Daten erneut ein.");
@@ -61,15 +61,12 @@ public class LoginController {
 		}
 	};
 
-	/*
+	/**
 	 * Der Registrierenbutton bringt den Nutzer ins Registrierenmenü, hier kann er einen Account erstellen.
 	 */
-	
 	public Action register = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			new RegisterController();
+			registerController.show();
 		}
 	};
-
-
 }

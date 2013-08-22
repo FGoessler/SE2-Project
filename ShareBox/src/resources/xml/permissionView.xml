@@ -1,0 +1,11 @@
+<panel layout="borderLayout" minimumSize="200,200">
+    <textArea lineWrap="true" wrapStyleWord="true" id="messageTextArea" constraints="BorderLayout.NORTH"
+              text="Keine Datei oder Verzeichnis ausgewählt. Daher sind keine Detailinformationen verfügbar."/>
+    <scrollPane constraints="BorderLayout.CENTER">
+        <table id="permissionTable"/>
+    </scrollPane>
+    <panel constraints="BorderLayout.SOUTH" layout="gridlayout(1,2)" id="buttonPanel" visible="false">
+        <button text="+" action="addUserPermission"/>
+        <button text="-" action="removeUserPermission"/>
+    </panel>
+</panel>

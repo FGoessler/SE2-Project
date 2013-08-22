@@ -1,12 +1,12 @@
 <popupmenu text="Verwaltung" id="popupMenu">
     <menuitem text="Neue Datei erstellen" action="createNewFile"/>
     <menuitem text="Neues Verzeichnis erstellen" action="createNewDirectory"/>
-    <separator />
+    <separator/>
     <menuitem text="Löschen" action="deleteFEntry"/>
     <menuitem text="Umbennen" action="renameFEntry"/>
-    <separator />
+    <separator/>
     <menuitem text="Kopieren" action="copyFEntry"/>
     <menuitem text="Einfügen" action="pasteFEntry"/>
-    <separator />
+    <separator/>
     <menuitem text="Freigeben" action="shareFEntry"/>
 </popupmenu>

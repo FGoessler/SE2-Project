@@ -1,5 +1,9 @@
 package de.sharebox.file.model;
 
+import com.google.common.collect.ImmutableList;
+import de.sharebox.api.UserAPI;
+import de.sharebox.user.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,8 +11,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryTest {
@@ -16,7 +19,11 @@ public class DirectoryTest {
 	private transient Directory directory;
 
 	@Mock
-	private transient FEntryObserver observer;
+	private transient DirectoryObserver observer;
+	@Mock
+	private transient User mockedUser;
+	@Mock
+	private transient UserAPI mockedUserAPI;
 
 	private static final String TEST_FILENAME = "TestFile";
 	private static final String TEST_DIRNAME = "TestDirectory";
@@ -25,6 +32,14 @@ public class DirectoryTest {
 	public void setUp() {
 		directory = new Directory();
 		directory.addObserver(observer);
+
+		UserAPI.injectSingletonInstance(mockedUserAPI);
+		when(mockedUserAPI.getCurrentUser()).thenReturn(mockedUser);
+	}
+
+	@After
+	public void tearDown() {
+		UserAPI.resetSingletonInstance();
 	}
 
 	@Test
@@ -56,7 +71,7 @@ public class DirectoryTest {
 		directory.setName(TEST_DIRNAME);
 		assertThat(directory.getName()).isEqualTo(TEST_DIRNAME);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.NAME_CHANGED);    //assert that notification was sent
+		verify(observer, times(1)).fEntryChangedNotification(directory, FEntryObserver.ChangeType.NAME_CHANGED);    //assert that notification was sent
 	}
 
 	@Test
@@ -66,7 +81,16 @@ public class DirectoryTest {
 		assertThat(createdFile.getName()).isEqualTo(TEST_FILENAME);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
+		//check permission
+		assertThat(createdFile.getPermissions()).hasSize(1);
+		FEntryPermission permission = createdFile.getPermissions().get(0);
+		assertThat(permission.getUser()).isSameAs(mockedUser);
+		assertThat(permission.getFEntry()).isSameAs(createdFile);
+		assertThat(permission.getReadAllowed()).isTrue();
+		assertThat(permission.getWriteAllowed()).isTrue();
+		assertThat(permission.getManageAllowed()).isTrue();
+
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));    //assert that notification was sent
 	}
 
 	@Test
@@ -76,7 +100,16 @@ public class DirectoryTest {
 		assertThat(createdDirectory.getName()).isEqualTo(TEST_DIRNAME);
 		assertThat(directory.getFEntries()).contains(createdDirectory);
 
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);    //assert that notification was sent
+		//check permission
+		assertThat(createdDirectory.getPermissions()).hasSize(1);
+		FEntryPermission permission = createdDirectory.getPermissions().get(0);
+		assertThat(permission.getUser()).isSameAs(mockedUser);
+		assertThat(permission.getFEntry()).isSameAs(createdDirectory);
+		assertThat(permission.getReadAllowed()).isTrue();
+		assertThat(permission.getWriteAllowed()).isTrue();
+		assertThat(permission.getManageAllowed()).isTrue();
+
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));    //assert that notification was sent
 	}
 
 	@Test
@@ -98,10 +131,10 @@ public class DirectoryTest {
 		directory.deleteFEntry(createdFile);
 		assertThat(createdFile).isNotIn(directory.getFEntries());
 
-		verify(observer, times(1)).fEntryDeletedNotification(createdFile);    	//assert that notification was sent
+		verify(observer, times(1)).fEntryDeletedNotification(createdFile);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
+		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
 	}
 
 	@Test
@@ -117,10 +150,10 @@ public class DirectoryTest {
 		directory.deleteFEntry(createdDirectory);
 		assertThat(createdDirectory).isNotIn(directory.getFEntries());
 
-		verify(observer, times(1)).fEntryDeletedNotification(createdFile);         	//assert that notification was sent
-		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);    	//assert that notification was sent
+		verify(observer, times(1)).fEntryDeletedNotification(createdFile);            //assert that notification was sent
+		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.ADDED_CHILDREN);
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntry.ChangeType.REMOVED_CHILDREN);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
+		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
 	}
 }

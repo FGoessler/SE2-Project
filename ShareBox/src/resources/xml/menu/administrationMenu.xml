@@ -2,8 +2,8 @@
     <menuitem text="Logindaten bearbeiten" action="showEditCredentials"/>
     <menuitem text="Profil bearbeiten" action="showEditProfile"/>
     <menuitem text="Accounting bearbeiten" action="showEditAccounting"/>
-    <separator />
+    <separator/>
     <menuitem text="Nutzer einladen" action="showInvitationView"/>
-    <separator />
+    <separator/>
     <menuitem text="Ausloggen" action="logout"/>
 </menu>

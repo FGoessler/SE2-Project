@@ -30,7 +30,4 @@ public class OptionPaneHelper {
 	public void showMessageDialog(String msg) {
 		JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), msg);
 	}
-	
-	
-	
 }

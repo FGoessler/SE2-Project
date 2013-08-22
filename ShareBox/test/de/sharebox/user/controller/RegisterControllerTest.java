@@ -1,55 +1,50 @@
 package de.sharebox.user.controller;
 
-import de.sharebox.Main;
 import de.sharebox.api.UserAPI;
+import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.awt.event.ActionEvent;
 
-import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-
-/**
- * @author Benjamin Barth
- * @author Kay Thorsten Meißner
- */
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegisterControllerTest {
 
 	@Mock
 	private UserAPI mockedAPI;
+	@Mock
+	private OptionPaneHelper optionPaneHelper;
+
+	@InjectMocks
 	private RegisterController registerController;
 
 
 	@Before
 	public void setUp() {
 		UserAPI.injectSingletonInstance(mockedAPI);
-		Main.mainWindowViewController = null;
-
-		registerController = new RegisterController();
+		registerController.show();
 	}
 
 	@After
 	public void tearDown() {
-		Main.mainWindowViewController = null;
 		UserAPI.resetSingletonInstance();
 	}
 
-	/*
-	 * Testet das erfolgreiche registrieren eines Nutzers
+	/**
+	 * Testet das erfolgreiche Registrieren eines Nutzers.
 	 */
-	
 	@Test
-	public void testRegisterTrue() {
+	public void testSuccessfulRegister() {
 		when(mockedAPI.registerUser(Matchers.any(User.class))).thenReturn(true);
 
 		registerController.mailField.setText("Nutzername");
@@ -68,29 +63,27 @@ public class RegisterControllerTest {
 
 		verify(mockedAPI).registerUser(any(User.class));
 	}
-	
-	/*
-	 * Testet, den Fall, dass der Nutzer beim speichern seiner Daten irgendwas falsch oder gar nicht angibt.
-	 */
-	
-	@Test
-	public void testRegisterFalse() {
-		when(mockedAPI.registerUser(Matchers.any(User.class))).thenReturn(false);
-			
-		registerController.register.actionPerformed(mock(ActionEvent.class));
 
+	/**
+	 * Testet, den Fall, dass der Nutzer beim Speichern seiner Daten irgendwas falsch oder gar nicht angibt.
+	 */
+	@Test
+	public void testInvalidRegister() {
+		when(mockedAPI.registerUser(Matchers.any(User.class))).thenReturn(false);
+
+		registerController.register.actionPerformed(mock(ActionEvent.class));
+		//TODO: Test falsch aber akzeptiert! -> Implementierung falsch?!
 		verify(mockedAPI).registerUser(any(User.class));
 	}
 
-	/*
+	/**
 	 * Testet den Abbrechen-Button und die Aktion die dabei ausgeführt werden soll.
 	 */
-	
 	@Test
 	public void testStop() {
 		registerController.stop.actionPerformed(mock(ActionEvent.class));
-		
+		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
-	
+
 }
 

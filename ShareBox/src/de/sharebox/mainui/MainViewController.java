@@ -1,11 +1,18 @@
 package de.sharebox.mainui;
 
-import de.sharebox.Main;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.controller.DirectoryViewController;
-import de.sharebox.user.controller.*;
+import de.sharebox.file.controller.DirectoryViewControllerFactory;
+import de.sharebox.file.controller.PermissionViewControllerFactory;
+import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.mainui.menu.AdministrationMenuFactory;
+import de.sharebox.mainui.menu.FileMenuFactory;
+import de.sharebox.user.controller.AccountingController;
+import de.sharebox.user.controller.ChangeCredentialsController;
+import de.sharebox.user.controller.EditProfileController;
+import de.sharebox.user.controller.InvitationController;
 import de.sharebox.user.model.User;
-import org.swixml.SwingEngine;
 
 import javax.swing.*;
 
@@ -15,6 +22,10 @@ import javax.swing.*;
  * Dieser Controller besitzt außerdem eine Referenz auf den aktuell eingeloggten User, dessen Daten dargestellt werden.
  */
 public class MainViewController {
+	private final EditProfileController editProfileController;
+	private final AccountingController accountingController;
+	private final InvitationController invitationController;
+	private final ChangeCredentialsController changeCredentialsController;
 
 	private JFrame frame;
 
@@ -24,55 +35,61 @@ public class MainViewController {
 	private User currentUser;
 
 	/**
-	 * Referenz auf die SwingEngine, die das generieren der Swing Objekte übernimmt und später nach diversen
-	 * Eigenschaften gefragt werden kann. (siehe swixml.org)
-	 */
-	protected SwingEngine swix;
-
-	protected DirectoryViewController directoryViewController;
-	protected EditProfileController editProfileController;
-	protected AccountingController accountController;
-	protected InvitationController invitationController;
-	protected ChangeCredentialsController editCredentialsController;
-
-	/**
 	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
 	 * Wird über die SwingEngine gesetzt.
 	 */
 	public JTree tree;
+	public JSplitPane splitPane;
 
 	/**
 	 * Die zentrale Menüleiste.
 	 */
 	protected final JMenuBar menuBar;
-	protected final FileMenu fileMenu;
-	protected final AdministrationMenu administrationMenu;
 
 	/**
-	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml
-	 * Datei mittels SWIxml generiert.
+	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml
+	 * generiert.<br/>
+	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Siehe auch MainViewControllerFactory.
 	 *
-	 * @param user Der Nutzer dessen Daten angezeigt werden sollen.
+	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen.
+	 * @param permissionViewControllerFactory
+	 *                                       Mittels dieser Factory wird ein PermissionViewController erzeugt,
+	 *                                       der in der rechten Hälfte des JSplitPanes dargestellt wird.
+	 * @param directoryViewControllerFactory Mittels dieser Factory wird ein DirectoryViewController erzeugt,
+	 *                                       der im JTree in der linken Hälfte des JSplitPane seinen Inhalt darstellt.
+	 * @param fileMenuFactory                Mittels dieser Factory wird das FileMenu erzeugt.
+	 * @param administrationMenuFactory      Mittels dieser Factory wird das AdministrationMenu erzeugt.
+	 * @param accountingController           Ein AccountingController für Änderungen an den Rechnungsdaten.
 	 */
-	public MainViewController(User user) {
-		super();
+	@Inject
+	MainViewController(@Assisted User user,
+					   PermissionViewControllerFactory permissionViewControllerFactory,
+					   DirectoryViewControllerFactory directoryViewControllerFactory,
+					   FileMenuFactory fileMenuFactory,
+					   AdministrationMenuFactory administrationMenuFactory,
+					   AccountingController accountingController,
+					   ChangeCredentialsController changeCredentialsController,
+					   EditProfileController editProfileController,
+					   InvitationController invitationController) {
 
 		this.currentUser = user;
+		this.accountingController = accountingController;
+		this.changeCredentialsController = changeCredentialsController;
+		this.editProfileController = editProfileController;
+		this.invitationController = invitationController;
 
 		//create window
-		try {
-			swix = new SwingEngine(this);
-			frame = (JFrame) swix.render("resources/xml/mainWindow.xml");
-			frame.setVisible(true);
-		} catch (Exception exception) {
-			System.out.println("Couldn't create Swing Window!");
-		}
+		frame = (JFrame) new SwingEngineHelper().render(this, "mainWindow");
+		frame.setVisible(true);
 
-		directoryViewController = new DirectoryViewController(tree);
+		directoryViewControllerFactory.create(tree);
 
 		menuBar = frame.getJMenuBar();
-		fileMenu = new FileMenu(menuBar, directoryViewController);
-		administrationMenu = new AdministrationMenu(menuBar, this);
+		fileMenuFactory.create(menuBar);
+		administrationMenuFactory.create(menuBar, this);
+
+		permissionViewControllerFactory.create(splitPane);
 	}
 
 	/**
@@ -85,31 +102,31 @@ public class MainViewController {
 	}
 
 	/**
-	 * Erstellt und öffnet ein ChangeCredentials-Fenster zum Bearbeiten der Logindaten.
+	 * Öffnet ein ChangeCredentials-Fenster zum Bearbeiten der Logindaten.
 	 */
 	public void openEditCredentialsController() {
-		editCredentialsController = new ChangeCredentialsController();
+		changeCredentialsController.show();
 	}
 
 	/**
-	 * Erstellt und öffnet ein EditProfile-Fenster zum Bearbeiten der Profildaten.
+	 * Öffnet ein EditProfile-Fenster zum Bearbeiten der Profildaten.
 	 */
 	public void openEditProfileController() {
-		editProfileController = new EditProfileController();
+		editProfileController.show();
 	}
 
 	/**
-	 * Erstellt und öffnet ein Accounting-Fenster zum Ändern der AccoutingDaten.
+	 * Öffnet ein Accounting-Fenster zum Ändern der AccoutingDaten.
 	 */
 	public void openAccountController() {
-		accountController = new AccountingController();
+		accountingController.show();
 	}
 
 	/**
-	 * Erstellt und öffnet ein Invitation-Fenster zum Einladen neuer Benutzer.
+	 * Öffnet ein Invitation-Fenster zum Einladen neuer Benutzer.
 	 */
 	public void openInvitationController() {
-		invitationController = new InvitationController();
+		invitationController.show();
 	}
 
 	/**
@@ -119,7 +136,5 @@ public class MainViewController {
 		UserAPI.getUniqueInstance().logout();
 
 		frame.setVisible(false);
-
-		Main.loginController = new LoginController();
 	}
 }

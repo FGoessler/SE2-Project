@@ -1,32 +1,65 @@
-package de.sharebox.file.controller;
+package de.sharebox.file.services;
 
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
+import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DirectoryViewClipboardServiceTest {
-
-	private DirectoryViewClipboardService clipboard;
 	private File testFile;
 	private Directory testDirectory;
+	private Directory targetDirectory;
+
+	private UserAPI mockedAPI;
+
+	@Mock
+	private OptionPaneHelper optionPaneHelper;
+
+	@InjectMocks
+	private DirectoryViewClipboardService clipboard;
 
 	@Before
 	public void setUp() {
-		clipboard = new DirectoryViewClipboardService();
+		//mock UserAPI (Permissions)
+		User mockedUser = mock(User.class);
+		when(mockedUser.getEmail()).thenReturn("test@mail.de");
+		mockedAPI = mock(UserAPI.class);
+		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
+		UserAPI.injectSingletonInstance(mockedAPI);
 
+		//create test directory
 		testFile = new File();
 		testFile.setName("newFile");
 
 		testDirectory = new Directory();
 		testDirectory.setName("lol");
+		testDirectory.setPermission(mockedUser, true, true, true);
 		testDirectory.createNewFile("subFile1");
 		testDirectory.createNewFile("subFile2");
+
+		targetDirectory = new Directory();
+		targetDirectory.setPermission(mockedUser, true, true, true);
+	}
+
+	@After
+	public void tearDown() {
+		UserAPI.resetSingletonInstance();
 	}
 
 	@Test
@@ -34,7 +67,6 @@ public class DirectoryViewClipboardServiceTest {
 		clipboard.addToClipboard(testDirectory);
 		clipboard.addToClipboard(testFile);
 
-		Directory targetDirectory = new Directory();
 		File keptFile = targetDirectory.createNewFile("file to be kept");
 		clipboard.pasteClipboardContent(targetDirectory);
 
@@ -46,7 +78,7 @@ public class DirectoryViewClipboardServiceTest {
 		assertThat(targetDirectory.getFEntries().get(2).getName()).isEqualTo(testFile.getName());
 		assertThat(targetDirectory.getFEntries().get(2)).isNotSameAs(testFile);
 		assertThat(targetDirectory.getFEntries().get(1).getName()).isEqualTo(testDirectory.getName());
-		FEntry child = ((Directory)targetDirectory.getFEntries().get(1)).getFEntries().get(0);
+		FEntry child = ((Directory) targetDirectory.getFEntries().get(1)).getFEntries().get(0);
 		assertThat(child.getName()).isEqualTo(testDirectory.getFEntries().get(0).getName());
 		assertThat(targetDirectory.getFEntries().get(1)).isNotSameAs(testDirectory);
 	}
@@ -59,13 +91,10 @@ public class DirectoryViewClipboardServiceTest {
 
 		clipboard.addToClipboard(testFile);
 
-		Directory targetDirectory = new Directory();
 		clipboard.pasteClipboardContent(targetDirectory);
 
 		assertThat(targetDirectory.getFEntries()).hasSize(1);
 		assertThat(targetDirectory.getFEntries().get(0).getName()).isEqualTo(testFile.getName());
-
-
 	}
 
 	@Test
@@ -75,10 +104,28 @@ public class DirectoryViewClipboardServiceTest {
 		fEntries.add(testFile);
 		clipboard.addToClipboard(fEntries);
 
-		Directory targetDirectory = new Directory();
 		clipboard.pasteClipboardContent(targetDirectory);
 
 		assertThat(targetDirectory.getFEntries().get(1).getName()).isEqualTo(testFile.getName());
 		assertThat(targetDirectory.getFEntries().get(0).getName()).isEqualTo(testDirectory.getName());
+	}
+
+	@Test
+	public void pastingAFEntryToADirectoryWithoutWritePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
+
+		assertThat(targetDirectory.getFEntries()).hasSize(0);
+
+		clipboard.addToClipboard(testDirectory);
+		clipboard.pasteClipboardContent(targetDirectory);
+
+		assertThat(targetDirectory.getFEntries()).hasSize(0);
+		verify(optionPaneHelper).showMessageDialog(anyString());
+	}
+
+	private void setCurrentUserToUserWithoutPermissions() {
+		User userWithoutPermissions = mock(User.class);
+		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
+		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component inherit-compiler-output="true" inheritJdk="true">
-	<output-test url="file://$MODULE_DIR$/out/test/ShareBox"/>
+<component jdk="1.7" jdk_type="JavaSDK">
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$">
 		<testFolder url="file://$MODULE_DIR$/test"/>
@@ -23,4 +22,11 @@
 	<lib name="mockito-all-1.9.5.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/jars/mockito-all-1.9.5.jar!/"/>
 	</lib>
+	<levels>
+		<level name="guava-14.0.1" value="project"/>
+		<level name="guice-3.0" value="project"/>
+		<level name="guice-assistedinject-3.0" value="project"/>
+		<level name="javax.inject" value="project"/>
+		<level name="aopalliance" value="project"/>
+	</levels>
 </component>

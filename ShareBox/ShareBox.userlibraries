@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eclipse-userlibraries />
+<eclipse-userlibraries>
+  <library name="guice-3.0">
+    <archive path="/Users/florian/Dropbox/Uni/Unikurse/Software_Engineering_II/Project/ShareBox/jars/guice-3.0.jar" />
+  </library>
+  <library name="guava-14.0.1">
+    <archive path="/Users/florian/Dropbox/Uni/Unikurse/Software_Engineering_II/Project/ShareBox/jars/guava-14.0.1.jar" />
+  </library>
+  <library name="guice-assistedinject-3.0">
+    <archive path="/Users/florian/Dropbox/Uni/Unikurse/Software_Engineering_II/Project/ShareBox/jars/guice-assistedinject-3.0.jar" />
+  </library>
+  <library name="javax.inject">
+    <archive path="/Users/florian/Dropbox/Uni/Unikurse/Software_Engineering_II/Project/ShareBox/jars/javax.inject.jar" />
+  </library>
+  <library name="aopalliance">
+    <archive path="/Users/florian/Dropbox/Uni/Unikurse/Software_Engineering_II/Project/ShareBox/jars/aopalliance.jar" />
+  </library>
+</eclipse-userlibraries>
 

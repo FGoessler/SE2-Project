@@ -17,7 +17,7 @@
         <passwordfield id="passwordField1" columns="20" text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
         </passwordfield>
-        
+
         <label font="Georgia-BOLD-12" text="Passwort">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
         </label>
@@ -54,7 +54,8 @@
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
         </label>
 
-        <combobox id="storageLimitField" initclass="de.sharebox.user.model.StorageLimitComboBoxModel" Action="selectBoxAction">
+        <combobox id="storageLimitField" initclass="de.sharebox.user.model.StorageLimitComboBoxModel"
+                  Action="selectBoxAction">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
         </combobox>
 
@@ -106,7 +107,7 @@
         <button text="Registrieren" action="register">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="13"/>
         </button>
-        
+
         <button text="Abbrechen" action="stop">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="13"/>
         </button>
