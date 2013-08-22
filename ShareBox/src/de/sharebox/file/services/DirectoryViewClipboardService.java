@@ -1,9 +1,11 @@
 package de.sharebox.file.services;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
+import de.sharebox.helpers.OptionPaneHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +17,19 @@ import java.util.List;
  */
 @Singleton
 public class DirectoryViewClipboardService {
+	private final OptionPaneHelper optionPane;
+
 	private List<FEntry> clipboard = new ArrayList<FEntry>();
 
 	/**
-	 * Leerer Konstruktor um eine direkte Instanzierung zu verhindern.<br/>
+	 * Erstellt einen neuen DirectoryViewClipboardService.<br/>
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 *
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
 	 */
-	DirectoryViewClipboardService() {
-		//empty
+	@Inject
+	DirectoryViewClipboardService(OptionPaneHelper optionPaneHelper) {
+		this.optionPane = optionPaneHelper;
 	}
 
 	/**
@@ -58,10 +65,14 @@ public class DirectoryViewClipboardService {
 	 * @return Das Verzeichnis nach dem Einfügenvorgang.
 	 */
 	public Directory pasteClipboardContent(Directory targetDirectory) {
-		if (!clipboard.isEmpty()) {
-			for (FEntry pasteFEntry : clipboard) {
-				targetDirectory.addFEntry(pasteFEntry);		//TODO: evaluate success
+		if(targetDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
+			if (!clipboard.isEmpty()) {
+				for (FEntry pasteFEntry : clipboard) {
+					targetDirectory.addFEntry(pasteFEntry);
+				}
 			}
+		} else {
+			optionPane.showMessageDialog("Sie besitzen für das Zielverzeichnis leider nicht die nötigen Rechte.");
 		}
 		return targetDirectory;
 	}

@@ -2,6 +2,7 @@ package de.sharebox.file.model;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import de.sharebox.api.UserAPI;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
@@ -56,23 +57,25 @@ public class FEntry {
 
 	/**
 	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden falls der Server entsprechende Änderungen sendet.
+	 * <br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param identifier Die neue ID dieses Objekts.
 	 */
 	public void setIdentifier(Integer identifier) {
-		//TODO: check permission
-
 		this.identifier = identifier;
 	}
 
 	/**
 	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.
+	 * <br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param name Der neue Name.
 	 */
 	public void setName(String name) {
-		//TODO: check permission
-
 		this.name = name;
 
 		fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
@@ -129,6 +132,9 @@ public class FEntry {
 	/**
 	 * Setzt die Rechte eines Nutzers an diesem FEntry.
 	 * Löst entsprechende PERMISSION_CHANGED Notifications aus.
+	 * <br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param user   Der Nutzer der die Rechte erhält.
 	 * @param read   Der neue Wert für Leserechte.
@@ -136,8 +142,6 @@ public class FEntry {
 	 * @param manage Der neue Wert für Verwaltungsrechte.
 	 */
 	public void setPermission(User user, boolean read, boolean write, boolean manage) {
-		//TODO: check permission
-
 		FEntryPermission permission = getPermissionOfUser(user);
 
 		if (read || write || manage) {
@@ -173,17 +177,29 @@ public class FEntry {
 	 */
 	public FEntryPermission getPermissionOfUser(User user) {
 		Optional<FEntryPermission> permission = Optional.absent();
-
-		for (FEntryPermission perm : permissions) {
-			if (perm.getUser().getEmail().equals(user.getEmail())) {
-				permission = Optional.of(perm);
+		//TODO: handle null values -> use Optionals
+		try {
+			for (FEntryPermission perm : permissions) {
+				if (perm.getUser().getEmail().equals(user.getEmail())) {
+					permission = Optional.of(perm);
+				}
+			}
+		} finally {
+			if (!permission.isPresent()) {
+				permission = Optional.of(new FEntryPermission(user, this));
 			}
 		}
 
-		if (!permission.isPresent()) {
-			permission = Optional.of(new FEntryPermission(user, this));
-		}
-
 		return permission.get();
+	}
+
+	/**
+	 * Gibt die Rechte des aktuell eingeloggten Benutzers (basierend auf den Daten der UserAPI) als FEntryPermission
+	 * Objekt zurück.
+	 *
+	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
+	 */
+	public FEntryPermission getPermissionOfCurrentUser() {
+		return getPermissionOfUser(UserAPI.getUniqueInstance().getCurrentUser());
 	}
 }

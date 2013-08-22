@@ -1,12 +1,15 @@
 package de.sharebox.file.services;
 
 import com.google.common.base.Optional;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.ContextMenuController;
 import de.sharebox.file.controller.FEntryTreeNode;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +36,8 @@ public class DirectoryViewSelectionServiceTest {
 	private Directory rootDirectory;
 	private Directory subDir1;
 
+	private UserAPI mockedAPI;
+
 	@Mock
 	private OptionPaneHelper optionPane;
 	@Mock
@@ -43,9 +48,18 @@ public class DirectoryViewSelectionServiceTest {
 	private DefaultTreeModel treeModel;
 
 	@Before
-	public void createMockDirectoryTree() {
+	public void setUp() {
+		//mock UserAPI (for permissions)
+		User mockedUser = mock(User.class);
+		when(mockedUser.getEmail()).thenReturn("test@mail.de");
+		mockedAPI = mock(UserAPI.class);
+		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
+		UserAPI.injectSingletonInstance(mockedAPI);
+
+		//create test directories
 		rootDirectory = new Directory();
 		rootDirectory.setName("The main dir");
+		rootDirectory.setPermission(mockedUser, true, true, true);
 
 		subDir1 = rootDirectory.createNewDirectory("A Subdirectory");
 		subDir1.createNewFile("Subdirectory File");
@@ -59,6 +73,10 @@ public class DirectoryViewSelectionServiceTest {
 		selectionService.setTreeView(new JTree(treeModel));
 	}
 
+	@After
+	public void tearDown() {
+		UserAPI.resetSingletonInstance();
+	}
 
 	@Test
 	public void canAddTreeSelectionListeners() {
@@ -95,14 +113,14 @@ public class DirectoryViewSelectionServiceTest {
 
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
-		//test with directory selected -> create as child of directory
+		//test with directory selected (but no context menu) -> create as child of directory
 		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
 		File fourthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fourthNewFile);
 		assertThat(fourthNewFile.getName()).isEqualTo(NEW_FILE_NAME);
 
-		//test with file selected -> create as sibling of file
+		//test with file selected (but no context menu) -> create as sibling of file
 		FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
 		File fifthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
@@ -145,14 +163,14 @@ public class DirectoryViewSelectionServiceTest {
 
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
-		//test with directory selected -> create as child of directory
+		//test with directory selected (but no context menu) -> create as child of directory
 		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
 		Directory fourthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fourthNewDirectory);
 		assertThat(fourthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
-		//test with file selected -> create as sibling of file
+		//test with file selected (but no context menu) -> create as sibling of file
 		FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
 		Directory fifthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
@@ -170,6 +188,32 @@ public class DirectoryViewSelectionServiceTest {
 	}
 
 	@Test
+	public void creatingFilesWithoutWritePermissionIsNotPossible() {
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME);
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1));
+
+		setCurrentUserToUserWithoutPermissions();
+
+		assertThat(subDir1.getFEntries()).hasSize(1);
+		File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		assertThat(subDir1.getFEntries()).hasSize(1);
+		assertThat(newFile).isNull();
+	}
+
+	@Test
+	public void creatingDirectoriesWithoutWritePermissionIsNotPossible() {
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME);
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1));
+
+		setCurrentUserToUserWithoutPermissions();
+
+		assertThat(subDir1.getFEntries()).hasSize(1);
+		Directory newDir = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		assertThat(subDir1.getFEntries()).hasSize(1);
+		assertThat(newDir).isNull();
+	}
+
+	@Test
 	public void canReturnTheSelectedFEntriesAndTheirParents() {
 		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		TreePath[] treePaths = {new TreePath(treeNodes), new TreePath(new FEntryTreeNode(treeModel, rootDirectory))};
@@ -178,5 +222,11 @@ public class DirectoryViewSelectionServiceTest {
 		assertThat(selectionService.getSelectedFEntries()).contains(rootDirectory, subDir1);
 
 		assertThat(selectionService.getParentsOfSelectedFEntries()).contains(Optional.absent(), Optional.of(rootDirectory));
+	}
+
+	private void setCurrentUserToUserWithoutPermissions() {
+		User userWithoutPermissions = mock(User.class);
+		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
+		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}
 }

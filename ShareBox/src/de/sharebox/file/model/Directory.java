@@ -47,14 +47,14 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.
+	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param filename Der Name der neuen Datei.
 	 * @return Die neu erstellte Datei.
 	 */
 	public File createNewFile(String filename) {
-		//TODO: check permission
-
 		File newFile = new File();
 		newFile.setName(filename);
 		newFile.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
@@ -67,15 +67,15 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Erstellt ein neues Verzeichnis in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.
+	 * Erstellt ein neues Verzeichnis in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param dirname Der Name des neuen Verzeichnisses.
 	 * @return Das neu erstellte Verzeichnis.
 	 */
 	public Directory createNewDirectory(String dirname) {
-		//TODO: check permission
-
-		Directory newDir = new Directory();		//TODO: create constructor which automatically sets a user as the owner of the file!
+		Directory newDir = new Directory();
 		newDir.setName(dirname);
 		newDir.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
 
@@ -87,13 +87,13 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Fügt dem Verzeichnis einen FEntry hinzu.
+	 * Fügt dem Verzeichnis einen FEntry hinzu.<br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
 	 */
 	public void addFEntry(FEntry newFEntry) {
-		//TODO: check permission
-
 		fEntries.add(newFEntry);
 
 		fireAddedChildrenNotification(newFEntry);
@@ -103,17 +103,17 @@ public class Directory extends FEntry {
 	 * Löscht den übergebenen FEntry aus dem Dateisystem. Handelt es sich um ein Verzeichnis werden rekursiv alle
 	 * Unterdateien dieses Verzeichnisses gelöscht.
 	 * Es werden die Observer aller gelöschten Objekte mit einer Löschungs-Benachrichtigung informiert und der Observer
-	 * des Verzeichnisses auf dem die Methode aufgerufen wird erhält eine Änderungs-Benachrichtigung.
+	 * des Verzeichnisses auf dem die Methode aufgerufen wird erhält eine Änderungs-Benachrichtigung.<br/><br/>
+	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param fEntry Der zu löschende FEntry.
 	 */
 	public void deleteFEntry(FEntry fEntry) {
-		//TODO: check permission
-
 		if (fEntry instanceof Directory) {
 			Directory dir = (Directory) fEntry;
 			while (dir.getFEntries().size() > 0) {
-				dir.deleteFEntry(dir.getFEntries().get(0));		//TODO: evaluate success
+				dir.deleteFEntry(dir.getFEntries().get(0));
 			}
 		}
 		fEntries.remove(fEntry);
@@ -123,29 +123,35 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * TODO: Docu!
-	 * @param addedFEntry
+	 * Feuert eine addedChildrenNotification Notification auf den registrierten DirectoryObservern. Etwaige reine
+	 * FEntryObserver erhalten keine Benachrichtigung. Die Notification erhält das Directory dem FEntries hinzugefügt
+	 * wurden, sowie die FEntries, die hinzugefügt wurden.
+	 *
+	 * @param addedFEntry Der hinzugefügt FEntry.
 	 */
 	public void fireAddedChildrenNotification(FEntry addedFEntry) {
 		ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
 
-		for(FEntryObserver observer : observers) {
-			if(observer instanceof DirectoryObserver) {
-				((DirectoryObserver) observer).addedChildrenNotification(this,addedFEntries);
+		for (FEntryObserver observer : observers) {
+			if (observer instanceof DirectoryObserver) {
+				((DirectoryObserver) observer).addedChildrenNotification(this, addedFEntries);
 			}
 		}
 	}
 
 	/**
-	 * TODO: Docu!
-	 * @param removedFEntry
+	 * Feuert eine removedChildrenNotification Notification auf den registrierten DirectoryObservern. Etwaige reine
+	 * FEntryObserver erhalten keine Benachrichtigung. Die Notification erhält das Directory dem FEntries hinzugefügt
+	 * wurden, sowie die FEntries, die hinzugefügt wurden.
+	 *
+	 * @param removedFEntry Der entfernte FEntry.
 	 */
 	public void fireRemovedChildrenNotification(FEntry removedFEntry) {
 		ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
 
-		for(FEntryObserver observer : observers) {
-			if(observer instanceof DirectoryObserver) {
-				((DirectoryObserver) observer).removedChildrenNotification(this,removedFEntries);
+		for (FEntryObserver observer : observers) {
+			if (observer instanceof DirectoryObserver) {
+				((DirectoryObserver) observer).removedChildrenNotification(this, removedFEntries);
 			}
 		}
 	}

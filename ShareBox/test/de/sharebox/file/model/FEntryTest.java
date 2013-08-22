@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import de.sharebox.api.UserAPI;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +80,25 @@ public class FEntryTest {
 		} catch (Exception exception) {
 			fail("Should not have thrown an error! " + exception.getLocalizedMessage());
 		}
+	}
+
+	@Test
+	public void canBeAskedForAllPermissionsAndThePermissionOfASpecificUserAndThePermissionOfTheCurrentUser() {
+		UserAPI mockedAPI = mock(UserAPI.class);
+		when(mockedAPI.getCurrentUser()).thenReturn(user);
+		UserAPI.injectSingletonInstance(mockedAPI);
+
+		fEntry.setPermission(user, true, true, true);
+
+		assertThat(fEntry.getPermissions()).hasSize(1);
+		assertThat(fEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfCurrentUser().getReadAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfCurrentUser().getWriteAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfCurrentUser().getManageAllowed()).isTrue();
+
+		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

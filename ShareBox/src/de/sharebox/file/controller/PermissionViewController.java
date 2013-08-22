@@ -8,6 +8,7 @@ import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
+import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PermissionViewController {
 	private final DirectoryViewSelectionService selectionService;
 	private final SharingService sharingService;
+	private final OptionPaneHelper optionPane;
 
 	private Optional<FEntry> currentFEntry = Optional.absent();
 
@@ -43,10 +45,13 @@ public class PermissionViewController {
 	@Inject
 	PermissionViewController(@Assisted JSplitPane splitPane,
 							 DirectoryViewSelectionService selectionService,
-							 SharingService sharingService) {
+							 SharingService sharingService,
+							 OptionPaneHelper optionPaneHelper) {
 
 		JComponent panel = (JComponent) new SwingEngineHelper().render(this, "permissionView");
 		splitPane.setRightComponent(panel);
+
+		this.optionPane = optionPaneHelper;
 
 		this.sharingService = sharingService;
 
@@ -177,22 +182,26 @@ public class PermissionViewController {
 
 		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-			super.setValueAt(aValue, rowIndex, columnIndex);
+			if (currentFEntry.get().getPermissionOfCurrentUser().getManageAllowed()) {
+				super.setValueAt(aValue, rowIndex, columnIndex);
 
-			FEntryPermission permission = currentFEntry.get().getPermissions().get(rowIndex);
+				FEntryPermission permission = currentFEntry.get().getPermissions().get(rowIndex);
 
-			switch (columnIndex) {
-				case 1:
-					permission.setReadAllowed((Boolean) aValue);
-					break;
-				case 2:
-					permission.setWriteAllowed((Boolean) aValue);
-					break;
-				case 3:
-					permission.setManageAllowed((Boolean) aValue);
-					break;
-				default:
-					System.out.println("Unallowed editing!");
+				switch (columnIndex) {
+					case 1:
+						permission.setReadAllowed((Boolean) aValue);
+						break;
+					case 2:
+						permission.setWriteAllowed((Boolean) aValue);
+						break;
+					case 3:
+						permission.setManageAllowed((Boolean) aValue);
+						break;
+					default:
+						System.out.println("Unallowed editing!");
+				}
+			} else {
+				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte für diese Änderung.");
 			}
 		}
 
@@ -230,8 +239,13 @@ public class PermissionViewController {
 			for (int index : selectedRows) {
 				selectedPermissions.add(currentFEntry.get().getPermissions().get(index));
 			}
-			for (FEntryPermission permission : selectedPermissions) {
-				currentFEntry.get().setPermission(permission.getUser(), false, false, false);	//TODO: evaluate success
+
+			if (currentFEntry.get().getPermissionOfCurrentUser().getManageAllowed()) {
+				for (FEntryPermission permission : selectedPermissions) {
+					currentFEntry.get().setPermission(permission.getUser(), false, false, false);
+				}
+			} else {
+				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte für diese Änderung.");
 			}
 		}
 	};

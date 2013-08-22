@@ -1,5 +1,6 @@
 package de.sharebox.file.services;
 
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.helpers.OptionPaneHelper;
@@ -19,7 +20,7 @@ public class SharingService {
 	 */
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	private final OptionPaneHelper optionPaneHelper;
+	private final OptionPaneHelper optionPane;
 
 	/**
 	 * Erstellt einen neuen SharingService.<br/>
@@ -29,7 +30,7 @@ public class SharingService {
 	 */
 	@Inject
 	SharingService(OptionPaneHelper optionPaneHelper) {
-		this.optionPaneHelper = optionPaneHelper;
+		this.optionPane = optionPaneHelper;
 	}
 
 	/**
@@ -51,15 +52,23 @@ public class SharingService {
 	 * @param fEntries Der freizugebende FEntry.
 	 */
 	public void showShareFEntryDialog(List<FEntry> fEntries) {
-		String newUserMail = optionPaneHelper.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
+		String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
 
 		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
 			//TODO: call API to invite/set permissions for the user!
 			User newUser = new User();
 			newUser.setEmail(newUserMail);
 
+			List<String> namesOfNotChangedFEntries = new ArrayList<String>();
 			for (FEntry fEntry : fEntries) {
-				fEntry.setPermission(newUser, true, true, false);		//TODO: evaluate success
+				if (fEntry.getPermissionOfCurrentUser().getManageAllowed()) {
+					fEntry.setPermission(newUser, true, true, false);
+				} else {
+					namesOfNotChangedFEntries.add(fEntry.getName());
+				}
+			}
+			if (!namesOfNotChangedFEntries.isEmpty()) {
+				optionPane.showMessageDialog("Folgende Dateien/Verzeichnisse konnten nicht freigegeben werden: " + Joiner.on(", ").skipNulls().join(namesOfNotChangedFEntries));
 			}
 		}
 	}

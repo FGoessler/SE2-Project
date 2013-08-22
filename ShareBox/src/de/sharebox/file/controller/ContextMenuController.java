@@ -1,5 +1,6 @@
 package de.sharebox.file.controller;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.sun.istack.internal.NotNull;
@@ -169,7 +170,11 @@ public class ContextMenuController {
 				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
 				Directory parentDirectory = (Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
-				parentDirectory.deleteFEntry(selectedFEntry.get());		//TODO: evaluate success
+				if(parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
+					parentDirectory.deleteFEntry(selectedFEntry.get());
+				} else {
+					optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
+				}
 			}
 
 			hideMenu();
@@ -206,8 +211,18 @@ public class ContextMenuController {
 		}
 
 		//delete all selected FEntries
+		List<String> namesOfNotDeletedFEntries = new ArrayList<String>();
 		while (!parentDirectories.isEmpty()) {
-			parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));		//TODO: evaluate success
+			if(parentDirectories.get(0).get().getPermissionOfCurrentUser().getWriteAllowed()) {
+				parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
+			} else {
+				namesOfNotDeletedFEntries.add(fEntriesToDelete.get(0).getName());
+				fEntriesToDelete.remove(0);
+				parentDirectories.remove(0);
+			}
+		}
+		if(!namesOfNotDeletedFEntries.isEmpty()) {
+			optionPane.showMessageDialog("Folgende Elemente konnten nicht gelöscht werden: " + Joiner.on(", ").skipNulls().join(namesOfNotDeletedFEntries));
 		}
 	}
 
@@ -219,9 +234,13 @@ public class ContextMenuController {
 		public void actionPerformed(ActionEvent event) {
 			Optional<FEntry> selectedFEntry = getSelectedFEntry();
 
-			String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", selectedFEntry.get().getName());
+			if (selectedFEntry.isPresent() && selectedFEntry.get().getPermissionOfCurrentUser().getWriteAllowed()) {
+				String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", selectedFEntry.get().getName());
 
-			selectedFEntry.get().setName(newName);		//TODO: evaluate success!
+				selectedFEntry.get().setName(newName);
+			} else {
+				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
+			}
 
 			hideMenu();
 		}

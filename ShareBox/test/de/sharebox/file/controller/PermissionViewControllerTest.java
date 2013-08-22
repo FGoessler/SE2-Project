@@ -1,10 +1,13 @@
 package de.sharebox.file.controller;
 
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
+import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +29,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class PermissionViewControllerTest {
 	private FEntry fEntry;
+
+	private UserAPI mockedAPI;
 	@Mock
 	private User user1;
 	@Mock
@@ -43,19 +48,26 @@ public class PermissionViewControllerTest {
 	private DirectoryViewSelectionService selectionService;
 	@Mock
 	private SharingService sharingService;
+	@Mock
+	private OptionPaneHelper optionPaneHelper;
 
 	@InjectMocks
 	private PermissionViewController permissionViewController;
 
 	@Before
 	public void setUp() {
+		//mock UserAPI (Permissions)
+		mockedAPI = mock(UserAPI.class);
+		when(mockedAPI.getCurrentUser()).thenReturn(user1);
+		UserAPI.injectSingletonInstance(mockedAPI);
+
 		permissionViewController.tableModel.addTableModelListener(tableModelListener);
 
 		//create TestFEntry
 		when(user1.getEmail()).thenReturn("user1@mail.com");
 		when(user2.getEmail()).thenReturn("user2@mail.com");
 		fEntry = new FEntry();
-		fEntry.setPermission(user1, true, true, false);
+		fEntry.setPermission(user1, true, true, true);
 		fEntry.setPermission(user2, true, false, true);
 		fEntry.addObserver(fEntryObserver);
 
@@ -64,6 +76,11 @@ public class PermissionViewControllerTest {
 		selectedFEntries.add(fEntry);
 		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
+	}
+
+	@After
+	public void tearDown() {
+		UserAPI.resetSingletonInstance();
 	}
 
 	@Test
@@ -94,7 +111,7 @@ public class PermissionViewControllerTest {
 		assertThat(permissionViewController.tableModel.getValueAt(0, 0)).isEqualTo("user1@mail.com");
 		assertThat(permissionViewController.tableModel.getValueAt(0, 1)).isEqualTo(Boolean.TRUE);
 		assertThat(permissionViewController.tableModel.getValueAt(0, 2)).isEqualTo(Boolean.TRUE);
-		assertThat(permissionViewController.tableModel.getValueAt(0, 3)).isEqualTo(Boolean.FALSE);
+		assertThat(permissionViewController.tableModel.getValueAt(0, 3)).isEqualTo(Boolean.TRUE);
 		assertThat(permissionViewController.tableModel.getValueAt(1, 0)).isEqualTo("user2@mail.com");
 		assertThat(permissionViewController.tableModel.getValueAt(1, 1)).isEqualTo(Boolean.TRUE);
 		assertThat(permissionViewController.tableModel.getValueAt(1, 2)).isEqualTo(Boolean.FALSE);
@@ -103,16 +120,32 @@ public class PermissionViewControllerTest {
 
 	@Test
 	public void userCanChangePermissions() {
-		assertThat(fEntry.getPermissions().get(0).getManageAllowed()).isFalse();
-		assertThat(fEntry.getPermissions().get(1).getReadAllowed()).isTrue();
+		assertThat(fEntry.getPermissions().get(1).getManageAllowed()).isTrue();
+		assertThat(fEntry.getPermissions().get(1).getWriteAllowed()).isFalse();
 
-		permissionViewController.tableModel.setValueAt(true, 0, 3);
-		permissionViewController.tableModel.setValueAt(false, 1, 1);
+		permissionViewController.tableModel.setValueAt(false, 1, 3);
+		permissionViewController.tableModel.setValueAt(true, 1, 2);
 
-		assertThat(fEntry.getPermissions().get(0).getManageAllowed()).isTrue();
-		assertThat(fEntry.getPermissions().get(1).getReadAllowed()).isFalse();
+		assertThat(fEntry.getPermissions().get(1).getManageAllowed()).isFalse();
+		assertThat(fEntry.getPermissions().get(1).getWriteAllowed()).isTrue();
 
 		verify(fEntryObserver, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+	}
+
+	@Test
+	public void changingSinglePermissionsWithoutManagePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
+
+		assertThat(fEntry.getPermissions().get(1).getManageAllowed()).isTrue();
+		assertThat(fEntry.getPermissions().get(1).getWriteAllowed()).isFalse();
+
+		permissionViewController.tableModel.setValueAt(false, 1, 3);
+		permissionViewController.tableModel.setValueAt(true, 1, 2);
+
+		assertThat(fEntry.getPermissions().get(1).getManageAllowed()).isTrue();
+		assertThat(fEntry.getPermissions().get(1).getWriteAllowed()).isFalse();
+
+		verify(optionPaneHelper, times(2)).showMessageDialog(anyString());
 	}
 
 	@Test
@@ -192,5 +225,25 @@ public class PermissionViewControllerTest {
 		assertThat(fEntry.getPermissionOfUser(user2).getManageAllowed()).isTrue();
 
 		verify(fEntryObserver, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+	}
+
+	@Test
+	public void removingAUserViaActionWithoutManagePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
+
+		assertThat(fEntry.getPermissions()).hasSize(2);
+
+		permissionViewController.permissionTable.changeSelection(0, 0, false, false);
+		permissionViewController.removeUserPermission.actionPerformed(mock(ActionEvent.class));
+
+		assertThat(fEntry.getPermissions()).hasSize(2);
+
+		verify(optionPaneHelper).showMessageDialog(anyString());
+	}
+
+	private void setCurrentUserToUserWithoutPermissions() {
+		User userWithoutPermissions = mock(User.class);
+		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
+		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}
 }

@@ -115,7 +115,8 @@ public class DirectoryViewSelectionService {
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
 	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
 	 *                              ContextMenuController betrachtet.
-	 * @return Die neu erstellte Datei.
+	 * @return Die neu erstellte Datei. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
+	 *         erforderlichen Rechte besitzt.
 	 */
 	public File createNewFileBasedOnUserSelection(Optional<ContextMenuController> contextMenuController) {
 		File createdFile = null;
@@ -123,7 +124,11 @@ public class DirectoryViewSelectionService {
 
 		if (!isNullOrEmpty(newFilename)) {
 			Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
-			createdFile = parentDirectory.createNewFile(newFilename);		//TODO: evaluate success
+			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
+				createdFile = parentDirectory.createNewFile(newFilename);
+			} else {
+				optionPane.showMessageDialog("Leider besitzen Sie nicht die nötigen Rechte für diese Operation.");
+			}
 		}
 		return createdFile;
 	}
@@ -136,7 +141,8 @@ public class DirectoryViewSelectionService {
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
 	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
 	 *                              ContextMenuController betrachtet.
-	 * @return Das neu erstellte Verzeichnis.
+	 * @return Das neu erstellte Verzeichnis. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
+	 *         erfoderlichen Rechte besitzt.
 	 */
 	public Directory createNewDirectoryBasedOnUserSelection(Optional<ContextMenuController> contextMenuController) {
 		Directory createdDir = null;
@@ -144,7 +150,11 @@ public class DirectoryViewSelectionService {
 
 		if (!isNullOrEmpty(newDirectoryName)) {
 			Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
-			createdDir = parentDirectory.createNewDirectory(newDirectoryName);		//TODO: evaluate success
+			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
+				createdDir = parentDirectory.createNewDirectory(newDirectoryName);
+			} else {
+				optionPane.showMessageDialog("Leider besitzen Sie nicht die nötigen Rechte für diese Operation.");
+			}
 		}
 		return createdDir;
 	}

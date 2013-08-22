@@ -1,12 +1,15 @@
 package de.sharebox.file.controller;
 
 import com.google.common.base.Optional;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewClipboardService;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +27,7 @@ import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextMenuControllerTest {
@@ -41,15 +43,28 @@ public class ContextMenuControllerTest {
 	private OptionPaneHelper optionPaneHelper;
 	@Mock
 	private SharingService sharingService;
+
 	@Spy
+	@InjectMocks
 	private DirectoryViewClipboardService clipboardService;
 
-	@InjectMocks
 	private ContextMenuController contextMenuController;
+	private UserAPI mockedAPI;
 
 	@Before
 	public void createMockedTreePath() {
+		contextMenuController = new ContextMenuController(selectionService, clipboardService, sharingService, optionPaneHelper);
+
+		//mock UserAPI (Permissions)
+		User mockedUser = mock(User.class);
+		when(mockedUser.getEmail()).thenReturn("test@mail.de");
+		mockedAPI = mock(UserAPI.class);
+		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
+		UserAPI.injectSingletonInstance(mockedAPI);
+
+		//create test directories
 		parentDirectory = new Directory();
+		parentDirectory.setPermission(mockedUser, true, true, true);
 		parentDirectory.setName("A Test Dir");
 		FEntry child1 = parentDirectory.createNewFile("A Test File");
 		FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
@@ -57,6 +72,11 @@ public class ContextMenuControllerTest {
 		FEntry child2 = parentDirectory.createNewFile("An other Test File");
 		FEntryTreeNode[] nodes2 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child2)};
 		mockedTreePath2 = new TreePath(nodes2);
+	}
+
+	@After
+	public void tearDown() {
+		UserAPI.resetSingletonInstance();
 	}
 
 	@Test
@@ -114,8 +134,34 @@ public class ContextMenuControllerTest {
 	}
 
 	@Test
-	public void userCanDeleteMultipleFEntriesAtOnce() {
+	public void deletingAFEntryWithoutWritePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
+
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
+		performClickOnMenuItem(contextMenuController.deleteFEntry);
+
+		assertThat(parentDirectory.getFEntries()).hasSize(2);
+		verify(optionPaneHelper).showMessageDialog(anyString());
+	}
+
+	@Test
+	public void userCanDeleteMultipleFEntriesAtOnce() {
+		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
+		List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
+		parents.add(Optional.of(parentDirectory));
+		parents.add(Optional.of(parentDirectory));
+		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
+
+		assertThat(parentDirectory.getFEntries()).hasSize(2);
+
+		performClickOnMenuItem(contextMenuController.deleteFEntry);
+
+		assertThat(parentDirectory.getFEntries()).hasSize(0);
+	}
+
+	@Test
+	public void deletingMultipleFEntriesWithoutWritePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
 
 		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
 		List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
@@ -123,9 +169,15 @@ public class ContextMenuControllerTest {
 		parents.add(Optional.of(parentDirectory));
 		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
 
+
+		assertThat(parentDirectory.getFEntries()).hasSize(2);
+
 		performClickOnMenuItem(contextMenuController.deleteFEntry);
 
-		assertThat(parentDirectory.getFEntries()).hasSize(0);
+		assertThat(parentDirectory.getFEntries()).hasSize(2);
+		//message should contain name of files
+		verify(optionPaneHelper).showMessageDialog(contains(parentDirectory.getFEntries().get(0).getName()));
+		verify(optionPaneHelper).showMessageDialog(contains(parentDirectory.getFEntries().get(1).getName()));
 	}
 
 	@Test
@@ -137,6 +189,17 @@ public class ContextMenuControllerTest {
 		performClickOnMenuItem(contextMenuController.renameFEntry);
 
 		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A new File name");
+	}
+
+	@Test
+	public void renamingAFEntryWithoutWritePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
+		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
+
+		performClickOnMenuItem(contextMenuController.renameFEntry);
+
+		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
+		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
 
 	@Test
@@ -181,6 +244,12 @@ public class ContextMenuControllerTest {
 		performClickOnMenuItem(contextMenuController.shareFEntry);
 
 		verify(sharingService).showShareFEntryDialog(parentDirectory.getFEntries().get(0));
+	}
+
+	private void setCurrentUserToUserWithoutPermissions() {
+		User userWithoutPermissions = mock(User.class);
+		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
+		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}
 
 	private void performClickOnMenuItem(Action menuItemAction) {
