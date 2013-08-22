@@ -319,7 +319,7 @@ public class FileAPI {
 
 		for (List<StorageEntry> aStorage : storage) {
 			for (StorageEntry storageEntry : aStorage) {
-				if (storageEntry.timestamp > timeOfLastChange) {
+				if (storageEntry.timestamp >= timeOfLastChange) {
 					changedFiles.add(storageEntry.fEntry);
 				}
 			}

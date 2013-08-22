@@ -159,10 +159,14 @@ public class FileAPITest {
 
     @Test
     public void testGetChangesSince() {
-        int oldSize = fileAPI.getChangesSince(System.currentTimeMillis()).size();
+        long LastChange = System.currentTimeMillis();
+        System.out.println("-- change test --");
+        System.out.println(LastChange);
         fileAPI.createNewFile(tFile);
         fileAPI.createNewDirectory(tDirectory);
         fileAPI.createNewDirectory(tDirectory2);
-        assertThat(fileAPI.getChangesSince(oldSize).size()).isEqualTo(3);
+        System.out.println(System.currentTimeMillis());
+        assertThat(fileAPI.getChangesSince(LastChange).size()).isEqualTo(3);
+        System.out.println("-- change end --");
     }
 }
