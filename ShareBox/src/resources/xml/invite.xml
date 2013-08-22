@@ -11,6 +11,10 @@
 
 
         <button text="Einladen" action="invite">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
+        </button>
+        
+        <button text="Abbrechen" action="stop">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
         </button>
     </panel>

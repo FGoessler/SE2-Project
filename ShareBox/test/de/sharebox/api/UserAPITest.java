@@ -24,9 +24,14 @@ public class UserAPITest {
 	private transient User user;
 	private transient User user2;
 
+	/*
+	 * Zunächst werden für die Testklasse 2 User angelegt.
+	 */
+	
     @Before
 	public void setUp() {
 		userAPI = UserAPI.getUniqueInstance();
+		
 
 		user = new User();
 		user.setEmail("Max@Mustermann.de");
@@ -61,6 +66,7 @@ public class UserAPITest {
 		user2.setGender("m");
     }
 
+
 	@Test
 	public void isASingletonButCanInjectMocks() {
 		assertThat(UserAPI.getUniqueInstance()).isNotNull();
@@ -71,6 +77,11 @@ public class UserAPITest {
 		assertThat(UserAPI.getUniqueInstance()).isSameAs(mockedUserAPI);
 	}
 
+	/*
+	 * Dieser Test überprüft, ob sich ein Nutzer einloggen kann. Außerdem prüft er auch den Fall was passiert, wenn
+	 * man nicht im System registtriert ist.
+	 */
+	
 	@Test
     public void testLoginUser() {
 		userAPI = UserAPI.getUniqueInstance();
@@ -86,6 +97,10 @@ public class UserAPITest {
 		
     }
 
+	/*
+	 * Der Test testet, ob es möglich ist zweimal den gleichen Account zu erstellen.
+	 */
+	
 	@Test
 	public void creatingDuplicatesCannotBePerformed() {
 		
@@ -94,6 +109,10 @@ public class UserAPITest {
 		
 	}
 
+	/*
+	 * Die Methode testet alle möglichen Änderungen die ein Nutzer an seinem Profil vornehmen kann.
+	 */
+	
 	@Test
     public void testUpdatingUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
@@ -122,6 +141,10 @@ public class UserAPITest {
 		assertThat(userAPI.authenticateUser(user2)).isTrue();
     }
 
+	/*
+	 * testet, dass ein nicht eingeloggter Nutzer nicht Profilinformationen ändern kann.
+	 */
+	
 	@Test
 	public void updatingNotExistingUserCannotBePerformed() {
 		assertThat(userAPI.login(user)).isFalse();
@@ -140,12 +163,33 @@ public class UserAPITest {
 		
 	}
 
+	/*
+	 * Testet, ob man einen neuen Nutzer einladen kann.
+	 */
+	
 	@Test
 	public void testInviteUser(){
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.authenticateUser(user)).isTrue();
+		assertThat(userAPI.login(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user2)).isTrue();	
 	}
+	
+	/*
+	 * Testet, ob man bereits bekannte Nutzer einladen kann.
+	 */
+	
+	@Test
+	public void testInviteSameUser(){
+		assertThat(userAPI.registerUser(user)).isTrue();
+		assertThat(userAPI.authenticateUser(user)).isTrue();
+		assertThat(userAPI.login(user)).isTrue();
+		assertThat(userAPI.inviteUser(user, user)).isFalse();	
+	}
+	
+	/*
+	 * stellt die Ausgangssituation wieder her.
+	 */
 	
 	@After
 	public void tearDown() {

@@ -57,6 +57,10 @@
         </combobox>
 
         <button text="Speichern" action="save">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="7"/>
+        </button>
+        
+        <button text="Abbrechen" action="stop">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="7"/>
         </button>
     </panel>

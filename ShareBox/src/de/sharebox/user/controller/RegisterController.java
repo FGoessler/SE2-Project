@@ -7,7 +7,13 @@ import de.sharebox.user.model.User;
 import org.swixml.SwingEngine;
 
 import javax.swing.*;
+
 import java.awt.event.ActionEvent;
+
+/**
+ * @author Benjamin Barth
+ * @author Kay Thorsten Meißner
+ */
 
 public class RegisterController {
 	private JFrame frame;
@@ -23,8 +29,16 @@ public class RegisterController {
 	public JTextField codeField;
 	public JTextField locationField;
 	public JTextField countryField;
+	int i;
+	int j; 
+	String hilf;
+	String hilf2;
+
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 
+	/*
+	 * Öffnen des Registrieren Fensters. 
+	 */
 
 	public RegisterController() {
 		try {
@@ -36,13 +50,45 @@ public class RegisterController {
 		}
 	}
 
+	/*
+	 * Speichern der eingegebenen Informationen. Hierbei sind das E-Mail- und das Passwortfeld Pflicht. 
+	 * Alle anderen Felder können zunächst leer bleiben.
+	 * Wenn der Nutzer eine Speicherapazität von mehr als 5GB auswählt, wird er aufgefordert sie Zahlunngsinformationen
+	 * anzugeben und anschließend wird er an das Bezahlsystem weitergeleitet.
+	 */
+	
 	public Action register = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
-			user.setEmail(mailField.getText());
-			user.setPassword(passwordField1.toString());
-			user.setPassword(passwordField2.toString());
+			
+			i = mailField.getSelectionStart();
+			j = mailField.getSelectionEnd();
+			if (i == 0 && j == 0){
+				user.setEmail("");
+				}
+			else
+				{
+					user.setEmail(mailField.getText());
+				}
+			i = passwordField1.getSelectionStart();
+			j = passwordField1.getSelectionEnd();
+			if (i == 0 && j == 0){
+				user.setPassword("");
+				}
+			else
+				{
+				user.setPassword(new String(passwordField1.getPassword()));
+				hilf = new String(passwordField1.getPassword());
+				hilf2 = new String(passwordField2.getPassword());
+				if (hilf.equals(hilf2)){
+					
+					}
+				else 
+					{
+						user.setPassword("");
+					}
+				}
 			user.setLastname(lastnameField.getText());
 			user.setFirstname(firstnameField.getText());
 			user.setGender(genderField.getText());
@@ -55,18 +101,45 @@ public class RegisterController {
 			paymentinfo.setCountry(countryField.getText());
 			user.setPaymentInfo(paymentinfo);
 
-
 			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
+
 			if (userApi.registerUser(user)) {
-				frame.setVisible(false);
-				optionPane.showMessageDialog("Ihre Registrierung war erfolgreich!");
-				
-			} else {
-				optionPane.showMessageDialog("Ihre Registrierung ist fehlgeschlagen! Ihre E-Mail Adresse ist bereits vergeben.");
+				if(0 >= storageLimitField.getSelectedIndex()){
+					frame.setVisible(false);
+					optionPane.showMessageDialog("Die Registrirung war erfolgreich");	
+					}
+					else{
+							if(user.getPaymentInfo().getStreet().length() == 0 || user.getPaymentInfo().getCity().length() == 0 ||
+									user.getPaymentInfo().getZipCode().length() == 0 || user.getPaymentInfo().getCountry().length() == 0){
+								optionPane.showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre Speicherkapazität erhöhen können!");
+							}
+							else{
+								frame.setVisible(false);
+								optionPane.showMessageDialog("Sie müssen einen Betrag bezahlen, damit sie ihre Speicherkapazität erhöhen können!");
+							}
+					}
+				}
+					else {
+						optionPane.showMessageDialog("Die Registrierung ist fehlgeschlagen!");
+					}
 			}
+		};
+	
+	/*
+	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 */
+	
+	public Action stop = new AbstractAction() {
+		public void actionPerformed( ActionEvent event ) {
+				frame.setVisible(false);
+				optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
 		}
 	};
 
+	/*
+	 * Prüfen was in der ComboBox ausgewählt wurde
+	 */
+	
 	public Action selectBoxAction = new AbstractAction() {
 		public void actionPerformed(ActionEvent e) {
 			System.out.println(((JComboBox) e.getSource()).getSelectedItem().toString());

@@ -68,9 +68,9 @@ public class UserAPI {
 		user2.setEmail("admin");
 		user2.setPassword("root");
 		user2.setFirstname("Hans");
-		user2.setLastname("Peter");
+		user2.setLastname("Kanns");
 
-		paymentInfo.setStreet("Meinweg 2");
+		paymentInfo.setStreet("");
 		paymentInfo.setAdditionalStreet("Haus 4, Zimmer 15");
 		paymentInfo.setCity("Berlin");
 		paymentInfo.setCountry("Deutschland");
@@ -155,28 +155,25 @@ public class UserAPI {
 	 * @param user zu registrierender user
 	 * @return ob erfolgreich *
 	 */
-	public boolean registerUser(User user) {
+	public  boolean registerUser(User user) {
 		Boolean userAlreadyExists = false;
 		Boolean success = false;
-		//search through existing users
 		
-		if (user.getEmail() != "" && user.getPassword() != ""){
+		//search through existing users
+		if ((user.getEmail() != "") && (user.getPassword() != "")){
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(user.getEmail())) {
 					userAlreadyExists = true;
 				}
 			}
 			if (!userAlreadyExists) {
-				
-				userList.add(new User(user));
-				
+				userList.add(new User(user));		
 				success = true;
 			}
 		}
 		else {
 			success = false;
-		}
-			
+		}	
 		if (success) {
 			APILogger.logMessage("Registration successful");
 		} else {
@@ -184,6 +181,7 @@ public class UserAPI {
 		}
 		return success;
 	}
+
 
 	/**
 	 * Ändert Profil-Informationen.
@@ -195,15 +193,19 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					aUser.setFirstname(user.getFirstname());
-					aUser.setLastname(user.getLastname());
-					aUser.setGender(user.getGender());
-					success = true;
-					currentUser = new User(aUser);
-
+			if (user.getFirstname() != "" && user.getGender() != "" && user.getLastname() != ""){
+				for (User aUser : userList) {
+					if (aUser.getEmail().equals(currentUser.getEmail())) {
+						aUser.setFirstname(user.getFirstname());
+						aUser.setLastname(user.getLastname());
+						aUser.setGender(user.getGender());
+						success = true;
+						currentUser = new User(aUser);
+					}
 				}
+			}
+			else{
+				success = false;
 			}
 		}
 		if (success) {
@@ -224,13 +226,18 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					aUser.setPaymentInfo(user.getPaymentInfo());
-					aUser.setStorageLimit(user.getStorageLimit());
-					success = true;
-					currentUser = new User(aUser);
+			if(user.getPaymentInfo().getStreet() != "" && user.getPaymentInfo().getCity() != "" && user.getPaymentInfo().getZipCode() != "" && user.getPaymentInfo().getCountry() != ""){
+				for (User aUser : userList) {
+					if (aUser.getEmail().equals(currentUser.getEmail())) {
+						aUser.setPaymentInfo(user.getPaymentInfo());
+						aUser.setStorageLimit(user.getStorageLimit());
+						success = true;
+						currentUser = new User(aUser);
+					}
 				}
+			}
+			else{
+				success = false;
 			}
 		}
 		if (success) {
@@ -251,17 +258,23 @@ public class UserAPI {
 	public boolean changeCredential(User oldUser, User newUser) {
 		Boolean success = false;
 		//search through existing users
-		for (User aUser : userList) {
-			if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
-					&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())
-					&& newUser.getEmail() != "" && newUser.getPassword() != "") {
-				aUser.setEmail(newUser.getEmail());
-				aUser.setPassword(newUser.getPassword());
-				success = true;
-				currentUser = new User(aUser);
+		if (currentUser != null) {
+			if(newUser.getEmail() != "" && newUser.getPassword() != ""){
+				for (User aUser : userList) {
+					if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
+							&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) 
+					{
+						aUser.setEmail(newUser.getEmail());
+						aUser.setPassword(newUser.getPassword());
+						success = true;
+						currentUser = new User(aUser);
+					}
+				}
+			}
+			else{
+				success = false;
 			}
 		}
-
 		if (success) {
 			APILogger.logMessage("Credentials changed");
 		} else {
@@ -280,9 +293,15 @@ public class UserAPI {
 	public boolean inviteUser(User invitingUser, User invitedUser) {
 		Boolean success = true;
 		//search through existing users
-		
-		for (User aUser : userList) {
-			if (aUser.getEmail().equals(invitedUser.getEmail())) {
+		if (currentUser != null) {
+			if(invitedUser.getEmail() != ""){
+				for (User aUser : userList) {
+					if (aUser.getEmail().equals(invitedUser.getEmail())) {
+						success = false;
+					}
+				}
+			}
+			else{
 				success = false;
 			}
 		}

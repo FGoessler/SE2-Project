@@ -28,6 +28,10 @@
         </textfield>
 
         <button text="Speichern" action="save">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>
+        </button>
+        
+        <button text="Abbrechen" action="stop">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
         </button>
     </panel>

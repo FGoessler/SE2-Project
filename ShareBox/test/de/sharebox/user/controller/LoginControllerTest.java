@@ -5,7 +5,6 @@ import de.sharebox.api.UserAPI;
 import de.sharebox.user.model.User;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -18,12 +17,16 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Benjamin Barth
+ * @author Kay Thorsten Meißner
+ */
+
 @RunWith(MockitoJUnitRunner.class)
 public class LoginControllerTest {
 
 	@Mock
 	private UserAPI mockedAPI;
-
 	private LoginController loginController;
 
 
@@ -38,10 +41,15 @@ public class LoginControllerTest {
 	@After
 	public void tearDown() {
 		Main.mainWindowViewController = null;
+		UserAPI.resetSingletonInstance();
 	}
 
+	/*
+	 * Es wird fiktiv ein Login durchgeführt, um zu testen, ob das MainFenster nach einem Login geöffnet wird.
+	 */
+	
 	@Test
-	public void testLogin() {
+	public void testLoginTrue() {
 		when(mockedAPI.login(Matchers.any(User.class))).thenReturn(true);
 
 		loginController.mailField.setText("Nutzername");
@@ -51,11 +59,29 @@ public class LoginControllerTest {
 
 		verify(mockedAPI).login(any(User.class));
 		assertThat(Main.mainWindowViewController.getCurrentUser().getEmail()).isEqualTo("Nutzername");
+		assertThat(Main.mainWindowViewController.getCurrentUser().getPassword()).isEqualTo("Passwort123");
+	}
+	
+	/*
+	 * Es wird getestet, was passiert wenn der Login fehlschlägt und ob dann die Nachricht für den Nutzer angezeigt wird.
+	 */
+	
+	@Test
+	public void testLoginFalse() {
+		when(mockedAPI.login(Matchers.any(User.class))).thenReturn(false);
+			
+		loginController.submit.actionPerformed(mock(ActionEvent.class));
+
+		verify(mockedAPI).login(any(User.class));
 	}
 
-	@Ignore
+	/*
+	 * Der Registrieren-Button wird überprüft.
+	 */
+	
 	@Test
 	public void testRegister() {
-		//TODO: write test and implementation for register!
+		loginController.register.actionPerformed(mock(ActionEvent.class));
+		
 	}
 }

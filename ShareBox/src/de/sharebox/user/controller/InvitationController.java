@@ -14,12 +14,21 @@ import de.sharebox.file.controller.DirectoryViewController;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
 
+/**
+ * @author Benjamin Barth
+ * @author Kay Thorsten Meißner
+ */
+
 public class InvitationController {
 	protected OptionPaneHelper optionPane = new OptionPaneHelper();
 	private DirectoryViewController parentDirectoryController;
 	private JFrame frame;
 	public JTextField mailField;
 
+	/*
+	 * Öffnen des Einladen Fensters. 
+	 */
+	
 	public InvitationController() {
 		
 		try {
@@ -35,6 +44,8 @@ public class InvitationController {
 	
 	/**
 	 * Handler um auf die Auswahl das "Einladen"-Buttons zu reagieren.
+	 * die eingegebene E-Mail Adresse wird eingeladen, außerdem wird geprüft, ob die E-Mail Adresse bereits im System 
+	 * bekannt ist. 
 	 */
 	public Action invite = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
@@ -47,10 +58,18 @@ public class InvitationController {
 			}
 			else {
 				optionPane.showMessageDialog(mailField.getText() + " ist bereits registriert.");
-			}
-				
-			
-			
+			}	
+		}
+	};
+	
+	/*
+	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 */
+	
+	public Action stop = new AbstractAction() {
+		public void actionPerformed( ActionEvent event ) {
+				frame.setVisible(false);
+				optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
 		}
 	};
 	

@@ -104,6 +104,10 @@
         </textfield>
 
         <button text="Registrieren" action="register">
+            <gridbagconstraints refid="gbc_1" gridx="0" gridy="13"/>
+        </button>
+        
+        <button text="Abbrechen" action="stop">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="13"/>
         </button>
     </panel>
