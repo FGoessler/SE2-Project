@@ -18,19 +18,21 @@ import org.junit.Test;
  * @author Rainforce15
  */
 public class FileManagerTest {
+    FileManager fileManager = FileManager.getUniqueInstance();
 
     @Before
 	public void setUp() {
-
     }
 
 	@After
 	public void tearDown() {
 	}
 
+    //wip-----------------------------------------------------------------------
+
     @Test
     public void registerFEntryTest() {
         FEntry file = new File();
-        FileManager.registerFEntry(file);
+        fileManager.registerFEntry(file);
     }
 }
