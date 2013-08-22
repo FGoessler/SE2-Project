@@ -10,7 +10,9 @@ import java.util.List;
 public class FileManager {
 
     private static FileManager instance = new FileManager();
-    private static FileAPI fileAPI = FileAPI.getUniqueInstance();
+    private FileAPI fileAPI = FileAPI.getUniqueInstance();
+    private long lastAPIPoll = 0;
+    private long lastStoragePoll = 0;
 
     private transient List<FileAPI.StorageEntry> storage = new ArrayList<FileAPI.StorageEntry>();
 
@@ -49,7 +51,7 @@ public class FileManager {
      */
     public boolean pollAPIForChanges () {
         boolean success = true;
-        List<FEntry> changes = fileAPI.getChangesSince(System.currentTimeMillis());
+        List<FEntry> changes = fileAPI.getChangesSince(lastAPIPoll);
         for (FEntry fEntry : changes) {
             if (fEntry.getClass().getSimpleName().equals("File") || fEntry.getClass().getSimpleName().equals("Directory")) {
                 instance.updateFEntry((File)fEntry);
@@ -58,7 +60,7 @@ public class FileManager {
                 success = false;
             }
         }
-
+        lastAPIPoll = System.currentTimeMillis();
         return success;
     }
 
@@ -66,9 +68,34 @@ public class FileManager {
      * Sucht nach Änderungen seitens des Filesystems und updated/added die geänderten FEntries.
 	 * @return ob alle Operationen erfolgreich waren.
      */
-    public static boolean pollFileSystemForChanges () {
-        //poll filesystem
-        return true;
+    public boolean pollFileSystemForChanges () {
+        List<FEntry> changedFiles = new ArrayList<FEntry>();
+        boolean success = true;
+
+		for (FileAPI.StorageEntry storageEntry : storage) {
+            if (storageEntry.getTimestamp() >= lastStoragePoll) {
+                changedFiles.add(storageEntry.getFEntry());
+            }
+        }
+        for (FEntry fEntry : changedFiles) {
+            if (fEntry.getClass().getSimpleName().equals("File")) {
+                System.out.println("f");
+                if (!fileAPI.updateFile((File)fEntry)) {
+                    fileAPI.createNewFile((File)fEntry);
+                }
+            }
+            else if (fEntry.getClass().getSimpleName().equals("Directory")) {
+                System.out.println("d");
+                if (!fileAPI.updateDirectory((Directory)fEntry)) {
+                    fileAPI.createNewDirectory((Directory)fEntry);
+                }
+            }
+            else {
+                success = false;
+            }
+        }
+        lastStoragePoll = System.currentTimeMillis();
+        return success;
     }
 
     /**
@@ -91,8 +118,14 @@ public class FileManager {
 		}
 		if (!success) {
 			//file found, create new version
-			FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new FEntry(updatedFile));
-			storage.add(newEntry);
+            if (updatedFile.getClass().getSimpleName().equals("File")) {
+                FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new File((File)updatedFile));
+    			storage.add(newEntry);
+            }
+            else if (updatedFile.getClass().getSimpleName().equals("Directory")) {
+                FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new Directory((Directory)updatedFile));
+        		storage.add(newEntry);
+            }
             success = true;
 		}
         return success;
@@ -103,7 +136,7 @@ public class FileManager {
      * @param deletedFile zu löschender FEntry.
      * @return ob erfolgreich.
      */
-    public boolean deleteFEntry(File deletedFile) {
+    public boolean deleteFEntry(FEntry deletedFile) {
 		boolean success = false;
 
         //search through existing files, see createNewFile
@@ -115,5 +148,9 @@ public class FileManager {
 			}
 		}
         return success;
+    }
+
+    public int getFileCount () {
+        return storage.size();
     }
 }
