@@ -3,17 +3,17 @@ package de.sharebox.user.controller;
 import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
-import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.user.model.User;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class InvitationController {
-	private final OptionPaneHelper optionPane;
+	/**
+	 * RegEx-Pattern zum Erkennen einer (vom Format her) gültigen Email-Addresse.
+	 */
+	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	private JFrame frame;
-	public JTextField mailField;
+	private final OptionPaneHelper optionPane;
 
 	/**
 	 * Erstellt einen neuen InvitationController.<br/>
@@ -27,40 +27,23 @@ public class InvitationController {
 	}
 
 	/**
-	 * Öffnen des Einladen Fensters.
+	 * Öffnen des Einladen Dialog-Fensters.
 	 */
 	public void show() {
-		frame = (JFrame) new SwingEngineHelper().render(this, "invite");
-		frame.setVisible(true);
-	}
+		String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse der Person ein, die Sie zu Sharebox Ultimate einladen möchten.", "");
 
-	/**
-	 * Handler um auf die Auswahl das "Einladen"-Buttons zu reagieren.
-	 * Die eingegebene E-Mail Adresse wird eingeladen, außerdem wird geprüft, ob die E-Mail Adresse bereits im System
-	 * bekannt ist.
-	 */
-	public Action invite = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
 			User invitedUser = new User();
-			invitedUser.setEmail(mailField.getText());
+			invitedUser.setEmail(newUserMail);
 
 			if (UserAPI.getUniqueInstance().inviteUser(UserAPI.getUniqueInstance().getCurrentUser(), invitedUser)) {
-				frame.setVisible(false);
 				optionPane.showMessageDialog(invitedUser.getEmail() + " wurde eingeladen!");
 			} else {
-				optionPane.showMessageDialog(invitedUser.getEmail() + " ist bereits registriert oder die Emailadresse ist ungültig!");
+				optionPane.showMessageDialog(invitedUser.getEmail() + " ist bereits registriert.");
 			}
+		} else {
+			optionPane.showMessageDialog("Die eingegebene Emailadresse war ungültig!");
 		}
-	};
-
-	/**
-	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
-	 */
-	public Action stop = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			frame.setVisible(false);
-			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
-		}
-	};
+	}
 
 }

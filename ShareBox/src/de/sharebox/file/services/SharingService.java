@@ -70,6 +70,8 @@ public class SharingService {
 			if (!namesOfNotChangedFEntries.isEmpty()) {
 				optionPane.showMessageDialog("Folgende Dateien/Verzeichnisse konnten nicht freigegeben werden: " + Joiner.on(", ").skipNulls().join(namesOfNotChangedFEntries));
 			}
+		} else {
+			optionPane.showMessageDialog("Die eingegebene Emailadresse war ungültig!");
 		}
 	}
 }

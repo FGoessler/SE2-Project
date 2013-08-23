@@ -12,8 +12,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.awt.event.ActionEvent;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,7 +29,6 @@ public class InvitationControllerTest {
 	@Before
 	public void setUp() {
 		UserAPI.injectSingletonInstance(mockedAPI);
-		invitationController.show();
 	}
 
 	@After
@@ -45,34 +42,40 @@ public class InvitationControllerTest {
 	@Test
 	public void testSuccessfulInvite() {
 		when(mockedAPI.inviteUser(Matchers.any(User.class), Matchers.any(User.class))).thenReturn(true);
-		invitationController.mailField.setText("kurt@haha.de");
-		invitationController.invite.actionPerformed(mock(ActionEvent.class));
+		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("test@mail.de");
+
+		invitationController.show();
 
 		verify(mockedAPI).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
-		verify(optionPaneHelper).showMessageDialog("kurt@haha.de wurde eingeladen!");
+		verify(optionPaneHelper).showMessageDialog("test@mail.de wurde eingeladen!");
 	}
 
 	/**
-	 * Testet, den Fall, dass der Nutzer eine bereits bekannte oder falsche E-Mail Adresse angibt.
+	 * Testet, den Fall, dass der Nutzer eine falsche E-Mail Adresse angibt.
 	 */
 	@Test
-	public void testInvalidInvite() {
+	public void testInvalidMailAddressInvite() {
 		when(mockedAPI.inviteUser(Matchers.any(User.class), Matchers.any(User.class))).thenReturn(false);
-		invitationController.mailField.setText("kurt@haha.de");
-		invitationController.invite.actionPerformed(mock(ActionEvent.class));
+		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("kurt.de");
 
-		verify(mockedAPI).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
-		verify(optionPaneHelper).showMessageDialog("kurt@haha.de ist bereits registriert oder die Emailadresse ist ungültig!");
+		invitationController.show();
+
+		verify(mockedAPI, never()).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
+		verify(optionPaneHelper).showMessageDialog("Die eingegebene Emailadresse war ungültig!");
 	}
 
 	/**
-	 * Testet den Abbrechen-Button und die Aktion die dabei ausgeführt werden soll.
+	 * Testet, den Fall, dass der Nutzer eine bereits bekannte E-Mail Adresse angibt.
 	 */
 	@Test
-	public void testStop() {
-		invitationController.stop.actionPerformed(mock(ActionEvent.class));
-		verify(optionPaneHelper).showMessageDialog(anyString());
-	}
+	public void testAlreadyUsedMailAddressInvite() {
+		when(mockedAPI.inviteUser(Matchers.any(User.class), Matchers.any(User.class))).thenReturn(false);
+		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("kurt@haha.de");
 
+		invitationController.show();
+
+		verify(mockedAPI).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
+		verify(optionPaneHelper).showMessageDialog("kurt@haha.de ist bereits registriert.");
+	}
 }
 
