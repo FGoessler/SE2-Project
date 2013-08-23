@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 
 public class ChangeCredentialsController {
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	private JFrame frame;
 	public JTextField eMailField;
@@ -23,10 +24,13 @@ public class ChangeCredentialsController {
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
+	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	ChangeCredentialsController(OptionPaneHelper optionPaneHelper) {
+	ChangeCredentialsController(OptionPaneHelper optionPaneHelper,
+								UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -38,7 +42,7 @@ public class ChangeCredentialsController {
 		frame = (JFrame) new SwingEngineHelper().render(this, "changeCredentials");
 		frame.setVisible(true);
 
-		User user = UserAPI.getUniqueInstance().getCurrentUser();
+		User user = userAPI.getCurrentUser();
 		eMailField.setText(user.getEmail());
 	}
 
@@ -53,7 +57,6 @@ public class ChangeCredentialsController {
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(ActionEvent save) {
-			UserAPI userApi = UserAPI.getUniqueInstance();
 			User newUserData = new User();
 
 			newUserData.setEmail(eMailField.getText());
@@ -61,9 +64,9 @@ public class ChangeCredentialsController {
 				newUserData.setPassword(new String(newPasswordField.getPassword()));
 			}
 
-			User oldUserData = userApi.getCurrentUser();
+			User oldUserData = userAPI.getCurrentUser();
 			oldUserData.setPassword(new String(oldPasswordField.getPassword()));
-			if (userApi.changeCredential(oldUserData, newUserData)) {
+			if (userAPI.changeCredential(oldUserData, newUserData)) {
 				frame.setVisible(false);
 				optionPane.showMessageDialog("Ihre Änderungen wurden gespeichert!");
 			} else {

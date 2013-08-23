@@ -3,7 +3,6 @@ package de.sharebox.file.model;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,16 +29,10 @@ public class DirectoryTest {
 
 	@Before
 	public void setUp() {
-		directory = new Directory();
+		directory = new Directory(mockedUserAPI);
 		directory.addObserver(observer);
 
-		UserAPI.injectSingletonInstance(mockedUserAPI);
 		when(mockedUserAPI.getCurrentUser()).thenReturn(mockedUser);
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

@@ -9,7 +9,6 @@ import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,8 +35,8 @@ public class DirectoryViewSelectionServiceTest {
 	private Directory rootDirectory;
 	private Directory subDir1;
 
+	@Mock
 	private UserAPI mockedAPI;
-
 	@Mock
 	private OptionPaneHelper optionPane;
 	@Mock
@@ -52,12 +51,10 @@ public class DirectoryViewSelectionServiceTest {
 		//mock UserAPI (for permissions)
 		User mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
-		mockedAPI = mock(UserAPI.class);
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
-		UserAPI.injectSingletonInstance(mockedAPI);
 
 		//create test directories
-		rootDirectory = new Directory();
+		rootDirectory = new Directory(mockedAPI);
 		rootDirectory.setName("The main dir");
 		rootDirectory.setPermission(mockedUser, true, true, true);
 
@@ -71,11 +68,6 @@ public class DirectoryViewSelectionServiceTest {
 		treeModel = new DefaultTreeModel(null);
 		treeModel.setRoot(new FEntryTreeNode(treeModel, rootDirectory));
 		selectionService.setTreeView(new JTree(treeModel));
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

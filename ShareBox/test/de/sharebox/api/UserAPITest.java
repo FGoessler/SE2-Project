@@ -8,20 +8,21 @@ package de.sharebox.api;
 
 import de.sharebox.user.model.PaymentInfo;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAPITest {
-	private transient UserAPI userAPI;
 	private transient User user;
 	private transient User user2;
+
+	@InjectMocks
+	private transient UserAPI userAPI;
 
 	/*
 	 * Zunächst werden für die Testklasse 2 User angelegt.
@@ -29,9 +30,6 @@ public class UserAPITest {
 
 	@Before
 	public void setUp() {
-		userAPI = UserAPI.getUniqueInstance();
-
-
 		user = new User();
 		user.setEmail("Max@Mustermann.de");
 		user.setPassword("maxmuster");
@@ -65,26 +63,12 @@ public class UserAPITest {
 		user2.setGender("m");
 	}
 
-
-	@Test
-	public void isASingletonButCanInjectMocks() {
-		assertThat(UserAPI.getUniqueInstance()).isNotNull();
-
-		UserAPI mockedUserAPI = mock(UserAPI.class);
-		UserAPI.injectSingletonInstance(mockedUserAPI);
-
-		assertThat(UserAPI.getUniqueInstance()).isSameAs(mockedUserAPI);
-	}
-
-	/*
+	/**
 	 * Dieser Test überprüft, ob sich ein Nutzer einloggen kann. Außerdem prüft er auch den Fall was passiert, wenn
 	 * man nicht im System registtriert ist.
 	 */
-
 	@Test
 	public void testLoginUser() {
-		userAPI = UserAPI.getUniqueInstance();
-
 		assertThat(userAPI.login(user)).isFalse();
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.login(user)).isTrue();
@@ -102,10 +86,8 @@ public class UserAPITest {
 
 	@Test
 	public void creatingDuplicatesCannotBePerformed() {
-
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.registerUser(user)).isFalse();
-
 	}
 
 	/*
@@ -140,10 +122,9 @@ public class UserAPITest {
 		assertThat(userAPI.authenticateUser(user2)).isTrue();
 	}
 
-	/*
-	 * testet, dass ein nicht eingeloggter Nutzer nicht Profilinformationen ändern kann.
+	/**
+	 * Testet, dass ein nicht eingeloggter Nutzer nicht Profilinformationen ändern kann.
 	 */
-
 	@Test
 	public void updatingNotExistingUserCannotBePerformed() {
 		assertThat(userAPI.login(user)).isFalse();
@@ -162,10 +143,9 @@ public class UserAPITest {
 
 	}
 
-	/*
+	/**
 	 * Testet, ob man einen neuen Nutzer einladen kann.
 	 */
-
 	@Test
 	public void testInviteUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
@@ -173,11 +153,10 @@ public class UserAPITest {
 		assertThat(userAPI.login(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user2)).isTrue();
 	}
-	
-	/*
+
+	/**
 	 * Testet, ob man bereits bekannte Nutzer einladen kann.
 	 */
-
 	@Test
 	public void testInviteSameUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
@@ -185,10 +164,4 @@ public class UserAPITest {
 		assertThat(userAPI.login(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user)).isFalse();
 	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
-	}
-
 }

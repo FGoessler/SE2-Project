@@ -13,10 +13,13 @@ public class Directory extends FEntry {
 	private transient List<FEntry> fEntries = new ArrayList<FEntry>();
 
 	/**
-	 * Konstruktor
+	 * Der Standard-Konstruktor.
+	 *
+	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public Directory() {
-		super();
+	public Directory(UserAPI userAPI) {
+		super(userAPI);
 	}
 
 	/**
@@ -55,9 +58,9 @@ public class Directory extends FEntry {
 	 * @return Die neu erstellte Datei.
 	 */
 	public File createNewFile(String filename) {
-		File newFile = new File();
+		File newFile = new File(getUserAPI());
 		newFile.setName(filename);
-		newFile.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
+		newFile.setPermission(getUserAPI().getCurrentUser(), true, true, true);
 
 		fEntries.add(newFile);
 
@@ -75,9 +78,9 @@ public class Directory extends FEntry {
 	 * @return Das neu erstellte Verzeichnis.
 	 */
 	public Directory createNewDirectory(String dirname) {
-		Directory newDir = new Directory();
+		Directory newDir = new Directory(getUserAPI());
 		newDir.setName(dirname);
-		newDir.setPermission(UserAPI.getUniqueInstance().getCurrentUser(), true, true, true);
+		newDir.setPermission(getUserAPI().getCurrentUser(), true, true, true);
 
 		fEntries.add(newDir);
 

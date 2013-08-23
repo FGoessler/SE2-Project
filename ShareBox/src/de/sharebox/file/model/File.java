@@ -1,15 +1,20 @@
 package de.sharebox.file.model;
 
+import de.sharebox.api.UserAPI;
+
 /**
  * Diese Klasse repräsentiert eine Datei, die von der Sharebox verwaltet und mit dem Server synchronisiert wird.
  */
 public class File extends FEntry {
 
 	/**
-	 * Konstruktor
+	 * Der Standard-Konstruktor.
+	 *
+	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public File() {
-		super();
+	public File(UserAPI userAPI) {
+		super(userAPI);
 	}
 
 	/**

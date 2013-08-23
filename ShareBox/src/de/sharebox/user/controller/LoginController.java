@@ -14,6 +14,7 @@ public class LoginController {
 	private final MainViewControllerFactory mainViewControllerFactory;
 	private final OptionPaneHelper optionPane;
 	private final RegisterController registerController;
+	private final UserAPI userAPI;
 
 	private JFrame frame;
 
@@ -24,19 +25,23 @@ public class LoginController {
 	 * Erstellt einen neuen LoginController.<br/>
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 *
+	 * @param userAPI                   Die UserAPI zur Kommunikation mit dem Server.
 	 * @param mainViewControllerFactory Mittels dieser Factory wird nach einem erfolgreichen Login das Hauptfenster
 	 *                                  (MainViewController) erzeugt und der eingeloggte Benutzer gesetzt.
 	 * @param optionPaneHelper          Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern
+	 * @param registerController        Ein RegisterController mit dessen Hilfe sich neue Nutzer registrieren können.
 	 */
 	@Inject
-	LoginController(MainViewControllerFactory mainViewControllerFactory,
+	LoginController(UserAPI userAPI,
+					MainViewControllerFactory mainViewControllerFactory,
 					OptionPaneHelper optionPaneHelper,
 					RegisterController registerController) {
+		this.userAPI = userAPI;
 		this.mainViewControllerFactory = mainViewControllerFactory;
 		this.optionPane = optionPaneHelper;
 		this.registerController = registerController;
 
-		UserAPI.getUniqueInstance().createSampleContent();
+		userAPI.createSampleContent();
 	}
 
 	/**
@@ -53,12 +58,11 @@ public class LoginController {
 	 */
 	public Action submit = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
 			user.setEmail(mailField.getText());
 			user.setPassword(new String(passwordField.getPassword()));
 
-			if (userApi.login(user)) {
+			if (userAPI.login(user)) {
 				mainViewControllerFactory.create(user, LoginController.this);
 				frame.setVisible(false);
 			} else {

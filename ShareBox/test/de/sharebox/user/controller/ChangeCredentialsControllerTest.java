@@ -3,7 +3,6 @@ package de.sharebox.user.controller;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,18 +32,12 @@ public class ChangeCredentialsControllerTest {
 
 	@Before
 	public void setUp() {
-		UserAPI.injectSingletonInstance(mockedAPI);
 		testUser = new User();
 		testUser.setEmail("test@mail.com");
 		testUser.setPassword("old");
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		changeCredentialsController.show();
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	/**

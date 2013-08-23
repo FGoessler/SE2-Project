@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import de.sharebox.api.UserAPI;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +17,12 @@ public class FileTest {
 
 	@Mock
 	private transient FEntryObserver observer;
+	@Mock
+	private transient UserAPI mockedUserAPI;
 
 	@Before
 	public void setUp() throws Exception {
-		file = new File();
+		file = new File(mockedUserAPI);
 		file.addObserver(observer);
 	}
 

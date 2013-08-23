@@ -3,7 +3,6 @@ package de.sharebox.user.controller;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,17 +33,12 @@ public class EditProfileControllerTest {
 
 	@Before
 	public void setUp() {
-		UserAPI.injectSingletonInstance(mockedAPI);
 		testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		editProfileController.show();
 	}
 
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
-	}
 
 	/**
 	 * Testet das ändern von Daten. Simuliert dabei einen eingeloggten Nutzer, der seine Daten ändern möchte und

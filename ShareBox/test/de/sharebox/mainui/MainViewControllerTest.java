@@ -25,11 +25,11 @@ import static org.mockito.Mockito.verify;
 public class MainViewControllerTest {
 	@Mock
 	private ActionEvent mockedActionEvent;
-	@Mock
-	private UserAPI mockedUserAPI;
+
 	@Mock
 	private User currentUser;
-
+	@Mock
+	private UserAPI mockedUserAPI;
 	@Mock
 	private LoginController loginController;
 	@Mock
@@ -95,8 +95,6 @@ public class MainViewControllerTest {
 
 	@Test
 	public void canPerformALogoutProcess() {
-		UserAPI.injectSingletonInstance(mockedUserAPI);
-
 		mainView.close();
 
 		verify(mockedUserAPI).logout();

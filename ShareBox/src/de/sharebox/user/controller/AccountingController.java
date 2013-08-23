@@ -15,6 +15,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class AccountingController {
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	private JFrame frame;
 	public JComboBox storageLimitField;
@@ -30,10 +31,13 @@ public class AccountingController {
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
+	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	AccountingController(OptionPaneHelper optionPaneHelper) {
+	AccountingController(OptionPaneHelper optionPaneHelper,
+						 UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -45,7 +49,7 @@ public class AccountingController {
 		frame = (JFrame) new SwingEngineHelper().render(this, "editAccounting");
 		frame.setVisible(true);
 
-		User user = UserAPI.getUniqueInstance().getCurrentUser();
+		User user = userAPI.getCurrentUser();
 
 		oldStorageLimitIndex = 0;
 		for (int i = 0; i < storageLimitField.getItemCount(); i++) {
@@ -72,7 +76,6 @@ public class AccountingController {
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
 
 			PaymentInfo paymentinfo = user.getPaymentInfo();
@@ -98,7 +101,7 @@ public class AccountingController {
 							"Systems eines Drittanbieters käme an dieser Stelle.");
 				}
 
-				if (userApi.changeAccountingSettings(user)) {
+				if (userAPI.changeAccountingSettings(user)) {
 					frame.setVisible(false);
 					optionPane.showMessageDialog("Die Änderung war erfolgreich");
 				} else {

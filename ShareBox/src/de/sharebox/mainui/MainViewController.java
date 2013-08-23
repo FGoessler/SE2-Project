@@ -24,6 +24,7 @@ public class MainViewController {
 	private final InvitationController invitationController;
 	private final ChangeCredentialsController changeCredentialsController;
 	private final LoginController loginController;
+	private final UserAPI userAPI;
 
 	private JFrame frame;
 
@@ -52,6 +53,7 @@ public class MainViewController {
 	 *
 	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen. Kann nicht von Guice
 	 *                                       injecten werden und wird daher per Factory gesetzt.
+	 * @param userAPI                        Die UserAPI zur Kommunikation mit dem Server.
 	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt um
 	 *                                       den diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
 	 *                                       Kann nicht von Guice injecten werden und wird daher per Factory gesetzt.
@@ -67,6 +69,7 @@ public class MainViewController {
 	@Inject
 	MainViewController(@Assisted User user,
 					   @Assisted LoginController callingLoginController,
+					   UserAPI userAPI,
 					   PermissionViewControllerFactory permissionViewControllerFactory,
 					   DirectoryViewControllerFactory directoryViewControllerFactory,
 					   FileMenuFactory fileMenuFactory,
@@ -77,6 +80,7 @@ public class MainViewController {
 					   InvitationController invitationController) {
 
 		this.currentUser = user;
+		this.userAPI = userAPI;
 		this.loginController = callingLoginController;
 		this.accountingController = accountingController;
 		this.changeCredentialsController = changeCredentialsController;
@@ -137,7 +141,7 @@ public class MainViewController {
 	 * Schließt das Hauptfenster und loggt den Benutzer aus. Anschließend ist wieder das Login-Fenster sichtbar.
 	 */
 	public void close() {
-		UserAPI.getUniqueInstance().logout();
+		userAPI.logout();
 
 		frame.setVisible(false);
 

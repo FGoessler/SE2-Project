@@ -5,7 +5,6 @@ import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.FEntryPermission;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +28,8 @@ public class SharingServiceTest {
 
 	@Mock
 	private OptionPaneHelper mockedOptionPaneHelper;
+	@Mock
+	private UserAPI mockedAPI;
 
 	@InjectMocks
 	private SharingService sharingService;
@@ -39,19 +40,12 @@ public class SharingServiceTest {
 
 		User mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
-		UserAPI mockedAPI = mock(UserAPI.class);
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
-		UserAPI.injectSingletonInstance(mockedAPI);
 
-		fEntry1 = spy(new FEntry());
+		fEntry1 = spy(new FEntry(mockedAPI));
 		fEntry1.setPermission(mockedUser, true, true, true);
-		fEntry2 = new FEntry();
+		fEntry2 = new FEntry(mockedAPI);
 		fEntry2.setPermission(mockedUser, true, true, true);
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test
@@ -95,7 +89,7 @@ public class SharingServiceTest {
 
 	@Test
 	public void sharingFEntriesWithoutManagePermissionIsNotPossible() {
-		FEntry fEntryWithoutPermissions = new FEntry();
+		FEntry fEntryWithoutPermissions = new FEntry(mockedAPI);
 		fEntryWithoutPermissions.setName("Testfile");
 
 		sharingService.showShareFEntryDialog(fEntryWithoutPermissions);

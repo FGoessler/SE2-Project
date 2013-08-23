@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 
 public class RegisterController {
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	private JFrame frame;
 	public JTextField mailField;
@@ -30,11 +31,14 @@ public class RegisterController {
 	 * Erstellt einen neuen RegisterController.<br/>
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 *
-	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
+	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	RegisterController(OptionPaneHelper optionPaneHelper) {
+	RegisterController(OptionPaneHelper optionPaneHelper,
+					   UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -53,7 +57,6 @@ public class RegisterController {
 	 */
 	public Action register = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
 
 			user.setEmail(mailField.getText());
@@ -73,7 +76,7 @@ public class RegisterController {
 			user.setPaymentInfo(paymentinfo);
 
 			if (new String(passwordField2.getPassword()).equals(new String(passwordField1.getPassword())) &&
-					userApi.registerUser(user)) {
+					userAPI.registerUser(user)) {
 				frame.setVisible(false);
 				optionPane.showMessageDialog("Die Registrierung war erfolgreich");
 			} else {

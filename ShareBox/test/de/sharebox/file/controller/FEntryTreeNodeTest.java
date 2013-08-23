@@ -1,5 +1,6 @@
 package de.sharebox.file.controller;
 
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.File;
 import org.junit.Test;
@@ -20,11 +21,13 @@ public class FEntryTreeNodeTest {
 	private FEntryTreeNode treeNode;
 
 	@Mock
+	private UserAPI mockedUserAPI;
+	@Mock
 	private DefaultTreeModel treeModel;
 
 	@Test
 	public void canBeCreatedWithAFile() {
-		File file = new File();
+		File file = new File(mockedUserAPI);
 		file.setName("Testfile");
 		treeNode = new FEntryTreeNode(treeModel, file);
 
@@ -36,7 +39,7 @@ public class FEntryTreeNodeTest {
 
 	@Test
 	public void canBeCreatedWithADirectory() {
-		Directory directory = new Directory();
+		Directory directory = new Directory(mockedUserAPI);
 		directory.setName("Testdir");
 		directory.createNewFile("Testfile");
 		treeNode = new FEntryTreeNode(treeModel, directory);
@@ -50,7 +53,7 @@ public class FEntryTreeNodeTest {
 
 	@Test
 	public void handlesAddedChildrenNotifications() {
-		Directory directory = new Directory();
+		Directory directory = new Directory(mockedUserAPI);
 		treeNode = new FEntryTreeNode(treeModel, directory);
 		File addedFile = directory.createNewFile("Testfile");    //this line should fire the notification
 
@@ -66,7 +69,7 @@ public class FEntryTreeNodeTest {
 
 	@Test
 	public void handlesRemovedChildrenNotifications() {
-		Directory directory = new Directory();
+		Directory directory = new Directory(mockedUserAPI);
 		File removedFile = directory.createNewFile("Testfile");
 		treeNode = new FEntryTreeNode(treeModel, directory);
 		directory.deleteFEntry(removedFile);                //this line should fire the notification

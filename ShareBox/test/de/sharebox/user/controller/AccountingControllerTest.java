@@ -3,7 +3,6 @@ package de.sharebox.user.controller;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +20,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountingControllerTest {
 
-	private User testUser;
-
 	@Mock
 	private UserAPI mockedAPI;
 	@Mock
@@ -33,16 +30,10 @@ public class AccountingControllerTest {
 
 	@Before
 	public void setUp() {
-		UserAPI.injectSingletonInstance(mockedAPI);
-		testUser = new User();
+		User testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		accountingController.show();
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	/**

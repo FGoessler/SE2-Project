@@ -6,7 +6,6 @@ import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,25 +40,19 @@ public class DirectoryViewClipboardServiceTest {
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
 		mockedAPI = mock(UserAPI.class);
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
-		UserAPI.injectSingletonInstance(mockedAPI);
 
 		//create test directory
-		testFile = new File();
+		testFile = new File(mockedAPI);
 		testFile.setName("newFile");
 
-		testDirectory = new Directory();
+		testDirectory = new Directory(mockedAPI);
 		testDirectory.setName("lol");
 		testDirectory.setPermission(mockedUser, true, true, true);
 		testDirectory.createNewFile("subFile1");
 		testDirectory.createNewFile("subFile2");
 
-		targetDirectory = new Directory();
+		targetDirectory = new Directory(mockedAPI);
 		targetDirectory.setPermission(mockedUser, true, true, true);
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

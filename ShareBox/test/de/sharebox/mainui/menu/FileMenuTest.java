@@ -1,6 +1,7 @@
 package de.sharebox.mainui.menu;
 
 import com.google.common.base.Optional;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.ContextMenuController;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
@@ -23,6 +24,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileMenuTest {
+
+	@Mock
+	private UserAPI mockedUserAPI;
+
 	@Mock
 	private JMenuBar mockedMenuBar;
 	@Mock
@@ -53,7 +58,7 @@ public class FileMenuTest {
 	@Test
 	public void testCopyFEntry() {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
-		mockedSelectedFEntries.add(new File());
+		mockedSelectedFEntries.add(new File(mockedUserAPI));
 		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 
 		menu.copyFEntry.actionPerformed(mock(ActionEvent.class));
@@ -64,10 +69,10 @@ public class FileMenuTest {
 	@Test
 	public void testPasteFEntryOntoFile() {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
-		mockedSelectedFEntries.add(new File());
+		mockedSelectedFEntries.add(new File(mockedUserAPI));
 		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 		List<Optional<Directory>> mockedSelectedParentDirectories = new ArrayList<Optional<Directory>>();
-		mockedSelectedParentDirectories.add(Optional.of(new Directory()));
+		mockedSelectedParentDirectories.add(Optional.of(new Directory(mockedUserAPI)));
 		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(mockedSelectedParentDirectories);
 
 		menu.pasteFEntry.actionPerformed(mock(ActionEvent.class));
@@ -78,7 +83,7 @@ public class FileMenuTest {
 	@Test
 	public void testPasteFEntryOntoDirectory() {
 		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
-		mockedSelectedFEntries.add(new Directory());
+		mockedSelectedFEntries.add(new Directory(mockedUserAPI));
 		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 
 		menu.pasteFEntry.actionPerformed(mock(ActionEvent.class));

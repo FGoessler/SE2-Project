@@ -3,7 +3,6 @@ package de.sharebox.user.controller;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,16 +27,9 @@ public class RegisterControllerTest {
 	@InjectMocks
 	private RegisterController registerController;
 
-
 	@Before
 	public void setUp() {
-		UserAPI.injectSingletonInstance(mockedAPI);
 		registerController.show();
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	/**

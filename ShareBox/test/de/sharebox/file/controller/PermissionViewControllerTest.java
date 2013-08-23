@@ -7,7 +7,6 @@ import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +29,7 @@ import static org.mockito.Mockito.*;
 public class PermissionViewControllerTest {
 	private FEntry fEntry;
 
+	@Mock
 	private UserAPI mockedAPI;
 	@Mock
 	private User user1;
@@ -57,16 +57,14 @@ public class PermissionViewControllerTest {
 	@Before
 	public void setUp() {
 		//mock UserAPI (Permissions)
-		mockedAPI = mock(UserAPI.class);
 		when(mockedAPI.getCurrentUser()).thenReturn(user1);
-		UserAPI.injectSingletonInstance(mockedAPI);
 
 		permissionViewController.tableModel.addTableModelListener(tableModelListener);
 
 		//create TestFEntry
 		when(user1.getEmail()).thenReturn("user1@mail.com");
 		when(user2.getEmail()).thenReturn("user2@mail.com");
-		fEntry = new FEntry();
+		fEntry = new FEntry(mockedAPI);
 		fEntry.setPermission(user1, true, true, true);
 		fEntry.setPermission(user2, true, false, true);
 		fEntry.addObserver(fEntryObserver);
@@ -76,11 +74,6 @@ public class PermissionViewControllerTest {
 		selectedFEntries.add(fEntry);
 		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

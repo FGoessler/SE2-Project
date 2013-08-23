@@ -4,7 +4,6 @@ import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.mainui.MainViewControllerFactory;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,18 +34,10 @@ public class LoginControllerTest {
 	@InjectMocks
 	private LoginController loginController;
 
-
 	@Before
 	public void setUp() {
-		UserAPI.injectSingletonInstance(mockedAPI);
 		loginController.show();
 	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
-	}
-
 
 	@Test
 	public void testSuccessfulLogin() {

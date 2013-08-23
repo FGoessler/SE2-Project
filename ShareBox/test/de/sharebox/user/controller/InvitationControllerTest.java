@@ -3,8 +3,6 @@ package de.sharebox.user.controller;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,17 +22,6 @@ public class InvitationControllerTest {
 
 	@InjectMocks
 	private InvitationController invitationController;
-
-
-	@Before
-	public void setUp() {
-		UserAPI.injectSingletonInstance(mockedAPI);
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
-	}
 
 	/**
 	 * Testet das erfolgreiche Einladen einer fremden Person.

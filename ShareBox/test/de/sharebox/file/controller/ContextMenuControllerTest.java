@@ -9,7 +9,6 @@ import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,8 @@ public class ContextMenuControllerTest {
 	private TreePath mockedTreePath2;
 
 	@Mock
+	private UserAPI mockedAPI;
+	@Mock
 	private DefaultTreeModel treeModel;
 	@Mock
 	private DirectoryViewSelectionService selectionService;
@@ -49,7 +50,6 @@ public class ContextMenuControllerTest {
 	private DirectoryViewClipboardService clipboardService;
 
 	private ContextMenuController contextMenuController;
-	private UserAPI mockedAPI;
 
 	@Before
 	public void createMockedTreePath() {
@@ -58,12 +58,10 @@ public class ContextMenuControllerTest {
 		//mock UserAPI (Permissions)
 		User mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
-		mockedAPI = mock(UserAPI.class);
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
-		UserAPI.injectSingletonInstance(mockedAPI);
 
 		//create test directories
-		parentDirectory = new Directory();
+		parentDirectory = new Directory(mockedAPI);
 		parentDirectory.setPermission(mockedUser, true, true, true);
 		parentDirectory.setName("A Test Dir");
 		FEntry child1 = parentDirectory.createNewFile("A Test File");
@@ -72,11 +70,6 @@ public class ContextMenuControllerTest {
 		FEntry child2 = parentDirectory.createNewFile("An other Test File");
 		FEntryTreeNode[] nodes2 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child2)};
 		mockedTreePath2 = new TreePath(nodes2);
-	}
-
-	@After
-	public void tearDown() {
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

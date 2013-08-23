@@ -13,6 +13,7 @@ import java.util.List;
  * sie Observer Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
  */
 public class FEntry {
+	private final UserAPI userAPI;
 
 	private Integer identifier;
 	private String name;
@@ -22,9 +23,12 @@ public class FEntry {
 
 	/**
 	 * Der Standard-Konstruktor.
+	 *
+	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public FEntry() {
-		super();
+	public FEntry(UserAPI userAPI) {
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -33,6 +37,7 @@ public class FEntry {
 	 * @param sourceFEntry Das zu kopierende Objekt.
 	 */
 	public FEntry(FEntry sourceFEntry) {
+		this.userAPI = sourceFEntry.getUserAPI();
 		this.name = sourceFEntry.name;
 		this.identifier = sourceFEntry.identifier;
 
@@ -43,6 +48,16 @@ public class FEntry {
 
 			permissions.add(newPermission);
 		}
+	}
+
+	/**
+	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu
+	 * bestimmen und Rechte zu überprüfen.
+	 *
+	 * @return Die aktuell für diesen FEntry relevante UserAPI.
+	 */
+	protected UserAPI getUserAPI() {
+		return userAPI;
 	}
 
 	/**
@@ -200,6 +215,6 @@ public class FEntry {
 	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
 	public FEntryPermission getPermissionOfCurrentUser() {
-		return getPermissionOfUser(UserAPI.getUniqueInstance().getCurrentUser());
+		return getPermissionOfUser(getUserAPI().getCurrentUser());
 	}
 }

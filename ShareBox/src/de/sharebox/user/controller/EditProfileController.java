@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 
 public class EditProfileController {
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	private JFrame frame;
 	public JTextField lastnameField;
@@ -21,11 +22,14 @@ public class EditProfileController {
 	 * Erstellt einen neuen EditProfileController.<br/>
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 *
-	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
+	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	EditProfileController(OptionPaneHelper optionPaneHelper) {
+	EditProfileController(OptionPaneHelper optionPaneHelper,
+						  UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -37,7 +41,7 @@ public class EditProfileController {
 		frame = (JFrame) new SwingEngineHelper().render(this, "editProfile");
 		frame.setVisible(true);
 
-		User user = UserAPI.getUniqueInstance().getCurrentUser();
+		User user = userAPI.getCurrentUser();
 
 		lastnameField.setText(user.getLastname());
 		firstnameField.setText(user.getFirstname());
@@ -51,7 +55,6 @@ public class EditProfileController {
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
-			UserAPI userApi = UserAPI.getUniqueInstance();
 			User user = new User();
 
 			user.setFirstname(firstnameField.getText());
@@ -59,7 +62,7 @@ public class EditProfileController {
 			user.setLastname(lastnameField.getText());
 			user.setGender(genderField.getText());
 
-			if (userApi.changeProfile(user)) {
+			if (userAPI.changeProfile(user)) {
 				frame.setVisible(false);
 				optionPane.showMessageDialog("Ihre Änderungen wurden gespeichert!");
 			} else {

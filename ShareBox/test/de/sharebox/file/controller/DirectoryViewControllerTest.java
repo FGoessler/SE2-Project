@@ -1,5 +1,6 @@
 package de.sharebox.file.controller;
 
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import org.junit.Test;
@@ -20,6 +21,10 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryViewControllerTest {
+
+	@Mock
+	private UserAPI mockedUserAPI;
+
 	@Spy
 	private JTree tree;
 	@Mock
@@ -39,7 +44,7 @@ public class DirectoryViewControllerTest {
 	public void showsAContextMenuOnRightClick() {
 		//simulate click
 		when(contextMenuController.isMenuVisible()).thenReturn(false);
-		TreePath treePath = new TreePath(new FEntryTreeNode(mock(DefaultTreeModel.class), new FEntry()));
+		TreePath treePath = new TreePath(new FEntryTreeNode(mock(DefaultTreeModel.class), new FEntry(mockedUserAPI)));
 		when(tree.getPathForLocation(20, 10)).thenReturn(treePath);
 		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON3));
 

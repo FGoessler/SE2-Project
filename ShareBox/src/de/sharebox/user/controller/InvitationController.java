@@ -14,16 +14,20 @@ public class InvitationController {
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	/**
 	 * Erstellt einen neuen InvitationController.<br/>
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern
+	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	InvitationController(OptionPaneHelper optionPaneHelper) {
+	InvitationController(OptionPaneHelper optionPaneHelper,
+						 UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -36,7 +40,7 @@ public class InvitationController {
 			User invitedUser = new User();
 			invitedUser.setEmail(newUserMail);
 
-			if (UserAPI.getUniqueInstance().inviteUser(UserAPI.getUniqueInstance().getCurrentUser(), invitedUser)) {
+			if (userAPI.inviteUser(userAPI.getCurrentUser(), invitedUser)) {
 				optionPane.showMessageDialog(invitedUser.getEmail() + " wurde eingeladen!");
 			} else {
 				optionPane.showMessageDialog(invitedUser.getEmail() + " ist bereits registriert.");

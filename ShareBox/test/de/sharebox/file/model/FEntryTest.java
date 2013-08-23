@@ -18,13 +18,16 @@ public class FEntryTest {
 	private transient FEntry fEntry;
 
 	@Mock
+	private UserAPI mockedUserAPI;
+
+	@Mock
 	private transient FEntryObserver observer;
 	@Mock
 	private transient User user;
 
 	@Before
 	public void setUp() {
-		fEntry = new FEntry();
+		fEntry = new FEntry(mockedUserAPI);
 
 		when(user.getEmail()).thenReturn("testmail@test.de");
 	}
@@ -84,9 +87,7 @@ public class FEntryTest {
 
 	@Test
 	public void canBeAskedForAllPermissionsAndThePermissionOfASpecificUserAndThePermissionOfTheCurrentUser() {
-		UserAPI mockedAPI = mock(UserAPI.class);
-		when(mockedAPI.getCurrentUser()).thenReturn(user);
-		UserAPI.injectSingletonInstance(mockedAPI);
+		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 
 		fEntry.setPermission(user, true, true, true);
 
@@ -97,8 +98,6 @@ public class FEntryTest {
 		assertThat(fEntry.getPermissionOfCurrentUser().getReadAllowed()).isTrue();
 		assertThat(fEntry.getPermissionOfCurrentUser().getWriteAllowed()).isTrue();
 		assertThat(fEntry.getPermissionOfCurrentUser().getManageAllowed()).isTrue();
-
-		UserAPI.resetSingletonInstance();
 	}
 
 	@Test

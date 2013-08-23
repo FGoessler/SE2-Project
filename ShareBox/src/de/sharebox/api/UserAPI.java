@@ -1,5 +1,7 @@
 package de.sharebox.api;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import de.sharebox.user.model.PaymentInfo;
 import de.sharebox.user.model.User;
 
@@ -8,6 +10,7 @@ import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+@Singleton
 public class UserAPI {
 	/**
 	 * simuliert Datenbank;
@@ -16,27 +19,12 @@ public class UserAPI {
 
 	private transient User currentUser;
 
-	private static UserAPI instance = new UserAPI();
-
-	public UserAPI() {
-	}
-
 	/**
-	 * Methode um das Singleton-Objekt zu erhalten.
-	 *
-	 * @return Das Singleton-Objekt.
+	 * Leerer Konstruktor um ein direktes erstellen zu verhindern.<br/>
+	 * Instanzen dieser Klasse sollte nur per Dependecy Injection durch Guice erstellt werden.
 	 */
-	public static UserAPI getUniqueInstance() {
-		return instance;
-	}
-
-	/**
-	 * Setzt die Singleton Instanz von außen. Soll nur in Test Cases verwendet werden, um die die UserAPI zu mocken.
-	 *
-	 * @param newUserAPI Das neue UserAPI Objekt, das ab sofort beim Aufruf von getUniqueInstance() zurückgegeben wird.
-	 */
-	public static void injectSingletonInstance(UserAPI newUserAPI) {
-		instance = newUserAPI;
+	@Inject
+	UserAPI() {
 	}
 
 	/**
@@ -319,13 +307,5 @@ public class UserAPI {
 		}
 
 		return user;
-	}
-
-	/**
-	 * Resettet die Singleton Instanz auf das Standard-Objekt.
-	 * Wird benötigt um einen injectSingletonInstance rückgängig zu machen.
-	 */
-	public static void resetSingletonInstance() {
-		instance = new UserAPI();
 	}
 }
