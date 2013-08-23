@@ -5,10 +5,7 @@ import de.sharebox.file.controller.DirectoryViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
 import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenuFactory;
-import de.sharebox.user.controller.AccountingController;
-import de.sharebox.user.controller.ChangeCredentialsController;
-import de.sharebox.user.controller.EditProfileController;
-import de.sharebox.user.controller.InvitationController;
+import de.sharebox.user.controller.*;
 import de.sharebox.user.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +30,8 @@ public class MainViewControllerTest {
 	@Mock
 	private User currentUser;
 
+	@Mock
+	private LoginController loginController;
 	@Mock
 	private PermissionViewControllerFactory permissionViewControllerFactory;
 	@Mock
@@ -101,5 +100,6 @@ public class MainViewControllerTest {
 		mainView.close();
 
 		verify(mockedUserAPI).logout();
+		verify(loginController).show();
 	}
 }

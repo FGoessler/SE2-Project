@@ -23,6 +23,6 @@ public final class Main {
 	 * @param args Programargumente - von uns nicht genutzt.
 	 */
 	public static void main(String[] args) {
-		injector.getInstance(LoginController.class);
+		injector.getInstance(LoginController.class).show();
 	}
 }

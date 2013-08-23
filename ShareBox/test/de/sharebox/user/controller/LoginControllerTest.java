@@ -39,6 +39,7 @@ public class LoginControllerTest {
 	@Before
 	public void setUp() {
 		UserAPI.injectSingletonInstance(mockedAPI);
+		loginController.show();
 	}
 
 	@After
@@ -60,7 +61,7 @@ public class LoginControllerTest {
 		verify(mockedAPI).login(user.capture());
 		assertThat(user.getValue().getEmail()).isEqualTo("Nutzername");
 		assertThat(user.getValue().getPassword()).isEqualTo("Passwort123");
-		verify(mainViewControllerFactory).create(same(user.getValue()));
+		verify(mainViewControllerFactory).create(same(user.getValue()), same(loginController));
 	}
 
 
@@ -71,7 +72,7 @@ public class LoginControllerTest {
 		loginController.submit.actionPerformed(mock(ActionEvent.class));
 
 		verify(mockedAPI).login(any(User.class));
-		verify(mainViewControllerFactory, never()).create(any(User.class));
+		verify(mainViewControllerFactory, never()).create(any(User.class), same(loginController));
 		verify(optionPaneHelper).showMessageDialog("Login-Informationen falsch! Bitte geben sie ihre Daten erneut ein.");
 	}
 

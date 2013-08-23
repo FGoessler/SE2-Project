@@ -8,10 +8,7 @@ import de.sharebox.file.controller.PermissionViewControllerFactory;
 import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenuFactory;
-import de.sharebox.user.controller.AccountingController;
-import de.sharebox.user.controller.ChangeCredentialsController;
-import de.sharebox.user.controller.EditProfileController;
-import de.sharebox.user.controller.InvitationController;
+import de.sharebox.user.controller.*;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
@@ -26,6 +23,7 @@ public class MainViewController {
 	private final AccountingController accountingController;
 	private final InvitationController invitationController;
 	private final ChangeCredentialsController changeCredentialsController;
+	private final LoginController loginController;
 
 	private JFrame frame;
 
@@ -52,7 +50,11 @@ public class MainViewController {
 	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
 	 * Siehe auch MainViewControllerFactory.
 	 *
-	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen.
+	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen. Kann nicht von Guice
+	 *                                       injecten werden und wird daher per Factory gesetzt.
+	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt um
+	 *                                       den diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
+	 *                                       Kann nicht von Guice injecten werden und wird daher per Factory gesetzt.
 	 * @param permissionViewControllerFactory
 	 *                                       Mittels dieser Factory wird ein PermissionViewController erzeugt,
 	 *                                       der in der rechten Hälfte des JSplitPanes dargestellt wird.
@@ -64,6 +66,7 @@ public class MainViewController {
 	 */
 	@Inject
 	MainViewController(@Assisted User user,
+					   @Assisted LoginController callingLoginController,
 					   PermissionViewControllerFactory permissionViewControllerFactory,
 					   DirectoryViewControllerFactory directoryViewControllerFactory,
 					   FileMenuFactory fileMenuFactory,
@@ -74,6 +77,7 @@ public class MainViewController {
 					   InvitationController invitationController) {
 
 		this.currentUser = user;
+		this.loginController = callingLoginController;
 		this.accountingController = accountingController;
 		this.changeCredentialsController = changeCredentialsController;
 		this.editProfileController = editProfileController;
@@ -130,11 +134,13 @@ public class MainViewController {
 	}
 
 	/**
-	 * Schließt das Hauptfenster und loggt den Benutzer aus.
+	 * Schließt das Hauptfenster und loggt den Benutzer aus. Anschließend ist wieder das Login-Fenster sichtbar.
 	 */
 	public void close() {
 		UserAPI.getUniqueInstance().logout();
 
 		frame.setVisible(false);
+
+		loginController.show();
 	}
 }

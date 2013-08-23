@@ -37,7 +37,12 @@ public class LoginController {
 		this.registerController = registerController;
 
 		UserAPI.getUniqueInstance().createSampleContent();
+	}
 
+	/**
+	 * Erstellt die GUI des LoginControllers und zeigt ihn an.
+	 */
+	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "login");
 		frame.setVisible(true);
 	}
@@ -54,7 +59,7 @@ public class LoginController {
 			user.setPassword(new String(passwordField.getPassword()));
 
 			if (userApi.login(user)) {
-				mainViewControllerFactory.create(user);
+				mainViewControllerFactory.create(user, LoginController.this);
 				frame.setVisible(false);
 			} else {
 				optionPane.showMessageDialog("Login-Informationen falsch! Bitte geben sie ihre Daten erneut ein.");
@@ -70,4 +75,6 @@ public class LoginController {
 			registerController.show();
 		}
 	};
+
+
 }
