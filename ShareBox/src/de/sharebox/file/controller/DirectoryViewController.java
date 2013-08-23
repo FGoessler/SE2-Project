@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 
@@ -21,6 +22,7 @@ import java.awt.event.MouseEvent;
 public class DirectoryViewController {
 	private final ContextMenuController contextMenuController;
 	private final UserAPI userAPI;
+	private final FileManager fileManager;
 
 	/**
 	 * Der JTree zur Darstellung des Sharebox Verzeichnisses des Nutzers.
@@ -39,15 +41,18 @@ public class DirectoryViewController {
 	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü
 	 *                                      verantwortlich ist.
 	 * @param userAPI                       TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
+	 * @param fileManager                   TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
 	 */
 	@Inject
 	DirectoryViewController(@Assisted JTree tree,
 							DirectoryViewSelectionService directoryViewSelectionService,
 							ContextMenuController contextMenuController,
-							UserAPI userAPI) {
+							UserAPI userAPI,
+							FileManager fileManager) {
 
 		this.contextMenuController = contextMenuController;
 		this.userAPI = userAPI;
+		this.fileManager = fileManager;
 
 		this.treeView = tree;
 		DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Root"), true);
@@ -87,6 +92,11 @@ public class DirectoryViewController {
 		Directory root = new Directory(userAPI);
 		root.setName("The main dir");
 		root.setPermission(userAPI.getCurrentUser(), true, true, true);
+		// Registriert root directory im FileManager - weitere FEntries werden automatisch durch Reaktion auf Notifications registriert.
+		// Dieser Schritt sollte später natürlich nicht hier ausgeführt werden sondern bevor das Root Directory eines Users an diesen
+		// Controller übergeben wird. Damit fallen dann auch die Abhänigkeiten zur UserAPI (und dem FileManager) weg. Stattdessen
+		// fragt man direkt die FileAPI oder den FileManager nach dem Rootverzeichnis für den eingeloggten Benutzer.
+		fileManager.registerFEntry(root);
 
 		Directory subDir1 = root.createNewDirectory("A Subdirectory");
 		subDir1.createNewFile("Subdirectory File");
