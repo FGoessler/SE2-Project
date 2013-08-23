@@ -6,10 +6,7 @@ import de.sharebox.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Benjamin Barth
- * @author Kay Thorsten Meißner
- */
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class UserAPI {
 	/**
@@ -103,7 +100,7 @@ public class UserAPI {
 		if (success) {
 			APILogger.logMessage("Authentication successful");
 		} else {
-			APILogger.logMessage("Authentication failed: User not found");
+			APILogger.logMessage("Authentication failed: User/Password combination not found.");
 		}
 		return success;
 	}
@@ -131,18 +128,18 @@ public class UserAPI {
 	}
 
 	/**
-	 * Logt den eingelogten User aus.
+	 * Loggt den eingelogten User aus.
 	 *
 	 * @return ob erfolgreich *
 	 */
 	public boolean logout() {
 		boolean success = false;
-		if (currentUser != null) {
+		if (isLoggedIn()) {
 			currentUser = null;
-			APILogger.logMessage("Logout successful");
+			APILogger.logMessage("Logout successful.");
 			success = true;
 		} else {
-			APILogger.logMessage("Logout failed: No User loged in");
+			APILogger.logMessage("Logout failed: No User logged in.");
 		}
 		return success;
 	}
@@ -159,7 +156,7 @@ public class UserAPI {
 		Boolean success = false;
 
 		//search through existing users
-		if ((user.getEmail() != "") && (user.getPassword() != "")) {
+		if (!isNullOrEmpty(user.getEmail()) && !isNullOrEmpty(user.getPassword())) {
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(user.getEmail())) {
 					userAlreadyExists = true;
@@ -169,8 +166,6 @@ public class UserAPI {
 				userList.add(new User(user));
 				success = true;
 			}
-		} else {
-			success = false;
 		}
 		if (success) {
 			APILogger.logMessage("Registration successful");
@@ -190,19 +185,16 @@ public class UserAPI {
 	public boolean changeProfile(User user) {
 		Boolean success = false;
 		//search through existing users
-		if (currentUser != null) {
-			if (user.getFirstname() != "" && user.getGender() != "" && user.getLastname() != "") {
-				for (User aUser : userList) {
-					if (aUser.getEmail().equals(currentUser.getEmail())) {
-						aUser.setFirstname(user.getFirstname());
-						aUser.setLastname(user.getLastname());
-						aUser.setGender(user.getGender());
-						success = true;
-						currentUser = new User(aUser);
-					}
+		if (currentUser != null &&
+				!isNullOrEmpty(user.getFirstname()) && !isNullOrEmpty(user.getGender()) && !isNullOrEmpty(user.getLastname())) {
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(currentUser.getEmail())) {
+					aUser.setFirstname(user.getFirstname());
+					aUser.setLastname(user.getLastname());
+					aUser.setGender(user.getGender());
+					success = true;
+					currentUser = new User(aUser);
 				}
-			} else {
-				success = false;
 			}
 		}
 		if (success) {
@@ -222,18 +214,16 @@ public class UserAPI {
 	public boolean changeAccountingSettings(User user) {
 		Boolean success = false;
 		//search through existing users
-		if (currentUser != null) {
-			if (user.getPaymentInfo().getStreet() != "" && user.getPaymentInfo().getCity() != "" && user.getPaymentInfo().getZipCode() != "" && user.getPaymentInfo().getCountry() != "") {
-				for (User aUser : userList) {
-					if (aUser.getEmail().equals(currentUser.getEmail())) {
-						aUser.setPaymentInfo(user.getPaymentInfo());
-						aUser.setStorageLimit(user.getStorageLimit());
-						success = true;
-						currentUser = new User(aUser);
-					}
+		if (currentUser != null &&
+				!isNullOrEmpty(user.getPaymentInfo().getStreet()) && !isNullOrEmpty(user.getPaymentInfo().getCity()) &&
+				!isNullOrEmpty(user.getPaymentInfo().getZipCode()) && !isNullOrEmpty(user.getPaymentInfo().getCountry())) {
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(currentUser.getEmail())) {
+					aUser.setPaymentInfo(user.getPaymentInfo());
+					aUser.setStorageLimit(user.getStorageLimit());
+					success = true;
+					currentUser = new User(aUser);
 				}
-			} else {
-				success = false;
 			}
 		}
 		if (success) {
@@ -254,19 +244,16 @@ public class UserAPI {
 	public boolean changeCredential(User oldUser, User newUser) {
 		Boolean success = false;
 		//search through existing users
-		if (currentUser != null) {
-			if (newUser.getEmail() != "" && newUser.getPassword() != "") {
-				for (User aUser : userList) {
-					if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
-							&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) {
-						aUser.setEmail(newUser.getEmail());
-						aUser.setPassword(newUser.getPassword());
-						success = true;
-						currentUser = new User(aUser);
-					}
+		if (currentUser != null &&
+				!isNullOrEmpty(newUser.getEmail()) && !isNullOrEmpty(newUser.getPassword())) {
+			for (User aUser : userList) {
+				if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
+						&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) {
+					aUser.setEmail(newUser.getEmail());
+					aUser.setPassword(newUser.getPassword());
+					success = true;
+					currentUser = new User(aUser);
 				}
-			} else {
-				success = false;
 			}
 		}
 		if (success) {
@@ -286,22 +273,20 @@ public class UserAPI {
 	 */
 	public boolean inviteUser(User invitingUser, User invitedUser) {
 		Boolean success = true;
-		//search through existing users
-		if (currentUser != null) {
-			if (invitedUser.getEmail() != "") {
-				for (User aUser : userList) {
-					if (aUser.getEmail().equals(invitedUser.getEmail())) {
-						success = false;
-					}
+		//search through existing users to test if user already exists
+		if (currentUser != null && !isNullOrEmpty(invitedUser.getEmail())) {
+			for (User aUser : userList) {
+				if (aUser.getEmail().equals(invitedUser.getEmail())) {
+					success = false;
 				}
-			} else {
-				success = false;
 			}
+		} else {
+			success = false;
 		}
 		if (success) {
-			APILogger.logMessage("User invited");
+			APILogger.logMessage("User '" + invitedUser.getEmail() + "' invited by '" + invitingUser.getEmail() + "'.");
 		} else {
-			APILogger.logMessage("Invitation failed: User already exists");
+			APILogger.logMessage("Invitation failed: User '" + invitedUser.getEmail() + "' already exists");
 		}
 		return success;
 	}
@@ -343,7 +328,4 @@ public class UserAPI {
 	public static void resetSingletonInstance() {
 		instance = new UserAPI();
 	}
-
-
 }
-	

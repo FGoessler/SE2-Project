@@ -91,14 +91,4 @@ public class RegisterController {
 			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
 		}
 	};
-
-	/**
-	 * Prüfen was in der ComboBox ausgewählt wurde
-	 */
-	public Action selectBoxAction = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			System.out.println(((JComboBox) event.getSource()).getSelectedItem().toString());
-		}
-	};
-
 }
