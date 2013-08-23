@@ -5,10 +5,10 @@ import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -16,8 +16,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileManagerTest {
-	private FileManager fileManager = FileManager.getUniqueInstance();
-	private FileAPI fileAPI = FileAPI.getUniqueInstance();
 
 	private File file;
 	private Directory dir;
@@ -25,6 +23,11 @@ public class FileManagerTest {
 
 	@Mock
 	private UserAPI mockedUserAPI;
+	@Mock
+	private FileAPI fileAPI;
+
+	@InjectMocks
+	private FileManager fileManager;
 
 	@Before
 	public void setUp() {
@@ -36,15 +39,12 @@ public class FileManagerTest {
 		bs.setIdentifier(125);
 	}
 
-	@After
-	public void tearDown() {
-		//TODO: reset Singletons? Könnte sonst Probleme geben!
-	}
-
 	//wip-----------------------------------------------------------------------
 
 	@Test
 	public void registerFEntryTest() {
+		//TODO: schlägt fehl aber man weiß auch nicht so recht was hier getestet wird?
+		// Eigentlich sollte ja geprüft werden, das der FileManager ab jetzt auf Notifications reagiert und die API triggert
 		assertThat(fileManager.registerFEntry(file)).isTrue();
 		assertThat(fileManager.registerFEntry(dir)).isTrue();
 		assertThat(fileManager.registerFEntry(bs)).isFalse();
@@ -54,6 +54,7 @@ public class FileManagerTest {
 
 	@Test
 	public void pollAPIForChangesTest() {
+		//TODO: schlägt fehl aber man weiß auch nicht so recht was hier getestet wird?
 		fileAPI.createNewFile(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
 		fileManager.pollAPIForChanges();
@@ -64,6 +65,7 @@ public class FileManagerTest {
 
 	@Test
 	public void pollFileSystemForChangesTest() {
+		//TODO: schlägt fehl aber man weiß auch nicht so recht was hier getestet wird?
 		fileManager.updateFEntry(file);
 		assertThat(fileAPI.getFileCount()).isEqualTo(0);
 		fileManager.pollFileSystemForChanges();

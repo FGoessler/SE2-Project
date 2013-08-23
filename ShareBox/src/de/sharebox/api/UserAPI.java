@@ -20,7 +20,7 @@ public class UserAPI {
 	private transient User currentUser;
 
 	/**
-	 * Leerer Konstruktor um ein direktes erstellen zu verhindern.<br/>
+	 * Leerer Konstruktor um ein direktes erstellen zu verhindern. Als Singleton konzipiert.<br/>
 	 * Instanzen dieser Klasse sollte nur per Dependecy Injection durch Guice erstellt werden.
 	 */
 	@Inject

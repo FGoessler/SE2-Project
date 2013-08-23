@@ -7,15 +7,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
-//import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileAPITest {
-	private transient FileAPI fileAPI;
 	private transient File tFile1;
 	private transient File tFile2;
 	private transient Directory tDirectory1;
@@ -24,10 +23,11 @@ public class FileAPITest {
 	@Mock
 	private UserAPI mockedUserAPI;
 
+	@InjectMocks
+	private FileAPI fileAPI;
+
 	@Before
 	public void setUp() {
-		fileAPI = FileAPI.getUniqueInstance();
-
 		tFile1 = new File(mockedUserAPI);
 		tFile1.setIdentifier(42);
 		tFile1.setName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
@@ -54,16 +54,6 @@ public class FileAPITest {
 
 		assertThat(fileAPI.getFileCount()).isEqualTo(0);
 	}
-
-/*	@Test
-	public void isASingletonButCanInjectMocks() {
-		assertThat(FileAPI.getUniqueInstance()).isNotNull();
-
-		FileAPI mockedFileAPI = mock(FileAPI.class);
-		FileAPI.injectSingletonInstance(mockedFileAPI);
-
-		assertThat(FileAPI.getUniqueInstance()).isSameAs(mockedFileAPI);
-	}*/
 
 	@Test
 	public void testCreationOfNewFile() {
@@ -159,14 +149,14 @@ public class FileAPITest {
 
 	@Test
 	public void testGetChangesSince() {
-		long LastChange = System.currentTimeMillis();
+		long lastChange = System.currentTimeMillis();
 		System.out.println("-- change test --");
-		System.out.println(LastChange);
+		System.out.println(lastChange);
 		fileAPI.createNewFile(tFile1);
 		fileAPI.createNewDirectory(tDirectory1);
 		fileAPI.createNewDirectory(tDirectory2);
 		System.out.println(System.currentTimeMillis());
-		assertThat(fileAPI.getChangesSince(LastChange).size()).isEqualTo(3);
+		assertThat(fileAPI.getChangesSince(lastChange).size()).isEqualTo(3);
 		System.out.println("-- change end --");
 	}
 }
