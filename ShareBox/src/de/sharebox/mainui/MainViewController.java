@@ -88,7 +88,7 @@ public class MainViewController {
 		this.invitationController = invitationController;
 
 		//create window
-		frame = (JFrame) new SwingEngineHelper().render(this, "mainWindow");
+		frame = (JFrame) new SwingEngineHelper().render(this, "directory/mainWindow");
 		frame.setVisible(true);
 
 		directoryViewControllerFactory.create(tree);

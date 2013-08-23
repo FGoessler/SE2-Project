@@ -58,7 +58,7 @@ public class ContextMenuController {
 		this.sharingService = sharingService;
 		this.optionPane = optionPaneHelper;
 
-		new SwingEngineHelper().render(this, "contextMenu");
+		new SwingEngineHelper().render(this, "directory/contextMenu");
 
 		popupMenu.setVisible(false);
 	}

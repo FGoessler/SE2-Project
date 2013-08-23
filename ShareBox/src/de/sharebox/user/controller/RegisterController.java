@@ -45,7 +45,7 @@ public class RegisterController {
 	 * Öffnen des Registrieren Fensters.
 	 */
 	public void show() {
-		frame = (JFrame) new SwingEngineHelper().render(this, "register");
+		frame = (JFrame) new SwingEngineHelper().render(this, "user/register");
 		frame.setVisible(true);
 	}
 

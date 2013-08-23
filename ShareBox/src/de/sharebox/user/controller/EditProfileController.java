@@ -38,7 +38,7 @@ public class EditProfileController {
 	 * vorhanden waren oder nicht.
 	 */
 	public void show() {
-		frame = (JFrame) new SwingEngineHelper().render(this, "editProfile");
+		frame = (JFrame) new SwingEngineHelper().render(this, "user/editProfile");
 		frame.setVisible(true);
 
 		User user = userAPI.getCurrentUser();

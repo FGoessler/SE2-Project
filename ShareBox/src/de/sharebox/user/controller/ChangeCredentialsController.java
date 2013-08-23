@@ -39,7 +39,7 @@ public class ChangeCredentialsController {
 	 * vorhanden waren oder nicht.
 	 */
 	public void show() {
-		frame = (JFrame) new SwingEngineHelper().render(this, "changeCredentials");
+		frame = (JFrame) new SwingEngineHelper().render(this, "user/changeCredentials");
 		frame.setVisible(true);
 
 		User user = userAPI.getCurrentUser();

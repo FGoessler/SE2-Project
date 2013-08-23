@@ -48,7 +48,7 @@ public class PermissionViewController {
 							 SharingService sharingService,
 							 OptionPaneHelper optionPaneHelper) {
 
-		JComponent panel = (JComponent) new SwingEngineHelper().render(this, "permissionView");
+		JComponent panel = (JComponent) new SwingEngineHelper().render(this, "directory/permissionView");
 		splitPane.setRightComponent(panel);
 
 		this.optionPane = optionPaneHelper;

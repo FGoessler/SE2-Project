@@ -46,7 +46,7 @@ public class AccountingController {
 	 * vorhanden waren oder nicht.
 	 */
 	public void show() {
-		frame = (JFrame) new SwingEngineHelper().render(this, "editAccounting");
+		frame = (JFrame) new SwingEngineHelper().render(this, "user/editAccounting");
 		frame.setVisible(true);
 
 		User user = userAPI.getCurrentUser();

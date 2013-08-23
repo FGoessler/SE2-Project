@@ -48,7 +48,7 @@ public class LoginController {
 	 * Erstellt die GUI des LoginControllers und zeigt ihn an.
 	 */
 	public void show() {
-		frame = (JFrame) new SwingEngineHelper().render(this, "login");
+		frame = (JFrame) new SwingEngineHelper().render(this, "user/login");
 		frame.setVisible(true);
 	}
 
