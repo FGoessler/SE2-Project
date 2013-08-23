@@ -1,6 +1,7 @@
 package de.sharebox.file.controller;
 
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import org.junit.Test;
@@ -24,6 +25,8 @@ public class DirectoryViewControllerTest {
 
 	@Mock
 	private UserAPI mockedUserAPI;
+	@Mock
+	private FileManager fileManager;
 
 	@Spy
 	private JTree tree;

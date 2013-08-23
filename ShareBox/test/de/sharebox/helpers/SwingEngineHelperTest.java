@@ -15,7 +15,7 @@ public class SwingEngineHelperTest {
 
 	@Test
 	public void canRenderAXMLLayoutFileViaSWIxml() {
-		assertThat(swingEngineHelper.render(this, "login")).isNotNull();
+		assertThat(swingEngineHelper.render(this, "user/login")).isNotNull();
 	}
 
 	@Test
