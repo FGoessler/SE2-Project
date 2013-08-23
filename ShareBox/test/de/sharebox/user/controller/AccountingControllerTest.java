@@ -70,18 +70,28 @@ public class AccountingControllerTest {
 		assertThat(user.getValue().getPaymentInfo().getZipCode()).isEqualTo("12345");
 		assertThat(user.getValue().getStorageLimit()).isEqualTo("20GB");
 
-		//TODO: verfiy display of correct message to user (need to fix teh implementation first)
+		verify(optionPaneHelper).showMessageDialog(contains("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang durchführen."));
+		verify(optionPaneHelper).showMessageDialog("Die Änderung war erfolgreich");
 	}
 
-	/**
-	 * Testet, den Fall, dass der Nutzer beim Ändern seiner Daten irgendwas falsch oder gar nicht angibt.
-	 */
 	@Test
-	public void testInvalidChange() {
+	public void testValidationOfAddressDataWhenIncreasingStorageLimit() {
+		accountingController.locationField.setText("Stadt");
+		accountingController.storageLimitField.setSelectedIndex(2);
+
+		accountingController.save.actionPerformed(mock(ActionEvent.class));
+
+		verify(mockedAPI, never()).changeAccountingSettings(any(User.class));
+		verify(optionPaneHelper).showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre Speicherkapazität erhöhen können!");
+	}
+
+	@Test
+	public void testReactionOnAPIReportsErrorOnChange() {
 		when(mockedAPI.changeAccountingSettings(Matchers.any(User.class))).thenReturn(false);
 		accountingController.save.actionPerformed(mock(ActionEvent.class));
+
 		verify(mockedAPI).changeAccountingSettings(Matchers.any(User.class));
-		//TODO: verfiy display of correct message to user (need to fix teh implementation first)
+		verify(optionPaneHelper).showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
 	}
 
 	/**

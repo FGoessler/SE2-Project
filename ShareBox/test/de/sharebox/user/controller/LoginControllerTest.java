@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -15,6 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.awt.event.ActionEvent;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +56,11 @@ public class LoginControllerTest {
 
 		loginController.submit.actionPerformed(mock(ActionEvent.class));
 
-		verify(mockedAPI).login(any(User.class));
+		ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
+		verify(mockedAPI).login(user.capture());
+		assertThat(user.getValue().getEmail()).isEqualTo("Nutzername");
+		assertThat(user.getValue().getPassword()).isEqualTo("Passwort123");
+		verify(mainViewControllerFactory).create(same(user.getValue()));
 	}
 
 
@@ -65,8 +71,8 @@ public class LoginControllerTest {
 		loginController.submit.actionPerformed(mock(ActionEvent.class));
 
 		verify(mockedAPI).login(any(User.class));
-
-		//TODO: test tested faktisch nix... Sicherstellen das Nutzer wirklich nicht eingeloggt!
+		verify(mainViewControllerFactory, never()).create(any(User.class));
+		verify(optionPaneHelper).showMessageDialog("Login-Informationen falsch! Bitte geben sie ihre Daten erneut ein.");
 	}
 
 

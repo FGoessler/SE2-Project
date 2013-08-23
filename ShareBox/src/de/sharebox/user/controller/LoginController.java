@@ -36,6 +36,8 @@ public class LoginController {
 		this.optionPane = optionPaneHelper;
 		this.registerController = registerController;
 
+		UserAPI.getUniqueInstance().createSampleContent();
+
 		frame = (JFrame) new SwingEngineHelper().render(this, "login");
 		frame.setVisible(true);
 	}
@@ -47,7 +49,6 @@ public class LoginController {
 	public Action submit = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
 			UserAPI userApi = UserAPI.getUniqueInstance();
-			userApi.createSampleContent();
 			User user = new User();
 			user.setEmail(mailField.getText());
 			user.setPassword(new String(passwordField.getPassword()));

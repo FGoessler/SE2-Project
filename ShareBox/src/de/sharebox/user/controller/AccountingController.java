@@ -10,6 +10,9 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+
 public class AccountingController {
 	private final OptionPaneHelper optionPane;
 
@@ -20,7 +23,7 @@ public class AccountingController {
 	public JTextField codeField;
 	public JTextField locationField;
 	public JTextField countryField;
-	public int paymentIndex;
+	public int oldStorageLimitIndex;
 
 	/**
 	 * Erstellt einen neuen AccountingController. <br/>
@@ -43,16 +46,16 @@ public class AccountingController {
 		frame.setVisible(true);
 
 		User user = UserAPI.getUniqueInstance().getCurrentUser();
-		int index = 0;
+
+		oldStorageLimitIndex = 0;
 		for (int i = 0; i < storageLimitField.getItemCount(); i++) {
 			if (user.getStorageLimit() != null && user.getStorageLimit().equals(storageLimitField.getItemAt(i).toString())) {
-				index = i;
+				oldStorageLimitIndex = i;
 			}
 		}
-		PaymentInfo paymentinfo = user.getPaymentInfo();
-		paymentIndex = index;
 
-		storageLimitField.setSelectedIndex(index);
+		PaymentInfo paymentinfo = user.getPaymentInfo();
+		storageLimitField.setSelectedIndex(oldStorageLimitIndex);
 		streetField.setText(paymentinfo.getStreet());
 		additiveField.setText(paymentinfo.getAdditionalStreet());
 		codeField.setText(paymentinfo.getZipCode());
@@ -81,25 +84,26 @@ public class AccountingController {
 			paymentinfo.setAdditionalStreet(additiveField.getText());
 
 			user.setPaymentInfo(paymentinfo);
-
 			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
 
-			if (userApi.changeAccountingSettings(user)) {
-				//TODO: Fehler! hier sind die Daten doch schon gespeichert! Validierung davor oder in UserAPI?!
-				if (paymentIndex >= storageLimitField.getSelectedIndex()) {
+			if (storageLimitField.getSelectedIndex() > 0 &&
+					(isNullOrEmpty(paymentinfo.getStreet()) || isNullOrEmpty(paymentinfo.getCity()) ||
+							isNullOrEmpty(paymentinfo.getZipCode()) || isNullOrEmpty(paymentinfo.getCountry()))) {
+				optionPane.showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre " +
+						"Speicherkapazität erhöhen können!");
+			} else {
+				if (oldStorageLimitIndex < storageLimitField.getSelectedIndex()) {
+					optionPane.showMessageDialog("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang " +
+							"durchführen. Dies ist in diesem Prototyp nicht umgesetzt. Eine entsprechende Integration eines " +
+							"Systems eines Drittanbieters käme an dieser Stelle.");
+				}
+
+				if (userApi.changeAccountingSettings(user)) {
 					frame.setVisible(false);
 					optionPane.showMessageDialog("Die Änderung war erfolgreich");
 				} else {
-					if (user.getPaymentInfo().getStreet().length() == 0 || user.getPaymentInfo().getCity().length() == 0 ||
-							user.getPaymentInfo().getZipCode().length() == 0 || user.getPaymentInfo().getCountry().length() == 0) {
-						optionPane.showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre Speicherkapazität erhöhen können!");
-					} else {
-						frame.setVisible(false);
-						optionPane.showMessageDialog("Sie müssen einen Betrag bezahlen, damit sie ihre Speicherkapazität erhöhen können!");
-					}
+					optionPane.showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
 				}
-			} else {
-				optionPane.showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
 			}
 		}
 	};

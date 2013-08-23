@@ -20,7 +20,6 @@ public class RegisterController {
 	public JTextField lastnameField;
 	public JTextField firstnameField;
 	public JTextField genderField;
-	public JComboBox storageLimitField;
 	public JTextField streetField;
 	public JTextField additiveField;
 	public JTextField codeField;
@@ -73,22 +72,10 @@ public class RegisterController {
 			paymentinfo.setCountry(countryField.getText());
 			user.setPaymentInfo(paymentinfo);
 
-			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
-
 			if (new String(passwordField2.getPassword()).equals(new String(passwordField1.getPassword())) &&
 					userApi.registerUser(user)) {
-				if (0 >= storageLimitField.getSelectedIndex()) {
-					frame.setVisible(false);
-					optionPane.showMessageDialog("Die Registrierung war erfolgreich");
-				} else {
-					if (user.getPaymentInfo().getStreet().length() == 0 || user.getPaymentInfo().getCity().length() == 0 ||
-							user.getPaymentInfo().getZipCode().length() == 0 || user.getPaymentInfo().getCountry().length() == 0) {
-						optionPane.showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre Speicherkapazität erhöhen können!");
-					} else {
-						frame.setVisible(false);
-						optionPane.showMessageDialog("Sie müssen einen Betrag bezahlen, damit sie ihre Speicherkapazität erhöhen können!");
-					}
-				}
+				frame.setVisible(false);
+				optionPane.showMessageDialog("Die Registrierung war erfolgreich");
 			} else {
 				optionPane.showMessageDialog("Die Registrierung ist fehlgeschlagen!");
 			}

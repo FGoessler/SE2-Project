@@ -45,9 +45,11 @@ public class InvitationControllerTest {
 	@Test
 	public void testSuccessfulInvite() {
 		when(mockedAPI.inviteUser(Matchers.any(User.class), Matchers.any(User.class))).thenReturn(true);
-		invitationController.mailField.setText("kurt");
+		invitationController.mailField.setText("kurt@haha.de");
 		invitationController.invite.actionPerformed(mock(ActionEvent.class));
+
 		verify(mockedAPI).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
+		verify(optionPaneHelper).showMessageDialog("kurt@haha.de wurde eingeladen!");
 	}
 
 	/**
@@ -56,9 +58,11 @@ public class InvitationControllerTest {
 	@Test
 	public void testInvalidInvite() {
 		when(mockedAPI.inviteUser(Matchers.any(User.class), Matchers.any(User.class))).thenReturn(false);
+		invitationController.mailField.setText("kurt@haha.de");
 		invitationController.invite.actionPerformed(mock(ActionEvent.class));
-		//TODO: testet genau den anderen fall!! hier akzeptiert der test obwohl Implementierung wsl. falsch!
+
 		verify(mockedAPI).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
+		verify(optionPaneHelper).showMessageDialog("kurt@haha.de ist bereits registriert oder die Emailadresse ist ungültig!");
 	}
 
 	/**

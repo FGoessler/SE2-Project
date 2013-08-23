@@ -48,7 +48,7 @@ public class InvitationController {
 				frame.setVisible(false);
 				optionPane.showMessageDialog(invitedUser.getEmail() + " wurde eingeladen!");
 			} else {
-				optionPane.showMessageDialog(invitedUser.getEmail() + " ist bereits registriert.");
+				optionPane.showMessageDialog(invitedUser.getEmail() + " ist bereits registriert oder die Emailadresse ist ungültig!");
 			}
 		}
 	};

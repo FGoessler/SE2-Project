@@ -57,11 +57,11 @@ public class RegisterControllerTest {
 		registerController.codeField.setText("12345");
 		registerController.countryField.setText("Base");
 		registerController.locationField.setText("preBase");
-		registerController.storageLimitField.setSelectedIndex(2);
 
 		registerController.register.actionPerformed(mock(ActionEvent.class));
 
 		verify(mockedAPI).registerUser(any(User.class));
+		verify(optionPaneHelper).showMessageDialog("Die Registrierung war erfolgreich");
 	}
 
 	/**
@@ -72,8 +72,9 @@ public class RegisterControllerTest {
 		when(mockedAPI.registerUser(Matchers.any(User.class))).thenReturn(false);
 
 		registerController.register.actionPerformed(mock(ActionEvent.class));
-		//TODO: Test falsch aber akzeptiert! -> Implementierung falsch?!
+
 		verify(mockedAPI).registerUser(any(User.class));
+		verify(optionPaneHelper).showMessageDialog("Die Registrierung ist fehlgeschlagen!");
 	}
 
 	/**

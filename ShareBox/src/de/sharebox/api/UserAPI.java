@@ -22,7 +22,6 @@ public class UserAPI {
 	private static UserAPI instance = new UserAPI();
 
 	public UserAPI() {
-		//createSampleContent();
 	}
 
 	/**
@@ -53,14 +52,14 @@ public class UserAPI {
 		user.setPassword("maxmuster");
 		user.setFirstname("Max");
 		user.setLastname("Mustermann");
-		
+
 		PaymentInfo paymentInfo = new PaymentInfo();
 		paymentInfo.setStreet("Mustersraße 1");
 		paymentInfo.setCity("Musterstadt");
 		paymentInfo.setCountry("Deutschland");
 		paymentInfo.setZipCode("01234");
 		user.setPaymentInfo(paymentInfo);
-		
+
 		user.setStorageLimit("10GB");
 		user.setGender("m");
 
@@ -76,7 +75,7 @@ public class UserAPI {
 		paymentInfo.setCountry("Deutschland");
 		paymentInfo.setZipCode("14569");
 		user2.setPaymentInfo(paymentInfo);
-		
+
 		user2.setStorageLimit("20GB");
 		user2.setGender("m");
 
@@ -155,25 +154,24 @@ public class UserAPI {
 	 * @param user zu registrierender user
 	 * @return ob erfolgreich *
 	 */
-	public  boolean registerUser(User user) {
+	public boolean registerUser(User user) {
 		Boolean userAlreadyExists = false;
 		Boolean success = false;
-		
+
 		//search through existing users
-		if ((user.getEmail() != "") && (user.getPassword() != "")){
+		if ((user.getEmail() != "") && (user.getPassword() != "")) {
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(user.getEmail())) {
 					userAlreadyExists = true;
 				}
 			}
 			if (!userAlreadyExists) {
-				userList.add(new User(user));		
+				userList.add(new User(user));
 				success = true;
 			}
-		}
-		else {
+		} else {
 			success = false;
-		}	
+		}
 		if (success) {
 			APILogger.logMessage("Registration successful");
 		} else {
@@ -193,7 +191,7 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null) {
-			if (user.getFirstname() != "" && user.getGender() != "" && user.getLastname() != ""){
+			if (user.getFirstname() != "" && user.getGender() != "" && user.getLastname() != "") {
 				for (User aUser : userList) {
 					if (aUser.getEmail().equals(currentUser.getEmail())) {
 						aUser.setFirstname(user.getFirstname());
@@ -203,8 +201,7 @@ public class UserAPI {
 						currentUser = new User(aUser);
 					}
 				}
-			}
-			else{
+			} else {
 				success = false;
 			}
 		}
@@ -226,7 +223,7 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null) {
-			if(user.getPaymentInfo().getStreet() != "" && user.getPaymentInfo().getCity() != "" && user.getPaymentInfo().getZipCode() != "" && user.getPaymentInfo().getCountry() != ""){
+			if (user.getPaymentInfo().getStreet() != "" && user.getPaymentInfo().getCity() != "" && user.getPaymentInfo().getZipCode() != "" && user.getPaymentInfo().getCountry() != "") {
 				for (User aUser : userList) {
 					if (aUser.getEmail().equals(currentUser.getEmail())) {
 						aUser.setPaymentInfo(user.getPaymentInfo());
@@ -235,8 +232,7 @@ public class UserAPI {
 						currentUser = new User(aUser);
 					}
 				}
-			}
-			else{
+			} else {
 				success = false;
 			}
 		}
@@ -259,19 +255,17 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null) {
-			if(newUser.getEmail() != "" && newUser.getPassword() != ""){
+			if (newUser.getEmail() != "" && newUser.getPassword() != "") {
 				for (User aUser : userList) {
 					if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
-							&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) 
-					{
+							&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) {
 						aUser.setEmail(newUser.getEmail());
 						aUser.setPassword(newUser.getPassword());
 						success = true;
 						currentUser = new User(aUser);
 					}
 				}
-			}
-			else{
+			} else {
 				success = false;
 			}
 		}
@@ -294,14 +288,13 @@ public class UserAPI {
 		Boolean success = true;
 		//search through existing users
 		if (currentUser != null) {
-			if(invitedUser.getEmail() != ""){
+			if (invitedUser.getEmail() != "") {
 				for (User aUser : userList) {
 					if (aUser.getEmail().equals(invitedUser.getEmail())) {
 						success = false;
 					}
 				}
-			}
-			else{
+			} else {
 				success = false;
 			}
 		}
@@ -333,7 +326,7 @@ public class UserAPI {
 		if (isLoggedIn()) {
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					currentUser = new User (aUser);
+					currentUser = new User(aUser);
 				}
 			}
 			user = new User(currentUser);
@@ -342,14 +335,14 @@ public class UserAPI {
 
 		return user;
 	}
-	
-	 /**
-	  * Resettet die Singleton Instanz auf das Standard-Objekt.
-	  * Wird benötigt um einen injectSingletonInstance rückgängig zu machen.
-	  */
-	 public static void resetSingletonInstance() {
-	  instance = new UserAPI();
-	 }
+
+	/**
+	 * Resettet die Singleton Instanz auf das Standard-Objekt.
+	 * Wird benötigt um einen injectSingletonInstance rückgängig zu machen.
+	 */
+	public static void resetSingletonInstance() {
+		instance = new UserAPI();
+	}
 
 
 }
