@@ -40,7 +40,7 @@ public class FileAPI {
 	/**
 	 * simulated storage; sublist of storage Entries is for versioning/etc. (list fEntry has timestamp and FEntry);
 	 */
-	private final transient List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
+	private final List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
 
 	//various stat getters
 

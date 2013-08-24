@@ -67,7 +67,7 @@ public class DirectoryViewController {
 	/**
 	 * Dieser MouseAdapter dient dazu das Kontextmenü anzuzeigen bzw. wieder auszublenden.
 	 */
-	protected transient MouseAdapter contextMenuMA = new MouseAdapter() {
+	protected MouseAdapter contextMenuMA = new MouseAdapter() {
 		@Override
 		public void mouseReleased(MouseEvent event) {
 			if (event.getButton() == MouseEvent.BUTTON3 && !contextMenuController.isMenuVisible()) {

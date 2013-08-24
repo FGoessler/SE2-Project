@@ -15,15 +15,15 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTest {
 
-	private transient FEntry fEntry;
+	private FEntry fEntry;
 
 	@Mock
 	private UserAPI mockedUserAPI;
 
 	@Mock
-	private transient FEntryObserver observer;
+	private FEntryObserver observer;
 	@Mock
-	private transient User user;
+	private User user;
 
 	@Before
 	public void setUp() {

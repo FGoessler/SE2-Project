@@ -68,7 +68,7 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 	/**
 	 * Dieser DirectoryObserver reagiert auf Veränderungen der dargestellten FEntries und updated das UI-Model entsprechend.
 	 */
-	private final transient DirectoryObserver observer = new DirectoryObserver() {
+	private final DirectoryObserver observer = new DirectoryObserver() {
 		@Override
 		public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
 			if (reason.equals(ChangeType.NAME_CHANGED)) {

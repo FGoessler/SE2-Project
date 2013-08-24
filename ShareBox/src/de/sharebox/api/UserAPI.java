@@ -15,9 +15,9 @@ public class UserAPI {
 	/**
 	 * simuliert Datenbank;
 	 */
-	protected transient List<User> userList = new ArrayList<User>();
+	protected List<User> userList = new ArrayList<User>();
 
-	private transient User currentUser;
+	private User currentUser;
 
 	/**
 	 * Leerer Konstruktor um ein direktes erstellen zu verhindern. Als Singleton konzipiert.<br/>

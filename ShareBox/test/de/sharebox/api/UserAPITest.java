@@ -18,11 +18,11 @@ import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAPITest {
-	private transient User user;
-	private transient User user2;
+	private User user;
+	private User user2;
 
 	@InjectMocks
-	private transient UserAPI userAPI;
+	private UserAPI userAPI;
 
 	/*
 	 * Zunächst werden für die Testklasse 2 User angelegt.

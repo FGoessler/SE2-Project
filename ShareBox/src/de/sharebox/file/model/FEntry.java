@@ -18,8 +18,8 @@ public class FEntry {
 	private Integer identifier;
 	private String name;
 
-	private final transient List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
-	protected transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
+	private final List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
+	protected List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
 	 * Der Standard-Konstruktor.
@@ -192,7 +192,7 @@ public class FEntry {
 	 */
 	public FEntryPermission getPermissionOfUser(User user) {
 		Optional<FEntryPermission> permission = Optional.absent();
-		//TODO: handle null values -> use Optionals
+
 		try {
 			for (FEntryPermission perm : permissions) {
 				if (perm.getUser().getEmail().equals(user.getEmail())) {

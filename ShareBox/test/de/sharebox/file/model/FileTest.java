@@ -13,12 +13,12 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileTest {
-	private transient File file;
+	private File file;
 
 	@Mock
-	private transient FEntryObserver observer;
+	private FEntryObserver observer;
 	@Mock
-	private transient UserAPI mockedUserAPI;
+	private UserAPI mockedUserAPI;
 
 	@Before
 	public void setUp() throws Exception {

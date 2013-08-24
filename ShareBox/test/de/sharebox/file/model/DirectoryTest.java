@@ -15,14 +15,14 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryTest {
 
-	private transient Directory directory;
+	private Directory directory;
 
 	@Mock
-	private transient DirectoryObserver observer;
+	private DirectoryObserver observer;
 	@Mock
-	private transient User mockedUser;
+	private User mockedUser;
 	@Mock
-	private transient UserAPI mockedUserAPI;
+	private UserAPI mockedUserAPI;
 
 	private static final String TEST_FILENAME = "TestFile";
 	private static final String TEST_DIRNAME = "TestDirectory";
