@@ -26,12 +26,12 @@ public class MainViewController {
 	private final LoginController loginController;
 	private final UserAPI userAPI;
 
-	private JFrame frame;
+	private final JFrame frame;
 
 	/**
 	 * Der aktuell eingeloggte Nutzer.
 	 */
-	private User currentUser;
+	private final User currentUser;
 
 	/**
 	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.

@@ -18,7 +18,7 @@ public class FileManager {
 	private long lastAPIPoll = 0;
 	private long lastStoragePoll = 0;
 
-	private transient List<FileAPI.StorageEntry> storage = new ArrayList<FileAPI.StorageEntry>();
+	private final transient List<FileAPI.StorageEntry> storage = new ArrayList<FileAPI.StorageEntry>();
 
 	/**
 	 * Erstellt einen neuen FileManager. Als Singleton konzipiert.<br/>

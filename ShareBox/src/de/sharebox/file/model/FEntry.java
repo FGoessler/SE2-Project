@@ -18,7 +18,7 @@ public class FEntry {
 	private Integer identifier;
 	private String name;
 
-	private transient List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
+	private final transient List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
 	protected transient List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**

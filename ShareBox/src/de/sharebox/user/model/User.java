@@ -8,13 +8,13 @@ package de.sharebox.user.model;
 public class User {
 
 	private String email, password, firstname, lastname, storageLimit, gender;
-	private PaymentInfo paymentInfo;
+	private AddressInfo addressInfo;
 
 	/**
 	 * Der Standard Konstruktor.
 	 */
 	public User() {
-		this.setPaymentInfo(new PaymentInfo());
+		this.setAddressInfo(new AddressInfo());
 	}
 
 	/**
@@ -28,11 +28,10 @@ public class User {
 		this.setFirstname(userToCopy.getFirstname());
 		this.setLastname(userToCopy.getLastname());
 
-		this.setPaymentInfo(new PaymentInfo(userToCopy.getPaymentInfo()));
+		this.setAddressInfo(new AddressInfo(userToCopy.getAddressInfo()));
 
 		this.setStorageLimit(userToCopy.getStorageLimit());
 		this.setGender(userToCopy.getGender());
-
 	}
 
 	/**
@@ -64,10 +63,10 @@ public class User {
 	}
 
 	/**
-	 * @return Die Zahlungsinformationen des Users.
+	 * @return Die Adressinformationen des Users für Rechnungen.
 	 */
-	public PaymentInfo getPaymentInfo() {
-		return new PaymentInfo(paymentInfo);
+	public AddressInfo getAddressInfo() {
+		return new AddressInfo(addressInfo);
 	}
 
 	/**
@@ -124,10 +123,10 @@ public class User {
 	/**
 	 * Ändert die Zahlungsinformationen des Objekts.
 	 *
-	 * @param paymentInfo
+	 * @param addressInfo
 	 */
-	public void setPaymentInfo(PaymentInfo paymentInfo) {
-		this.paymentInfo = new PaymentInfo(paymentInfo);
+	public void setAddressInfo(AddressInfo addressInfo) {
+		this.addressInfo = new AddressInfo(addressInfo);
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class User {
 	 *
 	 * @param storageLimit
 	 */
-	public void setStorageLimit(String storageLimit) {
+	public void setStorageLimit(String storageLimit) {        //TODO: create a enum or store as numbers
 		this.storageLimit = storageLimit;
 	}
 
@@ -144,7 +143,7 @@ public class User {
 	 *
 	 * @param gender
 	 */
-	public void setGender(String gender) {
+	public void setGender(String gender) {    //TODO: create a enum for gender
 		this.gender = gender;
 	}
 }

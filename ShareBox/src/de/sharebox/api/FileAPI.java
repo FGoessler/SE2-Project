@@ -40,7 +40,7 @@ public class FileAPI {
 	/**
 	 * simulated storage; sublist of storage Entries is for versioning/etc. (list fEntry has timestamp and FEntry);
 	 */
-	private transient List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
+	private final transient List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
 
 	//various stat getters
 
@@ -140,7 +140,7 @@ public class FileAPI {
 		}
 
 		if (fileAlreadyExists) {
-			APILogger.debugFailure(APILogger.actionStringForFEntryAction("File Creation", newFile), FILE_EXISTS);
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("File Creation", newFile), FILE_EXISTS);
 		} else {
 			//create new sublist to account for new file if no existing file was found
 			List<StorageEntry> newStorage = new ArrayList<StorageEntry>();
@@ -149,7 +149,7 @@ public class FileAPI {
 			StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), new File(newFile));
 			newStorage.add(newEntry);
 
-			APILogger.debugSuccess(APILogger.actionStringForFEntryAction("File Creation", newFile));
+			APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Creation", newFile));
 		}
 
 		return !fileAlreadyExists;
@@ -176,12 +176,12 @@ public class FileAPI {
 
 		if (foundStorage == null) {
 			//no file found found - error!
-			APILogger.debugFailure(APILogger.actionStringForFEntryAction("File Update", updatedFile), FILE_NOT_FOUND);
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("File Update", updatedFile), FILE_NOT_FOUND);
 		} else {
 			//file found, create new version
 			StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), new File(updatedFile));
 			foundStorage.add(newEntry);
-			APILogger.debugSuccess(APILogger.actionStringForFEntryAction("File Update", updatedFile));
+			APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Update", updatedFile));
 		}
 
 		return foundStorage != null;
@@ -200,14 +200,14 @@ public class FileAPI {
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).get(0).fEntry.getIdentifier().equals(deletedFile.getIdentifier())) {
 				storage.remove(i);
-				APILogger.debugSuccess(APILogger.actionStringForFEntryAction("File Deletion", deletedFile));
+				APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Deletion", deletedFile));
 				fileExists = true;
 				break;
 			}
 		}
 
 		if (!fileExists) {
-			APILogger.debugFailure(APILogger.actionStringForFEntryAction("File Deletion", deletedFile), FILE_NOT_FOUND);
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("File Deletion", deletedFile), FILE_NOT_FOUND);
 		}
 
 		return fileExists;
@@ -231,14 +231,14 @@ public class FileAPI {
 		}
 
 		if (dirAlreadyExists) {
-			APILogger.debugFailure(APILogger.actionStringForFEntryAction("Directory Creation", newDirectory));
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("Directory Creation", newDirectory));
 		} else {
 			List<StorageEntry> fList = new ArrayList<StorageEntry>();
 			StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), new Directory(newDirectory));
 			fList.add(newEntry);
 			storage.add(fList);
 
-			APILogger.debugSuccess(APILogger.actionStringForFEntryAction("Directory Creation", newDirectory));
+			APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Creation", newDirectory));
 		}
 
 		return !dirAlreadyExists;
@@ -257,14 +257,14 @@ public class FileAPI {
 			if (aStorage.get(0).fEntry.getIdentifier().equals(updatedDirectory.getIdentifier())) {
 				aStorage.get(0).fEntry = new Directory(updatedDirectory);
 				aStorage.get(0).timestamp = System.currentTimeMillis();
-				APILogger.debugSuccess(APILogger.actionStringForFEntryAction("Directory Update", updatedDirectory));
+				APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Update", updatedDirectory));
 				directoryFound = true;
 				break;
 			}
 		}
 
 		if (!directoryFound) {
-			APILogger.debugFailure(APILogger.actionStringForFEntryAction("Directory Update (", updatedDirectory), FILE_NOT_FOUND);
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("Directory Update (", updatedDirectory), FILE_NOT_FOUND);
 		}
 
 		return directoryFound;
@@ -282,14 +282,14 @@ public class FileAPI {
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).get(0).fEntry.getIdentifier().equals(deletedDirectory.getIdentifier())) {
 				storage.remove(i);
-				APILogger.debugSuccess(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory));
+				APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory));
 				directoryFound = true;
 				break;
 			}
 		}
 
 		if (!directoryFound) {
-			APILogger.debugFailure(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory), FILE_NOT_FOUND);
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory), FILE_NOT_FOUND);
 		}
 
 		return directoryFound;

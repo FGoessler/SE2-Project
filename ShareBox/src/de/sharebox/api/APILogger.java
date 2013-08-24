@@ -7,26 +7,28 @@ import java.util.Date;
 
 public final class APILogger {
 
-    /**Logging flag.*/
+	/**
+	 * Logging flag.
+	 */
 	public static final boolean LOGGING = true;
-    /**flag für Datumsoutput: TRUE wenn volles Datumsformat gewünscht, FALSE sonst.*/
-    public static final boolean READABLEDATE = false;
 
-	private APILogger() {}
+	private APILogger() {
+	}
 
 	/**
 	 * Loggt die gegebene Meldung.
+	 *
 	 * @param message Die zu loggende Meldung.
 	 */
 	public static void logMessage(String message) {
-		if(LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
-            else System.out.println(System.currentTimeMillis() + ": " + message);
+		if (LOGGING) {
+			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
 		}
 	}
 
 	/**
-	 * Erstellt einen Action String (zur Verwendung in debugSuccess und CO.) der die gegebene Action und den FEntry benennt.
+	 * Erstellt einen Action String (zur Verwendung in logSuccess und CO.) der die gegebene Action und den FEntry benennt.
+	 *
 	 * @param action Die Aktion, die geloggt werden soll.
 	 * @param fEntry Der FEntry auf dem die Aktion ausgeführt wurde.
 	 * @return Der String der die Aktion und Information über den FEntry enthält.
@@ -37,35 +39,29 @@ public final class APILogger {
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion erfolgreich war.
-	 * @param action Ein Text der die AKtion benennt.
+	 *
+	 * @param action Ein Text der die Aktion benennt.
 	 */
-	public static void debugSuccess(String action) {
-		if (LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " successful.");
-            else System.out.println(System.currentTimeMillis() + ": " + action + " successful.");
-		}
+	public static void logSuccess(String action) {
+		logMessage(action + " successful.");
 	}
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion fehlgeschalgen ist.
-	 * @param action Ein Text der die AKtion benennt.
+	 *
+	 * @param action Ein Text der die Aktion benennt.
 	 */
-	public static void debugFailure(String action) {
-		if (LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed.");
-            else System.out.println(System.currentTimeMillis() + ": " + action + " failed.");
-		}
+	public static void logFailure(String action) {
+		logMessage(action + " failed.");
 	}
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion wegen der Reason fehlgeschlagen ist.
-	 * @param action Ein Text der die AKtion benennt.
+	 *
+	 * @param action Ein Text der die Aktion benennt.
 	 * @param reason Ein Text der den Grund für den Fehler benennt.
 	 */
-	public static void debugFailure(String action, String reason) {
-		if (LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed. Reason: " + reason);
-            else System.out.println(System.currentTimeMillis() + ": " + action + " failed. Reason: " + reason);
-		}
+	public static void logFailure(String action, String reason) {
+		logMessage(action + " failed. Reason: " + reason);
 	}
 }

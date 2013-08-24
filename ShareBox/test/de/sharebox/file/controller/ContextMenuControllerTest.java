@@ -30,6 +30,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextMenuControllerTest {
+	public static final String FILENAME = "A Test File";
 	private Directory parentDirectory;
 	private TreePath mockedTreePath1;
 	private TreePath mockedTreePath2;
@@ -64,7 +65,7 @@ public class ContextMenuControllerTest {
 		parentDirectory = new Directory(mockedAPI);
 		parentDirectory.setPermission(mockedUser, true, true, true);
 		parentDirectory.setName("A Test Dir");
-		FEntry child1 = parentDirectory.createNewFile("A Test File");
+		FEntry child1 = parentDirectory.createNewFile(FILENAME);
 		FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
 		mockedTreePath1 = new TreePath(nodes1);
 		FEntry child2 = parentDirectory.createNewFile("An other Test File");
@@ -177,7 +178,7 @@ public class ContextMenuControllerTest {
 	public void userCanRenameAFEntry() {
 		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("A new File name");
 		assertThat(parentDirectory.getFEntries()).hasSize(2);
-		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
+		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo(FILENAME);
 
 		performClickOnMenuItem(contextMenuController.renameFEntry);
 
@@ -187,11 +188,11 @@ public class ContextMenuControllerTest {
 	@Test
 	public void renamingAFEntryWithoutWritePermissionIsNotPossible() {
 		setCurrentUserToUserWithoutPermissions();
-		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
+		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo(FILENAME);
 
 		performClickOnMenuItem(contextMenuController.renameFEntry);
 
-		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo("A Test File");
+		assertThat(parentDirectory.getFEntries().get(0).getName()).isEqualTo(FILENAME);
 		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
 

@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
-import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
@@ -67,13 +67,13 @@ public class RegisterController {
 			user.setFirstname(firstnameField.getText());
 			user.setGender(genderField.getText());
 
-			PaymentInfo paymentinfo = user.getPaymentInfo();
+			AddressInfo paymentinfo = user.getAddressInfo();
 			paymentinfo.setStreet(streetField.getText());
 			paymentinfo.setAdditionalStreet(additiveField.getText());
 			paymentinfo.setZipCode(codeField.getText());
 			paymentinfo.setCity(locationField.getText());
 			paymentinfo.setCountry(countryField.getText());
-			user.setPaymentInfo(paymentinfo);
+			user.setAddressInfo(paymentinfo);
 
 			if (new String(passwordField2.getPassword()).equals(new String(passwordField1.getPassword())) &&
 					userAPI.registerUser(user)) {

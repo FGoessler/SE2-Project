@@ -21,8 +21,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class EditProfileControllerTest {
 
-	private User testUser;
-
 	@Mock
 	private UserAPI mockedAPI;
 	@Mock
@@ -33,7 +31,7 @@ public class EditProfileControllerTest {
 
 	@Before
 	public void setUp() {
-		testUser = new User();
+		User testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		editProfileController.show();

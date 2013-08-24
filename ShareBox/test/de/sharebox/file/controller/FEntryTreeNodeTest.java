@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTreeNodeTest {
+	public static final String FILENAME = "Testfile";
 	private FEntryTreeNode treeNode;
 
 	@Mock
@@ -28,12 +29,12 @@ public class FEntryTreeNodeTest {
 	@Test
 	public void canBeCreatedWithAFile() {
 		File file = new File(mockedUserAPI);
-		file.setName("Testfile");
+		file.setName(FILENAME);
 		treeNode = new FEntryTreeNode(treeModel, file);
 
 		assertThat(treeNode.getFEntry()).isSameAs(file);
 		assertThat(treeNode.isLeaf()).isTrue();
-		assertThat(treeNode.toString()).isEqualTo("Testfile");
+		assertThat(treeNode.toString()).isEqualTo(FILENAME);
 		assertThat(treeNode.getChildCount()).isEqualTo(0);
 	}
 
@@ -41,7 +42,7 @@ public class FEntryTreeNodeTest {
 	public void canBeCreatedWithADirectory() {
 		Directory directory = new Directory(mockedUserAPI);
 		directory.setName("Testdir");
-		directory.createNewFile("Testfile");
+		directory.createNewFile(FILENAME);
 		treeNode = new FEntryTreeNode(treeModel, directory);
 
 		assertThat(treeNode.getFEntry()).isSameAs(directory);
@@ -55,7 +56,7 @@ public class FEntryTreeNodeTest {
 	public void handlesAddedChildrenNotifications() {
 		Directory directory = new Directory(mockedUserAPI);
 		treeNode = new FEntryTreeNode(treeModel, directory);
-		File addedFile = directory.createNewFile("Testfile");    //this line should fire the notification
+		File addedFile = directory.createNewFile(FILENAME);    //this line should fire the notification
 
 		ArgumentCaptor<MutableTreeNode> child = ArgumentCaptor.forClass(MutableTreeNode.class);
 		ArgumentCaptor<MutableTreeNode> parent = ArgumentCaptor.forClass(MutableTreeNode.class);
@@ -70,7 +71,7 @@ public class FEntryTreeNodeTest {
 	@Test
 	public void handlesRemovedChildrenNotifications() {
 		Directory directory = new Directory(mockedUserAPI);
-		File removedFile = directory.createNewFile("Testfile");
+		File removedFile = directory.createNewFile(FILENAME);
 		treeNode = new FEntryTreeNode(treeModel, directory);
 		directory.deleteFEntry(removedFile);                //this line should fire the notification
 

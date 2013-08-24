@@ -3,7 +3,7 @@ package de.sharebox.user.model;
 import javax.swing.*;
 
 /**
- * Diese Klasse wird im Registrierungs- und Accounting-Fenster benötigt, um die ComboBoxen für das
+ * Diese Klasse wird im Accounting-Fenster benötigt, um die ComboBox für das
  * zu wählende Speicherlimit zu füllen.
  */
 public class StorageLimitComboBoxModel extends DefaultComboBoxModel {

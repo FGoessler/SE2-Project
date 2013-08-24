@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
-import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
@@ -58,7 +58,7 @@ public class AccountingController {
 			}
 		}
 
-		PaymentInfo paymentinfo = user.getPaymentInfo();
+		AddressInfo paymentinfo = user.getAddressInfo();
 		storageLimitField.setSelectedIndex(oldStorageLimitIndex);
 		streetField.setText(paymentinfo.getStreet());
 		additiveField.setText(paymentinfo.getAdditionalStreet());
@@ -78,7 +78,7 @@ public class AccountingController {
 		public void actionPerformed(ActionEvent event) {
 			User user = new User();
 
-			PaymentInfo paymentinfo = user.getPaymentInfo();
+			AddressInfo paymentinfo = user.getAddressInfo();
 
 			paymentinfo.setStreet(streetField.getText());
 			paymentinfo.setZipCode(codeField.getText());
@@ -86,7 +86,7 @@ public class AccountingController {
 			paymentinfo.setCountry(countryField.getText());
 			paymentinfo.setAdditionalStreet(additiveField.getText());
 
-			user.setPaymentInfo(paymentinfo);
+			user.setAddressInfo(paymentinfo);
 			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
 
 			if (storageLimitField.getSelectedIndex() > 0 &&

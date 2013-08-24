@@ -1,30 +1,27 @@
 package de.sharebox.user.model;
 
 
-/**
- * @author Benjamin Barth
- */
+import com.google.common.base.Objects;
 
-
-public class PaymentInfo {
+public class AddressInfo {
 
 	private String street, additionalStreet, zipCode, city, country;
 
 	/**
 	 * Copy Konstruktor.
 	 *
-	 * @param paymentInfoToCopy Die zu kopierenden Zahlungsinformationen.
+	 * @param addressInfoToCopy Die zu kopierenden Zahlungsinformationen.
 	 */
-	public PaymentInfo(PaymentInfo paymentInfoToCopy) {
-		this.setStreet(paymentInfoToCopy.getStreet());
-		this.setAdditionalStreet(paymentInfoToCopy.getAdditionalStreet());
-		this.setZipCode(paymentInfoToCopy.getZipCode());
-		this.setCity(paymentInfoToCopy.getCity());
-		this.setCountry(paymentInfoToCopy.getCountry());
+	public AddressInfo(AddressInfo addressInfoToCopy) {
+		this.setStreet(addressInfoToCopy.getStreet());
+		this.setAdditionalStreet(addressInfoToCopy.getAdditionalStreet());
+		this.setZipCode(addressInfoToCopy.getZipCode());
+		this.setCity(addressInfoToCopy.getCity());
+		this.setCountry(addressInfoToCopy.getCountry());
 
 	}
 
-	public PaymentInfo() {
+	public AddressInfo() {
 		this.setStreet("");
 		this.setAdditionalStreet("");
 		this.setZipCode("");
@@ -112,33 +109,18 @@ public class PaymentInfo {
 		this.country = country;
 	}
 
-	/**
-	 * Überprüft, ob die Objekte den gleichen Inhalt haben
-	 *
-	 * @param otherObj
-	 */
 	@Override
 	public boolean equals(Object otherObj) {
 		boolean equal = true;
-		PaymentInfo otherPaymentInfo;
 
-		if (otherObj instanceof PaymentInfo) {
+		if (otherObj.getClass().equals(getClass())) {
+			AddressInfo otherAddressInfo = (AddressInfo) otherObj;
 
-			otherPaymentInfo = (PaymentInfo) otherObj;
-
-			if (!this.street.equals(otherPaymentInfo.getStreet())) {
-				equal = false;
-			}
-			if (!this.additionalStreet.equals(otherPaymentInfo.getAdditionalStreet())) {
-				equal = false;
-			}
-			if (!this.zipCode.equals(otherPaymentInfo.getZipCode())) {
-				equal = false;
-			}
-			if (!this.city.equals(otherPaymentInfo.getCity())) {
-				equal = false;
-			}
-			if (!this.country.equals(otherPaymentInfo.getCountry())) {
+			if (!Objects.equal(street, otherAddressInfo.getStreet()) ||
+					!Objects.equal(additionalStreet, otherAddressInfo.getAdditionalStreet()) ||
+					!Objects.equal(zipCode, otherAddressInfo.getZipCode()) ||
+					!Objects.equal(city, otherAddressInfo.getCity()) ||
+					!Objects.equal(country, otherAddressInfo.getCountry())) {
 				equal = false;
 			}
 		} else {
@@ -148,4 +130,8 @@ public class PaymentInfo {
 		return equal;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(street, additionalStreet, zipCode, city, country);
+	}
 }

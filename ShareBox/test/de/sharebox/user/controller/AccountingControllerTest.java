@@ -55,10 +55,10 @@ public class AccountingControllerTest {
 		ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeAccountingSettings(user.capture());
 
-		assertThat(user.getValue().getPaymentInfo().getStreet()).isEqualTo("TestStr");
-		assertThat(user.getValue().getPaymentInfo().getCity()).isEqualTo("Stadt");
-		assertThat(user.getValue().getPaymentInfo().getCountry()).isEqualTo("Land");
-		assertThat(user.getValue().getPaymentInfo().getZipCode()).isEqualTo("12345");
+		assertThat(user.getValue().getAddressInfo().getStreet()).isEqualTo("TestStr");
+		assertThat(user.getValue().getAddressInfo().getCity()).isEqualTo("Stadt");
+		assertThat(user.getValue().getAddressInfo().getCountry()).isEqualTo("Land");
+		assertThat(user.getValue().getAddressInfo().getZipCode()).isEqualTo("12345");
 		assertThat(user.getValue().getStorageLimit()).isEqualTo("20GB");
 
 		verify(optionPaneHelper).showMessageDialog(contains("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang durchführen."));

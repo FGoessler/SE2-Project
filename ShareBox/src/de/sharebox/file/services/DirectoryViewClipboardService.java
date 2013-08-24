@@ -19,7 +19,7 @@ import java.util.List;
 public class DirectoryViewClipboardService {
 	private final OptionPaneHelper optionPane;
 
-	private List<FEntry> clipboard = new ArrayList<FEntry>();
+	private final List<FEntry> clipboard = new ArrayList<FEntry>();
 
 	/**
 	 * Erstellt einen neuen DirectoryViewClipboardService.<br/>

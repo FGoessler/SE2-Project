@@ -2,7 +2,7 @@ package de.sharebox.api;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ public class UserAPI {
 	 */
 	@Inject
 	UserAPI() {
+		//empty constructor to avoid direct instantiation!
 	}
 
 	/**
@@ -38,12 +39,12 @@ public class UserAPI {
 		user.setFirstname("Max");
 		user.setLastname("Mustermann");
 
-		PaymentInfo paymentInfo = new PaymentInfo();
-		paymentInfo.setStreet("Mustersraße 1");
-		paymentInfo.setCity("Musterstadt");
-		paymentInfo.setCountry("Deutschland");
-		paymentInfo.setZipCode("01234");
-		user.setPaymentInfo(paymentInfo);
+		AddressInfo addressInfo = new AddressInfo();
+		addressInfo.setStreet("Mustersraße 1");
+		addressInfo.setCity("Musterstadt");
+		addressInfo.setCountry("Deutschland");
+		addressInfo.setZipCode("01234");
+		user.setAddressInfo(addressInfo);
 
 		user.setStorageLimit("10GB");
 		user.setGender("m");
@@ -54,12 +55,12 @@ public class UserAPI {
 		user2.setFirstname("Hans");
 		user2.setLastname("Kanns");
 
-		paymentInfo.setStreet("");
-		paymentInfo.setAdditionalStreet("Haus 4, Zimmer 15");
-		paymentInfo.setCity("Berlin");
-		paymentInfo.setCountry("Deutschland");
-		paymentInfo.setZipCode("14569");
-		user2.setPaymentInfo(paymentInfo);
+		addressInfo.setStreet("");
+		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
+		addressInfo.setCity("Berlin");
+		addressInfo.setCountry("Deutschland");
+		addressInfo.setZipCode("14569");
+		user2.setAddressInfo(addressInfo);
 
 		user2.setStorageLimit("20GB");
 		user2.setGender("m");
@@ -86,9 +87,9 @@ public class UserAPI {
 			}
 		}
 		if (success) {
-			APILogger.logMessage("Authentication successful");
+			APILogger.logSuccess("Authentication");
 		} else {
-			APILogger.logMessage("Authentication failed: User/Password combination not found.");
+			APILogger.logFailure("Authentication", "User/Password combination not found.");
 		}
 		return success;
 	}
@@ -103,13 +104,13 @@ public class UserAPI {
 		boolean success = false;
 		if (authenticateUser(user) && !isLoggedIn()) {
 			currentUser = new User(user);
-			APILogger.logMessage("Login successful");
+			APILogger.logSuccess("Login");
 			success = true;
 		} else {
 			if (isLoggedIn()) {
-				APILogger.logMessage("Login failed. Please Logout first.");
+				APILogger.logFailure("Login", "Please Logout first.");
 			} else {
-				APILogger.logMessage("Login failed. Username/Password not correct.");
+				APILogger.logFailure("Login", "Username/Password not correct.");
 			}
 		}
 		return success;
@@ -124,10 +125,10 @@ public class UserAPI {
 		boolean success = false;
 		if (isLoggedIn()) {
 			currentUser = null;
-			APILogger.logMessage("Logout successful.");
+			APILogger.logSuccess("Logout");
 			success = true;
 		} else {
-			APILogger.logMessage("Logout failed: No User logged in.");
+			APILogger.logFailure("Logout", "No User logged in.");
 		}
 		return success;
 	}
@@ -156,9 +157,9 @@ public class UserAPI {
 			}
 		}
 		if (success) {
-			APILogger.logMessage("Registration successful");
+			APILogger.logSuccess("Registration");
 		} else {
-			APILogger.logMessage("Registration failed.");
+			APILogger.logFailure("Registration");
 		}
 		return success;
 	}
@@ -186,9 +187,9 @@ public class UserAPI {
 			}
 		}
 		if (success) {
-			APILogger.logMessage("Profile updated");
+			APILogger.logSuccess("Profile updated");
 		} else {
-			APILogger.logMessage("Profile update failed");
+			APILogger.logFailure("Profile update");
 		}
 		return success;
 	}
@@ -203,11 +204,11 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null &&
-				!isNullOrEmpty(user.getPaymentInfo().getStreet()) && !isNullOrEmpty(user.getPaymentInfo().getCity()) &&
-				!isNullOrEmpty(user.getPaymentInfo().getZipCode()) && !isNullOrEmpty(user.getPaymentInfo().getCountry())) {
+				!isNullOrEmpty(user.getAddressInfo().getStreet()) && !isNullOrEmpty(user.getAddressInfo().getCity()) &&
+				!isNullOrEmpty(user.getAddressInfo().getZipCode()) && !isNullOrEmpty(user.getAddressInfo().getCountry())) {
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					aUser.setPaymentInfo(user.getPaymentInfo());
+					aUser.setAddressInfo(user.getAddressInfo());
 					aUser.setStorageLimit(user.getStorageLimit());
 					success = true;
 					currentUser = new User(aUser);
@@ -215,9 +216,9 @@ public class UserAPI {
 			}
 		}
 		if (success) {
-			APILogger.logMessage("Accounting settings changed");
+			APILogger.logSuccess("Accounting settings changed");
 		} else {
-			APILogger.logMessage("Accounting settings change failed");
+			APILogger.logFailure("Accounting settings change");
 		}
 		return success;
 	}
@@ -245,9 +246,9 @@ public class UserAPI {
 			}
 		}
 		if (success) {
-			APILogger.logMessage("Credentials changed");
+			APILogger.logSuccess("Credentials changed");
 		} else {
-			APILogger.logMessage("Credentials change failed");
+			APILogger.logFailure("Credentials change");
 		}
 		return success;
 	}
@@ -262,19 +263,19 @@ public class UserAPI {
 	public boolean inviteUser(User invitingUser, User invitedUser) {
 		Boolean success = true;
 		//search through existing users to test if user already exists
-		if (currentUser != null && !isNullOrEmpty(invitedUser.getEmail())) {
+		if (currentUser == null || isNullOrEmpty(invitedUser.getEmail())) {
+			success = false;
+		} else {
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(invitedUser.getEmail())) {
 					success = false;
 				}
 			}
-		} else {
-			success = false;
 		}
 		if (success) {
 			APILogger.logMessage("User '" + invitedUser.getEmail() + "' invited by '" + invitingUser.getEmail() + "'.");
 		} else {
-			APILogger.logMessage("Invitation failed: User '" + invitedUser.getEmail() + "' already exists");
+			APILogger.logFailure("Invitation", "User '" + invitedUser.getEmail() + "' already exists.");
 		}
 		return success;
 	}
