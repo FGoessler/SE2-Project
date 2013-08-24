@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.user.enums.Gender;
 import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
@@ -20,7 +21,7 @@ public class RegisterController {
 	public JPasswordField passwordField2;
 	public JTextField lastnameField;
 	public JTextField firstnameField;
-	public JTextField genderField;
+	public JComboBox<Gender> genderField;
 	public JTextField streetField;
 	public JTextField additiveField;
 	public JTextField codeField;
@@ -65,15 +66,15 @@ public class RegisterController {
 
 			user.setLastname(lastnameField.getText());
 			user.setFirstname(firstnameField.getText());
-			user.setGender(genderField.getText());
+			user.setGender((Gender) genderField.getSelectedItem());
 
-			AddressInfo paymentinfo = user.getAddressInfo();
-			paymentinfo.setStreet(streetField.getText());
-			paymentinfo.setAdditionalStreet(additiveField.getText());
-			paymentinfo.setZipCode(codeField.getText());
-			paymentinfo.setCity(locationField.getText());
-			paymentinfo.setCountry(countryField.getText());
-			user.setAddressInfo(paymentinfo);
+			AddressInfo addressInfo = user.getAddressInfo();
+			addressInfo.setStreet(streetField.getText());
+			addressInfo.setAdditionalStreet(additiveField.getText());
+			addressInfo.setZipCode(codeField.getText());
+			addressInfo.setCity(locationField.getText());
+			addressInfo.setCountry(countryField.getText());
+			user.setAddressInfo(addressInfo);
 
 			if (new String(passwordField2.getPassword()).equals(new String(passwordField1.getPassword())) &&
 					userAPI.registerUser(user)) {

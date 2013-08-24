@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
@@ -18,7 +19,7 @@ public class AccountingController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JComboBox storageLimitField;
+	public JComboBox<StorageLimit> storageLimitField;
 	public JTextField streetField;
 	public JTextField additiveField;
 	public JTextField codeField;
@@ -87,7 +88,7 @@ public class AccountingController {
 			paymentinfo.setAdditionalStreet(additiveField.getText());
 
 			user.setAddressInfo(paymentinfo);
-			user.setStorageLimit(storageLimitField.getSelectedItem().toString());
+			user.setStorageLimit((StorageLimit) storageLimitField.getSelectedItem());
 
 			if (storageLimitField.getSelectedIndex() > 0 &&
 					(isNullOrEmpty(paymentinfo.getStreet()) || isNullOrEmpty(paymentinfo.getCity()) ||

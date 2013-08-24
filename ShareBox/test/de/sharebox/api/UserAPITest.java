@@ -6,6 +6,8 @@ package de.sharebox.api;
  * @author Kay Thorsten Meißner
  */
 
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 import org.junit.Before;
@@ -43,8 +45,8 @@ public class UserAPITest {
 		addressInfo.setZipCode("01234");
 		user.setAddressInfo(addressInfo);
 
-		user.setStorageLimit("Zehn GB");
-		user.setGender("m");
+		user.setStorageLimit(StorageLimit.GB_10);
+		user.setGender(Gender.Male);
 
 		user2 = new User();
 		user2.setEmail("admin");
@@ -59,8 +61,8 @@ public class UserAPITest {
 		addressInfo.setZipCode("14569");
 		user2.setAddressInfo(addressInfo);
 
-		user2.setStorageLimit("Zwanzig GB");
-		user2.setGender("m");
+		user2.setStorageLimit(StorageLimit.GB_20);
+		user2.setGender(Gender.Male);
 	}
 
 	/**

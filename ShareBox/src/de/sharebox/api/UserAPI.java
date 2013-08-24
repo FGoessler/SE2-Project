@@ -2,6 +2,8 @@ package de.sharebox.api;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
@@ -46,8 +48,8 @@ public class UserAPI {
 		addressInfo.setZipCode("01234");
 		user.setAddressInfo(addressInfo);
 
-		user.setStorageLimit("10GB");
-		user.setGender("m");
+		user.setStorageLimit(StorageLimit.GB_10);
+		user.setGender(Gender.Male);
 
 		User user2 = new User();
 		user2.setEmail("admin");
@@ -62,8 +64,8 @@ public class UserAPI {
 		addressInfo.setZipCode("14569");
 		user2.setAddressInfo(addressInfo);
 
-		user2.setStorageLimit("20GB");
-		user2.setGender("m");
+		user2.setStorageLimit(StorageLimit.GB_20);
+		user2.setGender(Gender.Male);
 
 		if (registerUser(user) && registerUser(user2)) {
 			APILogger.logMessage("Registered Sampledata");
@@ -175,7 +177,7 @@ public class UserAPI {
 		Boolean success = false;
 		//search through existing users
 		if (currentUser != null &&
-				!isNullOrEmpty(user.getFirstname()) && !isNullOrEmpty(user.getGender()) && !isNullOrEmpty(user.getLastname())) {
+				!isNullOrEmpty(user.getFirstname()) && user.getGender() != null && !isNullOrEmpty(user.getLastname())) {
 			for (User aUser : userList) {
 				if (aUser.getEmail().equals(currentUser.getEmail())) {
 					aUser.setFirstname(user.getFirstname());

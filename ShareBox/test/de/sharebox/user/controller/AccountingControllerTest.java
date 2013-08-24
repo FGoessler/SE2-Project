@@ -2,6 +2,7 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class AccountingControllerTest {
 		accountingController.codeField.setText("12345");
 		accountingController.countryField.setText("Land");
 		accountingController.locationField.setText("Stadt");
-		accountingController.storageLimitField.setSelectedIndex(2);
+		accountingController.storageLimitField.setSelectedItem(StorageLimit.GB_20);
 
 		accountingController.save.actionPerformed(mock(ActionEvent.class));
 
@@ -59,7 +60,7 @@ public class AccountingControllerTest {
 		assertThat(user.getValue().getAddressInfo().getCity()).isEqualTo("Stadt");
 		assertThat(user.getValue().getAddressInfo().getCountry()).isEqualTo("Land");
 		assertThat(user.getValue().getAddressInfo().getZipCode()).isEqualTo("12345");
-		assertThat(user.getValue().getStorageLimit()).isEqualTo("20GB");
+		assertThat(user.getValue().getStorageLimit()).isEqualTo(StorageLimit.GB_20);
 
 		verify(optionPaneHelper).showMessageDialog(contains("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang durchführen."));
 		verify(optionPaneHelper).showMessageDialog("Die Änderung war erfolgreich");
@@ -68,7 +69,7 @@ public class AccountingControllerTest {
 	@Test
 	public void testValidationOfAddressDataWhenIncreasingStorageLimit() {
 		accountingController.locationField.setText("Stadt");
-		accountingController.storageLimitField.setSelectedIndex(2);
+		accountingController.storageLimitField.setSelectedItem(StorageLimit.GB_20);
 
 		accountingController.save.actionPerformed(mock(ActionEvent.class));
 

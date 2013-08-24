@@ -1,5 +1,8 @@
 package de.sharebox.user.model;
 
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.enums.StorageLimit;
+
 /**
  * @author Benjamin Barth
  * @author Kay Thorsten Meißner
@@ -7,7 +10,9 @@ package de.sharebox.user.model;
 
 public class User {
 
-	private String email, password, firstname, lastname, storageLimit, gender;
+	private String email, password, firstname, lastname;
+	private Gender gender;
+	private StorageLimit storageLimit;
 	private AddressInfo addressInfo;
 
 	/**
@@ -72,14 +77,14 @@ public class User {
 	/**
 	 * @return Die Speicherkapazität des Users.
 	 */
-	public String getStorageLimit() {
+	public StorageLimit getStorageLimit() {
 		return storageLimit;
 	}
 
 	/**
 	 * @return Das Geschlecht des Users.
 	 */
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
@@ -134,16 +139,16 @@ public class User {
 	 *
 	 * @param storageLimit
 	 */
-	public void setStorageLimit(String storageLimit) {        //TODO: create a enum or store as numbers
+	public void setStorageLimit(StorageLimit storageLimit) {        //TODO: create a enum or store as numbers
 		this.storageLimit = storageLimit;
 	}
 
 	/**
-	 * Ändert das Geschlecht des Users.
+	 * Ändert das Geschlecht des Users
 	 *
 	 * @param gender
 	 */
-	public void setGender(String gender) {    //TODO: create a enum for gender
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 }

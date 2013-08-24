@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.user.enums.Gender;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class EditProfileController {
 	private JFrame frame;
 	public JTextField lastnameField;
 	public JTextField firstnameField;
-	public JTextField genderField;
+	public JComboBox<Gender> genderField;
 
 	/**
 	 * Erstellt einen neuen EditProfileController.<br/>
@@ -45,7 +46,7 @@ public class EditProfileController {
 
 		lastnameField.setText(user.getLastname());
 		firstnameField.setText(user.getFirstname());
-		genderField.setText(user.getGender());
+		genderField.setSelectedItem(user.getGender());
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class EditProfileController {
 			user.setFirstname(firstnameField.getText());
 			user.setLastname(lastnameField.getText());
 			user.setLastname(lastnameField.getText());
-			user.setGender(genderField.getText());
+			user.setGender((Gender) genderField.getSelectedItem());
 
 			if (userAPI.changeProfile(user)) {
 				frame.setVisible(false);

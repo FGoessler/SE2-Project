@@ -1,5 +1,7 @@
 package de.sharebox.user.model;
 
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.enums.StorageLimit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +19,8 @@ public class UserTest {
 		user.setPassword("testPassword");
 		user.setFirstname("Hans");
 		user.setLastname("Peter");
-		user.setStorageLimit("5GB");
-		user.setGender("w");
+		user.setStorageLimit(StorageLimit.GB_5);
+		user.setGender(Gender.Female);
 		addressInfo = new AddressInfo();
 		user.setAddressInfo(addressInfo);
 	}
@@ -29,8 +31,8 @@ public class UserTest {
 		assertThat(user.getPassword()).isEqualTo("testPassword");
 		assertThat(user.getFirstname()).isEqualTo("Hans");
 		assertThat(user.getLastname()).isEqualTo("Peter");
-		assertThat(user.getStorageLimit()).isEqualTo("5GB");
-		assertThat(user.getGender()).isEqualTo("w");
+		assertThat(user.getStorageLimit()).isEqualTo(StorageLimit.GB_5);
+		assertThat(user.getGender()).isEqualTo(Gender.Female);
 		assertThat(user.getAddressInfo()).isEqualTo(addressInfo);
 	}
 
@@ -44,8 +46,8 @@ public class UserTest {
 		assertThat(copiedUser.getPassword()).isEqualTo("testPassword");
 		assertThat(copiedUser.getFirstname()).isEqualTo("Hans");
 		assertThat(copiedUser.getLastname()).isEqualTo("Peter");
-		assertThat(copiedUser.getStorageLimit()).isEqualTo("5GB");
-		assertThat(copiedUser.getGender()).isEqualTo("w");
+		assertThat(copiedUser.getStorageLimit()).isEqualTo(StorageLimit.GB_5);
+		assertThat(copiedUser.getGender()).isEqualTo(Gender.Female);
 		assertThat(copiedUser.getAddressInfo()).isEqualTo(addressInfo)
 				.isNotSameAs(addressInfo);
 	}

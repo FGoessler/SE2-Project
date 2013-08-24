@@ -46,9 +46,9 @@
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
         </label>
 
-        <textfield id="genderField" columns="20" text="">
+        <combobox id="genderField" initclass="de.sharebox.user.model.GenderComboBoxModel">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
-        </textfield>
+        </combobox>
 
         <label text="Speicherkapazität">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
@@ -57,7 +57,6 @@
         <label text="5 GB - Sie können später mehr erwerben.">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
         </label>
-
 
         <label text="Rechnungsadresse:">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="7"/>
