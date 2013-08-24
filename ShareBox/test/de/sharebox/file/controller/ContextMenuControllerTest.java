@@ -33,7 +33,6 @@ public class ContextMenuControllerTest {
 	public static final String FILENAME = "A Test File";
 	private Directory parentDirectory;
 	private TreePath mockedTreePath1;
-	private TreePath mockedTreePath2;
 
 	@Mock
 	private UserAPI mockedAPI;
@@ -68,9 +67,7 @@ public class ContextMenuControllerTest {
 		FEntry child1 = parentDirectory.createNewFile(FILENAME);
 		FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
 		mockedTreePath1 = new TreePath(nodes1);
-		FEntry child2 = parentDirectory.createNewFile("An other Test File");
-		FEntryTreeNode[] nodes2 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child2)};
-		mockedTreePath2 = new TreePath(nodes2);
+		parentDirectory.createNewFile("An other Test File");
 	}
 
 	@Test

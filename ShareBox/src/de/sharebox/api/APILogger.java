@@ -64,4 +64,20 @@ public final class APILogger {
 	public static void logFailure(String action, String reason) {
 		logMessage(action + " failed. Reason: " + reason);
 	}
+
+	/**
+	 * Gibt eine Log Message aus, die bassierend auf dem success parameter besagt ob die übergebene Aktion
+	 * fehlgeschlagen ist oder erfolgreich war.
+	 *
+	 * @param action  Ein Text der die Aktion benennt.
+	 * @param success True wenn die Aktion als erfolgreich geloggt werden soll, Fales wenn sie als fehlgeschlagen
+	 *                geloggt werden soll.
+	 */
+	public static void logResult(String action, Boolean success) {
+		if (success) {
+			APILogger.logSuccess(action);
+		} else {
+			APILogger.logFailure(action);
+		}
+	}
 }
