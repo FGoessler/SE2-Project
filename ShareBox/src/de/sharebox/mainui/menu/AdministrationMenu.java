@@ -22,7 +22,8 @@ public class AdministrationMenu {
 	 * @param mainViewController Der MainViewController dessen Methoden durch die Aktionen im Menü aufgerufen werden.
 	 */
 	@Inject
-	AdministrationMenu(final @Assisted JMenuBar menuBar, final @Assisted MainViewController mainViewController) {
+	AdministrationMenu(final @Assisted JMenuBar menuBar,
+					   final @Assisted MainViewController mainViewController) {
 		this.mainViewController = mainViewController;
 
 		final JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/administrationMenu");

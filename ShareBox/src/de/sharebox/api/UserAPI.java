@@ -18,7 +18,7 @@ public class UserAPI {
 	/**
 	 * simuliert Datenbank;
 	 */
-	protected List<User> userList = new ArrayList<User>();
+	private final List<User> userList = new ArrayList<User>();
 
 	private User currentUser;
 

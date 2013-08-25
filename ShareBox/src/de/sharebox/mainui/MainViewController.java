@@ -37,8 +37,8 @@ public class MainViewController {
 	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
 	 * Wird über die SwingEngine gesetzt.
 	 */
-	public JTree tree;
-	public JSplitPane splitPane;
+	protected JTree tree;
+	protected JSplitPane splitPane;
 
 	/**
 	 * Die zentrale Menüleiste.

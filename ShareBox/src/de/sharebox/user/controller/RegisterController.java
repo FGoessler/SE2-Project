@@ -16,17 +16,17 @@ public class RegisterController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JTextField mailField;
-	public JPasswordField passwordField1;
-	public JPasswordField passwordField2;
-	public JTextField lastnameField;
-	public JTextField firstnameField;
-	public JComboBox<Gender> genderField;
-	public JTextField streetField;
-	public JTextField additiveField;
-	public JTextField codeField;
-	public JTextField locationField;
-	public JTextField countryField;
+	protected JTextField mailField;
+	protected JPasswordField passwordField1;
+	protected JPasswordField passwordField2;
+	protected JTextField lastnameField;
+	protected JTextField firstnameField;
+	protected JComboBox<Gender> genderField;
+	protected JTextField streetField;
+	protected JTextField additiveField;
+	protected JTextField codeField;
+	protected JTextField locationField;
+	protected JTextField countryField;
 
 	/**
 	 * Erstellt einen neuen RegisterController.<br/>

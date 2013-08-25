@@ -40,12 +40,12 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Liefert eine Liste aller Unterdateien und -verzeichnisse.
+	 * Liefert eine immutable List aller Unterdateien und -verzeichnisse.
 	 *
-	 * @return Eine Liste aller Unterdateien und -verzeichnisse.
+	 * @return Eine immutable List aller Unterdateien und -verzeichnisse.
 	 */
-	public List<FEntry> getFEntries() {
-		return fEntries;
+	public ImmutableList<FEntry> getFEntries() {
+		return ImmutableList.copyOf(fEntries);
 	}
 
 	/**

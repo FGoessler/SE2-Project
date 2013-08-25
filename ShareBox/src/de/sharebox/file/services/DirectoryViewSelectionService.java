@@ -65,7 +65,7 @@ public class DirectoryViewSelectionService {
 	 *
 	 * @return Die im JTree ausgewählten FEntries.
 	 */
-	public List<FEntry> getSelectedFEntries() {
+	public List<FEntry> getSelectedFEntries() {        //TODO: evtl. immutable List?
 		final ArrayList<FEntry> selectedFEntries = new ArrayList<FEntry>();
 
 		if (treeView.getSelectionCount() > 0) {
@@ -82,7 +82,7 @@ public class DirectoryViewSelectionService {
 	 *
 	 * @return Die Elternverzeichnisse der im JTree ausgewählten FEntries.
 	 */
-	public List<Optional<Directory>> getParentsOfSelectedFEntries() {
+	public List<Optional<Directory>> getParentsOfSelectedFEntries() {    //TODO: evtl. immutable List?
 		final ArrayList<Optional<Directory>> selectedFEntriesParents = new ArrayList<Optional<Directory>>();
 
 		if (treeView.getSelectionCount() > 0) {

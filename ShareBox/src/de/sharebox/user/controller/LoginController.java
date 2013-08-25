@@ -18,8 +18,8 @@ public class LoginController {
 
 	private JFrame frame;
 
-	public JTextField mailField;
-	public JPasswordField passwordField;
+	protected JTextField mailField;
+	protected JPasswordField passwordField;
 
 	/**
 	 * Erstellt einen neuen LoginController.<br/>

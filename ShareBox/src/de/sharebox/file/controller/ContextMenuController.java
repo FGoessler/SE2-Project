@@ -132,7 +132,8 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Neue Datei erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Neue Datei erstellen"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action createNewFile = new AbstractAction() {
 		@Override
@@ -144,7 +145,8 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Neues Verzeichnis erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Neues Verzeichnis erstellen"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action createNewDirectory = new AbstractAction() {
 		@Override
@@ -156,7 +158,8 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Löschen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Löschen"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action deleteFEntry = new AbstractAction() {
 		@Override
@@ -227,7 +230,8 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Umbennen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Umbennen"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action renameFEntry = new AbstractAction() {
 		@Override
@@ -247,7 +251,8 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Kopieren"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Kopieren"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action copyFEntry = new AbstractAction() {
 		@Override
@@ -268,7 +273,8 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Einfügen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Einfügen"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action pasteFEntry = new AbstractAction() {
 		@Override
@@ -287,7 +293,8 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Teilen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den "Teilen"-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action shareFEntry = new AbstractAction() {
 		@Override

@@ -13,8 +13,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.awt.event.ActionEvent;
-
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -51,7 +49,7 @@ public class AccountingControllerTest {
 		accountingController.locationField.setText("Stadt");
 		accountingController.storageLimitField.setSelectedItem(StorageLimit.GB_20);
 
-		accountingController.save.actionPerformed(mock(ActionEvent.class));
+		accountingController.save();
 
 		final ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeAccountingSettings(user.capture());
@@ -71,7 +69,7 @@ public class AccountingControllerTest {
 		accountingController.locationField.setText("Stadt");
 		accountingController.storageLimitField.setSelectedItem(StorageLimit.GB_20);
 
-		accountingController.save.actionPerformed(mock(ActionEvent.class));
+		accountingController.save();
 
 		verify(mockedAPI, never()).changeAccountingSettings(any(User.class));
 		verify(optionPaneHelper).showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre Speicherkapazität erhöhen können!");
@@ -80,7 +78,7 @@ public class AccountingControllerTest {
 	@Test
 	public void testReactionOnAPIReportsErrorOnChange() {
 		when(mockedAPI.changeAccountingSettings(Matchers.any(User.class))).thenReturn(false);
-		accountingController.save.actionPerformed(mock(ActionEvent.class));
+		accountingController.save();
 
 		verify(mockedAPI).changeAccountingSettings(Matchers.any(User.class));
 		verify(optionPaneHelper).showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
@@ -91,7 +89,7 @@ public class AccountingControllerTest {
 	 */
 	@Test
 	public void testStop() {
-		accountingController.stop.actionPerformed(mock(ActionEvent.class));
+		accountingController.stop();
 		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
 }

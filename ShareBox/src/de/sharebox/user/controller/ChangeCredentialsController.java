@@ -14,10 +14,10 @@ public class ChangeCredentialsController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JTextField eMailField;
-	public JPasswordField oldPasswordField;
-	public JPasswordField newPasswordField;
-	public JPasswordField newPasswordField1;
+	protected JTextField eMailField;
+	protected JPasswordField oldPasswordField;
+	protected JPasswordField newPasswordField;
+	protected JPasswordField newPasswordField1;
 
 	/**
 	 * Erstellt einen neuen ChangeCredentialsController.<br/>

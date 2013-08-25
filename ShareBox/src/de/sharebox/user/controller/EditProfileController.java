@@ -15,9 +15,9 @@ public class EditProfileController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JTextField lastnameField;
-	public JTextField firstnameField;
-	public JComboBox<Gender> genderField;
+	protected JTextField lastnameField;
+	protected JTextField firstnameField;
+	protected JComboBox<Gender> genderField;
 
 	/**
 	 * Erstellt einen neuen EditProfileController.<br/>

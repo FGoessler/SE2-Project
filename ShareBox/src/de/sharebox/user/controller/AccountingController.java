@@ -9,7 +9,6 @@ import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -18,14 +17,15 @@ public class AccountingController {
 	private final OptionPaneHelper optionPane;
 	private final UserAPI userAPI;
 
+	private int oldStorageLimitIndex;
+
 	private JFrame frame;
-	public JComboBox<StorageLimit> storageLimitField;
-	public JTextField streetField;
-	public JTextField additiveField;
-	public JTextField codeField;
-	public JTextField locationField;
-	public JTextField countryField;
-	public int oldStorageLimitIndex;
+	protected JComboBox<StorageLimit> storageLimitField;
+	protected JTextField streetField;
+	protected JTextField additiveField;
+	protected JTextField codeField;
+	protected JTextField locationField;
+	protected JTextField countryField;
 
 	/**
 	 * Erstellt einen neuen AccountingController. <br/>
@@ -73,60 +73,50 @@ public class AccountingController {
 	 * geschrieben werden muss oder nicht. Wenn nichts drin stehen muss kann auch beim Speichern nichts drin stehen
 	 * Wenn zuvor was drin Stand, dann muss auch wieder eine Information eingetragen werden. Beim speichern des
 	 * Speicherplatzes wird überprüft, ob alle Zahlungsinformationen eingetragen sind, anschließend wird man an
-	 * das externe Bezahlsystem weitergeleitet.
+	 * das externe Bezahlsystem weitergeleitet.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action save = new AbstractAction() {
-		public void actionPerformed(final ActionEvent event) {
-			final User user = new User();
-			final AddressInfo addressInfo = user.getAddressInfo();
+	public void save() {
+		final User user = new User();
+		final AddressInfo addressInfo = user.getAddressInfo();
 
-			addressInfo.setStreet(streetField.getText());
-			addressInfo.setZipCode(codeField.getText());
-			addressInfo.setCity(locationField.getText());
-			addressInfo.setCountry(countryField.getText());
-			addressInfo.setAdditionalStreet(additiveField.getText());
+		addressInfo.setStreet(streetField.getText());
+		addressInfo.setZipCode(codeField.getText());
+		addressInfo.setCity(locationField.getText());
+		addressInfo.setCountry(countryField.getText());
+		addressInfo.setAdditionalStreet(additiveField.getText());
 
-			user.setAddressInfo(addressInfo);
-			user.setStorageLimit((StorageLimit) storageLimitField.getSelectedItem());
+		user.setAddressInfo(addressInfo);
+		user.setStorageLimit((StorageLimit) storageLimitField.getSelectedItem());
 
-			if (storageLimitField.getSelectedIndex() > 0 &&
-					(isNullOrEmpty(addressInfo.getStreet()) || isNullOrEmpty(addressInfo.getCity()) ||
-							isNullOrEmpty(addressInfo.getZipCode()) || isNullOrEmpty(addressInfo.getCountry()))) {
-				optionPane.showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre " +
-						"Speicherkapazität erhöhen können!");
+		if (!storageLimitField.getSelectedItem().equals(StorageLimit.GB_5) &&
+				(isNullOrEmpty(addressInfo.getStreet()) || isNullOrEmpty(addressInfo.getCity()) ||
+						isNullOrEmpty(addressInfo.getZipCode()) || isNullOrEmpty(addressInfo.getCountry()))) {
+			optionPane.showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre " +
+					"Speicherkapazität erhöhen können!");
+		} else {
+			if (oldStorageLimitIndex < storageLimitField.getSelectedIndex()) {
+				optionPane.showMessageDialog("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang " +
+						"durchführen. Dies ist in diesem Prototyp nicht umgesetzt. Eine entsprechende Integration eines " +
+						"Systems eines Drittanbieters käme an dieser Stelle.");
+			}
+
+			if (userAPI.changeAccountingSettings(user)) {
+				frame.setVisible(false);
+				optionPane.showMessageDialog("Die Änderung war erfolgreich");
 			} else {
-				if (oldStorageLimitIndex < storageLimitField.getSelectedIndex()) {
-					optionPane.showMessageDialog("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang " +
-							"durchführen. Dies ist in diesem Prototyp nicht umgesetzt. Eine entsprechende Integration eines " +
-							"Systems eines Drittanbieters käme an dieser Stelle.");
-				}
-
-				if (userAPI.changeAccountingSettings(user)) {
-					frame.setVisible(false);
-					optionPane.showMessageDialog("Die Änderung war erfolgreich");
-				} else {
-					optionPane.showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
-				}
+				optionPane.showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
 			}
 		}
-	};
+	}
+
 
 	/**
-	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action stop = new AbstractAction() {
-		public void actionPerformed(final ActionEvent event) {
-			frame.setVisible(false);
-			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
-		}
-	};
-
-	/**
-	 * Prüfen was in der ComboBox ausgewählt wurde
-	 */
-	public Action selectBoxAction = new AbstractAction() {
-		public void actionPerformed(final ActionEvent event) {
-			System.out.println(((JComboBox) event.getSource()).getSelectedItem().toString());
-		}
-	};
+	public void stop() {
+		frame.setVisible(false);
+		optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
+	}
 }

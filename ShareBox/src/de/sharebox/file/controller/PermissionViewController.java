@@ -29,9 +29,9 @@ public class PermissionViewController {
 
 	private Optional<FEntry> currentFEntry = Optional.absent();
 
-	public JTable permissionTable;
-	public JTextArea messageTextArea;
-	public JPanel buttonPanel;
+	protected JTable permissionTable;
+	protected JTextArea messageTextArea;
+	protected JPanel buttonPanel;
 
 	/**
 	 * Erstellt einen neuen PermissionViewController.<br/>
