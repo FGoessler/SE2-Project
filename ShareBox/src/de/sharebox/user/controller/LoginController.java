@@ -40,8 +40,6 @@ public class LoginController {
 		this.mainViewControllerFactory = mainViewControllerFactory;
 		this.optionPane = optionPaneHelper;
 		this.registerController = registerController;
-
-		userAPI.createSampleContent();
 	}
 
 	/**

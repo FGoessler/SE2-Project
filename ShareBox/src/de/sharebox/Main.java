@@ -2,6 +2,8 @@ package de.sharebox;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import de.sharebox.api.FileAPI;
+import de.sharebox.api.UserAPI;
 import de.sharebox.user.controller.LoginController;
 
 /**
@@ -23,6 +25,11 @@ public final class Main {
 	 * @param args Programargumente - von uns nicht genutzt.
 	 */
 	public static void main(final String[] args) {
+		//create sample content
+		final UserAPI userAPI = injector.getInstance(UserAPI.class);
+		userAPI.createSampleContent();
+		injector.getInstance(FileAPI.class).createSampleContent(userAPI);
+
 		injector.getInstance(LoginController.class).show();
 	}
 }

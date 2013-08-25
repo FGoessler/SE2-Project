@@ -10,6 +10,7 @@ import de.sharebox.user.enums.StorageLimit;
 
 public class User {
 
+	private Integer rootDirectoryIdentifier;
 	private String email, password, firstname, lastname;
 	private Gender gender;
 	private StorageLimit storageLimit;
@@ -32,6 +33,8 @@ public class User {
 		this.setPassword(userToCopy.getPassword());
 		this.setFirstname(userToCopy.getFirstname());
 		this.setLastname(userToCopy.getLastname());
+
+		this.setRootDirectoryIdentifier(userToCopy.getRootDirectoryIdentifier());
 
 		this.setAddressInfo(new AddressInfo(userToCopy.getAddressInfo()));
 
@@ -88,6 +91,9 @@ public class User {
 		return gender;
 	}
 
+	public Integer getRootDirectoryIdentifier() {
+		return rootDirectoryIdentifier;
+	}
 
 	/**
 	 * Ändert die E-Mailadresse des Objekts.
@@ -150,5 +156,9 @@ public class User {
 	 */
 	public void setGender(final Gender gender) {
 		this.gender = gender;
+	}
+
+	public void setRootDirectoryIdentifier(Integer rootDirectoryIdentifier) {
+		this.rootDirectoryIdentifier = rootDirectoryIdentifier;
 	}
 }

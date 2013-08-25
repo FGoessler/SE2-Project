@@ -3,6 +3,7 @@ package de.sharebox.api;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import de.sharebox.file.model.Directory;
 import de.sharebox.user.enums.Gender;
 import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.AddressInfo;
@@ -15,6 +16,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Singleton
 public class UserAPI {
+	private final FileAPI fileAPI;
+
 	/**
 	 * simuliert Datenbank;
 	 */
@@ -27,8 +30,8 @@ public class UserAPI {
 	 * Instanzen dieser Klasse sollte nur per Dependecy Injection durch Guice erstellt werden.
 	 */
 	@Inject
-	UserAPI() {
-		//empty package constructor to avoid direct instantiation!
+	UserAPI(FileAPI fileAPI) {
+		this.fileAPI = fileAPI;
 	}
 
 	/**
@@ -36,27 +39,29 @@ public class UserAPI {
 	 */
 	public final void createSampleContent() {
 
-		final User user = new User();
-		user.setEmail("Max@Mustermann.de");
-		user.setPassword("maxmuster");
-		user.setFirstname("Max");
-		user.setLastname("Mustermann");
+		final User user1 = new User();
+		user1.setEmail("Max@Mustermann.de");
+		user1.setPassword("maxmuster");
+		user1.setFirstname("Max");
+		user1.setLastname("Mustermann");
+		user1.setRootDirectoryIdentifier(0);
 
 		final AddressInfo addressInfo = new AddressInfo();
 		addressInfo.setStreet("Mustersraße 1");
 		addressInfo.setCity("Musterstadt");
 		addressInfo.setCountry("Deutschland");
 		addressInfo.setZipCode("01234");
-		user.setAddressInfo(addressInfo);
+		user1.setAddressInfo(addressInfo);
 
-		user.setStorageLimit(StorageLimit.GB_10);
-		user.setGender(Gender.Male);
+		user1.setStorageLimit(StorageLimit.GB_10);
+		user1.setGender(Gender.Male);
 
 		final User user2 = new User();
 		user2.setEmail("admin");
 		user2.setPassword("root");
 		user2.setFirstname("Hans");
 		user2.setLastname("Kanns");
+		user2.setRootDirectoryIdentifier(2);
 
 		addressInfo.setStreet("");
 		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
@@ -68,7 +73,10 @@ public class UserAPI {
 		user2.setStorageLimit(StorageLimit.GB_20);
 		user2.setGender(Gender.Male);
 
-		APILogger.logResult("Registered Sampledata", registerUser(user) && registerUser(user2));
+		userList.add(user1);
+		userList.add(user2);
+
+		APILogger.logMessage("Registered Sampledata");
 	}
 
 	/**
@@ -148,6 +156,11 @@ public class UserAPI {
 		if (!isNullOrEmpty(user.getEmail())
 				&& !isNullOrEmpty(user.getPassword())
 				&& !getUserWithMail(user.getEmail()).isPresent()) {
+
+			//create new root directory for user
+			final Directory rootDir = new Directory(this, "Sharebox", user);
+			fileAPI.createNewDirectory(rootDir);
+			user.setRootDirectoryIdentifier(rootDir.getIdentifier());
 
 			userList.add(new User(user));
 			success = true;
@@ -284,7 +297,7 @@ public class UserAPI {
 	 * @return zur Zeit eingeloggter User
 	 */
 	public User getCurrentUser() {
-		User user = new User();
+		User user = null;
 
 		if (isLoggedIn()) {
 			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());

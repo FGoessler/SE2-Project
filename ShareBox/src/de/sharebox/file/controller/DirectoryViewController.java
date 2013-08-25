@@ -3,8 +3,8 @@ package de.sharebox.file.controller;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
+import de.sharebox.api.FileAPI;
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.FileManager;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 
@@ -21,8 +21,6 @@ import java.awt.event.MouseEvent;
 @Singleton
 public class DirectoryViewController {
 	private final ContextMenuController contextMenuController;
-	private final UserAPI userAPI;
-	private final FileManager fileManager;
 
 	/**
 	 * Der JTree zur Darstellung des Sharebox Verzeichnisses des Nutzers.
@@ -41,23 +39,23 @@ public class DirectoryViewController {
 	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü
 	 *                                      verantwortlich ist.
 	 * @param userAPI                       TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
-	 * @param fileManager                   TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
+	 * @param fileAPI                       TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
 	 */
 	@Inject
 	DirectoryViewController(final @Assisted JTree tree,
 							final DirectoryViewSelectionService directoryViewSelectionService,
 							final ContextMenuController contextMenuController,
 							final UserAPI userAPI,
-							final FileManager fileManager) {
+							final FileAPI fileAPI) {
 
 		this.contextMenuController = contextMenuController;
-		this.userAPI = userAPI;
-		this.fileManager = fileManager;
+
+		final Directory rootDirectory = (Directory) fileAPI.getFEntryWithId(userAPI.getCurrentUser().getRootDirectoryIdentifier());
 
 		this.treeView = tree;
 		final DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Root"), true);
 		this.treeView.setModel(treeModel);
-		treeModel.setRoot(new FEntryTreeNode(treeModel, createMockDirectoryTree()));
+		treeModel.setRoot(new FEntryTreeNode(treeModel, rootDirectory));
 
 		this.treeView.addMouseListener(contextMenuMA);
 
@@ -80,29 +78,4 @@ public class DirectoryViewController {
 			}
 		}
 	};
-
-
-	/**
-	 * Use this method to set up some mock data for the tree view.
-	 *
-	 * @deprecated Is deprecated cause it shouldn't be used in production code!
-	 */
-	@Deprecated
-	private Directory createMockDirectoryTree() {
-		final Directory root = new Directory(userAPI, "The main dir", userAPI.getCurrentUser());
-		// Registriert root directory im FileManager - weitere FEntries werden automatisch durch Reaktion auf Notifications registriert.
-		// Dieser Schritt sollte später natürlich nicht hier ausgeführt werden sondern bevor das Root Directory eines Users an diesen
-		// Controller übergeben wird. Damit fallen dann auch die Abhänigkeiten zur UserAPI (und dem FileManager) weg. Stattdessen
-		// fragt man direkt die FileAPI oder den FileManager nach dem Rootverzeichnis für den eingeloggten Benutzer.
-		fileManager.registerFEntry(root);
-
-		final Directory subDir1 = root.createNewDirectory("A Subdirectory").get();
-		subDir1.createNewFile("Subdirectory File");
-		root.createNewDirectory("Another Subdirectory");
-
-		root.createNewFile("A file");
-		root.createNewFile("Oho!");
-
-		return root;
-	}
 }

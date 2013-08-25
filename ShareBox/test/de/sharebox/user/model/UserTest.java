@@ -23,6 +23,7 @@ public class UserTest {
 		user.setGender(Gender.Female);
 		addressInfo = new AddressInfo();
 		user.setAddressInfo(addressInfo);
+		user.setRootDirectoryIdentifier(2000);
 	}
 
 	@Test
@@ -34,6 +35,7 @@ public class UserTest {
 		assertThat(user.getStorageLimit()).isEqualTo(StorageLimit.GB_5);
 		assertThat(user.getGender()).isEqualTo(Gender.Female);
 		assertThat(user.getAddressInfo()).isEqualTo(addressInfo);
+		assertThat(user.getRootDirectoryIdentifier()).isEqualTo(2000);
 	}
 
 
@@ -48,6 +50,7 @@ public class UserTest {
 		assertThat(copiedUser.getLastname()).isEqualTo("Peter");
 		assertThat(copiedUser.getStorageLimit()).isEqualTo(StorageLimit.GB_5);
 		assertThat(copiedUser.getGender()).isEqualTo(Gender.Female);
+		assertThat(copiedUser.getRootDirectoryIdentifier()).isEqualTo(2000);
 		assertThat(copiedUser.getAddressInfo()).isEqualTo(addressInfo)
 				.isNotSameAs(addressInfo);
 	}
