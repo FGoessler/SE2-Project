@@ -18,6 +18,7 @@ public class FEntryPermissionTest {
 	private User user;
 	@Mock
 	private FEntry fEntry;
+
 	private FEntryPermission permission;
 
 	@Before

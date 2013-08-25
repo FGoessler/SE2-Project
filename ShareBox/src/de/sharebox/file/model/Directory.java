@@ -10,7 +10,7 @@ import java.util.List;
  * Diese Klasse repräsentiert ein Verzeichnis, das von der Sharebox verwaltet und mit dem Server synchronisiert wird.
  */
 public class Directory extends FEntry {
-	private List<FEntry> fEntries = new ArrayList<FEntry>();
+	private final List<FEntry> fEntries = new ArrayList<FEntry>();
 
 	/**
 	 * Der Standard-Konstruktor.
@@ -18,7 +18,7 @@ public class Directory extends FEntry {
 	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
 	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public Directory(UserAPI userAPI) {
+	public Directory(final UserAPI userAPI) {
 		super(userAPI);
 	}
 
@@ -27,11 +27,10 @@ public class Directory extends FEntry {
 	 *
 	 * @param sourceDirectory Das Quell-Objekt.
 	 */
-	public Directory(Directory sourceDirectory) {
+	public Directory(final Directory sourceDirectory) {
 		super(sourceDirectory);
 
-		this.fEntries = new ArrayList<FEntry>();
-		for (FEntry fEntry : sourceDirectory.fEntries) {
+		for (final FEntry fEntry : sourceDirectory.fEntries) {
 			if (fEntry instanceof File) {
 				this.fEntries.add(new File((File) fEntry));
 			} else {
@@ -57,8 +56,8 @@ public class Directory extends FEntry {
 	 * @param filename Der Name der neuen Datei.
 	 * @return Die neu erstellte Datei.
 	 */
-	public File createNewFile(String filename) {
-		File newFile = new File(getUserAPI());
+	public File createNewFile(final String filename) {
+		final File newFile = new File(getUserAPI());
 		newFile.setName(filename);
 		newFile.setPermission(getUserAPI().getCurrentUser(), true, true, true);
 
@@ -77,8 +76,8 @@ public class Directory extends FEntry {
 	 * @param dirname Der Name des neuen Verzeichnisses.
 	 * @return Das neu erstellte Verzeichnis.
 	 */
-	public Directory createNewDirectory(String dirname) {
-		Directory newDir = new Directory(getUserAPI());
+	public Directory createNewDirectory(final String dirname) {
+		final Directory newDir = new Directory(getUserAPI());
 		newDir.setName(dirname);
 		newDir.setPermission(getUserAPI().getCurrentUser(), true, true, true);
 
@@ -96,7 +95,7 @@ public class Directory extends FEntry {
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
 	 */
-	public void addFEntry(FEntry newFEntry) {
+	public void addFEntry(final FEntry newFEntry) {
 		fEntries.add(newFEntry);
 
 		fireAddedChildrenNotification(newFEntry);
@@ -112,9 +111,9 @@ public class Directory extends FEntry {
 	 *
 	 * @param fEntry Der zu löschende FEntry.
 	 */
-	public void deleteFEntry(FEntry fEntry) {
+	public void deleteFEntry(final FEntry fEntry) {
 		if (fEntry instanceof Directory) {
-			Directory dir = (Directory) fEntry;
+			final Directory dir = (Directory) fEntry;
 			while (dir.getFEntries().size() > 0) {
 				dir.deleteFEntry(dir.getFEntries().get(0));
 			}
@@ -132,10 +131,10 @@ public class Directory extends FEntry {
 	 *
 	 * @param addedFEntry Der hinzugefügt FEntry.
 	 */
-	public void fireAddedChildrenNotification(FEntry addedFEntry) {
-		ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
+	public void fireAddedChildrenNotification(final FEntry addedFEntry) {
+		final ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
 
-		for (FEntryObserver observer : observers) {
+		for (final FEntryObserver observer : observers) {
 			if (observer instanceof DirectoryObserver) {
 				((DirectoryObserver) observer).addedChildrenNotification(this, addedFEntries);
 			}
@@ -149,10 +148,10 @@ public class Directory extends FEntry {
 	 *
 	 * @param removedFEntry Der entfernte FEntry.
 	 */
-	public void fireRemovedChildrenNotification(FEntry removedFEntry) {
-		ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
+	public void fireRemovedChildrenNotification(final FEntry removedFEntry) {
+		final ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
 
-		for (FEntryObserver observer : observers) {
+		for (final FEntryObserver observer : observers) {
 			if (observer instanceof DirectoryObserver) {
 				((DirectoryObserver) observer).removedChildrenNotification(this, removedFEntries);
 			}

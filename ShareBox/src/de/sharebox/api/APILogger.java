@@ -20,7 +20,7 @@ public final class APILogger {
 	 *
 	 * @param message Die zu loggende Meldung.
 	 */
-	public static void logMessage(String message) {
+	public static void logMessage(final String message) {
 		if (LOGGING) {
 			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
 		}
@@ -33,7 +33,7 @@ public final class APILogger {
 	 * @param fEntry Der FEntry auf dem die Aktion ausgeführt wurde.
 	 * @return Der String der die Aktion und Information über den FEntry enthält.
 	 */
-	public static String actionStringForFEntryAction(String action, FEntry fEntry) {
+	public static String actionStringForFEntryAction(final String action, final FEntry fEntry) {
 		return action + " (" + fEntry.getName() + ")";
 	}
 
@@ -42,7 +42,7 @@ public final class APILogger {
 	 *
 	 * @param action Ein Text der die Aktion benennt.
 	 */
-	public static void logSuccess(String action) {
+	public static void logSuccess(final String action) {
 		logMessage(action + " successful.");
 	}
 
@@ -51,7 +51,7 @@ public final class APILogger {
 	 *
 	 * @param action Ein Text der die Aktion benennt.
 	 */
-	public static void logFailure(String action) {
+	public static void logFailure(final String action) {
 		logMessage(action + " failed.");
 	}
 
@@ -61,7 +61,7 @@ public final class APILogger {
 	 * @param action Ein Text der die Aktion benennt.
 	 * @param reason Ein Text der den Grund für den Fehler benennt.
 	 */
-	public static void logFailure(String action, String reason) {
+	public static void logFailure(final String action, final String reason) {
 		logMessage(action + " failed. Reason: " + reason);
 	}
 
@@ -73,7 +73,7 @@ public final class APILogger {
 	 * @param success True wenn die Aktion als erfolgreich geloggt werden soll, Fales wenn sie als fehlgeschlagen
 	 *                geloggt werden soll.
 	 */
-	public static void logResult(String action, Boolean success) {
+	public static void logResult(final String action, final Boolean success) {
 		if (success) {
 			APILogger.logSuccess(action);
 		} else {

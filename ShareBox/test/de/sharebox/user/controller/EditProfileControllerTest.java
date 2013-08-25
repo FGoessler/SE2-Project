@@ -32,7 +32,7 @@ public class EditProfileControllerTest {
 
 	@Before
 	public void setUp() {
-		User testUser = new User();
+		final User testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		editProfileController.show();
@@ -53,7 +53,7 @@ public class EditProfileControllerTest {
 
 		editProfileController.save.actionPerformed(mock(ActionEvent.class));
 
-		ArgumentCaptor<User> newUserData = ArgumentCaptor.forClass(User.class);
+		final ArgumentCaptor<User> newUserData = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeProfile(newUserData.capture());
 
 		assertThat(newUserData.getValue().getFirstname()).isEqualTo("hanna");

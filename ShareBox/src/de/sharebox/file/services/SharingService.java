@@ -29,7 +29,7 @@ public class SharingService {
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialog-Fenstern.
 	 */
 	@Inject
-	SharingService(OptionPaneHelper optionPaneHelper) {
+	SharingService(final OptionPaneHelper optionPaneHelper) {
 		this.optionPane = optionPaneHelper;
 	}
 
@@ -39,8 +39,8 @@ public class SharingService {
 	 *
 	 * @param fEntry Der freizugebende FEntry.
 	 */
-	public void showShareFEntryDialog(FEntry fEntry) {
-		List<FEntry> fEntries = new ArrayList<FEntry>();
+	public void showShareFEntryDialog(final FEntry fEntry) {
+		final List<FEntry> fEntries = new ArrayList<FEntry>();
 		fEntries.add(fEntry);
 		showShareFEntryDialog(fEntries);
 	}
@@ -51,16 +51,16 @@ public class SharingService {
 	 *
 	 * @param fEntries Der freizugebende FEntry.
 	 */
-	public void showShareFEntryDialog(List<FEntry> fEntries) {
-		String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
+	public void showShareFEntryDialog(final List<FEntry> fEntries) {
+		final String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
 
 		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
 			//TODO: call API to invite/set permissions for the user!
-			User newUser = new User();
+			final User newUser = new User();
 			newUser.setEmail(newUserMail);
 
-			List<String> namesOfNotChangedFEntries = new ArrayList<String>();
-			for (FEntry fEntry : fEntries) {
+			final List<String> namesOfNotChangedFEntries = new ArrayList<String>();
+			for (final FEntry fEntry : fEntries) {
 				if (fEntry.getPermissionOfCurrentUser().getManageAllowed()) {
 					fEntry.setPermission(newUser, true, true, false);
 				} else {

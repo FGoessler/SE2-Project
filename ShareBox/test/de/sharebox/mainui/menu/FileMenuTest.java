@@ -57,7 +57,7 @@ public class FileMenuTest {
 
 	@Test
 	public void testCopyFEntry() {
-		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
+		final List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new File(mockedUserAPI));
 		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 
@@ -68,10 +68,10 @@ public class FileMenuTest {
 
 	@Test
 	public void testPasteFEntryOntoFile() {
-		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
+		final List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new File(mockedUserAPI));
 		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
-		List<Optional<Directory>> mockedSelectedParentDirectories = new ArrayList<Optional<Directory>>();
+		final List<Optional<Directory>> mockedSelectedParentDirectories = new ArrayList<Optional<Directory>>();
 		mockedSelectedParentDirectories.add(Optional.of(new Directory(mockedUserAPI)));
 		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(mockedSelectedParentDirectories);
 
@@ -82,7 +82,7 @@ public class FileMenuTest {
 
 	@Test
 	public void testPasteFEntryOntoDirectory() {
-		List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
+		final List<FEntry> mockedSelectedFEntries = new ArrayList<FEntry>();
 		mockedSelectedFEntries.add(new Directory(mockedUserAPI));
 		when(selectionService.getSelectedFEntries()).thenReturn(mockedSelectedFEntries);
 

@@ -20,12 +20,12 @@ public interface FEntryObserver {
 	 * @param fEntry Der FEntry, der sich geändert hat.
 	 * @param reason Die Art der Änderung.
 	 */
-	void fEntryChangedNotification(FEntry fEntry, ChangeType reason);
+	void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason);
 
 	/**
 	 * Der übergebene FEntry wurde aus seinem Elternverzeichnis gelöscht.
 	 *
 	 * @param fEntry Der gelöschte FEntry.
 	 */
-	void fEntryDeletedNotification(FEntry fEntry);
+	void fEntryDeletedNotification(final FEntry fEntry);
 }

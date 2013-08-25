@@ -70,7 +70,7 @@ public class PermissionViewControllerTest {
 		fEntry.addObserver(fEntryObserver);
 
 		//preselect FEntry
-		List<FEntry> selectedFEntries = new ArrayList<FEntry>();
+		final List<FEntry> selectedFEntries = new ArrayList<FEntry>();
 		selectedFEntries.add(fEntry);
 		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
@@ -235,7 +235,7 @@ public class PermissionViewControllerTest {
 	}
 
 	private void setCurrentUserToUserWithoutPermissions() {
-		User userWithoutPermissions = mock(User.class);
+		final User userWithoutPermissions = mock(User.class);
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}

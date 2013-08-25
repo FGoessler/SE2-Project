@@ -19,11 +19,11 @@ public class SwingEngineHelper {
 	 *                     ("resources/xml/") sowie die Dateiendung werden automatisch ergänzt.
 	 * @return Die gerenderte Komponente/Container.
 	 */
-	public Component render(Object client, String resourceName) {
+	public Component render(final Object client, final String resourceName) {
 		Component component = null;
 
 		try {
-			SwingEngine swix = new SwingEngine(client);
+			final SwingEngine swix = new SwingEngine(client);
 			component = swix.render("resources/xml/" + resourceName + ".xml");
 		} catch (Exception exception) {
 			System.out.println("Couldn't create " + resourceName);

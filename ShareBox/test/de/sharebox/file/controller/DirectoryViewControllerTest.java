@@ -47,7 +47,7 @@ public class DirectoryViewControllerTest {
 	public void showsAContextMenuOnRightClick() {
 		//simulate click
 		when(contextMenuController.isMenuVisible()).thenReturn(false);
-		TreePath treePath = new TreePath(new FEntryTreeNode(mock(DefaultTreeModel.class), new FEntry(mockedUserAPI)));
+		final TreePath treePath = new TreePath(new FEntryTreeNode(mock(DefaultTreeModel.class), new FEntry(mockedUserAPI)));
 		when(tree.getPathForLocation(20, 10)).thenReturn(treePath);
 		controller.contextMenuMA.mouseReleased(new MouseEvent(controller.treeView, MouseEvent.MOUSE_RELEASED, new Date().getTime(), 0, 20, 10, 1, true, MouseEvent.BUTTON3));
 

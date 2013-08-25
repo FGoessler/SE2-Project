@@ -27,7 +27,7 @@ public class User {
 	 *
 	 * @param userToCopy Der zu kopierende Nutzer.
 	 */
-	public User(User userToCopy) {
+	public User(final User userToCopy) {
 		this.setEmail(userToCopy.getEmail());
 		this.setPassword(userToCopy.getPassword());
 		this.setFirstname(userToCopy.getFirstname());
@@ -94,7 +94,7 @@ public class User {
 	 *
 	 * @param email
 	 */
-	public void setEmail(String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -103,7 +103,7 @@ public class User {
 	 *
 	 * @param password
 	 */
-	public void setPassword(String password) {
+	public void setPassword(final String password) {
 		this.password = password;
 	}
 
@@ -112,7 +112,7 @@ public class User {
 	 *
 	 * @param firstname
 	 */
-	public void setFirstname(String firstname) {
+	public void setFirstname(final String firstname) {
 		this.firstname = firstname;
 	}
 
@@ -121,7 +121,7 @@ public class User {
 	 *
 	 * @param lastname
 	 */
-	public void setLastname(String lastname) {
+	public void setLastname(final String lastname) {
 		this.lastname = lastname;
 	}
 
@@ -130,7 +130,7 @@ public class User {
 	 *
 	 * @param addressInfo
 	 */
-	public void setAddressInfo(AddressInfo addressInfo) {
+	public void setAddressInfo(final AddressInfo addressInfo) {
 		this.addressInfo = new AddressInfo(addressInfo);
 	}
 
@@ -139,7 +139,7 @@ public class User {
 	 *
 	 * @param storageLimit
 	 */
-	public void setStorageLimit(StorageLimit storageLimit) {        //TODO: create a enum or store as numbers
+	public void setStorageLimit(final StorageLimit storageLimit) {        //TODO: create a enum or store as numbers
 		this.storageLimit = storageLimit;
 	}
 
@@ -148,7 +148,7 @@ public class User {
 	 *
 	 * @param gender
 	 */
-	public void setGender(Gender gender) {
+	public void setGender(final Gender gender) {
 		this.gender = gender;
 	}
 }

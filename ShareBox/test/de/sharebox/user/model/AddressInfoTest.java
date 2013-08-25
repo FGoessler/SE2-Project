@@ -31,7 +31,7 @@ public class AddressInfoTest {
 
 	@Test
 	public void testCopyConstructor() {
-		AddressInfo copiedAddressInfo = new AddressInfo(addressInfo);
+		final AddressInfo copiedAddressInfo = new AddressInfo(addressInfo);
 
 		assertThat(copiedAddressInfo).isNotSameAs(addressInfo);
 		assertThat(copiedAddressInfo.getStreet()).isEqualTo("Mainstreet 1");

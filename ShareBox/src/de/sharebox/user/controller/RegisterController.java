@@ -36,8 +36,8 @@ public class RegisterController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	RegisterController(OptionPaneHelper optionPaneHelper,
-					   UserAPI userAPI) {
+	RegisterController(final OptionPaneHelper optionPaneHelper,
+					   final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
@@ -57,8 +57,8 @@ public class RegisterController {
 	 * anzugeben und anschließend wird er an das Bezahlsystem weitergeleitet.
 	 */
 	public Action register = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			User user = new User();
+		public void actionPerformed(final ActionEvent event) {
+			final User user = new User();
 
 			user.setEmail(mailField.getText());
 
@@ -68,7 +68,7 @@ public class RegisterController {
 			user.setFirstname(firstnameField.getText());
 			user.setGender((Gender) genderField.getSelectedItem());
 
-			AddressInfo addressInfo = user.getAddressInfo();
+			final AddressInfo addressInfo = user.getAddressInfo();
 			addressInfo.setStreet(streetField.getText());
 			addressInfo.setAdditionalStreet(additiveField.getText());
 			addressInfo.setZipCode(codeField.getText());
@@ -90,7 +90,7 @@ public class RegisterController {
 	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
 	 */
 	public Action stop = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
 		}

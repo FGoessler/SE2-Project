@@ -14,5 +14,5 @@ public interface PermissionViewControllerFactory {
 	 * @param splitPane Das JSplitPane in deessen rechter Hälfte der Controller seine Inhalte darstellt.
 	 * @return Einen neuen PermissionViewController.
 	 */
-	PermissionViewController create(JSplitPane splitPane);
+	PermissionViewController create(final JSplitPane splitPane);
 }

@@ -39,7 +39,7 @@ public class UserTest {
 
 	@Test
 	public void testCopyConstructor() {
-		User copiedUser = new User(user);
+		final User copiedUser = new User(user);
 
 		assertThat(copiedUser).isNotSameAs(user);
 		assertThat(copiedUser.getEmail()).isEqualTo("test@mail.com");

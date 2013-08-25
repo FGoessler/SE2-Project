@@ -14,5 +14,5 @@ public interface FileMenuFactory {
 	 * @param menuBar Die JMenuBar zu der das Menü hinzugefügt werden soll.
 	 * @return Ein neues FileMenu.
 	 */
-	FileMenu create(JMenuBar menuBar);
+	FileMenu create(final JMenuBar menuBar);
 }

@@ -19,7 +19,7 @@ public class FEntry {
 	private String name;
 
 	private final List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
-	protected List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
+	protected final List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
 	 * Der Standard-Konstruktor.
@@ -27,7 +27,7 @@ public class FEntry {
 	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
 	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public FEntry(UserAPI userAPI) {
+	public FEntry(final UserAPI userAPI) {
 		this.userAPI = userAPI;
 	}
 
@@ -36,14 +36,14 @@ public class FEntry {
 	 *
 	 * @param sourceFEntry Das zu kopierende Objekt.
 	 */
-	public FEntry(FEntry sourceFEntry) {
+	public FEntry(final FEntry sourceFEntry) {
 		this.userAPI = sourceFEntry.getUserAPI();
 		this.name = sourceFEntry.name;
 		this.identifier = sourceFEntry.identifier;
 
 		//copy permissions
-		for (FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
-			FEntryPermission newPermission = new FEntryPermission(oldPermission.getUser(), this);
+		for (final FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
+			final FEntryPermission newPermission = new FEntryPermission(oldPermission.getUser(), this);
 			newPermission.setPermissions(oldPermission.getReadAllowed(), oldPermission.getWriteAllowed(), oldPermission.getManageAllowed());
 
 			permissions.add(newPermission);
@@ -78,7 +78,7 @@ public class FEntry {
 	 *
 	 * @param identifier Die neue ID dieses Objekts.
 	 */
-	public void setIdentifier(Integer identifier) {
+	public void setIdentifier(final Integer identifier) {
 		this.identifier = identifier;
 	}
 
@@ -90,7 +90,7 @@ public class FEntry {
 	 *
 	 * @param name Der neue Name.
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 
 		fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
@@ -110,7 +110,7 @@ public class FEntry {
 	 *
 	 * @param observer Der Observer der benachrichtigt werden soll.
 	 */
-	public void addObserver(FEntryObserver observer) {
+	public void addObserver(final FEntryObserver observer) {
 		observers.add(observer);
 	}
 
@@ -119,16 +119,16 @@ public class FEntry {
 	 *
 	 * @param observer Der Observer der entfernt werden soll.
 	 */
-	public void removeObserver(FEntryObserver observer) {
+	public void removeObserver(final FEntryObserver observer) {
 		observers.remove(observer);
 	}
 
 	/**
 	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
 	 */
-	public void fireChangeNotification(FEntryObserver.ChangeType reason) {
-		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
-		for (FEntryObserver observer : localObservers) {
+	public void fireChangeNotification(final FEntryObserver.ChangeType reason) {
+		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
+		for (final FEntryObserver observer : localObservers) {
 			observer.fEntryChangedNotification(this, reason);
 		}
 	}
@@ -138,8 +138,8 @@ public class FEntry {
 	 * aber noch nicht notwendigerweise gelöscht.
 	 */
 	public void fireDeleteNotification() {
-		ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
-		for (FEntryObserver observer : localObservers) {
+		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
+		for (final FEntryObserver observer : localObservers) {
 			observer.fEntryDeletedNotification(this);
 		}
 	}
@@ -156,8 +156,8 @@ public class FEntry {
 	 * @param write  Der neue Wert für Schreibrechte.
 	 * @param manage Der neue Wert für Verwaltungsrechte.
 	 */
-	public void setPermission(User user, boolean read, boolean write, boolean manage) {
-		FEntryPermission permission = getPermissionOfUser(user);
+	public void setPermission(final User user, final boolean read, final boolean write, final boolean manage) {
+		final FEntryPermission permission = getPermissionOfUser(user);
 
 		if (read || write || manage) {
 			if (!permissions.contains(permission)) {
@@ -190,11 +190,11 @@ public class FEntry {
 	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
 	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
-	public FEntryPermission getPermissionOfUser(User user) {
+	public FEntryPermission getPermissionOfUser(final User user) {
 		Optional<FEntryPermission> permission = Optional.absent();
 
 		try {
-			for (FEntryPermission perm : permissions) {
+			for (final FEntryPermission perm : permissions) {
 				if (perm.getUser().getEmail().equals(user.getEmail())) {
 					permission = Optional.of(perm);
 				}

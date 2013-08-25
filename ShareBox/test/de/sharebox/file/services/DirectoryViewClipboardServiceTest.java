@@ -36,7 +36,7 @@ public class DirectoryViewClipboardServiceTest {
 	@Before
 	public void setUp() {
 		//mock UserAPI (Permissions)
-		User mockedUser = mock(User.class);
+		final User mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
 		mockedAPI = mock(UserAPI.class);
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
@@ -60,7 +60,7 @@ public class DirectoryViewClipboardServiceTest {
 		clipboard.addToClipboard(testDirectory);
 		clipboard.addToClipboard(testFile);
 
-		File keptFile = targetDirectory.createNewFile("file to be kept");
+		final File keptFile = targetDirectory.createNewFile("file to be kept");
 		clipboard.pasteClipboardContent(targetDirectory);
 
 		//check that no file in the target directory got deleted
@@ -71,7 +71,7 @@ public class DirectoryViewClipboardServiceTest {
 		assertThat(targetDirectory.getFEntries().get(2).getName()).isEqualTo(testFile.getName());
 		assertThat(targetDirectory.getFEntries().get(2)).isNotSameAs(testFile);
 		assertThat(targetDirectory.getFEntries().get(1).getName()).isEqualTo(testDirectory.getName());
-		FEntry child = ((Directory) targetDirectory.getFEntries().get(1)).getFEntries().get(0);
+		final FEntry child = ((Directory) targetDirectory.getFEntries().get(1)).getFEntries().get(0);
 		assertThat(child.getName()).isEqualTo(testDirectory.getFEntries().get(0).getName());
 		assertThat(targetDirectory.getFEntries().get(1)).isNotSameAs(testDirectory);
 	}
@@ -92,7 +92,7 @@ public class DirectoryViewClipboardServiceTest {
 
 	@Test
 	public void canAddAListOfFEntries() {
-		ArrayList<FEntry> fEntries = new ArrayList<FEntry>();
+		final ArrayList<FEntry> fEntries = new ArrayList<FEntry>();
 		fEntries.add(testDirectory);
 		fEntries.add(testFile);
 		clipboard.addToClipboard(fEntries);
@@ -117,7 +117,7 @@ public class DirectoryViewClipboardServiceTest {
 	}
 
 	private void setCurrentUserToUserWithoutPermissions() {
-		User userWithoutPermissions = mock(User.class);
+		final User userWithoutPermissions = mock(User.class);
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}

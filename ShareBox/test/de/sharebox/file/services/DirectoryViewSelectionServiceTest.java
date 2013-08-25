@@ -49,7 +49,7 @@ public class DirectoryViewSelectionServiceTest {
 	@Before
 	public void setUp() {
 		//mock UserAPI (for permissions)
-		User mockedUser = mock(User.class);
+		final User mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
 
@@ -72,7 +72,7 @@ public class DirectoryViewSelectionServiceTest {
 
 	@Test
 	public void canAddTreeSelectionListeners() {
-		TreeSelectionListener treeSelectionListener = mock(TreeSelectionListener.class);
+		final TreeSelectionListener treeSelectionListener = mock(TreeSelectionListener.class);
 		selectionService.addTreeSelectionListener(treeSelectionListener);
 
 		assertThat(selectionService.getTreeView().getTreeSelectionListeners()).contains(treeSelectionListener);
@@ -86,36 +86,36 @@ public class DirectoryViewSelectionServiceTest {
 
 		//test without selection -> create as child of root
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
-		File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(rootDirectory.getFEntries()).contains(newFile);
 		assertThat(newFile.getName()).isEqualTo(NEW_FILE_NAME);
 
 		//test with directory selected -> create as child of directory
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1));
-		File secondNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File secondNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).contains(secondNewFile);
 		assertThat(secondNewFile.getName()).isEqualTo(NEW_FILE_NAME);
 
 		//test with file selected -> create as sibling of file
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(secondNewFile));
 		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.of(subDir1));
-		File thirdNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File thirdNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).contains(thirdNewFile);
 		assertThat(thirdNewFile.getName()).isEqualTo(NEW_FILE_NAME);
 
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
 		//test with directory selected (but no context menu) -> create as child of directory
-		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
+		final FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
-		File fourthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final File fourthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fourthNewFile);
 		assertThat(fourthNewFile.getName()).isEqualTo(NEW_FILE_NAME);
 
 		//test with file selected (but no context menu) -> create as sibling of file
-		FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
+		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
-		File fifthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final File fifthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fifthNewFile);
 		assertThat(fifthNewFile.getName()).isEqualTo(NEW_FILE_NAME);
 
@@ -136,36 +136,36 @@ public class DirectoryViewSelectionServiceTest {
 
 		//test without selection -> create as child of root
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
-		Directory newDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory newDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(rootDirectory.getFEntries()).contains(newDirectory);
 		assertThat(newDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
 		//test with directory right click selected -> create as child of directory
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1));
-		Directory secondNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory secondNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).contains(secondNewDirectory);
 		assertThat(secondNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
 		//test with file right click selected -> create as sibling of file
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1.getFEntries().get(0)));
 		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.of(subDir1));
-		Directory thirdNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory thirdNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).contains(thirdNewDirectory);
 		assertThat(thirdNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
 		//test with directory selected (but no context menu) -> create as child of directory
-		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
+		final FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
-		Directory fourthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final Directory fourthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fourthNewDirectory);
 		assertThat(fourthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
 		//test with file selected (but no context menu) -> create as sibling of file
-		FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
+		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
-		Directory fifthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final Directory fifthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		assertThat(subDir1.getFEntries()).contains(fifthNewDirectory);
 		assertThat(fifthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
 
@@ -187,7 +187,7 @@ public class DirectoryViewSelectionServiceTest {
 		setCurrentUserToUserWithoutPermissions();
 
 		assertThat(subDir1.getFEntries()).hasSize(1);
-		File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).hasSize(1);
 		assertThat(newFile).isNull();
 	}
@@ -200,15 +200,15 @@ public class DirectoryViewSelectionServiceTest {
 		setCurrentUserToUserWithoutPermissions();
 
 		assertThat(subDir1.getFEntries()).hasSize(1);
-		Directory newDir = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory newDir = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).hasSize(1);
 		assertThat(newDir).isNull();
 	}
 
 	@Test
 	public void canReturnTheSelectedFEntriesAndTheirParents() {
-		FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
-		TreePath[] treePaths = {new TreePath(treeNodes), new TreePath(new FEntryTreeNode(treeModel, rootDirectory))};
+		final FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
+		final TreePath[] treePaths = {new TreePath(treeNodes), new TreePath(new FEntryTreeNode(treeModel, rootDirectory))};
 		selectionService.getTreeView().setSelectionPaths(treePaths);
 
 		assertThat(selectionService.getSelectedFEntries()).contains(rootDirectory, subDir1);
@@ -217,7 +217,7 @@ public class DirectoryViewSelectionServiceTest {
 	}
 
 	private void setCurrentUserToUserWithoutPermissions() {
-		User userWithoutPermissions = mock(User.class);
+		final User userWithoutPermissions = mock(User.class);
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}

@@ -32,10 +32,10 @@ public class LoginController {
 	 * @param registerController        Ein RegisterController mit dessen Hilfe sich neue Nutzer registrieren können.
 	 */
 	@Inject
-	LoginController(UserAPI userAPI,
-					MainViewControllerFactory mainViewControllerFactory,
-					OptionPaneHelper optionPaneHelper,
-					RegisterController registerController) {
+	LoginController(final UserAPI userAPI,
+					final MainViewControllerFactory mainViewControllerFactory,
+					final OptionPaneHelper optionPaneHelper,
+					final RegisterController registerController) {
 		this.userAPI = userAPI;
 		this.mainViewControllerFactory = mainViewControllerFactory;
 		this.optionPane = optionPaneHelper;
@@ -57,8 +57,8 @@ public class LoginController {
 	 * Erfolgsfall das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
 	 */
 	public Action submit = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			User user = new User();
+		public void actionPerformed(final ActionEvent event) {
+			final User user = new User();
 			user.setEmail(mailField.getText());
 			user.setPassword(new String(passwordField.getPassword()));
 
@@ -75,7 +75,7 @@ public class LoginController {
 	 * Der Registrierenbutton bringt den Nutzer ins Registrierenmenü, hier kann er einen Account erstellen.
 	 */
 	public Action register = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			registerController.show();
 		}
 	};

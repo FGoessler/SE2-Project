@@ -44,18 +44,18 @@ public class DirectoryViewController {
 	 * @param fileManager                   TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
 	 */
 	@Inject
-	DirectoryViewController(@Assisted JTree tree,
-							DirectoryViewSelectionService directoryViewSelectionService,
-							ContextMenuController contextMenuController,
-							UserAPI userAPI,
-							FileManager fileManager) {
+	DirectoryViewController(final @Assisted JTree tree,
+							final DirectoryViewSelectionService directoryViewSelectionService,
+							final ContextMenuController contextMenuController,
+							final UserAPI userAPI,
+							final FileManager fileManager) {
 
 		this.contextMenuController = contextMenuController;
 		this.userAPI = userAPI;
 		this.fileManager = fileManager;
 
 		this.treeView = tree;
-		DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Root"), true);
+		final DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Root"), true);
 		this.treeView.setModel(treeModel);
 		treeModel.setRoot(new FEntryTreeNode(treeModel, createMockDirectoryTree()));
 
@@ -69,9 +69,9 @@ public class DirectoryViewController {
 	 */
 	protected MouseAdapter contextMenuMA = new MouseAdapter() {
 		@Override
-		public void mouseReleased(MouseEvent event) {
+		public void mouseReleased(final MouseEvent event) {
 			if (event.getButton() == MouseEvent.BUTTON3 && !contextMenuController.isMenuVisible()) {
-				TreePath currentContextMenuTreePath = treeView.getPathForLocation(event.getX(), event.getY());
+				final TreePath currentContextMenuTreePath = treeView.getPathForLocation(event.getX(), event.getY());
 				if (currentContextMenuTreePath != null) {
 					contextMenuController.showMenu(currentContextMenuTreePath, event.getX(), event.getY());
 				}
@@ -89,7 +89,7 @@ public class DirectoryViewController {
 	 */
 	@Deprecated
 	private Directory createMockDirectoryTree() {
-		Directory root = new Directory(userAPI);
+		final Directory root = new Directory(userAPI);
 		root.setName("The main dir");
 		root.setPermission(userAPI.getCurrentUser(), true, true, true);
 		// Registriert root directory im FileManager - weitere FEntries werden automatisch durch Reaktion auf Notifications registriert.
@@ -98,7 +98,7 @@ public class DirectoryViewController {
 		// fragt man direkt die FileAPI oder den FileManager nach dem Rootverzeichnis für den eingeloggten Benutzer.
 		fileManager.registerFEntry(root);
 
-		Directory subDir1 = root.createNewDirectory("A Subdirectory");
+		final Directory subDir1 = root.createNewDirectory("A Subdirectory");
 		subDir1.createNewFile("Subdirectory File");
 		root.createNewDirectory("Another Subdirectory");
 

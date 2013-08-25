@@ -48,7 +48,7 @@ public class LoginControllerTest {
 
 		loginController.submit.actionPerformed(mock(ActionEvent.class));
 
-		ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
+		final ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).login(user.capture());
 		assertThat(user.getValue().getEmail()).isEqualTo("Nutzername");
 		assertThat(user.getValue().getPassword()).isEqualTo("Passwort123");

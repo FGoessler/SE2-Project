@@ -56,7 +56,7 @@ public class ContextMenuControllerTest {
 		contextMenuController = new ContextMenuController(selectionService, clipboardService, sharingService, optionPaneHelper);
 
 		//mock UserAPI (Permissions)
-		User mockedUser = mock(User.class);
+		final User mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
 
@@ -64,8 +64,8 @@ public class ContextMenuControllerTest {
 		parentDirectory = new Directory(mockedAPI);
 		parentDirectory.setPermission(mockedUser, true, true, true);
 		parentDirectory.setName("A Test Dir");
-		FEntry child1 = parentDirectory.createNewFile(FILENAME);
-		FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
+		final FEntry child1 = parentDirectory.createNewFile(FILENAME);
+		final FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
 		mockedTreePath1 = new TreePath(nodes1);
 		parentDirectory.createNewFile("An other Test File");
 	}
@@ -138,7 +138,7 @@ public class ContextMenuControllerTest {
 	@Test
 	public void userCanDeleteMultipleFEntriesAtOnce() {
 		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
-		List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
+		final List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
 		parents.add(Optional.of(parentDirectory));
 		parents.add(Optional.of(parentDirectory));
 		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
@@ -155,7 +155,7 @@ public class ContextMenuControllerTest {
 		setCurrentUserToUserWithoutPermissions();
 
 		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
-		List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
+		final List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
 		parents.add(Optional.of(parentDirectory));
 		parents.add(Optional.of(parentDirectory));
 		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
@@ -228,7 +228,7 @@ public class ContextMenuControllerTest {
 	@Test
 	public void userCanShareAFEntry() {
 		when(optionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn("newUser@mail.com");
-		List<FEntry> selectionNotIncludingClickPosition = new ArrayList<FEntry>();
+		final List<FEntry> selectionNotIncludingClickPosition = new ArrayList<FEntry>();
 		selectionNotIncludingClickPosition.add(parentDirectory.getFEntries().get(1));
 		when(selectionService.getSelectedFEntries()).thenReturn(selectionNotIncludingClickPosition);
 
@@ -238,12 +238,12 @@ public class ContextMenuControllerTest {
 	}
 
 	private void setCurrentUserToUserWithoutPermissions() {
-		User userWithoutPermissions = mock(User.class);
+		final User userWithoutPermissions = mock(User.class);
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}
 
-	private void performClickOnMenuItem(Action menuItemAction) {
+	private void performClickOnMenuItem(final Action menuItemAction) {
 		contextMenuController.showMenu(mockedTreePath1, 20, 20);
 
 		menuItemAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Action"));

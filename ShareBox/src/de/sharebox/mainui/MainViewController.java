@@ -67,17 +67,17 @@ public class MainViewController {
 	 * @param accountingController           Ein AccountingController für Änderungen an den Rechnungsdaten.
 	 */
 	@Inject
-	MainViewController(@Assisted User user,
-					   @Assisted LoginController callingLoginController,
-					   UserAPI userAPI,
-					   PermissionViewControllerFactory permissionViewControllerFactory,
-					   DirectoryViewControllerFactory directoryViewControllerFactory,
-					   FileMenuFactory fileMenuFactory,
-					   AdministrationMenuFactory administrationMenuFactory,
-					   AccountingController accountingController,
-					   ChangeCredentialsController changeCredentialsController,
-					   EditProfileController editProfileController,
-					   InvitationController invitationController) {
+	MainViewController(final @Assisted User user,
+					   final @Assisted LoginController callingLoginController,
+					   final UserAPI userAPI,
+					   final PermissionViewControllerFactory permissionViewControllerFactory,
+					   final DirectoryViewControllerFactory directoryViewControllerFactory,
+					   final FileMenuFactory fileMenuFactory,
+					   final AdministrationMenuFactory administrationMenuFactory,
+					   final AccountingController accountingController,
+					   final ChangeCredentialsController changeCredentialsController,
+					   final EditProfileController editProfileController,
+					   final InvitationController invitationController) {
 
 		this.currentUser = user;
 		this.userAPI = userAPI;

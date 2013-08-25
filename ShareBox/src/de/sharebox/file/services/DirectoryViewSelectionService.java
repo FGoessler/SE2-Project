@@ -38,7 +38,7 @@ public class DirectoryViewSelectionService {
 	 * @param optionPane Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
 	 */
 	@Inject
-	DirectoryViewSelectionService(OptionPaneHelper optionPane) {
+	DirectoryViewSelectionService(final OptionPaneHelper optionPane) {
 		this.optionPane = optionPane;
 	}
 
@@ -47,7 +47,7 @@ public class DirectoryViewSelectionService {
 	 *
 	 * @param treeView Ein JTree dessen Selections betrachtet werden.
 	 */
-	public void setTreeView(JTree treeView) {
+	public void setTreeView(final JTree treeView) {
 		this.treeView = treeView;
 	}
 
@@ -66,10 +66,10 @@ public class DirectoryViewSelectionService {
 	 * @return Die im JTree ausgewählten FEntries.
 	 */
 	public List<FEntry> getSelectedFEntries() {
-		ArrayList<FEntry> selectedFEntries = new ArrayList<FEntry>();
+		final ArrayList<FEntry> selectedFEntries = new ArrayList<FEntry>();
 
 		if (treeView.getSelectionCount() > 0) {
-			for (TreePath path : treeView.getSelectionPaths()) {
+			for (final TreePath path : treeView.getSelectionPaths()) {
 				selectedFEntries.add(((FEntryTreeNode) path.getLastPathComponent()).getFEntry());
 			}
 		}
@@ -83,10 +83,10 @@ public class DirectoryViewSelectionService {
 	 * @return Die Elternverzeichnisse der im JTree ausgewählten FEntries.
 	 */
 	public List<Optional<Directory>> getParentsOfSelectedFEntries() {
-		ArrayList<Optional<Directory>> selectedFEntriesParents = new ArrayList<Optional<Directory>>();
+		final ArrayList<Optional<Directory>> selectedFEntriesParents = new ArrayList<Optional<Directory>>();
 
 		if (treeView.getSelectionCount() > 0) {
-			for (TreePath path : treeView.getSelectionPaths()) {
+			for (final TreePath path : treeView.getSelectionPaths()) {
 				if (path.getParentPath() == null) {
 					selectedFEntriesParents.add(Optional.<Directory>absent());
 				} else {
@@ -103,7 +103,7 @@ public class DirectoryViewSelectionService {
 	 *
 	 * @param selectionListener Ein TreeSelectionListener um auf Änderungen der Selktierung im JTree zu reagieren.
 	 */
-	public void addTreeSelectionListener(TreeSelectionListener selectionListener) {
+	public void addTreeSelectionListener(final TreeSelectionListener selectionListener) {
 		treeView.addTreeSelectionListener(selectionListener);
 	}
 
@@ -118,12 +118,12 @@ public class DirectoryViewSelectionService {
 	 * @return Die neu erstellte Datei. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
 	 *         erforderlichen Rechte besitzt.
 	 */
-	public File createNewFileBasedOnUserSelection(Optional<ContextMenuController> contextMenuController) {
+	public File createNewFileBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
 		File createdFile = null;
-		String newFilename = optionPane.showInputDialog("Geben Sie einen Namen für die neue Datei ein:", "");
+		final String newFilename = optionPane.showInputDialog("Geben Sie einen Namen für die neue Datei ein:", "");
 
 		if (!isNullOrEmpty(newFilename)) {
-			Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
+			final Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
 			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
 				createdFile = parentDirectory.createNewFile(newFilename);
 			} else {
@@ -144,12 +144,12 @@ public class DirectoryViewSelectionService {
 	 * @return Das neu erstellte Verzeichnis. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
 	 *         erfoderlichen Rechte besitzt.
 	 */
-	public Directory createNewDirectoryBasedOnUserSelection(Optional<ContextMenuController> contextMenuController) {
+	public Directory createNewDirectoryBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
 		Directory createdDir = null;
-		String newDirectoryName = optionPane.showInputDialog("Geben Sie einen Namen für das neue Verzeichnis ein:", "");
+		final String newDirectoryName = optionPane.showInputDialog("Geben Sie einen Namen für das neue Verzeichnis ein:", "");
 
 		if (!isNullOrEmpty(newDirectoryName)) {
-			Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
+			final Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
 			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
 				createdDir = parentDirectory.createNewDirectory(newDirectoryName);
 			} else {
@@ -159,7 +159,7 @@ public class DirectoryViewSelectionService {
 		return createdDir;
 	}
 
-	private Directory getParentDirectoryForFEntryCreation(Optional<ContextMenuController> contextMenuController) {
+	private Directory getParentDirectoryForFEntryCreation(final Optional<ContextMenuController> contextMenuController) {
 		Directory parentDirectory = null;
 
 		if ((!contextMenuController.isPresent() || !contextMenuController.get().getSelectedFEntry().isPresent())

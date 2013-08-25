@@ -31,7 +31,7 @@ public class FileTest {
 		file.setName("TestFile");
 		file.setIdentifier(1234);
 
-		File copy = new File(file);
+		final File copy = new File(file);
 
 		assertThat(copy).isNotSameAs(file);
 		assertThat(copy.getName()).isEqualTo(file.getName());

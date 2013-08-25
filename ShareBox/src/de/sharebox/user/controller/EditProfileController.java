@@ -27,8 +27,8 @@ public class EditProfileController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	EditProfileController(OptionPaneHelper optionPaneHelper,
-						  UserAPI userAPI) {
+	EditProfileController(final OptionPaneHelper optionPaneHelper,
+						  final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
@@ -42,8 +42,7 @@ public class EditProfileController {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/editProfile");
 		frame.setVisible(true);
 
-		User user = userAPI.getCurrentUser();
-
+		final User user = userAPI.getCurrentUser();
 		lastnameField.setText(user.getLastname());
 		firstnameField.setText(user.getFirstname());
 		genderField.setSelectedItem(user.getGender());
@@ -55,9 +54,8 @@ public class EditProfileController {
 	 * Wenn zuvor was drin Stand, dann muss auch wieder eine Information eingetragen werden.
 	 */
 	public Action save = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			User user = new User();
-
+		public void actionPerformed(final ActionEvent event) {
+			final User user = new User();
 			user.setFirstname(firstnameField.getText());
 			user.setLastname(lastnameField.getText());
 			user.setLastname(lastnameField.getText());
@@ -76,7 +74,7 @@ public class EditProfileController {
 	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
 	 */
 	public Action stop = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
 		}

@@ -13,7 +13,7 @@ public class File extends FEntry {
 	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
 	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public File(UserAPI userAPI) {
+	public File(final UserAPI userAPI) {
 		super(userAPI);
 	}
 
@@ -22,7 +22,7 @@ public class File extends FEntry {
 	 *
 	 * @param sourceFile Das Quell-Objekt.
 	 */
-	public File(File sourceFile) {
+	public File(final File sourceFile) {
 		super(sourceFile);
 	}
 

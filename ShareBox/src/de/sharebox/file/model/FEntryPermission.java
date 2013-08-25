@@ -21,7 +21,7 @@ public class FEntryPermission {
 	 * @param user   Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
 	 */
-	public FEntryPermission(@NotNull User user, @NotNull FEntry fEntry) {
+	public FEntryPermission(final @NotNull User user, final @NotNull FEntry fEntry) {
 		this.user = user;
 		this.fEntry = fEntry;
 	}
@@ -58,7 +58,7 @@ public class FEntryPermission {
 	 *
 	 * @param readAllowed Der neue Wert für die Leserechte.
 	 */
-	public void setReadAllowed(Boolean readAllowed) {
+	public void setReadAllowed(final Boolean readAllowed) {
 		this.readAllowed = readAllowed;
 
 		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
@@ -78,7 +78,7 @@ public class FEntryPermission {
 	 *
 	 * @param writeAllowed Der neue Wert für die Schreibrechte.
 	 */
-	public void setWriteAllowed(Boolean writeAllowed) {
+	public void setWriteAllowed(final Boolean writeAllowed) {
 		this.writeAllowed = writeAllowed;
 
 		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
@@ -98,7 +98,7 @@ public class FEntryPermission {
 	 *
 	 * @param manageAllowed Der neue Wert für die Verwaltungsrechte.
 	 */
-	public void setManageAllowed(Boolean manageAllowed) {
+	public void setManageAllowed(final Boolean manageAllowed) {
 		this.manageAllowed = manageAllowed;
 
 		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
@@ -111,7 +111,7 @@ public class FEntryPermission {
 	 * @param write  Der neue Wert für Schreibrechte.
 	 * @param manage Der neue Wert für Verwaltungsrechte.
 	 */
-	public void setPermissions(Boolean read, Boolean write, Boolean manage) {
+	public void setPermissions(final Boolean read, final Boolean write, final Boolean manage) {
 		readAllowed = read;
 		writeAllowed = write;
 		manageAllowed = manage;

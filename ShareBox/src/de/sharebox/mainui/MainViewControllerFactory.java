@@ -17,5 +17,5 @@ public interface MainViewControllerFactory {
 	 *                               den diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
 	 * @return Ein neuer MainViewController.
 	 */
-	MainViewController create(User user, LoginController callingLoginController);
+	MainViewController create(final User user, final LoginController callingLoginController);
 }

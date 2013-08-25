@@ -17,5 +17,5 @@ public interface AdministrationMenuFactory {
 	 * @param mainViewController Der MainViewController dessen Methoden durch die Aktionen im Menü aufgerufen werden.
 	 * @return Ein neues AdministrationMenu.
 	 */
-	AdministrationMenu create(JMenuBar menuBar, MainViewController mainViewController);
+	AdministrationMenu create(final JMenuBar menuBar, final MainViewController mainViewController);
 }

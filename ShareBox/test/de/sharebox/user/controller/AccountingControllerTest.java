@@ -31,7 +31,7 @@ public class AccountingControllerTest {
 
 	@Before
 	public void setUp() {
-		User testUser = new User();
+		final User testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		accountingController.show();
@@ -53,7 +53,7 @@ public class AccountingControllerTest {
 
 		accountingController.save.actionPerformed(mock(ActionEvent.class));
 
-		ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
+		final ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeAccountingSettings(user.capture());
 
 		assertThat(user.getValue().getAddressInfo().getStreet()).isEqualTo("TestStr");

@@ -23,14 +23,14 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 	 *
 	 * @param fEntry Der FEntry der durch diesen FEntryTreeNode dargestellt werden soll.
 	 */
-	public FEntryTreeNode(DefaultTreeModel treeModel, FEntry fEntry) {
+	public FEntryTreeNode(final DefaultTreeModel treeModel, final FEntry fEntry) {
 		super(fEntry);
 
 		this.treeModel = treeModel;
 
 		if (fEntry instanceof Directory) {
 			setAllowsChildren(true);
-			for (FEntry childFEntry : ((Directory) fEntry).getFEntries()) {
+			for (final FEntry childFEntry : ((Directory) fEntry).getFEntries()) {
 				add(new FEntryTreeNode(this.treeModel, childFEntry));
 			}
 		} else {
@@ -70,28 +70,28 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 	 */
 	private final DirectoryObserver observer = new DirectoryObserver() {
 		@Override
-		public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
+		public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
 			if (reason.equals(ChangeType.NAME_CHANGED)) {
 				setUserObject(fEntry);        //set to trigger UI update
 			}
 		}
 
 		@Override
-		public void addedChildrenNotification(Directory parent, ImmutableList<FEntry> newChildren) {
-			for (FEntry child : newChildren) {
+		public void addedChildrenNotification(final Directory parent, final ImmutableList<FEntry> newChildren) {
+			for (final FEntry child : newChildren) {
 				treeModel.insertNodeInto(new FEntryTreeNode(treeModel, child), FEntryTreeNode.this, 0);
 			}
 		}
 
 		@Override
-		public void removedChildrenNotification(Directory parent, ImmutableList<FEntry> removedChildren) {
-			List<FEntry> remainingChildrenToRemove = new ArrayList<FEntry>(removedChildren);
+		public void removedChildrenNotification(final Directory parent, final ImmutableList<FEntry> removedChildren) {
+			final List<FEntry> remainingChildrenToRemove = new ArrayList<FEntry>(removedChildren);
 			while (!remainingChildrenToRemove.isEmpty()) {
 				FEntryTreeNode nodeToRemove = null;
-				Enumeration children = children();
+				final Enumeration children = children();
 				while (children.hasMoreElements()) {
-					FEntryTreeNode child = (FEntryTreeNode) children.nextElement();
-					FEntry childFEntry = (FEntry) child.getUserObject();
+					final FEntryTreeNode child = (FEntryTreeNode) children.nextElement();
+					final FEntry childFEntry = (FEntry) child.getUserObject();
 					if (childFEntry.equals(removedChildren.get(0))) {
 						nodeToRemove = child;
 						break;
@@ -103,7 +103,7 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 		}
 
 		@Override
-		public void fEntryDeletedNotification(FEntry fEntry) {
+		public void fEntryDeletedNotification(final FEntry fEntry) {
 			//wird ignoriert, da bereits die Informationen aus einer removedChildrenNotification ausreichen um den Baum zu aktualisieren.
 		}
 	};

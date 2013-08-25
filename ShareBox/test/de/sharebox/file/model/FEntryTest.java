@@ -37,7 +37,7 @@ public class FEntryTest {
 		fEntry.setName("TestFile");
 		fEntry.setIdentifier(1234);
 
-		FEntry copy = new FEntry(fEntry);
+		final FEntry copy = new FEntry(fEntry);
 
 		assertThat(copy).isNotSameAs(fEntry);
 		assertThat(copy.getName()).isEqualTo(fEntry.getName());
@@ -108,7 +108,7 @@ public class FEntryTest {
 
 		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(1);
-		FEntryPermission permission = fEntry.getPermissionOfUser(user);
+		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
 		assertThat(permission.getUser()).isSameAs(user);
 		assertThat(permission.getReadAllowed()).isTrue();
@@ -128,7 +128,7 @@ public class FEntryTest {
 
 		verify(observer, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(0);
-		FEntryPermission permission = fEntry.getPermissionOfUser(user);
+		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
 		assertThat(permission.getUser()).isSameAs(user);
 		assertThat(permission.getReadAllowed()).isFalse();
@@ -140,7 +140,7 @@ public class FEntryTest {
 	public void changingAPermissionViaSetPermissionDirectlyChangesThePermissionObj() {
 		fEntry.setPermission(user, true, true, true);
 		assertThat(fEntry.getPermissions()).hasSize(1);
-		FEntryPermission permission = fEntry.getPermissionOfUser(user);
+		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 
 		fEntry.setPermission(user, true, false, false);
 		assertThat(fEntry.getPermissions()).hasSize(1);

@@ -12,7 +12,7 @@ public class AddressInfo {
 	 *
 	 * @param addressInfoToCopy Die zu kopierenden Zahlungsinformationen.
 	 */
-	public AddressInfo(AddressInfo addressInfoToCopy) {
+	public AddressInfo(final AddressInfo addressInfoToCopy) {
 		this.setStreet(addressInfoToCopy.getStreet());
 		this.setAdditionalStreet(addressInfoToCopy.getAdditionalStreet());
 		this.setZipCode(addressInfoToCopy.getZipCode());
@@ -69,7 +69,7 @@ public class AddressInfo {
 	 *
 	 * @param street
 	 */
-	public void setStreet(String street) {
+	public void setStreet(final String street) {
 		this.street = street;
 	}
 
@@ -78,7 +78,7 @@ public class AddressInfo {
 	 *
 	 * @param additionalStreet
 	 */
-	public void setAdditionalStreet(String additionalStreet) {
+	public void setAdditionalStreet(final String additionalStreet) {
 		this.additionalStreet = additionalStreet;
 	}
 
@@ -87,7 +87,7 @@ public class AddressInfo {
 	 *
 	 * @param zipCode
 	 */
-	public void setZipCode(String zipCode) {
+	public void setZipCode(final String zipCode) {
 		this.zipCode = zipCode;
 	}
 
@@ -96,7 +96,7 @@ public class AddressInfo {
 	 *
 	 * @param city
 	 */
-	public void setCity(String city) {
+	public void setCity(final String city) {
 		this.city = city;
 	}
 
@@ -105,16 +105,16 @@ public class AddressInfo {
 	 *
 	 * @param country
 	 */
-	public void setCountry(String country) {
+	public void setCountry(final String country) {
 		this.country = country;
 	}
 
 	@Override
-	public boolean equals(Object otherObj) {
+	public boolean equals(final Object otherObj) {
 		boolean equal = true;
 
 		if (otherObj.getClass().equals(getClass())) {
-			AddressInfo otherAddressInfo = (AddressInfo) otherObj;
+			final AddressInfo otherAddressInfo = (AddressInfo) otherObj;
 
 			if (!Objects.equal(street, otherAddressInfo.getStreet()) ||
 					!Objects.equal(additionalStreet, otherAddressInfo.getAdditionalStreet()) ||

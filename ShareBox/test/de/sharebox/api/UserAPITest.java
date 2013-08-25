@@ -38,7 +38,7 @@ public class UserAPITest {
 		user.setFirstname("Max");
 		user.setLastname("Mustermann");
 
-		AddressInfo addressInfo = new AddressInfo();
+		final AddressInfo addressInfo = new AddressInfo();
 		addressInfo.setStreet("Mustersraße 1");
 		addressInfo.setCity("Musterstadt");
 		addressInfo.setCountry("Deutschland");

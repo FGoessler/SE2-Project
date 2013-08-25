@@ -28,7 +28,7 @@ public class DirectoryViewClipboardService {
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
 	 */
 	@Inject
-	DirectoryViewClipboardService(OptionPaneHelper optionPaneHelper) {
+	DirectoryViewClipboardService(final OptionPaneHelper optionPaneHelper) {
 		this.optionPane = optionPaneHelper;
 	}
 
@@ -38,7 +38,7 @@ public class DirectoryViewClipboardService {
 	 *
 	 * @param copiedFEntry Der zu kopierende FEntry, der in die Zwischenablage abgelegt werden soll.
 	 */
-	public void addToClipboard(FEntry copiedFEntry) {
+	public void addToClipboard(final FEntry copiedFEntry) {
 		if (copiedFEntry instanceof File) {
 			clipboard.add(new File((File) copiedFEntry));
 		} else {
@@ -52,8 +52,8 @@ public class DirectoryViewClipboardService {
 	 *
 	 * @param fEntries die zu kopierenden FEntries, die in die Zwischenablage abgelegt werden sollen.
 	 */
-	public void addToClipboard(List<FEntry> fEntries) {
-		for (FEntry fEntry : fEntries) {
+	public void addToClipboard(final List<FEntry> fEntries) {
+		for (final FEntry fEntry : fEntries) {
 			addToClipboard(fEntry);
 		}
 	}
@@ -64,10 +64,10 @@ public class DirectoryViewClipboardService {
 	 * @param targetDirectory Das Verzeichnis in das die Inhalte eingefügt werden sollen.
 	 * @return Das Verzeichnis nach dem Einfügenvorgang.
 	 */
-	public Directory pasteClipboardContent(Directory targetDirectory) {
+	public Directory pasteClipboardContent(final Directory targetDirectory) {
 		if (targetDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
 			if (!clipboard.isEmpty()) {
-				for (FEntry pasteFEntry : clipboard) {
+				for (final FEntry pasteFEntry : clipboard) {
 					targetDirectory.addFEntry(pasteFEntry);
 				}
 			}

@@ -24,8 +24,8 @@ public class InvitationController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	InvitationController(OptionPaneHelper optionPaneHelper,
-						 UserAPI userAPI) {
+	InvitationController(final OptionPaneHelper optionPaneHelper,
+						 final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
@@ -34,10 +34,10 @@ public class InvitationController {
 	 * Öffnen des Einladen Dialog-Fensters.
 	 */
 	public void show() {
-		String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse der Person ein, die Sie zu Sharebox Ultimate einladen möchten.", "");
+		final String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse der Person ein, die Sie zu Sharebox Ultimate einladen möchten.", "");
 
 		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
-			User invitedUser = new User();
+			final User invitedUser = new User();
 			invitedUser.setEmail(newUserMail);
 
 			if (userAPI.inviteUser(userAPI.getCurrentUser(), invitedUser)) {
