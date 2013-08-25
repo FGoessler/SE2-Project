@@ -24,7 +24,8 @@ public class SwingEngineHelper {
 
 		try {
 			final SwingEngine swix = new SwingEngine(client);
-			component = swix.render("resources/xml/" + resourceName + ".xml");
+			final ClassLoader classLoader = getClass().getClassLoader();
+			component = swix.render(classLoader.getResourceAsStream("resources/xml/" + resourceName + ".xml"));
 		} catch (Exception exception) {
 			System.out.println("Couldn't create " + resourceName);
 		}

@@ -139,7 +139,7 @@ public class User {
 	 *
 	 * @param storageLimit
 	 */
-	public void setStorageLimit(final StorageLimit storageLimit) {        //TODO: create a enum or store as numbers
+	public void setStorageLimit(final StorageLimit storageLimit) {
 		this.storageLimit = storageLimit;
 	}
 

@@ -82,10 +82,10 @@ public class PermissionViewControllerTest {
 		assertThat(permissionViewController.tableModel.getColumnCount()).isEqualTo(4);
 
 		//check column titles
-		assertThat(permissionViewController.tableModel.getColumnClass(0)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(1)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(2)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(3)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(0)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(1)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(2)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(3)).isNotNull();
 
 		//check column classes
 		assertThat(permissionViewController.tableModel.getColumnClass(0)).isEqualTo(String.class);

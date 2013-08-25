@@ -19,6 +19,7 @@ public class FEntry {
 	private String name;
 
 	private final List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
+	protected final List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	protected final List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
@@ -32,7 +33,24 @@ public class FEntry {
 	}
 
 	/**
-	 * Der Copy Konstruktor.
+	 * Erstellt einen neuen FEntry mit den gegebenen Werten, feuert dabei allerdings keine Notifications und erstellt
+	 * auch nur einen "Created" LogEntry anstatt eines "Renamed" und "PermissionChanged" LogEntry.
+	 *
+	 * @param userAPI      Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                     Nutzer zu bestimmen und Rechte zu überprüfen.
+	 * @param name         Der Name des FEntries.
+	 * @param creatingUser Der Nutzer, der initial alle Rechte auf diesem FEntry erhält.
+	 */
+	public FEntry(final UserAPI userAPI, final String name, final User creatingUser) {
+		this.userAPI = userAPI;
+		this.name = name;
+		permissions.add(new FEntryPermission(creatingUser, this, true, true, true));
+		addLogEntry(LogEntry.LogMessage.CREATED);
+	}
+
+	/**
+	 * Der Copy Konstruktor. Permissions und LogEntries werden ebenfalls mit ihrem Copy Konstruktor kopiert.
+	 * Observer werden nicht übertragen.
 	 *
 	 * @param sourceFEntry Das zu kopierende Objekt.
 	 */
@@ -43,10 +61,10 @@ public class FEntry {
 
 		//copy permissions
 		for (final FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
-			final FEntryPermission newPermission = new FEntryPermission(oldPermission.getUser(), this);
-			newPermission.setPermissions(oldPermission.getReadAllowed(), oldPermission.getWriteAllowed(), oldPermission.getManageAllowed());
-
-			permissions.add(newPermission);
+			permissions.add(new FEntryPermission(oldPermission));
+		}
+		for (final LogEntry oldLogEntry : sourceFEntry.getLogEntries()) {
+			logEntries.add(new LogEntry(oldLogEntry));
 		}
 	}
 
@@ -92,7 +110,7 @@ public class FEntry {
 	 */
 	public void setName(final String name) {
 		this.name = name;
-
+		addLogEntry(LogEntry.LogMessage.RENAMED);
 		fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
 	}
 
@@ -163,11 +181,10 @@ public class FEntry {
 			if (!permissions.contains(permission)) {
 				permissions.add(permission);
 			}
-
-			permission.setPermissions(read, write, manage);        //Notification wird vom FEntryPermission Objekt ausgelöst
+			permission.setPermissions(read, write, manage);        //Notification und LogMessage werden vom FEntryPermission Objekt erstellt
 		} else {
 			permissions.remove(permission);
-
+			addLogEntry(LogEntry.LogMessage.PERMISSION);
 			fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		}
 	}
@@ -216,5 +233,13 @@ public class FEntry {
 	 */
 	public FEntryPermission getPermissionOfCurrentUser() {
 		return getPermissionOfUser(getUserAPI().getCurrentUser());
+	}
+
+	public ImmutableList<LogEntry> getLogEntries() {
+		return ImmutableList.copyOf(logEntries);
+	}
+
+	public void addLogEntry(final LogEntry.LogMessage message) {
+		logEntries.add(new LogEntry(message));
 	}
 }

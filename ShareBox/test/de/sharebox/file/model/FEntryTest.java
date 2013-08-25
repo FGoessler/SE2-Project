@@ -19,29 +19,58 @@ public class FEntryTest {
 
 	@Mock
 	private UserAPI mockedUserAPI;
-
-	@Mock
-	private FEntryObserver observer;
 	@Mock
 	private User user;
+	@Mock
+	private FEntryObserver observer;
 
 	@Before
 	public void setUp() {
-		fEntry = new FEntry(mockedUserAPI);
-
+		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 		when(user.getEmail()).thenReturn("testmail@test.de");
+
+		fEntry = new FEntry(mockedUserAPI);
+	}
+
+	@Test
+	public void hasAConstructorToBeCreateWithSpecificValuesAndDefaultPermissions() {
+		FEntry testFEntry = new FEntry(mockedUserAPI, "Testfile", user);
+
+		assertThat(testFEntry.getName()).isEqualTo("Testfile");
+		assertThat(testFEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
+		assertThat(testFEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
+		assertThat(testFEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
+
+		assertThat(testFEntry.getLogEntries()).hasSize(1);
+		assertThat(testFEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
 	}
 
 	@Test
 	public void hasACopyConstructor() {
 		fEntry.setName("TestFile");
 		fEntry.setIdentifier(1234);
+		fEntry.setPermission(user, true, true, true);
 
 		final FEntry copy = new FEntry(fEntry);
 
 		assertThat(copy).isNotSameAs(fEntry);
 		assertThat(copy.getName()).isEqualTo(fEntry.getName());
 		assertThat(copy.getIdentifier()).isEqualTo(fEntry.getIdentifier());
+
+		//test that all permission have been deep copied
+		assertThat(copy.getPermissions()).isNotEmpty();
+		for (final FEntryPermission newPermission : copy.getPermissions()) {
+			for (final FEntryPermission oldPermission : fEntry.getPermissions()) {
+				assertThat(newPermission).isNotSameAs(oldPermission);
+			}
+		}
+		//test that all log entries have been deep copied
+		assertThat(copy.getLogEntries()).isNotEmpty();
+		for (final LogEntry newLogEntry : copy.getLogEntries()) {
+			for (final LogEntry oldLogEntry : fEntry.getLogEntries()) {
+				assertThat(newLogEntry).isNotSameAs(oldLogEntry);
+			}
+		}
 	}
 
 	@Test
@@ -114,6 +143,8 @@ public class FEntryTest {
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
+
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.PERMISSION);
 	}
 
 	@Test
@@ -149,5 +180,25 @@ public class FEntryTest {
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isFalse();
 		assertThat(permission.getManageAllowed()).isFalse();
+
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.PERMISSION);
+	}
+
+	@Test
+	public void changingTheNameFiresNotificationAndCreatesLogEntry() {
+		fEntry.addObserver(observer);
+
+		fEntry.setName("Test");
+
+		verify(observer).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.NAME_CHANGED);
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.RENAMED);
+	}
+
+	@Test
+	public void canAddLogEntriesAndCanBeAskForAListLogEntries() {
+		fEntry.addLogEntry(LogEntry.LogMessage.CHANGED);
+
+		assertThat(fEntry.getLogEntries()).hasSize(1);
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CHANGED);
 	}
 }

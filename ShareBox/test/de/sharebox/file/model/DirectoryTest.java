@@ -29,7 +29,7 @@ public class DirectoryTest {
 
 	@Before
 	public void setUp() {
-		directory = new Directory(mockedUserAPI);
+		directory = new Directory(mockedUserAPI, "ParentDir", mockedUser);
 		directory.addObserver(observer);
 
 		when(mockedUserAPI.getCurrentUser()).thenReturn(mockedUser);
@@ -83,6 +83,9 @@ public class DirectoryTest {
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
 
+		assertThat(createdFile.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
+		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_FILE);
+
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));    //assert that notification was sent
 	}
 
@@ -101,6 +104,9 @@ public class DirectoryTest {
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
+
+		assertThat(createdDirectory.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
+		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_DIRECTORY);
 
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));    //assert that notification was sent
 	}
@@ -124,6 +130,25 @@ public class DirectoryTest {
 	}
 
 	@Test
+	public void canAddExistingFEntries() {
+		final File newFile = new File(mockedUserAPI, TEST_FILENAME, mockedUser);
+
+		directory.addFEntry(newFile);
+
+		assertThat(directory.getFEntries()).contains(newFile);
+		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_FILE);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(newFile));    //assert that notification was sent
+
+		final Directory newDirectory = new Directory(mockedUserAPI, TEST_DIRNAME, mockedUser);
+
+		directory.addFEntry(newDirectory);
+
+		assertThat(directory.getFEntries()).contains(newDirectory);
+		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_DIRECTORY);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(newDirectory));    //assert that notification was sent
+	}
+
+	@Test
 	public void canRemoveFiles() {
 		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
 		createdFile.addObserver(observer);
@@ -136,6 +161,8 @@ public class DirectoryTest {
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
 		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
+
+		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_FILE);
 	}
 
 	@Test
@@ -156,5 +183,7 @@ public class DirectoryTest {
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
 		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
+
+		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_DIRECTORY);
 	}
 }

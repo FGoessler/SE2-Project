@@ -23,6 +23,8 @@ import java.util.List;
  * Dieser Controller ist für die Darstellung der Rechte in der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
  */
 public class PermissionViewController {
+	public static final String NO_FENTRY_SELECTED_MSG = "Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.";
+
 	private final DirectoryViewSelectionService selectionService;
 	private final SharingService sharingService;
 	private final OptionPaneHelper optionPane;
@@ -41,6 +43,7 @@ public class PermissionViewController {
 	 * @param selectionService Ein DirectoryViewSelectionService mittels dessen die aktuelle Auswahl des Nutzer im JTree
 	 *                         festgestellt werden kann.
 	 * @param sharingService   Eine SharingService Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
 	 */
 	@Inject
 	PermissionViewController(final @Assisted JSplitPane splitPane,
@@ -84,7 +87,7 @@ public class PermissionViewController {
 				currentFEntry = Optional.absent();
 
 				buttonPanel.setVisible(false);
-				messageTextArea.setText("Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
+				messageTextArea.setText(NO_FENTRY_SELECTED_MSG);
 				messageTextArea.setVisible(true);
 			} else {
 				buttonPanel.setVisible(true);
@@ -114,7 +117,7 @@ public class PermissionViewController {
 			currentFEntry = Optional.absent();
 
 			buttonPanel.setVisible(false);
-			messageTextArea.setText("Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
+			messageTextArea.setText(NO_FENTRY_SELECTED_MSG);
 			messageTextArea.setVisible(true);
 
 			tableModel.fireTableDataChanged();
@@ -144,7 +147,7 @@ public class PermissionViewController {
 
 		@Override
 		public int getColumnCount() {
-			return 4;
+			return columnNames.length;
 		}
 
 		@Override

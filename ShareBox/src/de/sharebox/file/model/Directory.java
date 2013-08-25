@@ -3,6 +3,7 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,19 @@ public class Directory extends FEntry {
 	 */
 	public Directory(final UserAPI userAPI) {
 		super(userAPI);
+	}
+
+	/**
+	 * Erstellt ein neues Directory mit den gegebenen Werten, feuert dabei allerdings keine Notifications und erstellt
+	 * auch nur einen "Created" LogEntry anstatt eines "Renamed" und "PermissionChanged" LogEntry.
+	 *
+	 * @param userAPI      Die aktuell für dieses Directory relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                     Nutzer zu bestimmen und Rechte zu überprüfen.
+	 * @param name         Der Name des Directories.
+	 * @param creatingUser Der Nutzer, der initial alle Rechte auf diesem Directory erhält.
+	 */
+	public Directory(final UserAPI userAPI, final String name, final User creatingUser) {
+		super(userAPI, name, creatingUser);
 	}
 
 	/**
@@ -62,12 +76,10 @@ public class Directory extends FEntry {
 		Optional<File> newFile = Optional.absent();
 
 		if (!fEntryExists(filename)) {
-			newFile = Optional.of(new File(getUserAPI()));
-			newFile.get().setName(filename);
-			newFile.get().setPermission(getUserAPI().getCurrentUser(), true, true, true);
+			newFile = Optional.of(new File(getUserAPI(), filename, getUserAPI().getCurrentUser()));
 
 			fEntries.add(newFile.get());
-
+			addLogEntry(LogEntry.LogMessage.ADDED_FILE);
 			fireAddedChildrenNotification(newFile.get());
 		}
 
@@ -87,12 +99,10 @@ public class Directory extends FEntry {
 		Optional<Directory> newDir = Optional.absent();
 
 		if (!fEntryExists(dirname)) {
-			newDir = Optional.of(new Directory(getUserAPI()));
-			newDir.get().setName(dirname);
-			newDir.get().setPermission(getUserAPI().getCurrentUser(), true, true, true);
+			newDir = Optional.of(new Directory(getUserAPI(), dirname, getUserAPI().getCurrentUser()));
 
 			fEntries.add(newDir.get());
-
+			addLogEntry(LogEntry.LogMessage.ADDED_DIRECTORY);
 			fireAddedChildrenNotification(newDir.get());
 		}
 
@@ -108,6 +118,12 @@ public class Directory extends FEntry {
 	 */
 	public void addFEntry(final FEntry newFEntry) {
 		fEntries.add(newFEntry);
+
+		if (newFEntry instanceof File) {
+			addLogEntry(LogEntry.LogMessage.ADDED_FILE);
+		} else if (newFEntry instanceof Directory) {
+			addLogEntry(LogEntry.LogMessage.ADDED_DIRECTORY);
+		}
 
 		fireAddedChildrenNotification(newFEntry);
 	}
@@ -130,6 +146,12 @@ public class Directory extends FEntry {
 			}
 		}
 		fEntries.remove(fEntry);
+
+		if (fEntry instanceof File) {
+			addLogEntry(LogEntry.LogMessage.REMOVED_FILE);
+		} else if (fEntry instanceof Directory) {
+			addLogEntry(LogEntry.LogMessage.REMOVED_DIRECTORY);
+		}
 
 		fEntry.fireDeleteNotification();
 		fireRemovedChildrenNotification(fEntry);
@@ -169,7 +191,7 @@ public class Directory extends FEntry {
 		}
 	}
 
-	private Boolean fEntryExists(String fileName) {
+	private Boolean fEntryExists(final String fileName) {
 		boolean exists = false;
 		for (final FEntry fEntry : fEntries) {
 			if (fEntry.getName().equals(fileName)) {

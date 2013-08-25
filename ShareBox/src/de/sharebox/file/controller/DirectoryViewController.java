@@ -89,9 +89,7 @@ public class DirectoryViewController {
 	 */
 	@Deprecated
 	private Directory createMockDirectoryTree() {
-		final Directory root = new Directory(userAPI);
-		root.setName("The main dir");
-		root.setPermission(userAPI.getCurrentUser(), true, true, true);
+		final Directory root = new Directory(userAPI, "The main dir", userAPI.getCurrentUser());
 		// Registriert root directory im FileManager - weitere FEntries werden automatisch durch Reaktion auf Notifications registriert.
 		// Dieser Schritt sollte später natürlich nicht hier ausgeführt werden sondern bevor das Root Directory eines Users an diesen
 		// Controller übergeben wird. Damit fallen dann auch die Abhänigkeiten zur UserAPI (und dem FileManager) weg. Stattdessen

@@ -17,6 +17,7 @@ public class FEntryPermission {
 
 	/**
 	 * Erstellt ein neue FEntryPermission Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
+	 * Die Standardrechte hierbei sind alles auf false.
 	 *
 	 * @param user   Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
@@ -24,6 +25,39 @@ public class FEntryPermission {
 	public FEntryPermission(final @NotNull User user, final @NotNull FEntry fEntry) {
 		this.user = user;
 		this.fEntry = fEntry;
+	}
+
+	/**
+	 * Erstellt ein neue FEntryPermission Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
+	 * Hinweis: Dieser Konstruktor dient dazu ein initilaes Objekt mit bestimmten Rechten zu erzeugen und feuert
+	 * im Gegensatz zu den set-Methoden keine Notification auf dem FEntry und erzeugt auch keinen LogEntry.
+	 *
+	 * @param user          Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
+	 * @param fEntry        Der FEntry für den die Rechte des Users definiert werden.
+	 * @param readAllowed   Der initale Wert für Leserechte.
+	 * @param writeAllowed  Der initale Wert für Schreibrechte.
+	 * @param manageAllowed Der initale Wert für Verwaltungsrechte.
+	 */
+	public FEntryPermission(final @NotNull User user, final @NotNull FEntry fEntry,
+							final Boolean readAllowed, final Boolean writeAllowed, final Boolean manageAllowed) {
+		this.user = user;
+		this.fEntry = fEntry;
+		this.readAllowed = readAllowed;
+		this.writeAllowed = writeAllowed;
+		this.manageAllowed = manageAllowed;
+	}
+
+	/**
+	 * Copy-Konstruktor.
+	 *
+	 * @param permissionToCopy Das zu kopierende FEntryPermission Objekt.
+	 */
+	public FEntryPermission(final FEntryPermission permissionToCopy) {
+		this.user = permissionToCopy.getUser();
+		this.fEntry = permissionToCopy.getFEntry();
+		this.readAllowed = permissionToCopy.getReadAllowed();
+		this.writeAllowed = permissionToCopy.getWriteAllowed();
+		this.manageAllowed = permissionToCopy.getManageAllowed();
 	}
 
 	/**
@@ -55,13 +89,12 @@ public class FEntryPermission {
 
 	/**
 	 * Setzt die Leserechte und feuert eine PERMISSION_CHANGED Notification auf dem fEntry.
+	 * Erstellt zudem einen entsprechenden LogEntry.
 	 *
 	 * @param readAllowed Der neue Wert für die Leserechte.
 	 */
 	public void setReadAllowed(final Boolean readAllowed) {
-		this.readAllowed = readAllowed;
-
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		setPermissions(readAllowed, this.writeAllowed, this.manageAllowed);
 	}
 
 	/**
@@ -75,13 +108,12 @@ public class FEntryPermission {
 
 	/**
 	 * Setzt die Schreibrechte und feuert eine PERMISSION_CHANGED Notification auf dem fEntry.
+	 * Erstellt zudem einen entsprechenden LogEntry.
 	 *
 	 * @param writeAllowed Der neue Wert für die Schreibrechte.
 	 */
 	public void setWriteAllowed(final Boolean writeAllowed) {
-		this.writeAllowed = writeAllowed;
-
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		setPermissions(this.readAllowed, writeAllowed, this.manageAllowed);
 	}
 
 	/**
@@ -95,17 +127,17 @@ public class FEntryPermission {
 
 	/**
 	 * Setzt die Verwaltungsrechte und feuert eine PERMISSION_CHANGED Notification auf dem fEntry.
+	 * Erstellt zudem einen entsprechenden LogEntry.
 	 *
 	 * @param manageAllowed Der neue Wert für die Verwaltungsrechte.
 	 */
 	public void setManageAllowed(final Boolean manageAllowed) {
-		this.manageAllowed = manageAllowed;
-
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		setPermissions(this.readAllowed, this.writeAllowed, manageAllowed);
 	}
 
 	/**
 	 * Setzt alle 3 Rechte auf einmal und feuert somit die PERMISSION_CHANGED Notification auf dem FEntry nur einmal.
+	 * Erstellt zudem einen entsprechenden LogEntry.
 	 *
 	 * @param read   Der neue Wert für Leserechte.
 	 * @param write  Der neue Wert für Schreibrechte.
@@ -116,6 +148,7 @@ public class FEntryPermission {
 		writeAllowed = write;
 		manageAllowed = manage;
 
+		fEntry.addLogEntry(LogEntry.LogMessage.PERMISSION);
 		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
 	}
 }
