@@ -15,21 +15,21 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class DirectoryTest {
 
-	private transient Directory directory;
+	private Directory directory;
 
 	@Mock
-	private transient DirectoryObserver observer;
+	private DirectoryObserver observer;
 	@Mock
-	private transient User mockedUser;
+	private User mockedUser;
 	@Mock
-	private transient UserAPI mockedUserAPI;
+	private UserAPI mockedUserAPI;
 
 	private static final String TEST_FILENAME = "TestFile";
 	private static final String TEST_DIRNAME = "TestDirectory";
 
 	@Before
 	public void setUp() {
-		directory = new Directory(mockedUserAPI);
+		directory = new Directory(mockedUserAPI, "ParentDir", mockedUser);
 		directory.addObserver(observer);
 
 		when(mockedUserAPI.getCurrentUser()).thenReturn(mockedUser);
@@ -47,7 +47,7 @@ public class DirectoryTest {
 		directory.createNewFile(TEST_FILENAME);
 		directory.createNewDirectory(TEST_DIRNAME + "2");
 
-		Directory copy = new Directory(directory);
+		final Directory copy = new Directory(directory);
 
 		assertThat(copy).isNotSameAs(directory);
 		assertThat(copy.getFEntries()).isNotSameAs(directory.getFEntries());
@@ -69,46 +69,60 @@ public class DirectoryTest {
 
 	@Test
 	public void canCreateNewSubFiles() {
-		File createdFile = directory.createNewFile(TEST_FILENAME);
+		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
 
 		assertThat(createdFile.getName()).isEqualTo(TEST_FILENAME);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
-		//check permission
+		//check that initial permission was set
 		assertThat(createdFile.getPermissions()).hasSize(1);
-		FEntryPermission permission = createdFile.getPermissions().get(0);
+		final FEntryPermission permission = createdFile.getPermissions().get(0);
 		assertThat(permission.getUser()).isSameAs(mockedUser);
 		assertThat(permission.getFEntry()).isSameAs(createdFile);
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
 
+		assertThat(createdFile.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
+		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_FILE);
+
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));    //assert that notification was sent
 	}
 
 	@Test
 	public void canCreateNewSubDirectories() {
-		Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME);
+		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME).get();
 
 		assertThat(createdDirectory.getName()).isEqualTo(TEST_DIRNAME);
 		assertThat(directory.getFEntries()).contains(createdDirectory);
 
-		//check permission
+		//check that initial permission was se
 		assertThat(createdDirectory.getPermissions()).hasSize(1);
-		FEntryPermission permission = createdDirectory.getPermissions().get(0);
+		final FEntryPermission permission = createdDirectory.getPermissions().get(0);
 		assertThat(permission.getUser()).isSameAs(mockedUser);
 		assertThat(permission.getFEntry()).isSameAs(createdDirectory);
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
 
+		assertThat(createdDirectory.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
+		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_DIRECTORY);
+
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));    //assert that notification was sent
 	}
 
 	@Test
+	public void cannotCreateFEntriesWithAlreadyUsedNames() {
+		assertThat(directory.createNewDirectory(TEST_DIRNAME).isPresent()).isTrue();
+
+		assertThat(directory.createNewDirectory(TEST_DIRNAME).isPresent()).isFalse();
+		assertThat(directory.createNewFile(TEST_DIRNAME).isPresent()).isFalse();
+	}
+
+	@Test
 	public void canContainMultipleFEntries() {
-		File createdFile = directory.createNewFile(TEST_FILENAME);
-		Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME);
+		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
+		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME).get();
 
 		assertThat(directory.getFEntries()).hasSize(2);
 		assertThat(directory.getFEntries()).contains(createdFile);
@@ -116,8 +130,27 @@ public class DirectoryTest {
 	}
 
 	@Test
+	public void canAddExistingFEntries() {
+		final File newFile = new File(mockedUserAPI, TEST_FILENAME, mockedUser);
+
+		directory.addFEntry(newFile);
+
+		assertThat(directory.getFEntries()).contains(newFile);
+		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_FILE);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(newFile));    //assert that notification was sent
+
+		final Directory newDirectory = new Directory(mockedUserAPI, TEST_DIRNAME, mockedUser);
+
+		directory.addFEntry(newDirectory);
+
+		assertThat(directory.getFEntries()).contains(newDirectory);
+		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_DIRECTORY);
+		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(newDirectory));    //assert that notification was sent
+	}
+
+	@Test
 	public void canRemoveFiles() {
-		File createdFile = directory.createNewFile(TEST_FILENAME);
+		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
 		createdFile.addObserver(observer);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
@@ -128,13 +161,15 @@ public class DirectoryTest {
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
 		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
+
+		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_FILE);
 	}
 
 	@Test
 	public void removesContentOfDirectoriesRecursively() {
-		Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME);
+		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME).get();
 		createdDirectory.addObserver(observer);
-		File createdFile = createdDirectory.createNewFile(TEST_FILENAME);
+		final File createdFile = createdDirectory.createNewFile(TEST_FILENAME).get();
 		createdFile.addObserver(observer);
 
 		assertThat(directory.getFEntries()).contains(createdDirectory);
@@ -148,5 +183,7 @@ public class DirectoryTest {
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
 		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
 		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
+
+		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_DIRECTORY);
 	}
 }

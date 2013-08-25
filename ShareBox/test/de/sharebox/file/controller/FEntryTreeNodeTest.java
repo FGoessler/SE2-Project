@@ -18,6 +18,8 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTreeNodeTest {
+	public static final String FILENAME = "Testfile";
+	public static final String TESTDIR = "Testdir";
 	private FEntryTreeNode treeNode;
 
 	@Mock
@@ -27,38 +29,38 @@ public class FEntryTreeNodeTest {
 
 	@Test
 	public void canBeCreatedWithAFile() {
-		File file = new File(mockedUserAPI);
-		file.setName("Testfile");
+		final File file = new File(mockedUserAPI);
+		file.setName(FILENAME);
 		treeNode = new FEntryTreeNode(treeModel, file);
 
 		assertThat(treeNode.getFEntry()).isSameAs(file);
 		assertThat(treeNode.isLeaf()).isTrue();
-		assertThat(treeNode.toString()).isEqualTo("Testfile");
+		assertThat(treeNode.toString()).isEqualTo(FILENAME);
 		assertThat(treeNode.getChildCount()).isEqualTo(0);
 	}
 
 	@Test
 	public void canBeCreatedWithADirectory() {
-		Directory directory = new Directory(mockedUserAPI);
-		directory.setName("Testdir");
-		directory.createNewFile("Testfile");
+		final Directory directory = new Directory(mockedUserAPI);
+		directory.setName(TESTDIR);
+		directory.createNewFile(FILENAME);
 		treeNode = new FEntryTreeNode(treeModel, directory);
 
 		assertThat(treeNode.getFEntry()).isSameAs(directory);
 		assertThat(treeNode.isLeaf()).isFalse();
 		assertThat(treeNode.getAllowsChildren()).isTrue();
-		assertThat(treeNode.toString()).isEqualTo("Testdir");
+		assertThat(treeNode.toString()).isEqualTo(TESTDIR);
 		assertThat(treeNode.getChildCount()).isEqualTo(1);
 	}
 
 	@Test
 	public void handlesAddedChildrenNotifications() {
-		Directory directory = new Directory(mockedUserAPI);
+		final Directory directory = new Directory(mockedUserAPI);
 		treeNode = new FEntryTreeNode(treeModel, directory);
-		File addedFile = directory.createNewFile("Testfile");    //this line should fire the notification
+		final File addedFile = directory.createNewFile(FILENAME).get();    //this line should fire the notification
 
-		ArgumentCaptor<MutableTreeNode> child = ArgumentCaptor.forClass(MutableTreeNode.class);
-		ArgumentCaptor<MutableTreeNode> parent = ArgumentCaptor.forClass(MutableTreeNode.class);
+		final ArgumentCaptor<MutableTreeNode> child = ArgumentCaptor.forClass(MutableTreeNode.class);
+		final ArgumentCaptor<MutableTreeNode> parent = ArgumentCaptor.forClass(MutableTreeNode.class);
 		verify(treeModel).insertNodeInto(child.capture(), parent.capture(), anyInt());
 
 		assertThat(child.getValue()).isInstanceOf(FEntryTreeNode.class);
@@ -69,12 +71,12 @@ public class FEntryTreeNodeTest {
 
 	@Test
 	public void handlesRemovedChildrenNotifications() {
-		Directory directory = new Directory(mockedUserAPI);
-		File removedFile = directory.createNewFile("Testfile");
+		final Directory directory = new Directory(mockedUserAPI);
+		final File removedFile = directory.createNewFile(FILENAME).get();
 		treeNode = new FEntryTreeNode(treeModel, directory);
 		directory.deleteFEntry(removedFile);                //this line should fire the notification
 
-		ArgumentCaptor<MutableTreeNode> argument = ArgumentCaptor.forClass(MutableTreeNode.class);
+		final ArgumentCaptor<MutableTreeNode> argument = ArgumentCaptor.forClass(MutableTreeNode.class);
 		verify(treeModel).removeNodeFromParent(argument.capture());
 
 		assertThat(argument.getValue()).isInstanceOf(FEntryTreeNode.class);

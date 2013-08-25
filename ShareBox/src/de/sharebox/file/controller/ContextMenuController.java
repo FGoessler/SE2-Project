@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Dieser Kontextmenü-Controller ruft, bei Rechtsklick auf einen Eintrag im JTree, den DirectoryViewController auf.
+ * Dieser Controller ist für das Kontextmenü verantwortlich, das per Rechtsklick auf einen Eintrag im JTree des
+ * DirectoryViewControllers aufgerufen werden kann.
  */
 public class ContextMenuController {
 	private final DirectoryViewSelectionService selectionService;
@@ -31,13 +32,13 @@ public class ContextMenuController {
 	private Optional<TreePath> currentTreePath = Optional.absent();
 
 	/**
-	 * Das JPopupMenu dieses Kontextmenüs. Wird mittels SWIxml gesetzt.
+	 * Das JPopupMenu dieses Kontextmenüs.<br/>
+	 * Wird mittels SWIxml gesetzt.
 	 */
 	protected JPopupMenu popupMenu;
 
 	/**
-	 * Erstellt ein neues Kontextmenü. Das Menü wird dazu aus der contextMenu.xml-Datei generiert.<br/>
-	 * Dieses Objekt sollte nur per Dependency Injection von Guice erstellt werden.
+	 * Erstellt ein neues Kontextmenü. Das Menü wird dazu aus der contextMenu.xml Datei generiert.
 	 *
 	 * @param selectionService Ein DirectoryViewSelectionService um die aktuelle Auswahl im JTree erhalten zu können.
 	 * @param clipboard        Ein DirectoryViewClipboardService um Zugriff auf den Inhalt der Zwischenablage für FEntries zu
@@ -46,10 +47,10 @@ public class ContextMenuController {
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erzeugen von Dialogfenstern.
 	 */
 	@Inject
-	ContextMenuController(DirectoryViewSelectionService selectionService,
-						  DirectoryViewClipboardService clipboard,
-						  SharingService sharingService,
-						  OptionPaneHelper optionPaneHelper) {
+	ContextMenuController(final DirectoryViewSelectionService selectionService,
+						  final DirectoryViewClipboardService clipboard,
+						  final SharingService sharingService,
+						  final OptionPaneHelper optionPaneHelper) {
 
 		this.selectionService = selectionService;
 		this.clipboard = clipboard;
@@ -69,7 +70,7 @@ public class ContextMenuController {
 	 * @param xPos     Die X Koordinate des Klicks.
 	 * @param yPos     Die Y Koordinate des Klicks.
 	 */
-	public void showMenu(@NotNull TreePath treePath, int xPos, int yPos) {
+	public void showMenu(final @NotNull TreePath treePath, final int xPos, final int yPos) {
 		popupMenu.setLocation(xPos, yPos);
 		popupMenu.setVisible(true);
 		currentTreePath = Optional.of(treePath);
@@ -94,7 +95,7 @@ public class ContextMenuController {
 
 	/**
 	 * Gibt den TreePath des vom Nutzer gewählten Objekts zurück. Dieser wurde in der showMenu Methode übergeben 
-	 * und alle Aktionen dieses Kontextmenüs beziehen sich auf dessen letzter Komponente (Treepath).
+	 * und alle Aktionen dieses Kontextmenüs beziehen sich auf dessen letzte Komponente (Treepath).
 	 *
 	 * @return Der TreePath zum aktuell ausgewählten Objekt
 	 */
@@ -130,10 +131,11 @@ public class ContextMenuController {
 
 	/**
 	 * ActionHandler - um auf den Klick auf den "Neue Datei erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action createNewFile = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			selectionService.createNewFileBasedOnUserSelection(Optional.of(ContextMenuController.this));
 
 			hideMenu();
@@ -142,10 +144,11 @@ public class ContextMenuController {
 
 	/**
 	 * ActionHandler - um auf den Klick auf den "Neues Verzeichnis erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action createNewDirectory = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(ContextMenuController.this));
 
 			hideMenu();
@@ -154,11 +157,12 @@ public class ContextMenuController {
 
 	/**
 	 * ActionHandler - um auf den Klick auf den Löschen-Eintrag im Kontextmenü zu reagieren.
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action deleteFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
-			Optional<FEntry> selectedFEntry = getSelectedFEntry();
+		public void actionPerformed(final ActionEvent event) {
+			final Optional<FEntry> selectedFEntry = getSelectedFEntry();
 			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(selectionService.getSelectedFEntries());
 
 			if (selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
@@ -166,7 +170,7 @@ public class ContextMenuController {
 
 				deleteMultipleFEntries(selectedFEntries, selectedFEntriesParents);
 			} else {
-				Directory parentDirectory = (Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
+				final Directory parentDirectory = (Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry();
 				if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
 					parentDirectory.deleteFEntry(selectedFEntry.get());
 				} else {
@@ -187,14 +191,14 @@ public class ContextMenuController {
 	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Optional<Directory>> parentDirectories) {
 		// Add observer to all elements in the list, so they can be removed from the list of items, that
 		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
-		FEntryObserver observer = new FEntryObserver() {
+		final FEntryObserver observer = new FEntryObserver() {
 			@Override
-			public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
+			public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
 				//not used here
 			}
 
 			@Override
-			public void fEntryDeletedNotification(FEntry fEntry) {
+			public void fEntryDeletedNotification(final FEntry fEntry) {
 				//remove FEntry from list
 				int index = fEntriesToDelete.indexOf(fEntry);
 				if (index >= 0) {
@@ -203,12 +207,12 @@ public class ContextMenuController {
 				}
 			}
 		};
-		for (FEntry fEntry : fEntriesToDelete) {
+		for (final FEntry fEntry : fEntriesToDelete) {
 			fEntry.addObserver(observer);
 		}
 
 		//delete all selected FEntries
-		List<String> namesOfNotDeletedFEntries = new ArrayList<String>();
+		final List<String> namesOfNotDeletedFEntries = new ArrayList<String>();
 		while (!parentDirectories.isEmpty()) {
 			if (parentDirectories.get(0).get().getPermissionOfCurrentUser().getWriteAllowed()) {
 				parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
@@ -224,15 +228,16 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * ActionHandler - um auf den Klick auf den Umbennen-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Umbennen-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action renameFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
-			Optional<FEntry> selectedFEntry = getSelectedFEntry();
+		public void actionPerformed(final ActionEvent event) {
+			final Optional<FEntry> selectedFEntry = getSelectedFEntry();
 
 			if (selectedFEntry.isPresent() && selectedFEntry.get().getPermissionOfCurrentUser().getWriteAllowed()) {
-				String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", selectedFEntry.get().getName());
+				final String newName = optionPane.showInputDialog("Geben Sie den neuen Namen an:", selectedFEntry.get().getName());
 
 				selectedFEntry.get().setName(newName);
 			} else {
@@ -244,12 +249,13 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler - um auf den Klick auf den Kopieren-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Kopieren-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action copyFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
-			Optional<FEntry> selectedFEntry = getSelectedFEntry();
+		public void actionPerformed(final ActionEvent event) {
+			final Optional<FEntry> selectedFEntry = getSelectedFEntry();
 			final List<FEntry> selectedFEntries = new ArrayList<FEntry>(selectionService.getSelectedFEntries());
 
 			if (selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
@@ -265,11 +271,12 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler - um auf den Klick auf den Einfügen-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Einfügen-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action pasteFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			Directory pasteDirectory;
 			if (getSelectedFEntry().get() instanceof Directory) {
 				pasteDirectory = (Directory) getSelectedFEntry().get();
@@ -284,12 +291,13 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler - um auf den Klick auf den Teilen-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler um auf den Klick auf den Teilen-Eintrag im Kontextmenü zu reagieren.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
 	public Action shareFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
-			Optional<FEntry> selectedFEntry = getSelectedFEntry();
+		public void actionPerformed(final ActionEvent event) {
+			final Optional<FEntry> selectedFEntry = getSelectedFEntry();
 			final List<FEntry> selectedFEntries = selectionService.getSelectedFEntries();
 
 			if (selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {

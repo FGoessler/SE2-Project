@@ -1,8 +1,12 @@
 package de.sharebox.api;
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.file.model.Directory;
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.enums.StorageLimit;
+import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
@@ -12,19 +16,22 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Singleton
 public class UserAPI {
+	private final FileAPI fileAPI;
+
 	/**
 	 * simuliert die Datenbank;
 	 */
-	protected transient List<User> userList = new ArrayList<User>();
+	private final List<User> userList = new ArrayList<User>();
 
-	private transient User currentUser;
+	private User currentUser;
 
 	/**
 	 * Leerer Konstruktor um ein direktes Erstellen zu verhindern. Als Singleton konzipiert.<br/>
 	 * Instanzen dieser Klasse sollten nur per Dependecy Injection durch Guice erstellt werden.
 	 */
 	@Inject
-	UserAPI() {
+	UserAPI(FileAPI fileAPI) {
+		this.fileAPI = fileAPI;
 	}
 
 	/**
@@ -32,43 +39,44 @@ public class UserAPI {
 	 */
 	public final void createSampleContent() {
 
-		User user = new User();
-		user.setEmail("Max@Mustermann.de");
-		user.setPassword("maxmuster");
-		user.setFirstname("Max");
-		user.setLastname("Mustermann");
+		final User user1 = new User();
+		user1.setEmail("Max@Mustermann.de");
+		user1.setPassword("maxmuster");
+		user1.setFirstname("Max");
+		user1.setLastname("Mustermann");
+		user1.setRootDirectoryIdentifier(0);
 
-		PaymentInfo paymentInfo = new PaymentInfo();
-		paymentInfo.setStreet("Mustersraße 1");
-		paymentInfo.setCity("Musterstadt");
-		paymentInfo.setCountry("Deutschland");
-		paymentInfo.setZipCode("01234");
-		user.setPaymentInfo(paymentInfo);
+		final AddressInfo addressInfo = new AddressInfo();
+		addressInfo.setStreet("Mustersraße 1");
+		addressInfo.setCity("Musterstadt");
+		addressInfo.setCountry("Deutschland");
+		addressInfo.setZipCode("01234");
+		user1.setAddressInfo(addressInfo);
 
-		user.setStorageLimit("10GB");
-		user.setGender("m");
+		user1.setStorageLimit(StorageLimit.GB_10);
+		user1.setGender(Gender.Male);
 
-		User user2 = new User();
+		final User user2 = new User();
 		user2.setEmail("admin");
 		user2.setPassword("root");
 		user2.setFirstname("Hans");
 		user2.setLastname("Kanns");
+		user2.setRootDirectoryIdentifier(2);
 
-		paymentInfo.setStreet("");
-		paymentInfo.setAdditionalStreet("Haus 4, Zimmer 15");
-		paymentInfo.setCity("Berlin");
-		paymentInfo.setCountry("Deutschland");
-		paymentInfo.setZipCode("14569");
-		user2.setPaymentInfo(paymentInfo);
+		addressInfo.setStreet("");
+		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
+		addressInfo.setCity("Berlin");
+		addressInfo.setCountry("Deutschland");
+		addressInfo.setZipCode("14569");
+		user2.setAddressInfo(addressInfo);
 
-		user2.setStorageLimit("20GB");
-		user2.setGender("m");
+		user2.setStorageLimit(StorageLimit.GB_20);
+		user2.setGender(Gender.Male);
 
-		if (registerUser(user) && registerUser(user2)) {
-			APILogger.logMessage("Registered Sampledata");
-		} else {
-			APILogger.logMessage("Registering Sampledata failed");
-		}
+		userList.add(user1);
+		userList.add(user2);
+
+		APILogger.logMessage("Registered Sampledata");
 	}
 
 	/**
@@ -77,18 +85,18 @@ public class UserAPI {
 	 * @param user zu authentifizierender User
 	 * @return ob Authentifizierung erfolgreich war
 	 */
-	public boolean authenticateUser(User user) {
+	public boolean authenticateUser(final User user) {
 		boolean success = false;
-		//search through existing users
-		for (User aUser : userList) {
-			if ((aUser.getEmail().equals(user.getEmail())) && (aUser.getPassword().equals(user.getPassword()))) {
-				success = true;
-			}
+
+		final Optional<User> foundUser = getUserWithMail(user.getEmail());
+		if (foundUser.isPresent() && foundUser.get().getPassword().equals(user.getPassword())) {
+			success = true;
 		}
+
 		if (success) {
-			APILogger.logMessage("Authentication successful");
+			APILogger.logSuccess("Authentication");
 		} else {
-			APILogger.logMessage("Authentication failed: User/Password combination not found.");
+			APILogger.logFailure("Authentication", "User/Password combination not found.");
 		}
 		return success;
 	}
@@ -99,17 +107,18 @@ public class UserAPI {
 	 * @param user einzuloggender user
 	 * @return ob Einloggen erfolgreich war
 	 */
-	public boolean login(User user) {
+	public boolean login(final User user) {
 		boolean success = false;
+
 		if (authenticateUser(user) && !isLoggedIn()) {
 			currentUser = new User(user);
-			APILogger.logMessage("Login successful");
+			APILogger.logSuccess("Login");
 			success = true;
 		} else {
 			if (isLoggedIn()) {
-				APILogger.logMessage("Login failed. Please Logout first.");
+				APILogger.logFailure("Login", "Please Logout first.");
 			} else {
-				APILogger.logMessage("Login failed. Username/Password not correct.");
+				APILogger.logFailure("Login", "Username/Password not correct.");
 			}
 		}
 		return success;
@@ -122,13 +131,15 @@ public class UserAPI {
 	 */
 	public boolean logout() {
 		boolean success = false;
+
 		if (isLoggedIn()) {
 			currentUser = null;
-			APILogger.logMessage("Logout successful.");
+			APILogger.logSuccess("Logout");
 			success = true;
 		} else {
-			APILogger.logMessage("Logout failed: No User logged in.");
+			APILogger.logFailure("Logout", "No User logged in.");
 		}
+
 		return success;
 	}
 
@@ -139,27 +150,24 @@ public class UserAPI {
 	 * @param user zu registrierender user
 	 * @return ob Registrierung erfolgreich war
 	 */
-	public boolean registerUser(User user) {
-		Boolean userAlreadyExists = false;
+	public boolean registerUser(final User user) {
 		Boolean success = false;
 
-		//search through existing users
-		if (!isNullOrEmpty(user.getEmail()) && !isNullOrEmpty(user.getPassword())) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(user.getEmail())) {
-					userAlreadyExists = true;
-				}
-			}
-			if (!userAlreadyExists) {
-				userList.add(new User(user));
-				success = true;
-			}
+		if (!isNullOrEmpty(user.getEmail())
+				&& !isNullOrEmpty(user.getPassword())
+				&& !getUserWithMail(user.getEmail()).isPresent()) {
+
+			//create new root directory for user
+			final Directory rootDir = new Directory(this, "Sharebox", user);
+			fileAPI.createNewDirectory(rootDir);
+			user.setRootDirectoryIdentifier(rootDir.getIdentifier());
+
+			userList.add(new User(user));
+			success = true;
 		}
-		if (success) {
-			APILogger.logMessage("Registration successful");
-		} else {
-			APILogger.logMessage("Registration failed.");
-		}
+
+		APILogger.logResult("Registration", success);
+
 		return success;
 	}
 
@@ -170,26 +178,26 @@ public class UserAPI {
 	 * @param user zu änderndes User-Profil
 	 * @return ob Änderung erfolgreich war
 	 */
-	public boolean changeProfile(User user) {
+	public boolean changeProfile(final User user) {
 		Boolean success = false;
-		//search through existing users
-		if (currentUser != null &&
-				!isNullOrEmpty(user.getFirstname()) && !isNullOrEmpty(user.getGender()) && !isNullOrEmpty(user.getLastname())) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					aUser.setFirstname(user.getFirstname());
-					aUser.setLastname(user.getLastname());
-					aUser.setGender(user.getGender());
-					success = true;
-					currentUser = new User(aUser);
-				}
+
+		if (currentUser != null
+				&& !isNullOrEmpty(user.getFirstname())
+				&& user.getGender() != null
+				&& !isNullOrEmpty(user.getLastname())) {
+
+			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());
+			if (foundUser.isPresent()) {
+				foundUser.get().setFirstname(user.getFirstname());
+				foundUser.get().setLastname(user.getLastname());
+				foundUser.get().setGender(user.getGender());
+				success = true;
+				currentUser = new User(foundUser.get());
 			}
 		}
-		if (success) {
-			APILogger.logMessage("Profile updated");
-		} else {
-			APILogger.logMessage("Profile update failed");
-		}
+
+		APILogger.logResult("Profile updated", success);
+
 		return success;
 	}
 
@@ -199,26 +207,23 @@ public class UserAPI {
 	 * @param user zu änderndes User-Profil
 	 * @return ob Änderung erfolgreich war
 	 */
-	public boolean changeAccountingSettings(User user) {
+	public boolean changeAccountingSettings(final User user) {
 		Boolean success = false;
-		//search through existing users
-		if (currentUser != null &&
-				!isNullOrEmpty(user.getPaymentInfo().getStreet()) && !isNullOrEmpty(user.getPaymentInfo().getCity()) &&
-				!isNullOrEmpty(user.getPaymentInfo().getZipCode()) && !isNullOrEmpty(user.getPaymentInfo().getCountry())) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					aUser.setPaymentInfo(user.getPaymentInfo());
-					aUser.setStorageLimit(user.getStorageLimit());
-					success = true;
-					currentUser = new User(aUser);
-				}
+
+		if (currentUser != null
+				&& !isNullOrEmpty(user.getAddressInfo().getStreet()) && !isNullOrEmpty(user.getAddressInfo().getCity())
+				&& !isNullOrEmpty(user.getAddressInfo().getZipCode()) && !isNullOrEmpty(user.getAddressInfo().getCountry())) {
+			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());
+			if (foundUser.isPresent()) {
+				foundUser.get().setAddressInfo(user.getAddressInfo());
+				foundUser.get().setStorageLimit(user.getStorageLimit());
+				success = true;
+				currentUser = new User(foundUser.get());
 			}
 		}
-		if (success) {
-			APILogger.logMessage("Accounting settings changed");
-		} else {
-			APILogger.logMessage("Accounting settings change failed");
-		}
+
+		APILogger.logResult("Accounting settings changed", success);
+
 		return success;
 	}
 
@@ -229,26 +234,26 @@ public class UserAPI {
 	 * @param newUser zu übernehmende Änderung des User-Profils
 	 * @return ob Änderung erfolgreich war
 	 */
-	public boolean changeCredential(User oldUser, User newUser) {
+	public boolean changeCredential(final User oldUser, final User newUser) {
 		Boolean success = false;
 		//search through existing users
-		if (currentUser != null &&
-				!isNullOrEmpty(newUser.getEmail()) && !isNullOrEmpty(newUser.getPassword())) {
-			for (User aUser : userList) {
-				if (currentUser.getEmail().equals(oldUser.getEmail()) && currentUser.getPassword().equals(oldUser.getPassword())
-						&& aUser.getEmail().equals(oldUser.getEmail()) && aUser.getPassword().equals(oldUser.getPassword())) {
-					aUser.setEmail(newUser.getEmail());
-					aUser.setPassword(newUser.getPassword());
-					success = true;
-					currentUser = new User(aUser);
-				}
+		if (currentUser != null
+				&& !isNullOrEmpty(newUser.getEmail())
+				&& !isNullOrEmpty(newUser.getPassword())
+				&& currentUser.getPassword().equals(oldUser.getPassword())
+				&& currentUser.getEmail().equals(oldUser.getEmail())) {
+
+			final Optional<User> foundUser = getUserWithMail(oldUser.getEmail());
+			if (foundUser.isPresent() && foundUser.get().getPassword().equals(oldUser.getPassword())) {
+				foundUser.get().setEmail(newUser.getEmail());
+				foundUser.get().setPassword(newUser.getPassword());
+				success = true;
+				currentUser = new User(foundUser.get());
 			}
 		}
-		if (success) {
-			APILogger.logMessage("Credentials changed");
-		} else {
-			APILogger.logMessage("Credentials change failed");
-		}
+
+		APILogger.logResult("Credentials changed", success);
+
 		return success;
 	}
 
@@ -259,22 +264,20 @@ public class UserAPI {
 	 * @param invitedUser  eingeladener User
 	 * @return ob Einladung erfolgreich war
 	 */
-	public boolean inviteUser(User invitingUser, User invitedUser) {
+	public boolean inviteUser(final User invitingUser, final User invitedUser) {
 		Boolean success = true;
 		//search through existing users to test if user already exists
-		if (currentUser != null && !isNullOrEmpty(invitedUser.getEmail())) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(invitedUser.getEmail())) {
-					success = false;
-				}
-			}
-		} else {
+		if (currentUser == null || isNullOrEmpty(invitedUser.getEmail())) {
 			success = false;
+		} else {
+			if (getUserWithMail(invitedUser.getEmail()).isPresent()) {
+				success = false;
+			}
 		}
 		if (success) {
 			APILogger.logMessage("User '" + invitedUser.getEmail() + "' invited by '" + invitingUser.getEmail() + "'.");
 		} else {
-			APILogger.logMessage("Invitation failed: User '" + invitedUser.getEmail() + "' already exists");
+			APILogger.logFailure("Invitation", "User '" + invitedUser.getEmail() + "' already exists.");
 		}
 		return success;
 	}
@@ -294,18 +297,30 @@ public class UserAPI {
 	 * @return zur Zeit eingeloggter User
 	 */
 	public User getCurrentUser() {
-		User user = new User();
+		User user = null;
 
 		if (isLoggedIn()) {
-			for (User aUser : userList) {
-				if (aUser.getEmail().equals(currentUser.getEmail())) {
-					currentUser = new User(aUser);
-				}
+			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());
+			if (foundUser.isPresent()) {
+				currentUser = new User(foundUser.get());
 			}
 			user = new User(currentUser);
 			user.setPassword("");
 		}
 
 		return user;
+	}
+
+	private Optional<User> getUserWithMail(final String mail) {
+		Optional<User> foundUser = Optional.absent();
+
+		for (final User aUser : userList) {
+			if (aUser.getEmail().equals(mail)) {
+				foundUser = Optional.of(aUser);
+				break;
+			}
+		}
+
+		return foundUser;
 	}
 }

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
+import de.sharebox.user.enums.Gender;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
@@ -17,9 +18,9 @@ public class EditProfileController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JTextField lastnameField;
-	public JTextField firstnameField;
-	public JTextField genderField;
+	protected JTextField lastnameField;
+	protected JTextField firstnameField;
+	protected JComboBox<Gender> genderField;
 
 	/**
 	 * Erstellt einen neuen EditProfileController.<br/>
@@ -29,8 +30,8 @@ public class EditProfileController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	EditProfileController(OptionPaneHelper optionPaneHelper,
-						  UserAPI userAPI) {
+	EditProfileController(final OptionPaneHelper optionPaneHelper,
+						  final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
@@ -43,11 +44,10 @@ public class EditProfileController {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/editProfile");
 		frame.setVisible(true);
 
-		User user = userAPI.getCurrentUser();
-
+		final User user = userAPI.getCurrentUser();
 		lastnameField.setText(user.getLastname());
 		firstnameField.setText(user.getFirstname());
-		genderField.setText(user.getGender());
+		genderField.setSelectedItem(user.getGender());
 	}
 
 	/**
@@ -56,13 +56,12 @@ public class EditProfileController {
 	 * eingetragen werden (wird gespeichert).
 	 */
 	public Action save = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			User user = new User();
-
+		public void actionPerformed(final ActionEvent event) {
+			final User user = new User();
 			user.setFirstname(firstnameField.getText());
 			user.setLastname(lastnameField.getText());
 			user.setLastname(lastnameField.getText());
-			user.setGender(genderField.getText());
+			user.setGender((Gender) genderField.getSelectedItem());
 
 			if (userAPI.changeProfile(user)) {
 				frame.setVisible(false);
@@ -77,7 +76,7 @@ public class EditProfileController {
 	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}

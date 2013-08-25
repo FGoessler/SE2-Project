@@ -1,5 +1,8 @@
 package de.sharebox.user.model;
 
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.enums.StorageLimit;
+
 /**
  * @author Benjamin Barth
  * @author Kay Thorsten Meißner
@@ -10,14 +13,17 @@ package de.sharebox.user.model;
  */
 public class User {
 
-	private String email, password, firstname, lastname, storageLimit, gender;
-	private PaymentInfo paymentInfo;
+	private Integer rootDirectoryIdentifier;
+	private String email, password, firstname, lastname;
+	private Gender gender;
+	private StorageLimit storageLimit;
+	private AddressInfo addressInfo;
 
 	/**
 	 * Der Standard Konstruktor.
 	 */
 	public User() {
-		this.setPaymentInfo(new PaymentInfo());
+		this.setAddressInfo(new AddressInfo());
 	}
 
 	/**
@@ -25,17 +31,18 @@ public class User {
 	 *
 	 * @param userToCopy Der zu kopierende Nutzer.
 	 */
-	public User(User userToCopy) {
+	public User(final User userToCopy) {
 		this.setEmail(userToCopy.getEmail());
 		this.setPassword(userToCopy.getPassword());
 		this.setFirstname(userToCopy.getFirstname());
 		this.setLastname(userToCopy.getLastname());
 
-		this.setPaymentInfo(new PaymentInfo(userToCopy.getPaymentInfo()));
+		this.setRootDirectoryIdentifier(userToCopy.getRootDirectoryIdentifier());
+
+		this.setAddressInfo(new AddressInfo(userToCopy.getAddressInfo()));
 
 		this.setStorageLimit(userToCopy.getStorageLimit());
 		this.setGender(userToCopy.getGender());
-
 	}
 
 	/**
@@ -67,33 +74,36 @@ public class User {
 	}
 
 	/**
-	 * @return Die Zahlungsinformationen des Users.
+	 * @return Die Adressinformationen des Users für Rechnungen.
 	 */
-	public PaymentInfo getPaymentInfo() {
-		return new PaymentInfo(paymentInfo);
+	public AddressInfo getAddressInfo() {
+		return new AddressInfo(addressInfo);
 	}
 
 	/**
 	 * @return Die Speicherkapazität des Users.
 	 */
-	public String getStorageLimit() {
+	public StorageLimit getStorageLimit() {
 		return storageLimit;
 	}
 
 	/**
 	 * @return Das Geschlecht des Users.
 	 */
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
+	public Integer getRootDirectoryIdentifier() {
+		return rootDirectoryIdentifier;
+	}
 
 	/**
 	 * Ändert die E-Mailadresse des Objekts.
 	 *
 	 * @param email
 	 */
-	public void setEmail(String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -102,7 +112,7 @@ public class User {
 	 *
 	 * @param password
 	 */
-	public void setPassword(String password) {
+	public void setPassword(final String password) {
 		this.password = password;
 	}
 
@@ -111,7 +121,7 @@ public class User {
 	 *
 	 * @param firstname
 	 */
-	public void setFirstname(String firstname) {
+	public void setFirstname(final String firstname) {
 		this.firstname = firstname;
 	}
 
@@ -120,17 +130,17 @@ public class User {
 	 *
 	 * @param lastname
 	 */
-	public void setLastname(String lastname) {
+	public void setLastname(final String lastname) {
 		this.lastname = lastname;
 	}
 
 	/**
 	 * Ändert die Zahlungsinformationen des Objekts.
 	 *
-	 * @param paymentInfo
+	 * @param addressInfo
 	 */
-	public void setPaymentInfo(PaymentInfo paymentInfo) {
-		this.paymentInfo = new PaymentInfo(paymentInfo);
+	public void setAddressInfo(final AddressInfo addressInfo) {
+		this.addressInfo = new AddressInfo(addressInfo);
 	}
 
 	/**
@@ -138,16 +148,20 @@ public class User {
 	 *
 	 * @param storageLimit
 	 */
-	public void setStorageLimit(String storageLimit) {
+	public void setStorageLimit(final StorageLimit storageLimit) {
 		this.storageLimit = storageLimit;
 	}
 
 	/**
-	 * Ändert das Geschlecht des Users.
+	 * Ändert das Geschlecht des Users
 	 *
 	 * @param gender
 	 */
-	public void setGender(String gender) {
+	public void setGender(final Gender gender) {
 		this.gender = gender;
+	}
+
+	public void setRootDirectoryIdentifier(Integer rootDirectoryIdentifier) {
+		this.rootDirectoryIdentifier = rootDirectoryIdentifier;
 	}
 }

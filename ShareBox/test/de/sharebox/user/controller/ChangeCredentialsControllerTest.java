@@ -55,7 +55,7 @@ public class ChangeCredentialsControllerTest {
 
 		changeCredentialsController.save.actionPerformed(mock(ActionEvent.class));
 
-		ArgumentCaptor<User> newUserData = ArgumentCaptor.forClass(User.class);
+		final ArgumentCaptor<User> newUserData = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeCredential(same(testUser), newUserData.capture());
 
 		assertThat(newUserData.getValue().getEmail()).isEqualTo("kurt@lol.de");

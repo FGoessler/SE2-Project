@@ -70,7 +70,7 @@ public class PermissionViewControllerTest {
 		fEntry.addObserver(fEntryObserver);
 
 		//preselect FEntry
-		List<FEntry> selectedFEntries = new ArrayList<FEntry>();
+		final List<FEntry> selectedFEntries = new ArrayList<FEntry>();
 		selectedFEntries.add(fEntry);
 		when(selectionService.getSelectedFEntries()).thenReturn(selectedFEntries);
 		permissionViewController.treeSelectionListener.valueChanged(mock(TreeSelectionEvent.class));
@@ -82,10 +82,10 @@ public class PermissionViewControllerTest {
 		assertThat(permissionViewController.tableModel.getColumnCount()).isEqualTo(4);
 
 		//check column titles
-		assertThat(permissionViewController.tableModel.getColumnClass(0)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(1)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(2)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(3)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(0)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(1)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(2)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(3)).isNotNull();
 
 		//check column classes
 		assertThat(permissionViewController.tableModel.getColumnClass(0)).isEqualTo(String.class);
@@ -235,7 +235,7 @@ public class PermissionViewControllerTest {
 	}
 
 	private void setCurrentUserToUserWithoutPermissions() {
-		User userWithoutPermissions = mock(User.class);
+		final User userWithoutPermissions = mock(User.class);
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}

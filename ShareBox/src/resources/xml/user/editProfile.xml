@@ -23,9 +23,9 @@
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
         </label>
 
-        <textfield id="genderField" columns="20" text="">
+        <combobox id="genderField" initclass="de.sharebox.user.model.GenderComboBoxModel">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
-        </textfield>
+        </combobox>
 
         <button text="Speichern" action="save">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>

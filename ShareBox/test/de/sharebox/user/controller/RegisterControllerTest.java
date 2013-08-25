@@ -2,6 +2,7 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.enums.Gender;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class RegisterControllerTest {
 		registerController.passwordField2.setText("Passwort123");
 		registerController.firstnameField.setText("kurt");
 		registerController.lastnameField.setText("kanns");
-		registerController.genderField.setText("m");
+		registerController.genderField.setSelectedItem(Gender.Male);
 		registerController.streetField.setText("Street");
 		registerController.codeField.setText("12345");
 		registerController.countryField.setText("Base");

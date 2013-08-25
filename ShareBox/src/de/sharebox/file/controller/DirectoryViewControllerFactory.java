@@ -14,5 +14,5 @@ public interface DirectoryViewControllerFactory {
 	 * @param treeView Der JTree in dem das Sharebox-Verzeichnis des Nutzers dargestellt werden soll.
 	 * @return Ein neuer DirectoryViewController
 	 */
-	DirectoryViewController create(JTree treeView);
+	DirectoryViewController create(final JTree treeView);
 }

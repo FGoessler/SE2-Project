@@ -18,6 +18,7 @@ public class FEntryPermissionTest {
 	private User user;
 	@Mock
 	private FEntry fEntry;
+
 	private FEntryPermission permission;
 
 	@Before
@@ -61,5 +62,17 @@ public class FEntryPermissionTest {
 
 		permission.setPermissions(false, false, false);
 		verify(fEntry, times(4)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+	}
+
+	@Test
+	public void testCopyConstructor() {
+		permission.setReadAllowed(true);
+		final FEntryPermission copiedPermission = new FEntryPermission(permission);
+
+		assertThat(copiedPermission.getUser()).isSameAs(user);
+		assertThat(copiedPermission.getFEntry()).isSameAs(fEntry);
+		assertThat(copiedPermission.getReadAllowed()).isTrue();
+		assertThat(copiedPermission.getWriteAllowed()).isFalse();
+		assertThat(copiedPermission.getManageAllowed()).isFalse();
 	}
 }

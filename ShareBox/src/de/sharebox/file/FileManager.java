@@ -1,8 +1,10 @@
 package de.sharebox.file;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.sharebox.api.FileAPI;
+import de.sharebox.file.model.DirectoryObserver;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
@@ -14,14 +16,15 @@ import java.util.List;
  * TODO Klassenbeschreibung
  */
 @Singleton
-public class FileManager {
+public class FileManager implements DirectoryObserver {
 
 	private final FileAPI fileAPI;
 
 	private long lastAPIPoll = 0;
 	private long lastStoragePoll = 0;
+    private long lastSync = 0;
 
-	private transient List<FileAPI.StorageEntry> storage = new ArrayList<FileAPI.StorageEntry>();
+	private final List<FileAPI.StorageEntry> storage = new ArrayList<FileAPI.StorageEntry>();
 
 	/**
 	 * Erstellt einen neuen FileManager. Als Singleton konzipiert.<br/>
@@ -43,7 +46,7 @@ public class FileManager {
 	public boolean registerFEntry(FEntry newFEntry) {
 		//log entry
 		boolean success = false;
-
+        //newFEntry.addObserver();
 		if (newFEntry instanceof File) {
 			if (fileAPI.createNewFile((File) newFEntry)) {
 				success = true;
@@ -64,19 +67,61 @@ public class FileManager {
 	 * @return ob alle Operationen erfolgreich waren
 	 */
 	public boolean pollAPIForChanges() {
-		boolean success = true;
+        //NOTE: deleted in API? -> nonexistent; deleted locally? -> DELETED type declared
 
-		List<FEntry> changes = fileAPI.getChangesSince(lastAPIPoll);
-		for (FEntry fEntry : changes) {
-			if (fEntry instanceof File || fEntry instanceof Directory) {    //was soll es auch sonst sein - überflüssige Abfrage?
-				updateFEntry(fEntry);
-			} else {
-				success = false;
-			}
-		}
+        List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
+        boolean success = true;
+        boolean found;
+
+
+        //search for things that are updatable in the APIstorage
+        for (int i = 0; i < APIstorage.size(); i++) {
+            //file newer than sync -> check for counterpart
+            if (APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() >= lastAPIPoll) {
+                found = false;
+                for (FileAPI.StorageEntry storageEntry : storage) {
+                    if (storageEntry.getFEntry().getIdentifier() == APIstorage.get(i).get(0).getFEntry().getIdentifier()) {
+                        found = true;
+                        // case for API having a smaller timestamp than the local version, and local version actually being ok
+                        if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() != FileAPI.Status.DELETED) {
+                            if (storageEntry.getFEntry() instanceof File) {
+                                fileAPI.updateFile((File)storageEntry.getFEntry());
+                            } else if (storageEntry.getFEntry() instanceof Directory) {
+                                fileAPI.updateDirectory((Directory)storageEntry.getFEntry());
+                            } else {
+                                success = false;
+                            }
+                        }
+                        // case for API having a smaller timestamp than the local version, and local version is flagged as deleted
+                        else if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() == FileAPI.Status.DELETED) {
+                            if (storageEntry.getFEntry() instanceof File) {
+                                fileAPI.deleteFile((File) storageEntry.getFEntry());
+                            } else if (storageEntry.getFEntry() instanceof Directory) {
+                                fileAPI.deleteDirectory((Directory) storageEntry.getFEntry());
+                            } else {
+                                success = false;
+                            }
+                        }
+                        // case for API having a greater timestamp than the local version
+                        else if (APIstorage.get(i).get(APIstorage.get(i).size()-1).getStatus() == FileAPI.Status.DELETED) {
+                            deleteFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
+                        }
+                        else {
+                            updateFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
+                        }
+                        break;
+                    }
+
+                }
+                //case for local storage not having the file at all
+                if (!found) {
+                    updateFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
+                }
+            }
+        }
 		lastAPIPoll = System.currentTimeMillis();
-
-		return success;
+        deleteFlush();
+        return success;
 	}
 
 	/**
@@ -85,32 +130,69 @@ public class FileManager {
 	 * @return ob alle Operationen erfolgreich waren
 	 */
 	public boolean pollFileSystemForChanges() {
-		List<FEntry> changedFiles = new ArrayList<FEntry>();
-		boolean success = true;
+        //NOTE: deleted in API? -> nonexistent; deleted locally? -> DELETED type declared
 
-		for (FileAPI.StorageEntry storageEntry : storage) {
-			if (storageEntry.getTimestamp() >= lastStoragePoll) {
-				changedFiles.add(storageEntry.getFEntry());
-			}
-		}
-		for (FEntry fEntry : changedFiles) {
-			if (fEntry instanceof File) {
-				System.out.println("f");
-				if (!fileAPI.updateFile((File) fEntry)) {
-					fileAPI.createNewFile((File) fEntry);
-				}
-			} else if (fEntry instanceof Directory) {
-				System.out.println("d");
-				if (!fileAPI.updateDirectory((Directory) fEntry)) {
-					fileAPI.createNewDirectory((Directory) fEntry);
-				}
-			} else {
-				success = false;
-			}
-		}
+        List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
+        boolean success = true;
+        boolean found;
+
+
+        //search for things that are updatable in the APIstorage
+        for (FileAPI.StorageEntry storageEntry : storage) {
+            //file newer than sync -> check for counterpart
+            if (storageEntry.getTimestamp() >= lastStoragePoll) {
+                found = false;
+                for (int i = 0; i < APIstorage.size(); i++) {
+                    if (storageEntry.getFEntry().getIdentifier() == APIstorage.get(i).get(0).getFEntry().getIdentifier()) {
+                        found = true;
+                        // case for API having a smaller timestamp than the local version, and local version actually being ok
+                        if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() != FileAPI.Status.DELETED) {
+                            if (storageEntry.getFEntry() instanceof File) {
+                                fileAPI.updateFile((File)storageEntry.getFEntry());
+                            } else if (storageEntry.getFEntry() instanceof Directory) {
+                                fileAPI.updateDirectory((Directory)storageEntry.getFEntry());
+                            } else {
+                                success = false;
+                            }
+                        }
+                        // case for API having a smaller timestamp than the local version, and local version is flagged as deleted
+                        else if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() == FileAPI.Status.DELETED) {
+                            if (storageEntry.getFEntry() instanceof File) {
+                                fileAPI.deleteFile((File) storageEntry.getFEntry());
+                            } else if (storageEntry.getFEntry() instanceof Directory) {
+                                fileAPI.deleteDirectory((Directory) storageEntry.getFEntry());
+                            } else {
+                                success = false;
+                            }
+                        }
+                        // case for API having a greater timestamp than the local version
+                        else if (APIstorage.get(i).get(APIstorage.get(i).size()-1).getStatus() == FileAPI.Status.DELETED) {
+                            deleteFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
+                        }
+                        else {
+                            updateFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
+                        }
+                        break;
+                    }
+
+                }
+                //case for local storage not having the file at all
+                if (!found) {
+                    System.out.println("not found. creating...");
+                    if (storageEntry.getFEntry() instanceof File) {
+                        fileAPI.createNewFile((File)storageEntry.getFEntry());
+                    } else if (storageEntry.getFEntry() instanceof Directory) {
+                        fileAPI.createNewDirectory((Directory)storageEntry.getFEntry());
+                    } else {
+                        success = false;
+                    }
+                }
+            }
+        }
 		lastStoragePoll = System.currentTimeMillis();
-		return success;
-	}
+        deleteFlush();
+        return success;
+    }
 
 	/**
 	 * Überschreibt/aktualisiert einen FEntry im lokalen Speicher.
@@ -158,13 +240,23 @@ public class FileManager {
 		for (int i = 0; i < storage.size(); i++) {
 			//check for correct ID
 			if (storage.get(i).getFEntry().getIdentifier().equals(deletedFile.getIdentifier())) {
-				storage.remove(i);
+				//storage.remove(i);
+                storage.get(i).setStatus(FileAPI.Status.DELETED);
+                storage.get(i).setTimestamp(System.currentTimeMillis());
 				break;
 			}
 		}
 
 		return success;
 	}
+
+    public void deleteFlush () {
+		for (int i = 0; i < storage.size(); i++) {
+			if (storage.get(i).getStatus() == FileAPI.Status.DELETED) {
+				storage.remove(i);
+			}
+		}
+    }
 
 	/**
 	 * Methode um die Anzahl der Storage-Einträge zu erhalten.
@@ -174,6 +266,32 @@ public class FileManager {
 	public int getFileCount() {
 		return storage.size();
 	}
+
+    public Directory getDirByID (Integer ID) {
+        Directory returnDir = null;
+		for (FileAPI.StorageEntry storageEntry : storage) {
+			if (storageEntry.getFEntry().getIdentifier() == ID) {
+                returnDir = (Directory)storageEntry.getFEntry();
+			}
+		}
+        return returnDir;
+    }
+
+    public void addedChildrenNotification(Directory parent, ImmutableList<FEntry> newChildren) {
+
+    }
+
+    public void removedChildrenNotification(Directory parent, ImmutableList<FEntry> removedChildren) {
+
+    }
+
+    public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
+
+    }
+
+    public void fEntryDeletedNotification(FEntry fEntry) {
+
+    }
 }
 /**
  * TODO: Es sieht so aus als ob einige Methoden hieraus nochmal in der FileAPI sind oder umgekehrt

@@ -30,13 +30,13 @@ public class FileMenu {
 	 * @param clipboard        Ein DirectoryViewClipboardService um Zugriff auf die Zwischenablage für FEntries zu erhalten.
 	 */
 	@Inject
-	FileMenu(@Assisted JMenuBar menuBar,
-			 DirectoryViewSelectionService selectionService,
-			 DirectoryViewClipboardService clipboard) {
+	FileMenu(final @Assisted JMenuBar menuBar,
+			 final DirectoryViewSelectionService selectionService,
+			 final DirectoryViewClipboardService clipboard) {
 		this.selectionService = selectionService;
 		this.clipboard = clipboard;
 
-		JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/fileMenu");
+		final JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/fileMenu");
 		menuBar.add(menu);
 	}
 
@@ -45,7 +45,7 @@ public class FileMenu {
 	 */
 	public Action createNewFile = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		}
 	};
@@ -55,7 +55,7 @@ public class FileMenu {
 	 */
 	public Action createNewDirectory = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
 		}
 	};
@@ -65,7 +65,7 @@ public class FileMenu {
 	 */
 	public Action copyFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			clipboard.addToClipboard(selectionService.getSelectedFEntries());
 		}
 	};
@@ -75,7 +75,7 @@ public class FileMenu {
 	 */
 	public Action pasteFEntry = new AbstractAction() {
 		@Override
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			if (!selectionService.getSelectedFEntries().isEmpty()) {
 				Directory targetDirectory;
 				if (selectionService.getSelectedFEntries().get(0) instanceof Directory) {

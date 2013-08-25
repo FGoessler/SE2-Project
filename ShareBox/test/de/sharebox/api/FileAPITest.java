@@ -15,10 +15,10 @@ import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileAPITest {
-	private transient File tFile1;
-	private transient File tFile2;
-	private transient Directory tDirectory1;
-	private transient Directory tDirectory2;
+	private File tFile1;
+	private File tFile2;
+	private Directory tDirectory1;
+	private Directory tDirectory2;
 
 	@Mock
 	private UserAPI mockedUserAPI;

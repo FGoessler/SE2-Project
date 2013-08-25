@@ -19,60 +19,71 @@ public final class APILogger {
      */
     public static final boolean READABLEDATE = false;
 
-	private APILogger() {}
+	private APILogger() {
+	}
 
 	/**
 	 * Loggt die gegebene Meldung.
 	 * @param message Die zu loggende Meldung.
 	 */
-	public static void logMessage(String message) {
-		if(LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
-            else System.out.println(System.currentTimeMillis() + ": " + message);
+	public static void logMessage(final String message) {
+		if (LOGGING) {
+			System.out.println("["+System.currentTimeMillis()+"]"+DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
 		}
 	}
 
 	/**
-	 * Erstellt einen Action String (zur Verwendung in debugSuccess und CO.) der die gegebene Aktion und den FEntry benennt.
+	 * Erstellt einen Action String (zur Verwendung in logSuccess und CO.) der die gegebene Action und den FEntry benennt.
+	 *
 	 * @param action Die Aktion, die geloggt werden soll.
 	 * @param fEntry Der FEntry auf dem die Aktion ausgeführt wurde.
 	 * @return Der String der die Aktion und Information über den FEntry enthält.
 	 */
-	public static String actionStringForFEntryAction(String action, FEntry fEntry) {
+	public static String actionStringForFEntryAction(final String action, final FEntry fEntry) {
 		return action + " (" + fEntry.getName() + ")";
 	}
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion erfolgreich war.
-	 * @param action Ein String der die Aktion benennt.
+	 *
+	 * @param action Ein Text der die Aktion benennt.
 	 */
-	public static void debugSuccess(String action) {
-		if (LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " successful.");
-            else System.out.println(System.currentTimeMillis() + ": " + action + " successful.");
-		}
+	public static void logSuccess(final String action) {
+		logMessage(action + " successful.");
 	}
 
 	/**
-	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion fehlgeschlagen ist.
-	 * @param action Ein String der die Aktion benennt.
+	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion fehlgeschalgen ist.
+	 *
+	 * @param action Ein Text der die Aktion benennt.
 	 */
-	public static void debugFailure(String action) {
-		if (LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed.");
-            else System.out.println(System.currentTimeMillis() + ": " + action + " failed.");
-		}
+	public static void logFailure(final String action) {
+		logMessage(action + " failed.");
 	}
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion wegen der Reason fehlgeschlagen ist.
-	 * @param action Ein String der die Aktion benennt.
-	 * @param reason Ein String der den Fehlergrund benennt.
+	 *
+	 * @param action Ein Text der die Aktion benennt.
+	 * @param reason Ein Text der den Grund für den Fehler benennt.
 	 */
-	public static void debugFailure(String action, String reason) {
-		if (LOGGING) {
-			if (READABLEDATE) System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + action + " failed. Reason: " + reason);
-            else System.out.println(System.currentTimeMillis() + ": " + action + " failed. Reason: " + reason);
+	public static void logFailure(final String action, final String reason) {
+		logMessage(action + " failed. Reason: " + reason);
+	}
+
+	/**
+	 * Gibt eine Log Message aus, die bassierend auf dem success parameter besagt ob die übergebene Aktion
+	 * fehlgeschlagen ist oder erfolgreich war.
+	 *
+	 * @param action  Ein Text der die Aktion benennt.
+	 * @param success True wenn die Aktion als erfolgreich geloggt werden soll, Fales wenn sie als fehlgeschlagen
+	 *                geloggt werden soll.
+	 */
+	public static void logResult(final String action, final Boolean success) {
+		if (success) {
+			APILogger.logSuccess(action);
+		} else {
+			APILogger.logFailure(action);
 		}
 	}
 }

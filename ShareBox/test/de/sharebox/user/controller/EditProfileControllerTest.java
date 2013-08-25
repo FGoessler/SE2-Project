@@ -2,6 +2,7 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.enums.Gender;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,8 +22,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class EditProfileControllerTest {
 
-	private User testUser;
-
 	@Mock
 	private UserAPI mockedAPI;
 	@Mock
@@ -33,7 +32,7 @@ public class EditProfileControllerTest {
 
 	@Before
 	public void setUp() {
-		testUser = new User();
+		final User testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		editProfileController.show();
@@ -50,16 +49,16 @@ public class EditProfileControllerTest {
 
 		editProfileController.firstnameField.setText("hanna");
 		editProfileController.lastnameField.setText("spanna");
-		editProfileController.genderField.setText("w");
+		editProfileController.genderField.setSelectedItem(Gender.Female);
 
 		editProfileController.save.actionPerformed(mock(ActionEvent.class));
 
-		ArgumentCaptor<User> newUserData = ArgumentCaptor.forClass(User.class);
+		final ArgumentCaptor<User> newUserData = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeProfile(newUserData.capture());
 
 		assertThat(newUserData.getValue().getFirstname()).isEqualTo("hanna");
 		assertThat(newUserData.getValue().getLastname()).isEqualTo("spanna");
-		assertThat(newUserData.getValue().getGender()).isEqualTo("w");
+		assertThat(newUserData.getValue().getGender()).isEqualTo(Gender.Female);
 
 		verify(optionPaneHelper).showMessageDialog("Ihre Änderungen wurden gespeichert!");
 	}

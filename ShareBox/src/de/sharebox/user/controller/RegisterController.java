@@ -4,7 +4,8 @@ import com.google.inject.Inject;
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.helpers.SwingEngineHelper;
-import de.sharebox.user.model.PaymentInfo;
+import de.sharebox.user.enums.Gender;
+import de.sharebox.user.model.AddressInfo;
 import de.sharebox.user.model.User;
 
 import javax.swing.*;
@@ -18,17 +19,17 @@ public class RegisterController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JTextField mailField;
-	public JPasswordField passwordField1;
-	public JPasswordField passwordField2;
-	public JTextField lastnameField;
-	public JTextField firstnameField;
-	public JTextField genderField;
-	public JTextField streetField;
-	public JTextField additiveField;
-	public JTextField codeField;
-	public JTextField locationField;
-	public JTextField countryField;
+	protected JTextField mailField;
+	protected JPasswordField passwordField1;
+	protected JPasswordField passwordField2;
+	protected JTextField lastnameField;
+	protected JTextField firstnameField;
+	protected JComboBox<Gender> genderField;
+	protected JTextField streetField;
+	protected JTextField additiveField;
+	protected JTextField codeField;
+	protected JTextField locationField;
+	protected JTextField countryField;
 
 	/**
 	 * Erstellt einen neuen RegisterController.<br/>
@@ -38,8 +39,8 @@ public class RegisterController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	RegisterController(OptionPaneHelper optionPaneHelper,
-					   UserAPI userAPI) {
+	RegisterController(final OptionPaneHelper optionPaneHelper,
+					   final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
@@ -59,8 +60,8 @@ public class RegisterController {
 	 * einzugeben und anschließend wird er an das Bezahlsystem weitergeleitet.
 	 */
 	public Action register = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			User user = new User();
+		public void actionPerformed(final ActionEvent event) {
+			final User user = new User();
 
 			user.setEmail(mailField.getText());
 
@@ -68,15 +69,15 @@ public class RegisterController {
 
 			user.setLastname(lastnameField.getText());
 			user.setFirstname(firstnameField.getText());
-			user.setGender(genderField.getText());
+			user.setGender((Gender) genderField.getSelectedItem());
 
-			PaymentInfo paymentinfo = user.getPaymentInfo();
-			paymentinfo.setStreet(streetField.getText());
-			paymentinfo.setAdditionalStreet(additiveField.getText());
-			paymentinfo.setZipCode(codeField.getText());
-			paymentinfo.setCity(locationField.getText());
-			paymentinfo.setCountry(countryField.getText());
-			user.setPaymentInfo(paymentinfo);
+			final AddressInfo addressInfo = user.getAddressInfo();
+			addressInfo.setStreet(streetField.getText());
+			addressInfo.setAdditionalStreet(additiveField.getText());
+			addressInfo.setZipCode(codeField.getText());
+			addressInfo.setCity(locationField.getText());
+			addressInfo.setCountry(countryField.getText());
+			user.setAddressInfo(addressInfo);
 
 			if (new String(passwordField2.getPassword()).equals(new String(passwordField1.getPassword())) &&
 					userAPI.registerUser(user)) {
@@ -92,7 +93,7 @@ public class RegisterController {
 	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}

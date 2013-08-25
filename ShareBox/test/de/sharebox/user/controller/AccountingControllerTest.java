@@ -2,6 +2,7 @@ package de.sharebox.user.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.helpers.OptionPaneHelper;
+import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.awt.event.ActionEvent;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -30,7 +29,7 @@ public class AccountingControllerTest {
 
 	@Before
 	public void setUp() {
-		User testUser = new User();
+		final User testUser = new User();
 		when(mockedAPI.getCurrentUser()).thenReturn(testUser);
 
 		accountingController.show();
@@ -48,18 +47,18 @@ public class AccountingControllerTest {
 		accountingController.codeField.setText("12345");
 		accountingController.countryField.setText("Land");
 		accountingController.locationField.setText("Stadt");
-		accountingController.storageLimitField.setSelectedIndex(2);
+		accountingController.storageLimitField.setSelectedItem(StorageLimit.GB_20);
 
-		accountingController.save.actionPerformed(mock(ActionEvent.class));
+		accountingController.save();
 
-		ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
+		final ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).changeAccountingSettings(user.capture());
 
-		assertThat(user.getValue().getPaymentInfo().getStreet()).isEqualTo("TestStr");
-		assertThat(user.getValue().getPaymentInfo().getCity()).isEqualTo("Stadt");
-		assertThat(user.getValue().getPaymentInfo().getCountry()).isEqualTo("Land");
-		assertThat(user.getValue().getPaymentInfo().getZipCode()).isEqualTo("12345");
-		assertThat(user.getValue().getStorageLimit()).isEqualTo("20GB");
+		assertThat(user.getValue().getAddressInfo().getStreet()).isEqualTo("TestStr");
+		assertThat(user.getValue().getAddressInfo().getCity()).isEqualTo("Stadt");
+		assertThat(user.getValue().getAddressInfo().getCountry()).isEqualTo("Land");
+		assertThat(user.getValue().getAddressInfo().getZipCode()).isEqualTo("12345");
+		assertThat(user.getValue().getStorageLimit()).isEqualTo(StorageLimit.GB_20);
 
 		verify(optionPaneHelper).showMessageDialog(contains("Zur Erhöhung der Speicherkapazität müssen Sie einen Zahlungsvorgang durchführen."));
 		verify(optionPaneHelper).showMessageDialog("Die Änderung war erfolgreich");
@@ -68,9 +67,9 @@ public class AccountingControllerTest {
 	@Test
 	public void testValidationOfAddressDataWhenIncreasingStorageLimit() {
 		accountingController.locationField.setText("Stadt");
-		accountingController.storageLimitField.setSelectedIndex(2);
+		accountingController.storageLimitField.setSelectedItem(StorageLimit.GB_20);
 
-		accountingController.save.actionPerformed(mock(ActionEvent.class));
+		accountingController.save();
 
 		verify(mockedAPI, never()).changeAccountingSettings(any(User.class));
 		verify(optionPaneHelper).showMessageDialog("Sie müssen erst die Zahlungsinformationen angeben, bevor sie ihre Speicherkapazität erhöhen können!");
@@ -79,7 +78,7 @@ public class AccountingControllerTest {
 	@Test
 	public void testReactionOnAPIReportsErrorOnChange() {
 		when(mockedAPI.changeAccountingSettings(Matchers.any(User.class))).thenReturn(false);
-		accountingController.save.actionPerformed(mock(ActionEvent.class));
+		accountingController.save();
 
 		verify(mockedAPI).changeAccountingSettings(Matchers.any(User.class));
 		verify(optionPaneHelper).showMessageDialog("Das Ändern der Daten ist fehlgeschlagen!");
@@ -90,7 +89,7 @@ public class AccountingControllerTest {
 	 */
 	@Test
 	public void testStop() {
-		accountingController.stop.actionPerformed(mock(ActionEvent.class));
+		accountingController.stop();
 		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
 }

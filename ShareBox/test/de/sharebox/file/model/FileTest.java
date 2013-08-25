@@ -1,6 +1,7 @@
 package de.sharebox.file.model;
 
 import de.sharebox.api.UserAPI;
+import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,49 +9,55 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileTest {
-	private transient File file;
+	private File file;
 
 	@Mock
-	private transient FEntryObserver observer;
+	private UserAPI mockedUserAPI;
 	@Mock
-	private transient UserAPI mockedUserAPI;
+	private User user;
 
 	@Before
 	public void setUp() throws Exception {
+		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
+		when(user.getEmail()).thenReturn("testmail@test.de");
+
 		file = new File(mockedUserAPI);
-		file.addObserver(observer);
 	}
 
 	@Test
 	public void hasACopyConstructor() {
 		file.setName("TestFile");
 		file.setIdentifier(1234);
+		file.setPermission(user, true, true, true);
 
-		File copy = new File(file);
+		final File copy = new File(file);
 
 		assertThat(copy).isNotSameAs(file);
 		assertThat(copy.getName()).isEqualTo(file.getName());
 		assertThat(copy.getIdentifier()).isEqualTo(file.getIdentifier());
+
+		//test that all permission have been deep copied
+		assertThat(copy.getPermissions()).isNotEmpty();
+		for (final FEntryPermission newPermission : copy.getPermissions()) {
+			for (final FEntryPermission oldPermission : file.getPermissions()) {
+				assertThat(newPermission).isNotSameAs(oldPermission);
+			}
+		}
+		//test that all log entries have been deep copied
+		assertThat(copy.getLogEntries()).isNotEmpty();
+		for (final LogEntry newLogEntry : copy.getLogEntries()) {
+			for (final LogEntry oldLogEntry : file.getLogEntries()) {
+				assertThat(newLogEntry).isNotSameAs(oldLogEntry);
+			}
+		}
 	}
 
 	@Test
 	public void isSubclassOfFEntry() {
 		assertThat(file).isInstanceOf(FEntry.class);
 	}
-
-	@Test
-	public void providesAccessToAFileName() {
-		file.setName("testFile");
-
-		assertThat(file.getName()).isEqualTo("testFile");
-
-		verify(observer, times(1)).fEntryChangedNotification(file, FEntryObserver.ChangeType.NAME_CHANGED);            //assert that notification was sent
-	}
-
-
 }

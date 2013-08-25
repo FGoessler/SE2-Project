@@ -2,6 +2,7 @@ package de.sharebox.mainui;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
+import de.sharebox.file.controller.LogViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
 import de.sharebox.mainui.menu.AdministrationMenuFactory;
 import de.sharebox.mainui.menu.FileMenuFactory;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainViewControllerTest {
-	@Mock
-	private ActionEvent mockedActionEvent;
 
 	@Mock
 	private User currentUser;
@@ -34,6 +32,8 @@ public class MainViewControllerTest {
 	private LoginController loginController;
 	@Mock
 	private PermissionViewControllerFactory permissionViewControllerFactory;
+	@Mock
+	private LogViewControllerFactory logViewControllerFactory;
 	@Mock
 	private DirectoryViewControllerFactory directoryViewControllerFactory;
 	@Mock
@@ -61,6 +61,7 @@ public class MainViewControllerTest {
 	public void containsSeveralController() {
 		verify(directoryViewControllerFactory).create(any(JTree.class));
 		verify(permissionViewControllerFactory).create(any(JSplitPane.class));
+		verify(logViewControllerFactory).create(any(JSplitPane.class));
 		verify(fileMenuFactory).create(any(JMenuBar.class));
 		verify(administrationMenuFactory).create(any(JMenuBar.class), same(mainView));
 	}

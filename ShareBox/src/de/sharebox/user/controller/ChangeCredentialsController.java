@@ -17,10 +17,10 @@ public class ChangeCredentialsController {
 	private final UserAPI userAPI;
 
 	private JFrame frame;
-	public JTextField eMailField;
-	public JPasswordField oldPasswordField;
-	public JPasswordField newPasswordField;
-	public JPasswordField newPasswordField1;
+	protected JTextField eMailField;
+	protected JPasswordField oldPasswordField;
+	protected JPasswordField newPasswordField;
+	protected JPasswordField newPasswordField1;
 
 	/**
 	 * Erstellt einen neuen ChangeCredentialsController.<br/>
@@ -30,8 +30,8 @@ public class ChangeCredentialsController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	ChangeCredentialsController(OptionPaneHelper optionPaneHelper,
-								UserAPI userAPI) {
+	ChangeCredentialsController(final OptionPaneHelper optionPaneHelper,
+								final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
@@ -44,8 +44,7 @@ public class ChangeCredentialsController {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/changeCredentials");
 		frame.setVisible(true);
 
-		User user = userAPI.getCurrentUser();
-		eMailField.setText(user.getEmail());
+		eMailField.setText(userAPI.getCurrentUser().getEmail());
 	}
 
 	/**
@@ -57,15 +56,15 @@ public class ChangeCredentialsController {
 	 * alte Passwort nicht gleich sind und dass die Passwörter in den zwei Neu-Feldern übereinstimmen.
 	 */
 	public Action save = new AbstractAction() {
-		public void actionPerformed(ActionEvent save) {
-			User newUserData = new User();
+		public void actionPerformed(final ActionEvent event) {
+			final User newUserData = new User();
 
 			newUserData.setEmail(eMailField.getText());
 			if (new String(newPasswordField.getPassword()).equals(new String(newPasswordField1.getPassword()))) {
 				newUserData.setPassword(new String(newPasswordField.getPassword()));
 			}
 
-			User oldUserData = userAPI.getCurrentUser();
+			final User oldUserData = userAPI.getCurrentUser();
 			oldUserData.setPassword(new String(oldPasswordField.getPassword()));
 			if (userAPI.changeCredential(oldUserData, newUserData)) {
 				frame.setVisible(false);
@@ -80,7 +79,7 @@ public class ChangeCredentialsController {
 	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}

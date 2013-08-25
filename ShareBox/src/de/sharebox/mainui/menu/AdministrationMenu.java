@@ -23,10 +23,11 @@ public class AdministrationMenu {
 	 * @param mainViewController Der MainViewController dessen Methoden durch die Aktionen im Menü aufgerufen werden.
 	 */
 	@Inject
-	AdministrationMenu(@Assisted JMenuBar menuBar, @Assisted MainViewController mainViewController) {
+	AdministrationMenu(final @Assisted JMenuBar menuBar,
+					   final @Assisted MainViewController mainViewController) {
 		this.mainViewController = mainViewController;
 
-		JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/administrationMenu");
+		final JMenu menu = (JMenu) new SwingEngineHelper().render(this, "menu/administrationMenu");
 		menuBar.add(menu);
 	}
 
@@ -34,7 +35,7 @@ public class AdministrationMenu {
 	 * Handler - um auf die Auswahl des "Logindaten ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditCredentials = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openEditCredentialsController();
 		}
 	};
@@ -43,7 +44,7 @@ public class AdministrationMenu {
 	 * Handler - um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditProfile = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openEditProfileController();
 		}
 	};
@@ -52,7 +53,7 @@ public class AdministrationMenu {
 	 * Handler - um auf die Auswahl des "Accounting ändern"-Buttons im Menü zu reagieren.
 	 */
 	public Action showEditAccounting = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openAccountController();
 		}
 	};
@@ -61,7 +62,7 @@ public class AdministrationMenu {
 	 * Handler - um auf die Auswahl des Einladen-Buttons im Menü zu reagieren.
 	 */
 	public Action showInvitationView = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openInvitationController();
 		}
 	};
@@ -70,7 +71,7 @@ public class AdministrationMenu {
 	 * Handler - um auf die Auswahl das Ausloggen-Buttons im Menü zu reagieren.
 	 */
 	public Action logout = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			mainViewController.close();
 		}
 	};

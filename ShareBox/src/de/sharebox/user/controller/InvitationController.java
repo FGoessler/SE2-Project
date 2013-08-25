@@ -12,7 +12,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class InvitationController {
 	/**
-	 * RegEx-Pattern zum Erkennen einer korrekt formatierten E-Mail-Adresse.
+	 * RegEx-Pattern zum Erkennen einer (vom Format her) gültigen Email-Addresse.
 	 */
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
@@ -27,20 +27,20 @@ public class InvitationController {
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	InvitationController(OptionPaneHelper optionPaneHelper,
-						 UserAPI userAPI) {
+	InvitationController(final OptionPaneHelper optionPaneHelper,
+						 final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
 	}
 
 	/**
-	 * Öffnen des Fensters für den Dialog zum Einladen.
+	 * Öffnen des Einladen Dialog-Fensters.
 	 */
 	public void show() {
 		String newUserMail = optionPane.showInputDialog("Bitte geben Sie die E-Mail-Adresse der Person ein, die Sie zu Sharebox Ultimate einladen möchten.", "");
 
 		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
-			User invitedUser = new User();
+			final User invitedUser = new User();
 			invitedUser.setEmail(newUserMail);
 
 			if (userAPI.inviteUser(userAPI.getCurrentUser(), invitedUser)) {

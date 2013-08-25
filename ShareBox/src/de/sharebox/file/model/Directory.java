@@ -1,7 +1,9 @@
 package de.sharebox.file.model;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
  * Diese Klasse repräsentiert ein Verzeichnis, das von der Sharebox verwaltet und mit dem Server synchronisiert wird.
  */
 public class Directory extends FEntry {
-	private transient List<FEntry> fEntries = new ArrayList<FEntry>();
+	private final List<FEntry> fEntries = new ArrayList<FEntry>();
 
 	/**
 	 * Der Standard-Konstruktor.
@@ -18,8 +20,21 @@ public class Directory extends FEntry {
 	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
 	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
-	public Directory(UserAPI userAPI) {
+	public Directory(final UserAPI userAPI) {
 		super(userAPI);
+	}
+
+	/**
+	 * Erstellt ein neues Directory mit den gegebenen Werten, feuert dabei allerdings keine Notifications und erstellt
+	 * auch nur einen "Created" LogEntry anstatt eines "Renamed" und "PermissionChanged" LogEntry.
+	 *
+	 * @param userAPI      Die aktuell für dieses Directory relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                     Nutzer zu bestimmen und Rechte zu überprüfen.
+	 * @param name         Der Name des Directories.
+	 * @param creatingUser Der Nutzer, der initial alle Rechte auf diesem Directory erhält.
+	 */
+	public Directory(final UserAPI userAPI, final String name, final User creatingUser) {
+		super(userAPI, name, creatingUser);
 	}
 
 	/**
@@ -27,11 +42,10 @@ public class Directory extends FEntry {
 	 *
 	 * @param sourceDirectory Das Quell-Objekt.
 	 */
-	public Directory(Directory sourceDirectory) {
+	public Directory(final Directory sourceDirectory) {
 		super(sourceDirectory);
 
-		this.fEntries = new ArrayList<FEntry>();
-		for (FEntry fEntry : sourceDirectory.fEntries) {
+		for (final FEntry fEntry : sourceDirectory.fEntries) {
 			if (fEntry instanceof File) {
 				this.fEntries.add(new File((File) fEntry));
 			} else {
@@ -41,12 +55,12 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Liefert eine Liste aller Unterdateien und -verzeichnisse.
+	 * Liefert eine immutable List aller Unterdateien und -verzeichnisse.
 	 *
-	 * @return Eine Liste aller Unterdateien und -verzeichnisse.
+	 * @return Eine immutable List aller Unterdateien und -verzeichnisse.
 	 */
-	public List<FEntry> getFEntries() {
-		return fEntries;
+	public ImmutableList<FEntry> getFEntries() {
+		return ImmutableList.copyOf(fEntries);
 	}
 
 	/**
@@ -55,16 +69,19 @@ public class Directory extends FEntry {
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param filename Der Name der neuen Datei.
-	 * @return Die neu erstellte Datei.
+	 * @return Die neu erstellte Datei als Optional. Im Falle eines Fehlers (zB. es gibt bereits Datei mit diesem Namen)
+	 *         liefert es ein Optional.absent().
 	 */
-	public File createNewFile(String filename) {
-		File newFile = new File(getUserAPI());
-		newFile.setName(filename);
-		newFile.setPermission(getUserAPI().getCurrentUser(), true, true, true);
+	public Optional<File> createNewFile(final String filename) {
+		Optional<File> newFile = Optional.absent();
 
-		fEntries.add(newFile);
+		if (!fEntryExists(filename)) {
+			newFile = Optional.of(new File(getUserAPI(), filename, getUserAPI().getCurrentUser()));
 
-		fireAddedChildrenNotification(newFile);
+			fEntries.add(newFile.get());
+			addLogEntry(LogEntry.LogMessage.ADDED_FILE);
+			fireAddedChildrenNotification(newFile.get());
+		}
 
 		return newFile;
 	}
@@ -75,16 +92,19 @@ public class Directory extends FEntry {
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param dirname Der Name des neuen Verzeichnisses.
-	 * @return Das neu erstellte Verzeichnis.
+	 * @return Das neu erstellte Verzeichnis als Optional. Im Falle eines Fehlers (zB. es gibt bereits Datei mit diesem
+	 *         Namen) liefert es ein Optional.absent().
 	 */
-	public Directory createNewDirectory(String dirname) {
-		Directory newDir = new Directory(getUserAPI());
-		newDir.setName(dirname);
-		newDir.setPermission(getUserAPI().getCurrentUser(), true, true, true);
+	public Optional<Directory> createNewDirectory(final String dirname) {
+		Optional<Directory> newDir = Optional.absent();
 
-		fEntries.add(newDir);
+		if (!fEntryExists(dirname)) {
+			newDir = Optional.of(new Directory(getUserAPI(), dirname, getUserAPI().getCurrentUser()));
 
-		fireAddedChildrenNotification(newDir);
+			fEntries.add(newDir.get());
+			addLogEntry(LogEntry.LogMessage.ADDED_DIRECTORY);
+			fireAddedChildrenNotification(newDir.get());
+		}
 
 		return newDir;
 	}
@@ -96,8 +116,14 @@ public class Directory extends FEntry {
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
 	 */
-	public void addFEntry(FEntry newFEntry) {
+	public void addFEntry(final FEntry newFEntry) {
 		fEntries.add(newFEntry);
+
+		if (newFEntry instanceof File) {
+			addLogEntry(LogEntry.LogMessage.ADDED_FILE);
+		} else if (newFEntry instanceof Directory) {
+			addLogEntry(LogEntry.LogMessage.ADDED_DIRECTORY);
+		}
 
 		fireAddedChildrenNotification(newFEntry);
 	}
@@ -112,14 +138,20 @@ public class Directory extends FEntry {
 	 *
 	 * @param fEntry Der zu löschende FEntry.
 	 */
-	public void deleteFEntry(FEntry fEntry) {
+	public void deleteFEntry(final FEntry fEntry) {
 		if (fEntry instanceof Directory) {
-			Directory dir = (Directory) fEntry;
+			final Directory dir = (Directory) fEntry;
 			while (dir.getFEntries().size() > 0) {
 				dir.deleteFEntry(dir.getFEntries().get(0));
 			}
 		}
 		fEntries.remove(fEntry);
+
+		if (fEntry instanceof File) {
+			addLogEntry(LogEntry.LogMessage.REMOVED_FILE);
+		} else if (fEntry instanceof Directory) {
+			addLogEntry(LogEntry.LogMessage.REMOVED_DIRECTORY);
+		}
 
 		fEntry.fireDeleteNotification();
 		fireRemovedChildrenNotification(fEntry);
@@ -132,10 +164,10 @@ public class Directory extends FEntry {
 	 *
 	 * @param addedFEntry Der hinzugefügt FEntry.
 	 */
-	public void fireAddedChildrenNotification(FEntry addedFEntry) {
-		ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
+	public void fireAddedChildrenNotification(final FEntry addedFEntry) {
+		final ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
 
-		for (FEntryObserver observer : observers) {
+		for (final FEntryObserver observer : observers) {
 			if (observer instanceof DirectoryObserver) {
 				((DirectoryObserver) observer).addedChildrenNotification(this, addedFEntries);
 			}
@@ -149,13 +181,23 @@ public class Directory extends FEntry {
 	 *
 	 * @param removedFEntry Der entfernte FEntry.
 	 */
-	public void fireRemovedChildrenNotification(FEntry removedFEntry) {
-		ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
+	public void fireRemovedChildrenNotification(final FEntry removedFEntry) {
+		final ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
 
-		for (FEntryObserver observer : observers) {
+		for (final FEntryObserver observer : observers) {
 			if (observer instanceof DirectoryObserver) {
 				((DirectoryObserver) observer).removedChildrenNotification(this, removedFEntries);
 			}
 		}
+	}
+
+	private Boolean fEntryExists(final String fileName) {
+		boolean exists = false;
+		for (final FEntry fEntry : fEntries) {
+			if (fEntry.getName().equals(fileName)) {
+				exists = true;
+			}
+		}
+		return exists;
 	}
 }

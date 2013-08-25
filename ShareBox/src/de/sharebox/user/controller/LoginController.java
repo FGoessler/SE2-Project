@@ -21,8 +21,8 @@ public class LoginController {
 
 	private JFrame frame;
 
-	public JTextField mailField;
-	public JPasswordField passwordField;
+	protected JTextField mailField;
+	protected JPasswordField passwordField;
 
 	/**
 	 * Erstellt einen neuen LoginController.<br/>
@@ -35,16 +35,14 @@ public class LoginController {
 	 * @param registerController        Ein RegisterController mit dessen Hilfe sich neue Nutzer registrieren können.
 	 */
 	@Inject
-	LoginController(UserAPI userAPI,
-					MainViewControllerFactory mainViewControllerFactory,
-					OptionPaneHelper optionPaneHelper,
-					RegisterController registerController) {
+	LoginController(final UserAPI userAPI,
+					final MainViewControllerFactory mainViewControllerFactory,
+					final OptionPaneHelper optionPaneHelper,
+					final RegisterController registerController) {
 		this.userAPI = userAPI;
 		this.mainViewControllerFactory = mainViewControllerFactory;
 		this.optionPane = optionPaneHelper;
 		this.registerController = registerController;
-
-		userAPI.createSampleContent();
 	}
 
 	/**
@@ -60,8 +58,8 @@ public class LoginController {
 	 * Erfolgsfall, das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
 	 */
 	public Action submit = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
-			User user = new User();
+		public void actionPerformed(final ActionEvent event) {
+			final User user = new User();
 			user.setEmail(mailField.getText());
 			user.setPassword(new String(passwordField.getPassword()));
 
@@ -78,7 +76,7 @@ public class LoginController {
 	 * Der Registrieren-Button bringt den Nutzer in das Registrieren-Fenster, wo er einen Account erstellen kann.
 	 */
 	public Action register = new AbstractAction() {
-		public void actionPerformed(ActionEvent event) {
+		public void actionPerformed(final ActionEvent event) {
 			registerController.show();
 		}
 	};

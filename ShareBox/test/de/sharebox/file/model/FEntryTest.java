@@ -15,33 +15,62 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTest {
 
-	private transient FEntry fEntry;
+	private FEntry fEntry;
 
 	@Mock
 	private UserAPI mockedUserAPI;
-
 	@Mock
-	private transient FEntryObserver observer;
+	private User user;
 	@Mock
-	private transient User user;
+	private FEntryObserver observer;
 
 	@Before
 	public void setUp() {
-		fEntry = new FEntry(mockedUserAPI);
-
+		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 		when(user.getEmail()).thenReturn("testmail@test.de");
+
+		fEntry = new FEntry(mockedUserAPI);
+	}
+
+	@Test
+	public void hasAConstructorToBeCreateWithSpecificValuesAndDefaultPermissions() {
+		FEntry testFEntry = new FEntry(mockedUserAPI, "Testfile", user);
+
+		assertThat(testFEntry.getName()).isEqualTo("Testfile");
+		assertThat(testFEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
+		assertThat(testFEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
+		assertThat(testFEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
+
+		assertThat(testFEntry.getLogEntries()).hasSize(1);
+		assertThat(testFEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
 	}
 
 	@Test
 	public void hasACopyConstructor() {
 		fEntry.setName("TestFile");
 		fEntry.setIdentifier(1234);
+		fEntry.setPermission(user, true, true, true);
 
-		FEntry copy = new FEntry(fEntry);
+		final FEntry copy = new FEntry(fEntry);
 
 		assertThat(copy).isNotSameAs(fEntry);
 		assertThat(copy.getName()).isEqualTo(fEntry.getName());
 		assertThat(copy.getIdentifier()).isEqualTo(fEntry.getIdentifier());
+
+		//test that all permission have been deep copied
+		assertThat(copy.getPermissions()).isNotEmpty();
+		for (final FEntryPermission newPermission : copy.getPermissions()) {
+			for (final FEntryPermission oldPermission : fEntry.getPermissions()) {
+				assertThat(newPermission).isNotSameAs(oldPermission);
+			}
+		}
+		//test that all log entries have been deep copied
+		assertThat(copy.getLogEntries()).isNotEmpty();
+		for (final LogEntry newLogEntry : copy.getLogEntries()) {
+			for (final LogEntry oldLogEntry : fEntry.getLogEntries()) {
+				assertThat(newLogEntry).isNotSameAs(oldLogEntry);
+			}
+		}
 	}
 
 	@Test
@@ -108,12 +137,14 @@ public class FEntryTest {
 
 		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(1);
-		FEntryPermission permission = fEntry.getPermissionOfUser(user);
+		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
 		assertThat(permission.getUser()).isSameAs(user);
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
+
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.PERMISSION);
 	}
 
 	@Test
@@ -128,7 +159,7 @@ public class FEntryTest {
 
 		verify(observer, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
 		assertThat(fEntry.getPermissions()).hasSize(0);
-		FEntryPermission permission = fEntry.getPermissionOfUser(user);
+		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
 		assertThat(permission.getUser()).isSameAs(user);
 		assertThat(permission.getReadAllowed()).isFalse();
@@ -140,7 +171,7 @@ public class FEntryTest {
 	public void changingAPermissionViaSetPermissionDirectlyChangesThePermissionObj() {
 		fEntry.setPermission(user, true, true, true);
 		assertThat(fEntry.getPermissions()).hasSize(1);
-		FEntryPermission permission = fEntry.getPermissionOfUser(user);
+		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 
 		fEntry.setPermission(user, true, false, false);
 		assertThat(fEntry.getPermissions()).hasSize(1);
@@ -149,5 +180,25 @@ public class FEntryTest {
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isFalse();
 		assertThat(permission.getManageAllowed()).isFalse();
+
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.PERMISSION);
+	}
+
+	@Test
+	public void changingTheNameFiresNotificationAndCreatesLogEntry() {
+		fEntry.addObserver(observer);
+
+		fEntry.setName("Test");
+
+		verify(observer).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.NAME_CHANGED);
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.RENAMED);
+	}
+
+	@Test
+	public void canAddLogEntriesAndCanBeAskForAListLogEntries() {
+		fEntry.addLogEntry(LogEntry.LogMessage.CHANGED);
+
+		assertThat(fEntry.getLogEntries()).hasSize(1);
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CHANGED);
 	}
 }
