@@ -115,21 +115,26 @@ public class DirectoryViewSelectionService {
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
 	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
 	 *                              ContextMenuController betrachtet.
-	 * @return Die neu erstellte Datei. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
-	 *         erforderlichen Rechte besitzt.
+	 * @return Die neu erstellte Datei als Optional. Optional.absent() falls der Nutzer keinen korrekten Namen eingegeben
+	 *         hat, eine Datei mit diesem Namen bereits existiert oder er nicht die erforderlichen Rechte besitzt.
 	 */
-	public File createNewFileBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
-		File createdFile = null;
+	public Optional<File> createNewFileBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
+		Optional<File> createdFile = Optional.absent();
+
 		final String newFilename = optionPane.showInputDialog("Geben Sie einen Namen für die neue Datei ein:", "");
 
 		if (!isNullOrEmpty(newFilename)) {
 			final Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
 			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
 				createdFile = parentDirectory.createNewFile(newFilename);
+				if (!createdFile.isPresent()) {
+					optionPane.showMessageDialog("Eine Datei oder Verzeichnis mit diesem Namen existiert bereits.");
+				}
 			} else {
 				optionPane.showMessageDialog("Leider besitzen Sie nicht die nötigen Rechte für diese Operation.");
 			}
 		}
+
 		return createdFile;
 	}
 
@@ -141,21 +146,26 @@ public class DirectoryViewSelectionService {
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
 	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
 	 *                              ContextMenuController betrachtet.
-	 * @return Das neu erstellte Verzeichnis. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
-	 *         erfoderlichen Rechte besitzt.
+	 * @return Das neu erstellte Verzeichnis als Optional. Optional.absent() falls der Nutzer keinen korrekten Namen
+	 *         eingegeben hat, ein Verzeichnis mit diesem Namen bereits existiert oder er nicht die erfoderlichen Rechte besitzt.
 	 */
-	public Directory createNewDirectoryBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
-		Directory createdDir = null;
+	public Optional<Directory> createNewDirectoryBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
+		Optional<Directory> createdDir = Optional.absent();
+
 		final String newDirectoryName = optionPane.showInputDialog("Geben Sie einen Namen für das neue Verzeichnis ein:", "");
 
 		if (!isNullOrEmpty(newDirectoryName)) {
 			final Directory parentDirectory = getParentDirectoryForFEntryCreation(contextMenuController);
 			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
 				createdDir = parentDirectory.createNewDirectory(newDirectoryName);
+				if (!createdDir.isPresent()) {
+					optionPane.showMessageDialog("Eine Datei oder Verzeichnis mit diesem Namen existiert bereits.");
+				}
 			} else {
 				optionPane.showMessageDialog("Leider besitzen Sie nicht die nötigen Rechte für diese Operation.");
 			}
 		}
+
 		return createdDir;
 	}
 

@@ -64,7 +64,7 @@ public class ContextMenuControllerTest {
 		parentDirectory = new Directory(mockedAPI);
 		parentDirectory.setPermission(mockedUser, true, true, true);
 		parentDirectory.setName("A Test Dir");
-		final FEntry child1 = parentDirectory.createNewFile(FILENAME);
+		final FEntry child1 = parentDirectory.createNewFile(FILENAME).get();
 		final FEntryTreeNode[] nodes1 = {new FEntryTreeNode(treeModel, parentDirectory), new FEntryTreeNode(treeModel, child1)};
 		mockedTreePath1 = new TreePath(nodes1);
 		parentDirectory.createNewFile("An other Test File");

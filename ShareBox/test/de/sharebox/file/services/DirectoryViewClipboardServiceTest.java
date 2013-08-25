@@ -60,7 +60,7 @@ public class DirectoryViewClipboardServiceTest {
 		clipboard.addToClipboard(testDirectory);
 		clipboard.addToClipboard(testFile);
 
-		final File keptFile = targetDirectory.createNewFile("file to be kept");
+		final File keptFile = targetDirectory.createNewFile("file to be kept").get();
 		clipboard.pasteClipboardContent(targetDirectory);
 
 		//check that no file in the target directory got deleted

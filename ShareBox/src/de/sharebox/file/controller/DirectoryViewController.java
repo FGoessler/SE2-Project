@@ -98,7 +98,7 @@ public class DirectoryViewController {
 		// fragt man direkt die FileAPI oder den FileManager nach dem Rootverzeichnis für den eingeloggten Benutzer.
 		fileManager.registerFEntry(root);
 
-		final Directory subDir1 = root.createNewDirectory("A Subdirectory");
+		final Directory subDir1 = root.createNewDirectory("A Subdirectory").get();
 		subDir1.createNewFile("Subdirectory File");
 		root.createNewDirectory("Another Subdirectory");
 

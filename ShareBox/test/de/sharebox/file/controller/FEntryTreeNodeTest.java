@@ -57,7 +57,7 @@ public class FEntryTreeNodeTest {
 	public void handlesAddedChildrenNotifications() {
 		final Directory directory = new Directory(mockedUserAPI);
 		treeNode = new FEntryTreeNode(treeModel, directory);
-		final File addedFile = directory.createNewFile(FILENAME);    //this line should fire the notification
+		final File addedFile = directory.createNewFile(FILENAME).get();    //this line should fire the notification
 
 		final ArgumentCaptor<MutableTreeNode> child = ArgumentCaptor.forClass(MutableTreeNode.class);
 		final ArgumentCaptor<MutableTreeNode> parent = ArgumentCaptor.forClass(MutableTreeNode.class);
@@ -72,7 +72,7 @@ public class FEntryTreeNodeTest {
 	@Test
 	public void handlesRemovedChildrenNotifications() {
 		final Directory directory = new Directory(mockedUserAPI);
-		final File removedFile = directory.createNewFile(FILENAME);
+		final File removedFile = directory.createNewFile(FILENAME).get();
 		treeNode = new FEntryTreeNode(treeModel, directory);
 		directory.deleteFEntry(removedFile);                //this line should fire the notification
 

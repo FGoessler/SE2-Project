@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
 
@@ -54,16 +55,21 @@ public class Directory extends FEntry {
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param filename Der Name der neuen Datei.
-	 * @return Die neu erstellte Datei.
+	 * @return Die neu erstellte Datei als Optional. Im Falle eines Fehlers (zB. es gibt bereits Datei mit diesem Namen)
+	 *         liefert es ein Optional.absent().
 	 */
-	public File createNewFile(final String filename) {
-		final File newFile = new File(getUserAPI());
-		newFile.setName(filename);
-		newFile.setPermission(getUserAPI().getCurrentUser(), true, true, true);
+	public Optional<File> createNewFile(final String filename) {
+		Optional<File> newFile = Optional.absent();
 
-		fEntries.add(newFile);
+		if (!fEntryExists(filename)) {
+			newFile = Optional.of(new File(getUserAPI()));
+			newFile.get().setName(filename);
+			newFile.get().setPermission(getUserAPI().getCurrentUser(), true, true, true);
 
-		fireAddedChildrenNotification(newFile);
+			fEntries.add(newFile.get());
+
+			fireAddedChildrenNotification(newFile.get());
+		}
 
 		return newFile;
 	}
@@ -74,16 +80,21 @@ public class Directory extends FEntry {
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param dirname Der Name des neuen Verzeichnisses.
-	 * @return Das neu erstellte Verzeichnis.
+	 * @return Das neu erstellte Verzeichnis als Optional. Im Falle eines Fehlers (zB. es gibt bereits Datei mit diesem
+	 *         Namen) liefert es ein Optional.absent().
 	 */
-	public Directory createNewDirectory(final String dirname) {
-		final Directory newDir = new Directory(getUserAPI());
-		newDir.setName(dirname);
-		newDir.setPermission(getUserAPI().getCurrentUser(), true, true, true);
+	public Optional<Directory> createNewDirectory(final String dirname) {
+		Optional<Directory> newDir = Optional.absent();
 
-		fEntries.add(newDir);
+		if (!fEntryExists(dirname)) {
+			newDir = Optional.of(new Directory(getUserAPI()));
+			newDir.get().setName(dirname);
+			newDir.get().setPermission(getUserAPI().getCurrentUser(), true, true, true);
 
-		fireAddedChildrenNotification(newDir);
+			fEntries.add(newDir.get());
+
+			fireAddedChildrenNotification(newDir.get());
+		}
 
 		return newDir;
 	}
@@ -156,5 +167,15 @@ public class Directory extends FEntry {
 				((DirectoryObserver) observer).removedChildrenNotification(this, removedFEntries);
 			}
 		}
+	}
+
+	private Boolean fEntryExists(String fileName) {
+		boolean exists = false;
+		for (final FEntry fEntry : fEntries) {
+			if (fEntry.getName().equals(fileName)) {
+				exists = true;
+			}
+		}
+		return exists;
 	}
 }

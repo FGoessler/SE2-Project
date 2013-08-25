@@ -69,12 +69,12 @@ public class DirectoryTest {
 
 	@Test
 	public void canCreateNewSubFiles() {
-		final File createdFile = directory.createNewFile(TEST_FILENAME);
+		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
 
 		assertThat(createdFile.getName()).isEqualTo(TEST_FILENAME);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
-		//check permission
+		//check that initial permission was set
 		assertThat(createdFile.getPermissions()).hasSize(1);
 		final FEntryPermission permission = createdFile.getPermissions().get(0);
 		assertThat(permission.getUser()).isSameAs(mockedUser);
@@ -88,12 +88,12 @@ public class DirectoryTest {
 
 	@Test
 	public void canCreateNewSubDirectories() {
-		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME);
+		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME).get();
 
 		assertThat(createdDirectory.getName()).isEqualTo(TEST_DIRNAME);
 		assertThat(directory.getFEntries()).contains(createdDirectory);
 
-		//check permission
+		//check that initial permission was se
 		assertThat(createdDirectory.getPermissions()).hasSize(1);
 		final FEntryPermission permission = createdDirectory.getPermissions().get(0);
 		assertThat(permission.getUser()).isSameAs(mockedUser);
@@ -106,9 +106,17 @@ public class DirectoryTest {
 	}
 
 	@Test
+	public void cannotCreateFEntriesWithAlreadyUsedNames() {
+		assertThat(directory.createNewDirectory(TEST_DIRNAME).isPresent()).isTrue();
+
+		assertThat(directory.createNewDirectory(TEST_DIRNAME).isPresent()).isFalse();
+		assertThat(directory.createNewFile(TEST_DIRNAME).isPresent()).isFalse();
+	}
+
+	@Test
 	public void canContainMultipleFEntries() {
-		final File createdFile = directory.createNewFile(TEST_FILENAME);
-		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME);
+		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
+		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME).get();
 
 		assertThat(directory.getFEntries()).hasSize(2);
 		assertThat(directory.getFEntries()).contains(createdFile);
@@ -117,7 +125,7 @@ public class DirectoryTest {
 
 	@Test
 	public void canRemoveFiles() {
-		final File createdFile = directory.createNewFile(TEST_FILENAME);
+		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
 		createdFile.addObserver(observer);
 		assertThat(directory.getFEntries()).contains(createdFile);
 
@@ -132,9 +140,9 @@ public class DirectoryTest {
 
 	@Test
 	public void removesContentOfDirectoriesRecursively() {
-		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME);
+		final Directory createdDirectory = directory.createNewDirectory(TEST_DIRNAME).get();
 		createdDirectory.addObserver(observer);
-		final File createdFile = createdDirectory.createNewFile(TEST_FILENAME);
+		final File createdFile = createdDirectory.createNewFile(TEST_FILENAME).get();
 		createdFile.addObserver(observer);
 
 		assertThat(directory.getFEntries()).contains(createdDirectory);

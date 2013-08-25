@@ -58,7 +58,7 @@ public class DirectoryViewSelectionServiceTest {
 		rootDirectory.setName("The main dir");
 		rootDirectory.setPermission(mockedUser, true, true, true);
 
-		subDir1 = rootDirectory.createNewDirectory("A Subdirectory");
+		subDir1 = rootDirectory.createNewDirectory("A Subdirectory").get();
 		subDir1.createNewFile("Subdirectory File");
 		rootDirectory.createNewDirectory("Another Subdirectory");
 
@@ -82,101 +82,120 @@ public class DirectoryViewSelectionServiceTest {
 
 	@Test
 	public void canCreateFilesBasedOnUsersSelection() {
-		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME);
-
 		//test without selection -> create as child of root
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME + "1");
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
-		final File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).get();
 		assertThat(rootDirectory.getFEntries()).contains(newFile);
-		assertThat(newFile.getName()).isEqualTo(NEW_FILE_NAME);
+		assertThat(newFile.getName()).isEqualTo(NEW_FILE_NAME + "1");
 
 		//test with directory selected -> create as child of directory
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME + "2");
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1));
-		final File secondNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File secondNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).get();
 		assertThat(subDir1.getFEntries()).contains(secondNewFile);
-		assertThat(secondNewFile.getName()).isEqualTo(NEW_FILE_NAME);
+		assertThat(secondNewFile.getName()).isEqualTo(NEW_FILE_NAME + "2");
 
 		//test with file selected -> create as sibling of file
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME + "3");
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(secondNewFile));
 		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.of(subDir1));
-		final File thirdNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final File thirdNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).get();
 		assertThat(subDir1.getFEntries()).contains(thirdNewFile);
-		assertThat(thirdNewFile.getName()).isEqualTo(NEW_FILE_NAME);
+		assertThat(thirdNewFile.getName()).isEqualTo(NEW_FILE_NAME + "3");
 
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
 		//test with directory selected (but no context menu) -> create as child of directory
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME + "4");
 		final FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
-		final File fourthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final File fourthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent()).get();
 		assertThat(subDir1.getFEntries()).contains(fourthNewFile);
-		assertThat(fourthNewFile.getName()).isEqualTo(NEW_FILE_NAME);
+		assertThat(fourthNewFile.getName()).isEqualTo(NEW_FILE_NAME + "4");
 
 		//test with file selected (but no context menu) -> create as sibling of file
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME + "5");
 		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
-		final File fifthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final File fifthNewFile = selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent()).get();
 		assertThat(subDir1.getFEntries()).contains(fifthNewFile);
-		assertThat(fifthNewFile.getName()).isEqualTo(NEW_FILE_NAME);
+		assertThat(fifthNewFile.getName()).isEqualTo(NEW_FILE_NAME + "5");
 
 
 		//handle dialog cancel
 		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(null);
-		assertThat(selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController))).isNull();
+		assertThat(selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isFalse();
 
 		//handle invalid file name
 		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn("");
-		assertThat(selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController))).isNull();
+		assertThat(selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isFalse();
+
+		//handle error from directory when tried to create the same file again
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_FILE_NAME);
+		assertThat(selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isTrue();
+		assertThat(selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isFalse();
+		verify(optionPane).showMessageDialog("Eine Datei oder Verzeichnis mit diesem Namen existiert bereits.");
 	}
 
 	@Test
 	public void canCreateDirectoriesBasedOnUsersSelection() {
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
-		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME);
 
 		//test without selection -> create as child of root
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME + "1");
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
-		final Directory newDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory newDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).get();
 		assertThat(rootDirectory.getFEntries()).contains(newDirectory);
-		assertThat(newDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
+		assertThat(newDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME + "1");
 
 		//test with directory right click selected -> create as child of directory
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME + "2");
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1));
-		final Directory secondNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory secondNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).get();
 		assertThat(subDir1.getFEntries()).contains(secondNewDirectory);
-		assertThat(secondNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
+		assertThat(secondNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME + "2");
 
 		//test with file right click selected -> create as sibling of file
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME + "3");
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(subDir1.getFEntries().get(0)));
 		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.of(subDir1));
-		final Directory thirdNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Directory thirdNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).get();
 		assertThat(subDir1.getFEntries()).contains(thirdNewDirectory);
-		assertThat(thirdNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
+		assertThat(thirdNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME + "3");
 
 		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>absent());
 
 		//test with directory selected (but no context menu) -> create as child of directory
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME + "4");
 		final FEntryTreeNode[] treeNodes = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1)};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes));
-		final Directory fourthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final Directory fourthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent()).get();
 		assertThat(subDir1.getFEntries()).contains(fourthNewDirectory);
-		assertThat(fourthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
+		assertThat(fourthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME + "4");
 
 		//test with file selected (but no context menu) -> create as sibling of file
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME + "5");
 		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, subDir1), new FEntryTreeNode(treeModel, subDir1.getFEntries().get(0))};
 		selectionService.getTreeView().setSelectionPath(new TreePath(treeNodes2));
-		final Directory fifthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
+		final Directory fifthNewDirectory = selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent()).get();
 		assertThat(subDir1.getFEntries()).contains(fifthNewDirectory);
-		assertThat(fifthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME);
+		assertThat(fifthNewDirectory.getName()).isEqualTo(NEW_DIRECTORY_NAME + "5");
 
 
 		//handle dialog cancel
 		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(null);
-		assertThat(selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController))).isNull();
+		assertThat(selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isFalse();
 
 		//handle invalid file name
 		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn("");
-		assertThat(selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController))).isNull();
+		assertThat(selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isFalse();
+
+		//handle error from directory when tried to create the same directory again
+		when(optionPane.showInputDialog(anyString(), anyString())).thenReturn(NEW_DIRECTORY_NAME);
+		assertThat(selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isTrue();
+		assertThat(selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController)).isPresent()).isFalse();
+		verify(optionPane).showMessageDialog("Eine Datei oder Verzeichnis mit diesem Namen existiert bereits.");
 	}
 
 	@Test
@@ -187,9 +206,10 @@ public class DirectoryViewSelectionServiceTest {
 		setCurrentUserToUserWithoutPermissions();
 
 		assertThat(subDir1.getFEntries()).hasSize(1);
-		final File newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
+		final Optional<File> newFile = selectionService.createNewFileBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).hasSize(1);
-		assertThat(newFile).isNull();
+		assertThat(newFile.isPresent()).isFalse();
+		verify(optionPane).showMessageDialog("Leider besitzen Sie nicht die nötigen Rechte für diese Operation.");
 	}
 
 	@Test
@@ -200,9 +220,10 @@ public class DirectoryViewSelectionServiceTest {
 		setCurrentUserToUserWithoutPermissions();
 
 		assertThat(subDir1.getFEntries()).hasSize(1);
-		final Directory newDir = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
+		final Optional<Directory> newDir = selectionService.createNewDirectoryBasedOnUserSelection(Optional.of(contextMenuController));
 		assertThat(subDir1.getFEntries()).hasSize(1);
-		assertThat(newDir).isNull();
+		assertThat(newDir.isPresent()).isFalse();
+		verify(optionPane).showMessageDialog("Leider besitzen Sie nicht die nötigen Rechte für diese Operation.");
 	}
 
 	@Test
