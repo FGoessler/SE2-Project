@@ -11,13 +11,20 @@ import java.util.List;
 public class FileAPI {
 	private final UserAPI userAPI;
 
+    public enum Status {
+        OK,
+        DELETED
+    }
+
 	public class StorageEntry {
 		private long timestamp;
 		private FEntry fEntry;
+        private Status status;
 
 		public StorageEntry(long timestamp, FEntry fEntry) {
 			this.timestamp = timestamp;
 			this.fEntry = fEntry;
+            this.status = Status.OK;
 		}
 
 		public long getTimestamp() {
@@ -35,6 +42,12 @@ public class FileAPI {
 		public void setTimestamp(long timestamp) {
 			this.timestamp = timestamp;
 		}
+        public Status getStatus() {
+            return this.status;
+        }
+        public void setStatus(Status newStatus) {
+            this.status=newStatus;
+        }
 	}
 
 	/**
@@ -199,7 +212,9 @@ public class FileAPI {
 		//search through existing files, to see if you're just confused and/or still reading this
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).get(0).fEntry.getIdentifier().equals(deletedFile.getIdentifier())) {
-				storage.remove(i);
+				//storage.remove(i);
+                storage.get(i).get(storage.get(i).size()-1).setStatus(Status.DELETED);
+                storage.get(i).get(storage.get(i).size()-1).setTimestamp(System.currentTimeMillis());
 				APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Deletion", deletedFile));
 				fileExists = true;
 				break;
@@ -281,7 +296,9 @@ public class FileAPI {
 
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).get(0).fEntry.getIdentifier().equals(deletedDirectory.getIdentifier())) {
-				storage.remove(i);
+				//storage.remove(i);
+                storage.get(i).get(storage.get(i).size()-1).setStatus(Status.DELETED);
+                storage.get(i).get(storage.get(i).size()-1).setTimestamp(System.currentTimeMillis());
 				APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory));
 				directoryFound = true;
 				break;
@@ -331,4 +348,13 @@ public class FileAPI {
 
 		return changedFiles;
 	}
+
+	/**
+	 * Gibt den API storage zurück. Nirgends benutzen außer für Sync.
+	 *
+	 * @return API File Storage.
+	 */
+	public List<List<StorageEntry>> getStorage() {
+        return storage;
+    }
 }
