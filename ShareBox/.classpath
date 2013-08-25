@@ -28,10 +28,26 @@
 			<attribute name="javadoc_location" value="http://docs.mockito.googlecode.com/hg/latest/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guava-14.0.1"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guice-3.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/guice-assistedinject-3.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javax.inject"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/aopalliance"/>
+	<classpathentry kind="lib" path="jars/guava-14.0.1.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/guice-3.0.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/guice-assistedinject-3.0.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/javax.inject.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/aopalliance.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+
 	<classpathentry kind="output" path="out/production/ShareBox"/>
 </classpath>
