@@ -22,7 +22,7 @@ public final class APILogger {
 	 */
 	public static void logMessage(final String message) {
 		if (LOGGING) {
-			System.out.println(DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
+			System.out.println("["+System.currentTimeMillis()+"]"+DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
 		}
 	}
 

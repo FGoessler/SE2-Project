@@ -20,17 +20,17 @@ public class FileManagerTest {
 	private File file;
 	private Directory dir;
 	private FEntry bs;
-
-	@Mock
-	private UserAPI mockedUserAPI;
-	@Mock
-	private FileAPI fileAPI;
+	private FileManager fileManager;
 
 	@InjectMocks
-	private FileManager fileManager;
+	private UserAPI mockedUserAPI;
+	@InjectMocks
+	private FileAPI fileAPI;
+
 
 	@Before
 	public void setUp() {
+        fileManager = new FileManager(fileAPI);
 		file = new File(mockedUserAPI);
 		file.setIdentifier(123);
 		dir = new Directory(mockedUserAPI);
@@ -39,12 +39,8 @@ public class FileManagerTest {
 		bs.setIdentifier(125);
 	}
 
-	//wip-----------------------------------------------------------------------
-
 	@Test
 	public void registerFEntryTest() {
-		//TODO: schlägt fehl aber man weiß auch nicht so recht was hier getestet wird?
-		// Eigentlich sollte ja geprüft werden, das der FileManager ab jetzt auf Notifications reagiert und die API triggert
 		assertThat(fileManager.registerFEntry(file)).isTrue();
 		assertThat(fileManager.registerFEntry(dir)).isTrue();
 		assertThat(fileManager.registerFEntry(bs)).isFalse();
@@ -54,18 +50,19 @@ public class FileManagerTest {
 
 	@Test
 	public void pollAPIForChangesTest() {
-		//TODO: schlägt fehl aber man weiß auch nicht so recht was hier getestet wird?
+        //simple test for now - testing the whole function would result
+        //in an unintelligible mess anyways, plus delays/etc. for testing puprposes
+        //would slow down global testing.
 		fileAPI.createNewFile(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
 		fileManager.pollAPIForChanges();
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
-		fileAPI.deleteFile(file);
+        fileAPI.deleteFile(file);
 		fileManager.deleteFEntry(file);
 	}
 
 	@Test
 	public void pollFileSystemForChangesTest() {
-		//TODO: schlägt fehl aber man weiß auch nicht so recht was hier getestet wird?
 		fileManager.updateFEntry(file);
 		assertThat(fileAPI.getFileCount()).isEqualTo(0);
 		fileManager.pollFileSystemForChanges();
@@ -90,6 +87,7 @@ public class FileManagerTest {
 		fileManager.updateFEntry(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
 		fileManager.deleteFEntry(file);
+        fileManager.deleteFlush();
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
 	}
 }
