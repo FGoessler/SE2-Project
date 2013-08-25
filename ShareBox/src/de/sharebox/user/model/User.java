@@ -5,6 +5,9 @@ package de.sharebox.user.model;
  * @author Kay Thorsten Meißner
  */
 
+/** 
+ * TODO Klassenbeschreibung (Getter-/Setterklasse für die allgemeinen Daten des Users?)
+ */
 public class User {
 
 	private String email, password, firstname, lastname, storageLimit, gender;

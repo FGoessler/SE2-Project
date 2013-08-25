@@ -12,8 +12,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Diese Klasse dient als Wrapper der FEntries, die im TreeView eines DirectoryViewControllers dargestellt werden um
- * nicht die toString-Methode der Directory- und File-Klasse für Darstellungsspezifische Zwecke zu missbrauchen.
+ * Diese Klasse dient als Wrapper der FEntries, die im TreeView eines DirectoryViewControllers dargestellt werden. Um
+ * nicht die toString-Methode der Directory- und File-Klasse für Darstellungsspezifische Zwecke zu verwenden.
  */
 public class FEntryTreeNode extends DefaultMutableTreeNode {
 	private final DefaultTreeModel treeModel;
@@ -66,7 +66,7 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 	}
 
 	/**
-	 * Dieser DirectoryObserver reagiert auf Veränderungen der dargestellten FEntries und updated das UI-Model entsprechend.
+	 * Dieser DirectoryObserver reagiert auf Veränderungen der dargestellten FEntries und aktualisiert das UI-Model entsprechend.
 	 */
 	private final transient DirectoryObserver observer = new DirectoryObserver() {
 		@Override

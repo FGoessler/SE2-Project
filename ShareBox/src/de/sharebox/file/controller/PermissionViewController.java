@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Dieser Controller ist für die Darstellung der Rechte in der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
+ * Dieser Rechte-Controller ist für die Darstellung der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
  */
 public class PermissionViewController {
 	private final DirectoryViewSelectionService selectionService;
@@ -35,12 +35,12 @@ public class PermissionViewController {
 
 	/**
 	 * Erstellt einen neuen PermissionViewController.<br/>
-	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden. Siehe auch PermissionViewControllerFactory.
+	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden. Siehe auch PermissionViewControllerFactory.
 	 *
-	 * @param splitPane        Der SplitPane in dessen rechter Hälfte der Controller seien Inhalte darstellen soll.
+	 * @param splitPane        Der SplitPane, in dessen rechter Hälfte der Controller seinen Inhalte darstellen soll.
 	 * @param selectionService Ein DirectoryViewSelectionService mittels dessen die aktuelle Auswahl des Nutzer im JTree
 	 *                         festgestellt werden kann.
-	 * @param sharingService   Eine SharingService Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
+	 * @param sharingService   Eine SharingService-Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
 	 */
 	@Inject
 	PermissionViewController(@Assisted JSplitPane splitPane,
@@ -62,8 +62,8 @@ public class PermissionViewController {
 	}
 
 	/**
-	 * Dieser TreeSelectionListener reagiert auf Änderungen an der Auswahl im JTree des DirectoryViewControllers um den
-	 * diesen PermissionViewController zu aktualisieren, wenn der Nutzer einen anderen FEntry auswählt.
+	 * Der TreeSelectionListener reagiert auf Änderungen an der Auswahl im JTree des DirectoryViewControllers,<br/>
+	 * um den PermissionViewController zu aktualisieren, wenn der Nutzer einen anderen FEntry auswählt.<br/>
 	 * Eine Mehrfachauswahl wird dabei nicht unterstützt.
 	 */
 	protected TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
@@ -98,7 +98,7 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser FEntryObserver beobachtet den aktuell vom Controller dargestellten FEntry um auf Änderungen am Datenmodel
+	 * Der FEntryObserver beobachtet den, aktuell vom Controller, dargestellten FEntry um auf Änderungen am Datenmodel<br/>
 	 * zu reagieren und das UI zu aktualisieren.
 	 */
 	protected FEntryObserver fEntryObserver = new FEntryObserver() {
@@ -122,8 +122,7 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieses TableModel ist für die Darstellung der Rechte des im DirectoryViewController selektierten FEntries als
-	 * Tabelle verantwortlich.
+	 * Das TableModel stellt die Rechte der selektierten FEntries im DirectoryViewController als Tabelle dar.
 	 */
 	protected AbstractTableModel tableModel = new AbstractTableModel() {
 		private String[] columnNames = {"Nutzer", "Lesen", "Schreiben", "Verwalten"};
@@ -216,8 +215,8 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser Handler reagiert auf Klicks auf den "+"-Button um andere Nutzer zu der Datei/Verzeichnis einzuladen.
-	 * Diese Action wird per SWIxml automatisch mit dem UI verknüpft.
+	 * Dieser Handler reagiert auf Klicks des "+"-Button, um andere Nutzer zu der Datei/Verzeichnis einzuladen.
+	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
 	public Action addUserPermission = new AbstractAction() {
 		@Override
@@ -227,9 +226,9 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser Handler reagiert auf Klicks auf den "-"-Button um andere Nutzer von der Datei/Verzeichnis auszuladen, also
-	 * jegliche Rechte dieser an der Datei zu löschen.
-	 * Diese Action wird per SWIxml automatisch mit dem UI verknüpft.
+	 * Dieser Handler reagiert auf Klicks des "-"-Button, um andere Nutzer von der Datei/Verzeichnis auszuladen, 
+	 * also jegliche Rechte an der Datei zu löschen.
+	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
 	public Action removeUserPermission = new AbstractAction() {
 		@Override

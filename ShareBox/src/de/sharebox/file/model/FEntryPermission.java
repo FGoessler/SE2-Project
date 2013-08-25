@@ -4,7 +4,7 @@ import com.sun.istack.internal.NotNull;
 import de.sharebox.user.model.User;
 
 /**
- * Diese Klasse bildet die Rechte eines Nutzers an einer bestimmten Datei/Verzeichnis ab. Es gibt Lese, Schreibe und
+ * Diese Klasse bildet die Rechte eines Nutzers an einer bestimmten Datei/Verzeichnis ab. Es gibt Lese-, Schreib- und<br/>
  * Verwaltungsrechte (= Möglichkeit des Änderns, Hinzufügens und Enfernens von Rechten einzelner Nutzer an der Datei).
  */
 public class FEntryPermission {
@@ -16,7 +16,7 @@ public class FEntryPermission {
 	private final FEntry fEntry;
 
 	/**
-	 * Erstellt ein neue FEntryPermission Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
+	 * Erstellt ein neues FEntryPermission-Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
 	 *
 	 * @param user   Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
@@ -27,7 +27,7 @@ public class FEntryPermission {
 	}
 
 	/**
-	 * Gibt den Nutzer zurück für den die Rechte definiert sind.
+	 * Gibt den Nutzer zurück, für den die Rechte definiert sind.
 	 *
 	 * @return Der Nutzer für den die Rechte definiert sind.
 	 */
@@ -36,7 +36,7 @@ public class FEntryPermission {
 	}
 
 	/**
-	 * Gibt den FEntry zurück für den die Rechte definiert sind.
+	 * Gibt den FEntry zurück, für den die Rechte definiert sind.
 	 *
 	 * @return Der FEntry für den die Rechte definiert sind.
 	 */
@@ -54,7 +54,7 @@ public class FEntryPermission {
 	}
 
 	/**
-	 * Setzt die Leserechte und feuert eine PERMISSION_CHANGED Notification auf dem fEntry.
+	 * Setzt die Leserechte und feuert eine PERMISSION_CHANGED-Notifikation auf dem fEntry.
 	 *
 	 * @param readAllowed Der neue Wert für die Leserechte.
 	 */
@@ -74,7 +74,7 @@ public class FEntryPermission {
 	}
 
 	/**
-	 * Setzt die Schreibrechte und feuert eine PERMISSION_CHANGED Notification auf dem fEntry.
+	 * Setzt die Schreibrechte und feuert eine PERMISSION_CHANGED-Notifikation auf dem fEntry.
 	 *
 	 * @param writeAllowed Der neue Wert für die Schreibrechte.
 	 */
@@ -94,7 +94,7 @@ public class FEntryPermission {
 	}
 
 	/**
-	 * Setzt die Verwaltungsrechte und feuert eine PERMISSION_CHANGED Notification auf dem fEntry.
+	 * Setzt die Verwaltungsrechte und feuert eine PERMISSION_CHANGED-Notifikation auf dem fEntry.
 	 *
 	 * @param manageAllowed Der neue Wert für die Verwaltungsrechte.
 	 */
@@ -105,7 +105,7 @@ public class FEntryPermission {
 	}
 
 	/**
-	 * Setzt alle 3 Rechte auf einmal und feuert somit die PERMISSION_CHANGED Notification auf dem FEntry nur einmal.
+	 * Setzt alle 3 Rechte auf einmal und feuert somit die PERMISSION_CHANGED-Notifikation auf dem FEntry nur einmal.
 	 *
 	 * @param read   Der neue Wert für Leserechte.
 	 * @param write  Der neue Wert für Schreibrechte.

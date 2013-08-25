@@ -16,7 +16,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class SharingService {
 	/**
-	 * RegEx-Pattern zum Erkennen einer (vom Format her) gültigen Email-Addresse.
+	 * RegEx-Pattern zum Erkennen einer korrekt formatierten E-Mail-Addresse.
 	 */
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
@@ -24,7 +24,7 @@ public class SharingService {
 
 	/**
 	 * Erstellt einen neuen SharingService.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialog-Fenstern.
 	 */

@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Diese Klasse kappselt die Verwaltung der Zwischenablage um Dateien und Verzeichnisse zu kopieren.
- * Diese Klasse ist als Singleton gedacht, sodass wann immer ein DirectoryViewClipboardService per Guice injected wird
+ * Diese Klasse kapselt die Verwaltung der Zwischenablage um Dateien und Verzeichnisse zu kopieren.<br/>
+ * Diese Klasse ist als Singleton gedacht, so dass wann immer ein DirectoryViewClipboardService per Guice injected wird<br/>
  * alle Objekte Zugriff auf die selbe Instanz und somit auch auf die globalen Inhalte der Zwischenablage besitzen.
  */
 @Singleton
@@ -23,7 +23,7 @@ public class DirectoryViewClipboardService {
 
 	/**
 	 * Erstellt einen neuen DirectoryViewClipboardService.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
 	 */
@@ -33,7 +33,7 @@ public class DirectoryViewClipboardService {
 	}
 
 	/**
-	 * Fügt einen einzelnen FEntry in die Zwischenablage ein. Der bsiherige Inhalt der Zwischenablage wird dabei nicht
+	 * Fügt einen einzelnen FEntry in die Zwischenablage ein. Der bisherige Inhalt der Zwischenablage wird dabei nicht
 	 * gelöscht. Verwende resetClipboard() um die Zwischenablage zu leeren.
 	 *
 	 * @param copiedFEntry Der zu kopierende FEntry, der in die Zwischenablage abgelegt werden soll.
@@ -47,10 +47,10 @@ public class DirectoryViewClipboardService {
 	}
 
 	/**
-	 * Fügt einen mehrere FEntry in die Zwischenablage ein. Der bsiherige Inhalt der Zwischenablage wird dabei nicht
+	 * Fügt mehrere FEntry in die Zwischenablage ein. Der bisherige Inhalt der Zwischenablage wird dabei nicht<br/>
 	 * gelöscht. Verwende resetClipboard() um die Zwischenablage zu leeren.
 	 *
-	 * @param fEntries die zu kopierenden FEntries, die in die Zwischenablage abgelegt werden sollen.
+	 * @param fEntries Die zu kopierenden FEntries, die in die Zwischenablage abgelegt werden sollen.
 	 */
 	public void addToClipboard(List<FEntry> fEntries) {
 		for (FEntry fEntry : fEntries) {
@@ -62,7 +62,7 @@ public class DirectoryViewClipboardService {
 	 * Fügt den Inhalt der Zwischenablage in das gegebene Verzeichnis ein.
 	 *
 	 * @param targetDirectory Das Verzeichnis in das die Inhalte eingefügt werden sollen.
-	 * @return Das Verzeichnis nach dem Einfügenvorgang.
+	 * @return Das Verzeichnis nach dem Einfügen.
 	 */
 	public Directory pasteClipboardContent(Directory targetDirectory) {
 		if (targetDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
@@ -79,7 +79,7 @@ public class DirectoryViewClipboardService {
 
 	/**
 	 * Löscht den aktuellen Inhalt der Zwischenablage. Sollte vor jeder neuen "Kopieren"-Aktion eines Nutzers aufgerufen
-	 * werden, da ansonsten beim Einfügen der alte Inhalt mit eingefügt wird.
+	 * werden, da sonst beim Einfügen der alte Inhalt ebenfalls eingefügt wird.
 	 */
 	public void resetClipboard() {
 		clipboard.clear();

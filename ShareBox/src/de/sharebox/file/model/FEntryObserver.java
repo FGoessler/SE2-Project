@@ -1,7 +1,7 @@
 package de.sharebox.file.model;
 
 /**
- * Observer von FEntries müssen dieses Interface implementieren um über Änderungen und die Löschung von FEntry Objekten
+ * Observer von FEntries müssen dieses Interface implementieren, um über Änderungen und die Löschung von FEntry Objekten<br/>
  * benachrichtigt zu werden.
  */
 public interface FEntryObserver {
@@ -14,7 +14,7 @@ public interface FEntryObserver {
 	}
 
 	/**
-	 * Der übergebene FEntry wurde auf irgendeine Art und Weise geändert (zB.: Name wurde geändert, Unterdateien wurde
+	 * Der übergebene FEntry wurde auf irgendeine Art und Weise geändert (zB.: Name wurde geändert, Unterdateien wurde<br/>
 	 * hinzugefügt, Dateiinhalt hat sich geändert)
 	 *
 	 * @param fEntry Der FEntry, der sich geändert hat.

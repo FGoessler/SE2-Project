@@ -10,6 +10,9 @@ import de.sharebox.file.model.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO Klassenbeschreibung
+ */
 @Singleton
 public class FileManager {
 
@@ -22,7 +25,7 @@ public class FileManager {
 
 	/**
 	 * Erstellt einen neuen FileManager. Als Singleton konzipiert.<br/>
-	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden.
+	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param fileAPI Die FileAPI zur Kommunikation mit dem Server.
 	 */
@@ -35,7 +38,7 @@ public class FileManager {
 	 * Registriert ein neues File in der FileAPI
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
-	 * @return ob die Operation erfolgreich war.
+	 * @return ob die Operation erfolgreich war
 	 */
 	public boolean registerFEntry(FEntry newFEntry) {
 		//log entry
@@ -56,9 +59,9 @@ public class FileManager {
 	}
 
 	/**
-	 * Sucht nach Änderungen seitens der FileAPI und updated/added die geänderten FEntries.
+	 * Sucht nach Änderungen der FileAPI und aktualisiert/ergänzt die veränderten FEntries.
 	 *
-	 * @return ob alle Operationen erfolgreich waren.
+	 * @return ob alle Operationen erfolgreich waren
 	 */
 	public boolean pollAPIForChanges() {
 		boolean success = true;
@@ -77,9 +80,9 @@ public class FileManager {
 	}
 
 	/**
-	 * Sucht nach Änderungen seitens des Filesystems und updated/added die geänderten FEntries.
+	 * Sucht nach Änderungen des Dateisystems und aktualisiert/ergänzt die veränderten FEntries.
 	 *
-	 * @return ob alle Operationen erfolgreich waren.
+	 * @return ob alle Operationen erfolgreich waren
 	 */
 	public boolean pollFileSystemForChanges() {
 		List<FEntry> changedFiles = new ArrayList<FEntry>();
@@ -110,10 +113,10 @@ public class FileManager {
 	}
 
 	/**
-	 * Überschreibt/updated einen FEntry im lokalen Speicher.
+	 * Überschreibt/aktualisiert einen FEntry im lokalen Speicher.
 	 *
-	 * @param updatedFile zu bearbeitendes FEntry.
-	 * @return ob erfolgreich.
+	 * @param updatedFile zu änderndes FEntry.
+	 * @return ob Änderungen erfolgreich war
 	 */
 	public boolean updateFEntry(FEntry updatedFile) {
 		boolean success = false;
@@ -143,10 +146,10 @@ public class FileManager {
 	}
 
 	/**
-	 * Löscht FEntry mit ID des gegebenen FEntry.
+	 * Löscht FEntry mit der ID dieses FEntrys.
 	 *
 	 * @param deletedFile zu löschender FEntry.
-	 * @return ob erfolgreich.
+	 * @return ob Änderungen erfolgreich war
 	 */
 	public boolean deleteFEntry(FEntry deletedFile) {
 		boolean success = false;
@@ -164,11 +167,14 @@ public class FileManager {
 	}
 
 	/**
-	 * TODO: Doku
+	 * Methode um die Anzahl der Storage-Einträge zu erhalten.
 	 *
-	 * @return
+	 * @return Größe vom Speicher
 	 */
 	public int getFileCount() {
 		return storage.size();
 	}
 }
+/**
+ * TODO: Es sieht so aus als ob einige Methoden hieraus nochmal in der FileAPI sind oder umgekehrt
+ */

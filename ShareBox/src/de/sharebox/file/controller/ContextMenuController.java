@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Dieser Controller ist für das Kontextmenü verantwortlich, das per Rechtsklick auf einen Eintrag im JTree des
- * DirectoryViewControllers aufgerufen werden kann.
+ * Dieser Kontextmenü-Controller ruft, bei Rechtsklick auf einen Eintrag im JTree, den DirectoryViewController auf.
  */
 public class ContextMenuController {
 	private final DirectoryViewSelectionService selectionService;
@@ -32,14 +31,13 @@ public class ContextMenuController {
 	private Optional<TreePath> currentTreePath = Optional.absent();
 
 	/**
-	 * Das JPopupMenu dieses Kontextmenüs.
-	 * Wird mittels SWIxml gesetzt.
+	 * Das JPopupMenu dieses Kontextmenüs. Wird mittels SWIxml gesetzt.
 	 */
 	protected JPopupMenu popupMenu;
 
 	/**
-	 * Erstellt ein neues ContextMenu. Das Menü wird dazu aus der contextMenu.xml Datei generiert.<br/>
-	 * Dieses Objekt sollte im Produktivcode nur per Dependency Injection von Guice erstellt werden.
+	 * Erstellt ein neues Kontextmenü. Das Menü wird dazu aus der contextMenu.xml-Datei generiert.<br/>
+	 * Dieses Objekt sollte nur per Dependency Injection von Guice erstellt werden.
 	 *
 	 * @param selectionService Ein DirectoryViewSelectionService um die aktuelle Auswahl im JTree erhalten zu können.
 	 * @param clipboard        Ein DirectoryViewClipboardService um Zugriff auf den Inhalt der Zwischenablage für FEntries zu
@@ -64,10 +62,10 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * Zeigt das ContextMenu als Popup Menü an. Dazu muss ein TreePath zum angewählten Objekt im
+	 * Zeigt das Kontextmenü als Popup-Menü an. Dazu muss ein TreePath zum angewählten Objekt im
 	 * TreeView übergeben werden, sowie die Koordinaten des Klicks, um das Menü zu positionieren.
 	 *
-	 * @param treePath Der TreePath anhand dem das angewählte Objekt im TreeView gefunden werden kann.
+	 * @param treePath Der TreePath zum angewählten Objekt im TreeView.
 	 * @param xPos     Die X Koordinate des Klicks.
 	 * @param yPos     Die Y Koordinate des Klicks.
 	 */
@@ -95,11 +93,10 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * Gibt den TreePath zu dem Objekt zurück, das vom Nutzer angewählt wurde, also den TreePath,
-	 * der in der showMenu Methode übergeben wurde und auf dessen letzte Komponente sich alle Aktionen
-	 * dieses Kontextmenüs beziehen.
+	 * Gibt den TreePath des vom Nutzer gewählten Objekts zurück. Dieser wurde in der showMenu Methode übergeben 
+	 * und alle Aktionen dieses Kontextmenüs beziehen sich auf dessen letzter Komponente (Treepath).
 	 *
-	 * @return Der TreePath zum aktuell ausgewählten Objekt.
+	 * @return Der TreePath zum aktuell ausgewählten Objekt
 	 */
 	public Optional<TreePath> getCurrentTreePath() {
 		return currentTreePath;
@@ -108,7 +105,7 @@ public class ContextMenuController {
 	/**
 	 * Gibt den FEntry zurück, auf den sich alle Aktionen des Kontextmenüs beziehen.
 	 *
-	 * @return Der FEntry auf den sich alle Aktionen des Kontextmenüs beziehen.
+	 * @return Der FEntry auf den sich alle Aktionen des Kontextmenüs beziehen
 	 */
 	public Optional<FEntry> getSelectedFEntry() {
 		Optional<FEntry> foundFEntry = Optional.absent();
@@ -119,9 +116,9 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * Gibt das Oververzeichnis des FEntry zurück, auf den sich alle Aktionen des Kontextmenüs beziehen.
+	 * Gibt das Oberverzeichnis des FEntry zurück, auf den sich alle Aktionen des Kontextmenüs beziehen.
 	 *
-	 * @return Das Oberverzeichnis des FEntries auf den sich alle Aktionen des Kontextmenüs beziehen.
+	 * @return Das Oberverzeichnis des FEntries auf den sich alle Aktionen des Kontextmenüs beziehen
 	 */
 	public Optional<Directory> getParentOfSelectedFEntry() {
 		Optional<Directory> foundDirectory = Optional.absent();
@@ -132,7 +129,7 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Neue Datei erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den "Neue Datei erstellen"-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action createNewFile = new AbstractAction() {
 		@Override
@@ -144,7 +141,7 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Neues Verzeichnis erstellen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den "Neues Verzeichnis erstellen"-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action createNewDirectory = new AbstractAction() {
 		@Override
@@ -156,7 +153,7 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Löschen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Löschen-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action deleteFEntry = new AbstractAction() {
 		@Override
@@ -227,7 +224,7 @@ public class ContextMenuController {
 	}
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Umbennen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Umbennen-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action renameFEntry = new AbstractAction() {
 		@Override
@@ -247,7 +244,7 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Kopieren"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Kopieren-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action copyFEntry = new AbstractAction() {
 		@Override
@@ -268,7 +265,7 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Einfügen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Einfügen-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action pasteFEntry = new AbstractAction() {
 		@Override
@@ -287,7 +284,7 @@ public class ContextMenuController {
 	};
 
 	/**
-	 * ActionHandler um auf den Klick auf den "Teilen"-Eintrag im Kontextmenü zu reagieren.
+	 * ActionHandler - um auf den Klick auf den Teilen-Eintrag im Kontextmenü zu reagieren.
 	 */
 	public Action shareFEntry = new AbstractAction() {
 		@Override

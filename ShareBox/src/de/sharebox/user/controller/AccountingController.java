@@ -12,7 +12,9 @@ import java.awt.event.ActionEvent;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-
+/** 
+ * TODO Klassenbeschreibung (Eingabefelder für Accounting?)
+ */
 public class AccountingController {
 	private final OptionPaneHelper optionPane;
 	private final UserAPI userAPI;
@@ -27,9 +29,10 @@ public class AccountingController {
 	public int oldStorageLimitIndex;
 
 	/**
-	 * Erstellt einen neuen AccountingController. <br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Erstellt einen neuen AccountingController.<br/>
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
+	 * TODO der optionpanehelper ist noch unklar (für mich) wie auch in den anderen Controllern
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
 	 */
@@ -41,9 +44,8 @@ public class AccountingController {
 	}
 
 	/**
-	 * Öffnen des Accounting-bearbeiten Fensters. Hierbei werden alle bereits bekannten Informationen in
-	 * die TextFields direkt mit übernommen. Außerdem wird überprüft,ob bereits Informationen zu den einzelnen Feldern
-	 * vorhanden waren oder nicht.
+	 * Öffnen des Fensters für die Accountbearbeitung. Hierbei werden die Textfelder, nach Überprüfung, mit den <br/>
+	 * bereits bekannten Informationen ausgefüllt.
 	 */
 	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/editAccounting");
@@ -68,11 +70,12 @@ public class AccountingController {
 	}
 
 	/**
-	 * Speichern der Änderungen an den Accounting Informationen. Für jedes einzelne Feld wird überprüft, ob etwas hinein
-	 * geschrieben werden muss oder nicht. Wenn nichts drin stehen muss kann auch beim Speichern nichts drin stehen
-	 * Wenn zuvor was drin Stand, dann muss auch wieder eine Information eingetragen werden. Beim speichern des
-	 * Speicherplatzes wird überprüft, ob alle Zahlungsinformationen eingetragen sind, anschließend wird man an
-	 * das externe Bezahlsystem weitergeleitet.
+	 * TODO der Text ist etwas verwirrend, weiß leider nicht genau was gemeint ist um es selber zu ändern
+	 * 
+	 * Speichern der Änderungen der Account-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional<br/>
+	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information<br/>
+	 * eingetragen werden (wird gespeichert). Beim Speichern des Speicherplatzes wird überprüft, ob alle nötigen<br/>
+	 * Zahlungsinformationen eingetragen sind, anschließend wird man ggf. an das externe Bezahlsystem weitergeleitet.
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
@@ -112,12 +115,12 @@ public class AccountingController {
 	};
 
 	/**
-	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
 			frame.setVisible(false);
-			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
+			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}
 	};
 

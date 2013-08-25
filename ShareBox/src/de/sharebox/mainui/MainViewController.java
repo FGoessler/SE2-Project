@@ -14,8 +14,8 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 
 /**
- * Dieser Controller kümmert sich um das Hauptfenster. Er erstellt das zentrale Menü und stellt dem
- * DirectoryVewController einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur durchzuführen.
+ * Dieser Controller steuert das Hauptfenster. Er erstellt das zentrale Menü und stellt dem DirectoryViewController<br/>
+ * einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur zu ermöglichen.<br/>
  * Dieser Controller besitzt außerdem eine Referenz auf den aktuell eingeloggten User, dessen Daten dargestellt werden.
  */
 public class MainViewController {
@@ -34,8 +34,7 @@ public class MainViewController {
 	private User currentUser;
 
 	/**
-	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
-	 * Wird über die SwingEngine gesetzt.
+	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt. Wird über die SwingEngine gesetzt.
 	 */
 	public JTree tree;
 	public JSplitPane splitPane;
@@ -48,15 +47,15 @@ public class MainViewController {
 	/**
 	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml
 	 * generiert.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.<br/>
 	 * Siehe auch MainViewControllerFactory.
 	 *
 	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen. Kann nicht von Guice
-	 *                                       injecten werden und wird daher per Factory gesetzt.
+	 *                                       injectet werden und wird daher per Factory gesetzt.
 	 * @param userAPI                        Die UserAPI zur Kommunikation mit dem Server.
-	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt um
-	 *                                       den diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
-	 *                                       Kann nicht von Guice injecten werden und wird daher per Factory gesetzt.
+	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt, um 
+	 *                                       dann diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
+	 *                                       Kann nicht von Guice injectet werden und wird daher per Factory gesetzt.
 	 * @param permissionViewControllerFactory
 	 *                                       Mittels dieser Factory wird ein PermissionViewController erzeugt,
 	 *                                       der in der rechten Hälfte des JSplitPanes dargestellt wird.

@@ -13,15 +13,15 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @Singleton
 public class UserAPI {
 	/**
-	 * simuliert Datenbank;
+	 * simuliert die Datenbank;
 	 */
 	protected transient List<User> userList = new ArrayList<User>();
 
 	private transient User currentUser;
 
 	/**
-	 * Leerer Konstruktor um ein direktes erstellen zu verhindern. Als Singleton konzipiert.<br/>
-	 * Instanzen dieser Klasse sollte nur per Dependecy Injection durch Guice erstellt werden.
+	 * Leerer Konstruktor um ein direktes Erstellen zu verhindern. Als Singleton konzipiert.<br/>
+	 * Instanzen dieser Klasse sollten nur per Dependecy Injection durch Guice erstellt werden.
 	 */
 	@Inject
 	UserAPI() {
@@ -74,8 +74,8 @@ public class UserAPI {
 	/**
 	 * Prüft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
 	 *
-	 * @param user zu authentifizierender user
-	 * @return ob erfolgreich *
+	 * @param user zu authentifizierender User
+	 * @return ob Authentifizierung erfolgreich war
 	 */
 	public boolean authenticateUser(User user) {
 		boolean success = false;
@@ -94,10 +94,10 @@ public class UserAPI {
 	}
 
 	/**
-	 * Versucht, den User einzuloggen, wenn Authentifizierung erfolgreich ist.
+	 * Versucht den User einzuloggen, wenn Authentifizierung erfolgreich wae.
 	 *
-	 * @param user einzulogender user
-	 * @return ob erfolgreich *
+	 * @param user einzuloggender user
+	 * @return ob Einloggen erfolgreich war
 	 */
 	public boolean login(User user) {
 		boolean success = false;
@@ -116,9 +116,9 @@ public class UserAPI {
 	}
 
 	/**
-	 * Loggt den eingelogten User aus.
+	 * Loggt den eingeloggten User aus.
 	 *
-	 * @return ob erfolgreich *
+	 * @return ob Ausloggen erfolgreich war
 	 */
 	public boolean logout() {
 		boolean success = false;
@@ -137,7 +137,7 @@ public class UserAPI {
 	 * Erstellt neuen User, sofern noch nicht vorhanden.
 	 *
 	 * @param user zu registrierender user
-	 * @return ob erfolgreich *
+	 * @return ob Registrierung erfolgreich war
 	 */
 	public boolean registerUser(User user) {
 		Boolean userAlreadyExists = false;
@@ -167,8 +167,8 @@ public class UserAPI {
 	/**
 	 * Ändert Profil-Informationen.
 	 *
-	 * @param user zu ändernder user
-	 * @return ob erfolgreich *
+	 * @param user zu änderndes User-Profil
+	 * @return ob Änderung erfolgreich war
 	 */
 	public boolean changeProfile(User user) {
 		Boolean success = false;
@@ -196,8 +196,8 @@ public class UserAPI {
 	/**
 	 * Ändert Zahlungs- und Speicherinformationen
 	 *
-	 * @param user zu ändernder user
-	 * @return ob erfolgreich *
+	 * @param user zu änderndes User-Profil
+	 * @return ob Änderung erfolgreich war
 	 */
 	public boolean changeAccountingSettings(User user) {
 		Boolean success = false;
@@ -223,11 +223,11 @@ public class UserAPI {
 	}
 
 	/**
-	 * Ändert E-Mailadresse und Password
+	 * Ändert E-Mailadresse und Passwort
 	 *
-	 * @param oldUser zu ändernder user
-	 * @param newUser zu übernehmende Informationen
-	 * @return ob erfolgreich *
+	 * @param oldUser zu änderndes User-Profil
+	 * @param newUser zu übernehmende Änderung des User-Profils
+	 * @return ob Änderung erfolgreich war
 	 */
 	public boolean changeCredential(User oldUser, User newUser) {
 		Boolean success = false;
@@ -255,9 +255,9 @@ public class UserAPI {
 	/**
 	 * Lädt neuen Benutzer zu Sharebox ein.
 	 *
-	 * @param invitingUser werbende User
-	 * @param invitedUser  geworbene User
-	 * @return ob erfolgreich *
+	 * @param invitingUser einladender User
+	 * @param invitedUser  eingeladener User
+	 * @return ob Einladung erfolgreich war
 	 */
 	public boolean inviteUser(User invitingUser, User invitedUser) {
 		Boolean success = true;
@@ -282,7 +282,7 @@ public class UserAPI {
 	/**
 	 * prüft, ob ein User eingeloggt ist.
 	 *
-	 * @return ob ein User eingeloggt ist *
+	 * @return ob ein User eingeloggt ist
 	 */
 	public boolean isLoggedIn() {
 		return currentUser != null;
@@ -291,7 +291,7 @@ public class UserAPI {
 	/**
 	 * gibt eingeloggten User zurück
 	 *
-	 * @return zur Zeit eingeloggter User *
+	 * @return zur Zeit eingeloggter User
 	 */
 	public User getCurrentUser() {
 		User user = new User();

@@ -5,11 +5,18 @@ import de.sharebox.file.model.FEntry;
 import java.text.DateFormat;
 import java.util.Date;
 
+/** 
+ * TODO Klassenbeschreibung (Klasse für das Loggen von API-Aktionen?)
+ */
 public final class APILogger {
 
-    /**Logging flag.*/
+    /** 
+     * Logging Flag.
+     */
 	public static final boolean LOGGING = true;
-    /**flag für Datumsoutput: TRUE wenn volles Datumsformat gewünscht, FALSE sonst.*/
+    /**
+     * Flag für Datumsausgabe: TRUE wenn volles Datumsformat gewünscht wird, FALSE sonst.
+     */
     public static final boolean READABLEDATE = false;
 
 	private APILogger() {}
@@ -26,7 +33,7 @@ public final class APILogger {
 	}
 
 	/**
-	 * Erstellt einen Action String (zur Verwendung in debugSuccess und CO.) der die gegebene Action und den FEntry benennt.
+	 * Erstellt einen Action String (zur Verwendung in debugSuccess und CO.) der die gegebene Aktion und den FEntry benennt.
 	 * @param action Die Aktion, die geloggt werden soll.
 	 * @param fEntry Der FEntry auf dem die Aktion ausgeführt wurde.
 	 * @return Der String der die Aktion und Information über den FEntry enthält.
@@ -37,7 +44,7 @@ public final class APILogger {
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion erfolgreich war.
-	 * @param action Ein Text der die AKtion benennt.
+	 * @param action Ein String der die Aktion benennt.
 	 */
 	public static void debugSuccess(String action) {
 		if (LOGGING) {
@@ -47,8 +54,8 @@ public final class APILogger {
 	}
 
 	/**
-	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion fehlgeschalgen ist.
-	 * @param action Ein Text der die AKtion benennt.
+	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion fehlgeschlagen ist.
+	 * @param action Ein String der die Aktion benennt.
 	 */
 	public static void debugFailure(String action) {
 		if (LOGGING) {
@@ -59,8 +66,8 @@ public final class APILogger {
 
 	/**
 	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion wegen der Reason fehlgeschlagen ist.
-	 * @param action Ein Text der die AKtion benennt.
-	 * @param reason Ein Text der den Grund für den Fehler benennt.
+	 * @param action Ein String der die Aktion benennt.
+	 * @param reason Ein String der den Fehlergrund benennt.
 	 */
 	public static void debugFailure(String action, String reason) {
 		if (LOGGING) {

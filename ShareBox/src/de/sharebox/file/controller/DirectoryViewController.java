@@ -32,14 +32,13 @@ public class DirectoryViewController {
 
 	/**
 	 * Erstellt einen neuen DirectoryViewController, der seinen Inhalt in dem gegebenen TreeView darstellt.<br/>
-	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden. Siehe auch DirectoryViewControllerFactory.
+	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden. Siehe auch DirectoryViewControllerFactory.
 	 *
-	 * @param tree                          Der TreeView, in dem der Inhalt dargestellt werden soll - muss über die Factory gesetzt werden und
-	 *                                      kann nicht automatisch injectet werden.
-	 * @param directoryViewSelectionService Ein DirectoryViewSelectionService der von Guice als Singleton erstelt wird
+	 * @param tree                          Der TreeView, in dem der Inhalt dargestellt werden soll - muss über die Factory gesetzt werden
+	 * 										und kann nicht automatisch injectet werden.
+	 * @param directoryViewSelectionService Ein DirectoryViewSelectionService der von Guice als Singleton erstellt wird
 	 *                                      und hier lediglich mit dem JTree verbunden wird.
-	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü
-	 *                                      verantwortlich ist.
+	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü verantwortlich ist.
 	 * @param userAPI                       TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
 	 * @param fileManager                   TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
 	 */
@@ -83,7 +82,7 @@ public class DirectoryViewController {
 
 
 	/**
-	 * Use this method to set up some mock data for the tree view.
+	 * TODO Use this method to set up some mock data for the tree view.
 	 *
 	 * @deprecated Is deprecated cause it shouldn't be used in production code!
 	 */

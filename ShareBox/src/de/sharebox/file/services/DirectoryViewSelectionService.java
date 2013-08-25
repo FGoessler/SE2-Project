@@ -19,10 +19,10 @@ import java.util.List;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * Diese Klasse liefert Informationen über die aktuelle Auswahl des Benutzers im JTree des DirectoryViewControllers und
+ * Diese Klasse liefert Informationen über die aktuelle Auswahl des Benutzers im JTree des DirectoryViewControllers und<br/>
  * stellt Methoden für einige Aktionen bereit, die auf dieser Auswahl basieren.<br/>
- * Diese Klasse ist als Singleton gedacht, sodass wann immer ein DirectoryViewSelectionService per Guice injected wird
- * alle Objekte Zugriff auf die selbe Instanz besitzen. Diese Singleton-Instanz muss allerdings inital im
+ * Diese Klasse ist als Singleton gedacht, so dass wann immer ein DirectoryViewSelectionService per Guice injected wird,<br/>
+ * alle Objekte Zugriff auf dieselbe Instanz besitzen. Diese Singleton-Instanz muss allerdings inital im<br/>
  * DirectoryViewController mit dem JTree verknüpft werden.
  */
 @Singleton
@@ -43,9 +43,9 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Setzt den JTree dieses Instanz.
+	 * Setzt den JTree dieser Instanz.
 	 *
-	 * @param treeView Ein JTree dessen Selections betrachtet werden.
+	 * @param treeView Ein JTree dessen Selektionen betrachtet werden.
 	 */
 	public void setTreeView(JTree treeView) {
 		this.treeView = treeView;
@@ -54,7 +54,7 @@ public class DirectoryViewSelectionService {
 	/**
 	 * Liefert den aktuell gesetzten JTree.
 	 *
-	 * @return Der JTree dessen Selections betrachtet werden.
+	 * @return Der JTree dessen Selektionen betrachtet werden.
 	 */
 	public JTree getTreeView() {
 		return treeView;
@@ -101,19 +101,19 @@ public class DirectoryViewSelectionService {
 	/**
 	 * Fügt den gegebenen TreeSelectionListener dem JTree hinzu.
 	 *
-	 * @param selectionListener Ein TreeSelectionListener um auf Änderungen der Selktierung im JTree zu reagieren.
+	 * @param selectionListener Ein TreeSelectionListener um auf Änderungen der Selektierung im JTree zu reagieren.
 	 */
 	public void addTreeSelectionListener(TreeSelectionListener selectionListener) {
 		treeView.addTreeSelectionListener(selectionListener);
 	}
 
 	/**
-	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade
-	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses
+	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade<br/>
+	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses<br/>
 	 * erstellt.
 	 *
-	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
-	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
+	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden<br/>
+	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein<br/>
 	 *                              ContextMenuController betrachtet.
 	 * @return Die neu erstellte Datei. Null falls der Nutzer keinen korrekten Namen eingegeben hat oder nicht die
 	 *         erforderlichen Rechte besitzt.
@@ -134,8 +134,8 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der
-	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des
+	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der<br/>
+	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des<br/>
 	 * Root-Verzeichnisses erstellt.
 	 *
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden

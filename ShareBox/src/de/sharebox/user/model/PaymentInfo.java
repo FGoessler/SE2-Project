@@ -5,7 +5,9 @@ package de.sharebox.user.model;
  * @author Benjamin Barth
  */
 
-
+/** 
+ * TODO Klassenbeschreibung (Getter-/Setterklasse für die Adressdaten des Users?)
+ */
 public class PaymentInfo {
 
 	private String street, additionalStreet, zipCode, city, country;

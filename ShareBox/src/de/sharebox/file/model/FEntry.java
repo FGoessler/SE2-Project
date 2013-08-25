@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories. Hauptsächlich implementiert
- * sie Observer Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
+ * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories. Hauptsächlich implementiert<br/>
+ * sie Observer-Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
  */
 public class FEntry {
 	private final UserAPI userAPI;
@@ -51,7 +51,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu
+	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu<br/>
 	 * bestimmen und Rechte zu überprüfen.
 	 *
 	 * @return Die aktuell für diesen FEntry relevante UserAPI.
@@ -71,9 +71,8 @@ public class FEntry {
 	}
 
 	/**
-	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden falls der Server entsprechende Änderungen sendet.
-	 * <br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden, falls der Server entsprechende Änderungen sendet.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param identifier Die neue ID dieses Objekts.
@@ -83,9 +82,8 @@ public class FEntry {
 	}
 
 	/**
-	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.
-	 * <br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param name Der neue Name.
@@ -106,7 +104,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Registriert ein Objekt als Observer. Dieses erhält dann Benachrichtigungen über Änderung und Läschung des Objekts.
+	 * Registriert ein Objekt als Observer. Dieser erhält dann Benachrichtigungen über Änderung und Löschung des Objekts.
 	 *
 	 * @param observer Der Observer der benachrichtigt werden soll.
 	 */
@@ -115,7 +113,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Entfernt den Observer, sodass dieser nicht mehr Benachrichtigt wird.
+	 * Entfernt den Observer, sodass dieser nicht mehr benachrichtigt wird.
 	 *
 	 * @param observer Der Observer der entfernt werden soll.
 	 */
@@ -134,7 +132,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Benachrichtigt alle Observer das dieses Objekt aus dem Dateisystem gelöscht wurde. Das Java-Objekt an sich ist
+	 * Benachrichtigt alle Observer, dass dieses Objekt aus dem Dateisystem gelöscht wurde. Das Java-Objekt an sich ist<br/>
 	 * aber noch nicht notwendigerweise gelöscht.
 	 */
 	public void fireDeleteNotification() {
@@ -145,10 +143,8 @@ public class FEntry {
 	}
 
 	/**
-	 * Setzt die Rechte eines Nutzers an diesem FEntry.
-	 * Löst entsprechende PERMISSION_CHANGED Notifications aus.
-	 * <br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Setzt die Rechte eines Nutzers an diesem FEntry. Löst entsprechende PERMISSION_CHANGED-Notifikationen aus.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param user   Der Nutzer der die Rechte erhält.
@@ -173,9 +169,9 @@ public class FEntry {
 	}
 
 	/**
-	 * Liefert eine unveränderbare Liste aller an Nutzer vergebenen Permissions. Nutzer die keinerlei Rechte an einem
-	 * FEntry besitzen werden in der Liste nicht mit einem eigenen fEntryPermission Objekt aufgeführt.
-	 * Um Änderungen an den Rechten vorzunehmen sollten die Objekte direkt manipuliert oder die setPermission Methode
+	 * Liefert eine unveränderbare Liste aller an Nutzer vergebenen Rechte. Nutzer die keinerlei Rechte an einem<br/>
+	 * FEntry besitzen werden in der Liste nicht mit einem eigenen fEntryPermission-Objekt aufgeführt.<br/>
+	 * Um Änderungen an den Rechten vorzunehmen, sollten die Objekte direkt manipuliert oder die setPermission-Methode<br/>
 	 * verwendet werden.
 	 *
 	 * @return Liste aller vergebenen FEntryPermissions.
@@ -188,7 +184,7 @@ public class FEntry {
 	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission Objekt zurück.
 	 *
 	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
-	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
+	 * @return Das FEntryPermission-Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
 	public FEntryPermission getPermissionOfUser(User user) {
 		Optional<FEntryPermission> permission = Optional.absent();

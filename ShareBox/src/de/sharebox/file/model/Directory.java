@@ -50,8 +50,8 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param filename Der Name der neuen Datei.
@@ -70,8 +70,8 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Erstellt ein neues Verzeichnis in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Erstellt ein neues Verzeichnis in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param dirname Der Name des neuen Verzeichnisses.
@@ -90,8 +90,8 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Fügt dem Verzeichnis einen FEntry hinzu.<br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Fügt dem Verzeichnis einen FEntry hinzu.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
@@ -103,11 +103,11 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Löscht den übergebenen FEntry aus dem Dateisystem. Handelt es sich um ein Verzeichnis werden rekursiv alle
-	 * Unterdateien dieses Verzeichnisses gelöscht.
-	 * Es werden die Observer aller gelöschten Objekte mit einer Löschungs-Benachrichtigung informiert und der Observer
-	 * des Verzeichnisses auf dem die Methode aufgerufen wird erhält eine Änderungs-Benachrichtigung.<br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Löscht den übergebenen FEntry aus dem Dateisystem. Handelt es sich um ein Verzeichnis werden rekursiv alle<br/>
+	 * Unterdateien dieses Verzeichnisses gelöscht. Es werden die Observer aller gelöschten Objekte mit einer<br/>
+	 * Löschungs-Benachrichtigung informiert und der Observer des Verzeichnisses auf dem die Methode aufgerufen<br/>
+	 * wird erhält eine Änderungsbenachrichtigung.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param fEntry Der zu löschende FEntry.
@@ -126,9 +126,9 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Feuert eine addedChildrenNotification Notification auf den registrierten DirectoryObservern. Etwaige reine
-	 * FEntryObserver erhalten keine Benachrichtigung. Die Notification erhält das Directory dem FEntries hinzugefügt
-	 * wurden, sowie die FEntries, die hinzugefügt wurden.
+	 * Feuert eine addedChildrenNotification-Notifikation auf den registrierten DirectoryObservern. Etwaige reine
+	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation erhält das Directory dem FEntries hinzugefügt
+	 * wurden, sowie die FEntries die hinzugefügt wurden.
 	 *
 	 * @param addedFEntry Der hinzugefügt FEntry.
 	 */
@@ -143,9 +143,9 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Feuert eine removedChildrenNotification Notification auf den registrierten DirectoryObservern. Etwaige reine
-	 * FEntryObserver erhalten keine Benachrichtigung. Die Notification erhält das Directory dem FEntries hinzugefügt
-	 * wurden, sowie die FEntries, die hinzugefügt wurden.
+	 * Feuert eine removedChildrenNotification-Notifikation auf den registrierten DirectoryObservern. Etwaige reine
+	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation erhält das Directory dem FEntries hinzugefügt
+	 * wurden, sowie die FEntries die hinzugefügt wurden.
 	 *
 	 * @param removedFEntry Der entfernte FEntry.
 	 */

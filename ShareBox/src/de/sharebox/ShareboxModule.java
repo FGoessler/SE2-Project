@@ -14,8 +14,8 @@ import de.sharebox.mainui.menu.FileMenu;
 import de.sharebox.mainui.menu.FileMenuFactory;
 
 /**
- * Dieses Modul dient dazu Guice die Factories bekannt zu machen und diverse andere Bindungen zu spezifizieren.
- * Die meisten Bindungen kann Guice allerdings automatisch erkennen und müssen somit hier nicht mehr aufgeführt werden.
+ * Dieses Modul macht Guice die Factories bekannt und spezifiziert diverse andere Bindungen.<br/>
+ * Die meisten Bindungen erkennt Guice allerdings automatisch und müssen daher hier nicht mehr aufgeführt werden.
  */
 public class ShareboxModule extends AbstractModule {
 

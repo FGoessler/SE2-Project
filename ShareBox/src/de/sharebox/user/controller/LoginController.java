@@ -10,6 +10,9 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/** 
+ * TODO Klassenbeschreibung (Eingabefelder für das Einloggen?)
+ */
 public class LoginController {
 	private final MainViewControllerFactory mainViewControllerFactory;
 	private final OptionPaneHelper optionPane;
@@ -23,7 +26,7 @@ public class LoginController {
 
 	/**
 	 * Erstellt einen neuen LoginController.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param userAPI                   Die UserAPI zur Kommunikation mit dem Server.
 	 * @param mainViewControllerFactory Mittels dieser Factory wird nach einem erfolgreichen Login das Hauptfenster
@@ -45,7 +48,7 @@ public class LoginController {
 	}
 
 	/**
-	 * Erstellt die GUI des LoginControllers und zeigt ihn an.
+	 * Erstellt das GUI des LoginControllers und zeigt ihn an.
 	 */
 	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/login");
@@ -53,8 +56,8 @@ public class LoginController {
 	}
 
 	/**
-	 * Handler um auf einen Klick auf den Login-Button zu reagieren. Überprüft die eingegebenen Daten und erstellt im
-	 * Erfolgsfall das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
+	 * Handler - reagiert auf einen Klick auf den Login-Button. Überprüft die eingegebenen Daten und erstellt, im<br/>
+	 * Erfolgsfall, das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
 	 */
 	public Action submit = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {
@@ -72,7 +75,7 @@ public class LoginController {
 	};
 
 	/**
-	 * Der Registrierenbutton bringt den Nutzer ins Registrierenmenü, hier kann er einen Account erstellen.
+	 * Der Registrieren-Button bringt den Nutzer in das Registrieren-Fenster, wo er einen Account erstellen kann.
 	 */
 	public Action register = new AbstractAction() {
 		public void actionPerformed(ActionEvent event) {

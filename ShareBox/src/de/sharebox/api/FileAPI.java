@@ -8,6 +8,9 @@ import de.sharebox.file.model.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/** 
+ * TODO Klassenbeschreibung (Klasse für die UserAPI ...)
+ */
 public class FileAPI {
 	private final UserAPI userAPI;
 
@@ -38,21 +41,22 @@ public class FileAPI {
 	}
 
 	/**
-	 * simulated storage; sublist of storage Entries is for versioning/etc. (list fEntry has timestamp and FEntry);
+	 * simulierter Speicher; Unterliste von Speichereinträgen für die Versionierung usw.<br/>
+	 * (Liste der fEntry hat einen Zeitstempel und FEntry)
 	 */
 	private transient List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
 
 	//various stat getters
 
 	/**
-	 * Generiert eine Meldung mit generellen Daten über den benutzten Storage.
+	 * Generiert eine Meldung mit generellen Daten über den benutzten Speicher.
 	 */
 	public void logStatistics() {
 		APILogger.logMessage("- Storage -\n    Entries: " + storage.size() + "\n    Files: " + getVersionCount() + "\n");
 	}
 
 	/**
-	 * Generiert eine Meldung mit generellen Daten über einen gegebenen Storage-Eintrag.
+	 * Generiert eine Meldung mit generellen Daten über einen gegebenen Speichereintrag.
 	 *
 	 * @param indexOfStorage Index des gewünschten Objekts
 	 */
@@ -61,7 +65,7 @@ public class FileAPI {
 	}
 
 	/**
-	 * Zählt Versionen innerhalb des Storage.
+	 * Zählt Versionen innerhalb des Speichers.
 	 *
 	 * @return Anzahl der Versionen
 	 */
@@ -76,7 +80,7 @@ public class FileAPI {
 	/**
 	 * Methode um die Anzahl der Storage-Einträge zu erhalten.
 	 *
-	 * @return Größe von Storage
+	 * @return Größe vom Speicher
 	 */
 	public int getFileCount() {
 		return storage.size();
@@ -84,14 +88,15 @@ public class FileAPI {
 
 	//actually relevant code-------------------------------------------------------------------------------
 
+	/** TODO prüfen ob Strings nicht deutsche Ausgabe bekommen? */
 	private static final String FILE_NOT_FOUND = "File not found.";
 	private static final String FILE_EXISTS = "File already exists!";
 
 	/**
 	 * Erstellt ein FileAPI Objekt. Als Singleton konzipiert.<br/>
-	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden.
+	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden.
 	 *
-	 * @param userAPI Eine UserAPI um Zugriff auf den aktuellen Nutyer yu erhalten.
+	 * @param userAPI Eine UserAPI um Zugriff auf den aktuellen Nutzer zu erhalten.
 	 */
 	@Inject
 	FileAPI(UserAPI userAPI) {
@@ -123,10 +128,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Erstellt einen neuen File-Eintrag im Storage.
+	 * Erstellt einen neuen File-Eintrag im Speicher.
 	 *
-	 * @param newFile zu erzeugendes File
-	 * @return ob erfolgreich
+	 * @param newFile das zu erzeugende File
+	 * @return ob Erstellung erfolgreich war
 	 */
 	public boolean createNewFile(File newFile) {
 		Boolean fileAlreadyExists = false;
@@ -157,10 +162,10 @@ public class FileAPI {
 
 
 	/**
-	 * Überschreibt/updated einen FEntry vom Typ Directory.
+	 * überschreibt/aktualisiert einen FEntry vom Typ File.
 	 *
 	 * @param updatedFile zu bearbeitendes File
-	 * @return ob erfolgreich
+	 * @return ob Aktualisierung erfolgreich war
 	 */
 	public boolean updateFile(File updatedFile) {
 		List<StorageEntry> foundStorage = null;
@@ -191,7 +196,7 @@ public class FileAPI {
 	 * Löscht File mit ID des gegebenen Files.
 	 *
 	 * @param deletedFile zu löschendes File
-	 * @return ob erfolgreich
+	 * @return ob Löschung erfolgreich war
 	 */
 	public boolean deleteFile(File deletedFile) {
 		Boolean fileExists = false;
@@ -214,10 +219,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Erstellt einen neuen Directory-Eintrag im Storage.
+	 * Erstellt einen neuen Directory-Eintrag im Speicher.
 	 *
 	 * @param newDirectory zu erzeugendes Directory
-	 * @return ob erfolgreich
+	 * @return ob Directory-Erstellung erfolgreich war
 	 */
 	public boolean createNewDirectory(Directory newDirectory) {
 		Boolean dirAlreadyExists = false;
@@ -245,10 +250,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Überschreibt/updated einen FEntry vom Typ Directory.
+	 * überschreibt/aktualisiert einen FEntry vom Typ Directory.
 	 *
 	 * @param updatedDirectory zu bearbeitendes Directory
-	 * @return ob erfolgreich
+	 * @return ob Aktualisierung erfolgreich war
 	 */
 	public boolean updateDirectory(Directory updatedDirectory) {
 		Boolean directoryFound = false;
@@ -271,10 +276,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Löscht Directory mit ID des gegebenen Directorys.
+	 * Löscht Directory mit der ID dieses Directorys.
 	 *
 	 * @param deletedDirectory zu löschendes Directory
-	 * @return ob erfolgreich
+	 * @return ob Löschung erfolgreich war
 	 */
 	public boolean deleteDirectory(Directory deletedDirectory) {
 		Boolean directoryFound = false;
@@ -313,10 +318,10 @@ public class FileAPI {
     */
 
 	/**
-	 * Gibt die Liste der Storage-Einträge, welche nach einem bestimmten Timestamp erstellt worden sind.
+	 * Gibt die Liste der Speichereinträge, welche nach einem bestimmten Datumsstempel erstellt worden sind.
 	 *
-	 * @param timeOfLastChange ist ein timestamp in ms
-	 * @return Liste von FEntries die sich geändert haben/neu erstellt wurden.
+	 * @param timeOfLastChange ist ein Datumsstempel in ms
+	 * @return Liste von FEntries die sich geändert haben bzw. neu erstellt wurden.
 	 */
 	public List<FEntry> getChangesSince(long timeOfLastChange) {
 		List<FEntry> changedFiles = new ArrayList<FEntry>();
@@ -332,3 +337,6 @@ public class FileAPI {
 		return changedFiles;
 	}
 }
+/**
+ * TODO: Es sieht so aus als ob einige Methoden hieraus nochmal im FileManager sind oder umgekehrt
+ */
