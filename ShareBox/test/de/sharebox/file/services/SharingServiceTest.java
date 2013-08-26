@@ -8,6 +8,7 @@ import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -25,12 +26,13 @@ public class SharingServiceTest {
 
 	private FEntry fEntry1;
 	private FEntry fEntry2;
+	private User mockedUser;
 
 	@Mock
 	private OptionPaneHelper mockedOptionPaneHelper;
+
 	@Mock
 	private UserAPI mockedAPI;
-
 	@InjectMocks
 	private SharingService sharingService;
 
@@ -38,7 +40,7 @@ public class SharingServiceTest {
 	public void setUp() {
 		when(mockedOptionPaneHelper.showInputDialog(anyString(), anyString())).thenReturn(NEW_USER_MAIL);
 
-		final User mockedUser = mock(User.class);
+		mockedUser = mock(User.class);
 		when(mockedUser.getEmail()).thenReturn("test@mail.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(mockedUser);
 
@@ -59,7 +61,9 @@ public class SharingServiceTest {
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isFalse();
 
-		//TODO: implement and test API calls!
+		final ArgumentCaptor<User> invitedUser = ArgumentCaptor.forClass(User.class);
+		verify(mockedAPI).inviteUser(same(mockedUser), invitedUser.capture());
+		assertThat(invitedUser.getValue().getEmail()).isEqualTo(NEW_USER_MAIL);
 	}
 
 	@Test
@@ -84,7 +88,9 @@ public class SharingServiceTest {
 		assertThat(permission2.getWriteAllowed()).isTrue();
 		assertThat(permission2.getManageAllowed()).isFalse();
 
-		//TODO: implement and test API calls!
+		final ArgumentCaptor<User> invitedUser = ArgumentCaptor.forClass(User.class);
+		verify(mockedAPI).inviteUser(same(mockedUser), invitedUser.capture());
+		assertThat(invitedUser.getValue().getEmail()).isEqualTo(NEW_USER_MAIL);
 	}
 
 	@Test

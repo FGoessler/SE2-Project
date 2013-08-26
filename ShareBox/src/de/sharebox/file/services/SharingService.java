@@ -2,6 +2,7 @@ package de.sharebox.file.services;
 
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
@@ -21,16 +22,20 @@ public class SharingService {
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	/**
 	 * Erstellt einen neuen SharingService.<br/>
 	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialog-Fenstern.
+	 * @param userAPI          Die UserAPI. Wird hier benötigt um Nutzer einladen zu können.
 	 */
 	@Inject
-	SharingService(final OptionPaneHelper optionPaneHelper) {
+	SharingService(final OptionPaneHelper optionPaneHelper,
+				   final UserAPI userAPI) {
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 	}
 
 	/**
@@ -55,9 +60,10 @@ public class SharingService {
 		final String newUserMail = optionPane.showInputDialog("Bitte geben Sie die Emailadresse des Benutzers ein für den Sie diese Datei/Verzeichnis freigeben möchten", "");
 
 		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
-			//TODO: call API to invite/set permissions for the user!
 			final User newUser = new User();
 			newUser.setEmail(newUserMail);
+
+			userAPI.inviteUser(userAPI.getCurrentUser(), newUser);
 
 			final List<String> namesOfNotChangedFEntries = new ArrayList<String>();
 			for (final FEntry fEntry : fEntries) {
