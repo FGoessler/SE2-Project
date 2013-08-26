@@ -1,6 +1,7 @@
 package de.sharebox.api;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * TODO Klassenbeschreibung (Klasse für die UserAPI ...)
  */
+@Singleton
 public class FileAPI {
 	public enum Status {
 		OK,

@@ -1,5 +1,6 @@
 package de.sharebox.file.services;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -7,6 +8,7 @@ import de.sharebox.file.controller.ContextMenuController;
 import de.sharebox.file.controller.FEntryTreeNode;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
+import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.File;
 import de.sharebox.helpers.OptionPaneHelper;
 
@@ -190,5 +192,80 @@ public class DirectoryViewSelectionService {
 		}
 
 		return parentDirectory;
+	}
+
+	/**
+	 * Löscht die vom Nutzer im DirectoryViewController selektierten FEntries bzw. den/die FEntries, für die per Rechtsklick
+	 * ein Kontextmenü aufgerufen wurde.
+	 *
+	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
+	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
+	 *                              ContextMenuController betrachtet.
+	 */
+	public void deleteFEntryBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
+		Optional<FEntry> selectedFEntry = Optional.absent();
+		if (contextMenuController.isPresent()) {
+			selectedFEntry = contextMenuController.get().getSelectedFEntry();
+		}
+
+		final List<FEntry> selectedFEntries = new ArrayList<FEntry>(getSelectedFEntries());
+
+		if (contextMenuController.isPresent() && selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
+			deleteMultipleFEntries(selectedFEntries, getParentsOfSelectedFEntries());
+		} else if (contextMenuController.isPresent()) {
+			final Directory parentDirectory = contextMenuController.get().getParentOfSelectedFEntry().get();
+			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
+				parentDirectory.deleteFEntry(selectedFEntry.get());
+			} else {
+				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
+			}
+		} else if (!contextMenuController.isPresent()) {
+			deleteMultipleFEntries(selectedFEntries, getParentsOfSelectedFEntries());
+		}
+	}
+
+	/**
+	 * Löscht die gegebenen FEntries aus ihren entsprechenden Elternverzeichnissen.
+	 *
+	 * @param fEntriesToDelete  Die zu löschenden FEntries.
+	 * @param parentDirectories Die Elternverzeichnisse der zu löschenden FEntries.
+	 */
+	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Optional<Directory>> parentDirectories) {
+		// Add observer to all elements in the list, so they can be removed from the list of items, that
+		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
+		final FEntryObserver observer = new FEntryObserver() {
+			@Override
+			public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
+				//not used here
+			}
+
+			@Override
+			public void fEntryDeletedNotification(final FEntry fEntry) {
+				//remove FEntry from list
+				int index = fEntriesToDelete.indexOf(fEntry);
+				if (index >= 0) {
+					fEntriesToDelete.remove(index);
+					parentDirectories.remove(index);
+				}
+			}
+		};
+		for (final FEntry fEntry : fEntriesToDelete) {
+			fEntry.addObserver(observer);
+		}
+
+		//delete all selected FEntries
+		final List<String> namesOfNotDeletedFEntries = new ArrayList<String>();
+		while (!parentDirectories.isEmpty()) {
+			if (parentDirectories.get(0).get().getPermissionOfCurrentUser().getWriteAllowed()) {
+				parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
+			} else {
+				namesOfNotDeletedFEntries.add(fEntriesToDelete.get(0).getName());
+				fEntriesToDelete.remove(0);
+				parentDirectories.remove(0);
+			}
+		}
+		if (!namesOfNotDeletedFEntries.isEmpty()) {
+			optionPane.showMessageDialog("Folgende Elemente konnten nicht gelöscht werden: " + Joiner.on(", ").skipNulls().join(namesOfNotDeletedFEntries));
+		}
 	}
 }
