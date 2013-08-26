@@ -7,8 +7,8 @@ import de.sharebox.user.model.User;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-/** 
- * TODO Klassenbeschreibung 
+/**
+ * TODO Klassenbeschreibung
  */
 public class InvitationController {
 	/**
@@ -37,7 +37,7 @@ public class InvitationController {
 	 * Öffnen des Einladen Dialog-Fensters.
 	 */
 	public void show() {
-		String newUserMail = optionPane.showInputDialog("Bitte geben Sie die E-Mail-Adresse der Person ein, die Sie zu Sharebox Ultimate einladen möchten.", "");
+		final String newUserMail = optionPane.showInputDialog("Bitte geben Sie die E-Mail-Adresse der Person ein, die Sie zu Sharebox Ultimate einladen möchten.", "");
 
 		if (!isNullOrEmpty(newUserMail) && newUserMail.matches(EMAIL_PATTERN)) {
 			final User invitedUser = new User();

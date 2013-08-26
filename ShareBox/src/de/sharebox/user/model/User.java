@@ -8,7 +8,7 @@ import de.sharebox.user.enums.StorageLimit;
  * @author Kay Thorsten Meißner
  */
 
-/** 
+/**
  * TODO Klassenbeschreibung (Getter-/Setterklasse für die allgemeinen Daten des Users?)
  */
 public class User {
@@ -94,9 +94,16 @@ public class User {
 		return gender;
 	}
 
+	/**
+	 * Liefert den eindeutigen Identifier des Root-Verzeichnisses des Nutzer. Unterhalb dieses Verzeichnisses befinden
+	 * sich alle Dateien und Verzeichnisse des Nutzers.
+	 *
+	 * @return Der Identifier des Root-Verzeichnisses.
+	 */
 	public Integer getRootDirectoryIdentifier() {
 		return rootDirectoryIdentifier;
 	}
+
 
 	/**
 	 * Ändert die E-Mailadresse des Objekts.
@@ -161,7 +168,13 @@ public class User {
 		this.gender = gender;
 	}
 
-	public void setRootDirectoryIdentifier(Integer rootDirectoryIdentifier) {
+	/**
+	 * Setzt den eindeutigen Identifier des Root-Verzeichnisses des Nutzer. Unterhalb dieses Verzeichnisses befinden
+	 * sich alle Dateien und Verzeichnisse des Nutzers.
+	 *
+	 * @param rootDirectoryIdentifier Der Identifier des Root-Verzeichnisses.
+	 */
+	public void setRootDirectoryIdentifier(final Integer rootDirectoryIdentifier) {
 		this.rootDirectoryIdentifier = rootDirectoryIdentifier;
 	}
 }

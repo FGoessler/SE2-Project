@@ -30,7 +30,7 @@ public class UserAPI {
 	 * Instanzen dieser Klasse sollten nur per Dependecy Injection durch Guice erstellt werden.
 	 */
 	@Inject
-	UserAPI(FileAPI fileAPI) {
+	UserAPI(final FileAPI fileAPI) {
 		this.fileAPI = fileAPI;
 	}
 

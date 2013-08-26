@@ -9,7 +9,7 @@ import de.sharebox.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/** 
+/**
  * TODO Klassenbeschreibung (Klasse für die UserAPI ...)
  */
 public class FileAPI {
@@ -113,8 +113,6 @@ public class FileAPI {
 	/**
 	 * Erstellt ein FileAPI Objekt. Als Singleton konzipiert.<br/>
 	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden.
-	 *
-	 * @param userAPI Eine UserAPI um Zugriff auf den aktuellen Nutzer zu erhalten.
 	 */
 	@Inject
 	FileAPI() {

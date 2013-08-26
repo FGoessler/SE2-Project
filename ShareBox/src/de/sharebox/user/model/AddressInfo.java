@@ -3,12 +3,22 @@ package de.sharebox.user.model;
 
 import com.google.common.base.Objects;
 
-/** 
- * TODO Klassenbeschreibung (Getter-/Setterklasse für die Adressdaten des Users?)
+/**
+ * Dieses Objekt speichert Adressinformationen eines Nutzers. Dies wird für die Rechnungsadresse benötigt, die der
+ * Benutzer zwingend angeben muss, wenn er mehr als den kostenlosen Default-Speicher nutzen möchte.
+ * TODO Getter und Setter vollständig kommentieren.
  */
 public class AddressInfo {
+	public static final String EMPTY_STRING = "";
 
-	private String street, additionalStreet, zipCode, city, country;
+	private String street = EMPTY_STRING, additionalStreet = EMPTY_STRING, zipCode = EMPTY_STRING, city = EMPTY_STRING, country = EMPTY_STRING;
+
+	/**
+	 * Der Standard-Konstruktor.
+	 */
+	public AddressInfo() {
+		//default constructor
+	}
 
 	/**
 	 * Copy Konstruktor.
@@ -22,14 +32,6 @@ public class AddressInfo {
 		this.setCity(addressInfoToCopy.getCity());
 		this.setCountry(addressInfoToCopy.getCountry());
 
-	}
-
-	public AddressInfo() {
-		this.setStreet("");
-		this.setAdditionalStreet("");
-		this.setZipCode("");
-		this.setCity("");
-		this.setCountry("");
 	}
 
 	/**

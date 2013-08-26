@@ -33,12 +33,12 @@ public class DirectoryViewController {
 	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden. Siehe auch DirectoryViewControllerFactory.
 	 *
 	 * @param tree                          Der TreeView, in dem der Inhalt dargestellt werden soll - muss über die Factory gesetzt werden
-	 * 										und kann nicht automatisch injectet werden.
+	 *                                      und kann nicht automatisch injectet werden.
 	 * @param directoryViewSelectionService Ein DirectoryViewSelectionService der von Guice als Singleton erstellt wird
 	 *                                      und hier lediglich mit dem JTree verbunden wird.
 	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü verantwortlich ist.
-	 * @param userAPI                       TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
-	 * @param fileAPI                       TODO: sollte wieder entfernt werden - ist hier nur um die Testdaten zu erstellen
+	 * @param userAPI                       Die UserAPI zum Herausfinden des aktuell eingeloggten Benutzers.
+	 * @param fileAPI                       Die FileAPI zum Erhalten des Root-Directories des Benutzers.
 	 */
 	@Inject
 	DirectoryViewController(final @Assisted JTree tree,
