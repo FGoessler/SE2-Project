@@ -10,8 +10,8 @@ import de.sharebox.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO Klassenbeschreibung (Klasse für die UserAPI ...)
+/*
+ * TODO Klassenbeschreibung (Die Klasse FileAPI kappselt die Zugriffsmethoden auf die FEntrys? ...)
  */
 @Singleton
 public class FileAPI {
@@ -20,6 +20,9 @@ public class FileAPI {
 		DELETED
 	}
 
+	/*
+	* TODO Klassenbeschreibung (Die Klasse StorageEntry ist für ...)
+	*/
 	public class StorageEntry {
 		private long timestamp;
 		private FEntry fEntry;
@@ -57,13 +60,13 @@ public class FileAPI {
 	}
 
 	/**
-	 * simulierter Speicher; Unterliste von Speichereinträgen für die Versionierung usw.<br/>
+	 * Ein simulierter Speicher - Unterliste von Speichereinträgen für die Versionierung usw.<br/>
 	 * (Liste der fEntry hat einen Zeitstempel und FEntry)
 	 */
 	private final List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
 
 	/**
-	 * Eien einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
+	 * Eine einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
 	 */
 	private Integer idCounter = 0;
 
@@ -88,7 +91,7 @@ public class FileAPI {
 	/**
 	 * Zählt Versionen innerhalb des Speichers.
 	 *
-	 * @return Anzahl der Versionen
+	 * @return Anzahl der vorhandenen Versionen
 	 */
 	public int getVersionCount() {
 		int versionCount = 0;
@@ -113,7 +116,7 @@ public class FileAPI {
 	private static final String FILE_EXISTS = "File already exists!";
 
 	/**
-	 * Erstellt ein FileAPI Objekt. Als Singleton konzipiert.<br/>
+	 * Erstellt ein FileAPI-Objekt. Als Singleton konzipiert.<br/>
 	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden.
 	 */
 	@Inject
@@ -149,7 +152,7 @@ public class FileAPI {
 	 * Erstellt einen neuen File-Eintrag im Speicher.
 	 *
 	 * @param newFile das zu erzeugende File
-	 * @return ob Erstellung erfolgreich war
+	 * @return ob die Erstellung erfolgreich war
 	 */
 	public boolean createNewFile(File newFile) {
 		//generate id
@@ -173,7 +176,7 @@ public class FileAPI {
 	 * überschreibt/aktualisiert einen FEntry vom Typ File.
 	 *
 	 * @param updatedFile zu bearbeitendes File
-	 * @return ob Aktualisierung erfolgreich war
+	 * @return ob die Aktualisierung erfolgreich war
 	 */
 	public boolean updateFile(File updatedFile) {
 		List<StorageEntry> foundStorage = null;
@@ -201,7 +204,7 @@ public class FileAPI {
 	}
 
 	/**
-	 * Löscht File mit ID des gegebenen Files.
+	 * Löscht das File mit der ID, die übergeben wurde.
 	 *
 	 * @param deletedFile zu löschendes File
 	 * @return ob Löschung erfolgreich war
@@ -232,7 +235,7 @@ public class FileAPI {
 	 * Erstellt einen neuen Directory-Eintrag im Speicher.
 	 *
 	 * @param newDirectory zu erzeugendes Directory
-	 * @return ob Directory-Erstellung erfolgreich war
+	 * @return ob die Directory-Erstellung erfolgreich war
 	 */
 	public boolean createNewDirectory(Directory newDirectory) {
 		//generate id
@@ -249,10 +252,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * überschreibt/aktualisiert einen FEntry vom Typ Directory.
+	 * Überschreibt/aktualisiert einen FEntry vom Typ Directory.
 	 *
 	 * @param updatedDirectory zu bearbeitendes Directory
-	 * @return ob Aktualisierung erfolgreich war
+	 * @return ob die Aktualisierung erfolgreich war
 	 */
 	public boolean updateDirectory(Directory updatedDirectory) {
 		Boolean directoryFound = false;
@@ -275,10 +278,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Löscht Directory mit der ID dieses Directorys.
+	 * Löscht das Directory mit der ID, die übergeben wurde.
 	 *
 	 * @param deletedDirectory zu löschendes Directory
-	 * @return ob Löschung erfolgreich war
+	 * @return ob die Löschung erfolgreich war
 	 */
 	public boolean deleteDirectory(Directory deletedDirectory) {
 		Boolean directoryFound = false;
@@ -301,7 +304,7 @@ public class FileAPI {
 		return directoryFound;
 	}
 
-	/* For later use!
+	/* TODO For later use!
 	public static boolean addPermission(FEntry f, User u,FEntryPermission fp) {
 
         return true;
@@ -348,9 +351,9 @@ public class FileAPI {
 	}
 
 	/**
-	 * Diese Funktion erstellt lediglich einige Beispieldateien und Verzeichnisse.
+	 * Diese Funktion erstellt lediglich einige Beispieldateien und -verzeichnisse, die für Testzwecke benötigt werden.
 	 *
-	 * @param userAPI Die UserAPI - wird benötigt um sie an di erstellten FEntries weiterzugeben.
+	 * @param userAPI Die UserAPI - wird benötigt, um sie an die erstellten FEntries weiterzugeben.
 	 */
 	public void createSampleContent(final UserAPI userAPI) {
 		//create the same 2 users as available in the UserAPI

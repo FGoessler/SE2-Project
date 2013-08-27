@@ -5,8 +5,8 @@ import de.sharebox.file.model.FEntry;
 import java.text.DateFormat;
 import java.util.Date;
 
-/** 
- * TODO Klassenbeschreibung (Klasse für das Loggen von API-Aktionen?)
+/*
+ * TODO Klassenbeschreibung (Die Klasse APILogger ist für das Loggen von API-Aktionen?)
  */
 public final class APILogger {
 
@@ -24,6 +24,7 @@ public final class APILogger {
 
 	/**
 	 * Loggt die gegebene Meldung.
+	 *
 	 * @param message Die zu loggende Meldung.
 	 */
 	public static void logMessage(final String message) {
@@ -36,7 +37,7 @@ public final class APILogger {
 	 * Erstellt einen Action String (zur Verwendung in logSuccess und CO.) der die gegebene Action und den FEntry benennt.
 	 *
 	 * @param action Die Aktion, die geloggt werden soll.
-	 * @param fEntry Der FEntry auf dem die Aktion ausgeführt wurde.
+	 * @param fEntry Der FEntry, auf dem die Aktion ausgeführt wurde.
 	 * @return Der String der die Aktion und Information über den FEntry enthält.
 	 */
 	public static String actionStringForFEntryAction(final String action, final FEntry fEntry) {
@@ -44,7 +45,7 @@ public final class APILogger {
 	}
 
 	/**
-	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion erfolgreich war.
+	 * Gibt eine Log Message aus, die besagt, dass die übergebene Aktion erfolgreich war.
 	 *
 	 * @param action Ein Text der die Aktion benennt.
 	 */
@@ -53,7 +54,7 @@ public final class APILogger {
 	}
 
 	/**
-	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion fehlgeschalgen ist.
+	 * Gibt eine Log Message aus, die besagt, dass die übergebene Aktion fehlgeschalgen ist.
 	 *
 	 * @param action Ein Text der die Aktion benennt.
 	 */
@@ -62,7 +63,7 @@ public final class APILogger {
 	}
 
 	/**
-	 * Gibt eine Log Message aus, die besagt das die übergebene Aktion wegen der Reason fehlgeschlagen ist.
+	 * Gibt eine Log Message aus, die besagt, dass die übergebene Aktion wegen der "Reason" fehlgeschlagen ist.
 	 *
 	 * @param action Ein Text der die Aktion benennt.
 	 * @param reason Ein Text der den Grund für den Fehler benennt.
@@ -72,11 +73,11 @@ public final class APILogger {
 	}
 
 	/**
-	 * Gibt eine Log Message aus, die bassierend auf dem success parameter besagt ob die übergebene Aktion
+	 * Gibt eine Log Message aus, die basierend auf dem "success"-parameter besagt ob die übergebene Aktion
 	 * fehlgeschlagen ist oder erfolgreich war.
 	 *
 	 * @param action  Ein Text der die Aktion benennt.
-	 * @param success True wenn die Aktion als erfolgreich geloggt werden soll, Fales wenn sie als fehlgeschlagen
+	 * @param success True wenn die Aktion als erfolgreich geloggt werden soll, False wenn sie als fehlgeschlagen
 	 *                geloggt werden soll.
 	 */
 	public static void logResult(final String action, final Boolean success) {

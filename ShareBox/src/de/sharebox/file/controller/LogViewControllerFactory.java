@@ -3,7 +3,7 @@ package de.sharebox.file.controller;
 import javax.swing.*;
 
 /**
- * Diese Factory dient dazu LogViewController inkl. ihrer Abhängigkeiten zu erzeugen. Lediglich eine JSplitPane-
+ * Diese Factory dient der Erzeugung von LogViewController inkl. ihrer Abhängigkeiten. Lediglich eine JSplitPane-
  * Instanz muss direkt gesetzt werden.<br/>
  * Die Implementierung dieses Interface geschiet automatisch durch Assisted-Inject von Guice.
  */

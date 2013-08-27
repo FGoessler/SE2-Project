@@ -10,7 +10,7 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/** 
+/*
  * TODO Klassenbeschreibung
  */
 public class EditProfileController {
@@ -37,7 +37,7 @@ public class EditProfileController {
 	}
 
 	/**
-	 * Öffnen des Fensters für Profilbearbeitung. Hierbei werden die Textfelder, nach Überprüfung, mit den <br/>
+	 * Öffnen des Fensters für Profilbearbeitung. Hierbei werden die Textfelder, nach Überprüfung, mit den
 	 * bereits bekannten Informationen ausgefüllt.
 	 */
 	public void show() {
@@ -51,8 +51,8 @@ public class EditProfileController {
 	}
 
 	/**
-	 * Speichern der Änderungen an den Profil-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional<br/>
-	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information<br/>
+	 * Speichern der Änderungen an den Profil-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional
+	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information
 	 * eingetragen werden (wird gespeichert).
 	 */
 	public Action save = new AbstractAction() {

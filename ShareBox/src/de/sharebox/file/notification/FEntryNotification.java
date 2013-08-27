@@ -4,14 +4,14 @@ import com.google.common.base.Objects;
 import de.sharebox.file.model.FEntry;
 
 /**
- * Dieses Objekt wird generiert wenn eine Notification eines FEntryObservers ausgelöst wird. Es enthält alle nötigen
+ * Dieses Objekt wird generiert, wenn eine Notification eines FEntryObservers ausgelöst wird. Es enthält alle nötigen
  * Informationen.
  */
 public class FEntryNotification {
 	//TODO: write test
 
 	/**
-	 * Diese Enum wird verwendet um die Art der Änderung bei einer fEntryNotification zu spezifizieren.
+	 * Diese Enum wird verwendet, um die Art der Änderung bei einer FEntryNotification zu spezifizieren.
 	 */
 	public static enum ChangeType {
 		NAME_CHANGED,

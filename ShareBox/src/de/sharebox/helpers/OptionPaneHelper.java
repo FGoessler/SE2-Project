@@ -5,8 +5,8 @@ import javax.swing.*;
 
 /**
  * Diese Klasse ist eine Helferklasse, um Dialog-Fenster mit JOptionPane zu erstellen.<br/>
- * Wird benötigt, um in Unit Tests den Aufruf durch Mocks mit Mockito zu ersetzen und<br/>
- * Testdaten auszuliefern bzw. einen korrekten Aufruf zu gewährleisten.<br/>
+ * Wird benötigt, um in Unit Tests den Aufruf durch Mocks mit Mockito zu ersetzen und
+ * Testdaten auszuliefern bzw. einen korrekten Aufruf zu gewährleisten.
  * Deshalb besitzt diese Klasse auch keinen eigenen Unit-Test.
  */
 public class OptionPaneHelper {

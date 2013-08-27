@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories. Hauptsächlich implementiert<br/>
- * sie Observer-Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
+ * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories.<br/>Hauptsächlich implementiert
+ * sie Observer-Mechanismen und eine ID, anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
  */
 public class FEntry {
 	private final UserAPI userAPI;
@@ -51,7 +51,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Der Copy Konstruktor. Permissions und LogEntries werden ebenfalls mit ihrem Copy Konstruktor kopiert.
+	 * Der Copy-Konstruktor. Permissions und LogEntries werden ebenfalls mit dem Copy-Konstruktor kopiert.
 	 * Observer werden nicht übertragen.
 	 *
 	 * @param sourceFEntry Das zu kopierende Objekt.
@@ -71,7 +71,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu<br/>
+	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu
 	 * bestimmen und Rechte zu überprüfen.
 	 *
 	 * @return Die aktuell für diesen FEntry relevante UserAPI.
@@ -92,7 +92,7 @@ public class FEntry {
 
 	/**
 	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden, falls der Server entsprechende Änderungen sendet.<br/>
-	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param identifier Die neue ID dieses Objekts.
@@ -103,7 +103,7 @@ public class FEntry {
 
 	/**
 	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.<br/>
-	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param name Der neue Name.
@@ -142,7 +142,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Benachrichtigt alle Observer das eine Änderung des gegebenen Typs stattgefunden hat.
+	 * Benachrichtigt alle Observer, dass eine Änderung des gegebenen Typs stattgefunden hat.
 	 *
 	 * @param reason Art der stattgefunden Änderung.
 	 * @param source Das Objekt, das die Änderung ausgelöst hat - im Zweifel den FEntry selbst setzen.
@@ -156,10 +156,10 @@ public class FEntry {
 
 	/**
 	 * Setzt die Rechte eines Nutzers an diesem FEntry. Löst entsprechende PERMISSION_CHANGED-Notifikationen aus.<br/>
-	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
-	 * @param user   Der Nutzer der die Rechte erhält.
+	 * @param user   Der Nutzer, der die Rechte erhält.
 	 * @param read   Der neue Wert für Leserechte.
 	 * @param write  Der neue Wert für Schreibrechte.
 	 * @param manage Der neue Wert für Verwaltungsrechte.
@@ -180,9 +180,9 @@ public class FEntry {
 	}
 
 	/**
-	 * Liefert eine unveränderbare Liste aller an Nutzer vergebenen Rechte. Nutzer die keinerlei Rechte an einem<br/>
+	 * Liefert eine immutable List aller an Nutzer vergebenen Rechte. Nutzer die keinerlei Rechte an einem
 	 * FEntry besitzen werden in der Liste nicht mit einem eigenen fEntryPermission-Objekt aufgeführt.<br/>
-	 * Um Änderungen an den Rechten vorzunehmen, sollten die Objekte direkt manipuliert oder die setPermission-Methode<br/>
+	 * Um Änderungen an den Rechten vorzunehmen, sollten die Objekte direkt manipuliert oder die setPermission-Methode
 	 * verwendet werden.
 	 *
 	 * @return Liste aller vergebenen FEntryPermissions.
@@ -192,7 +192,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission Objekt zurück.
+	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission-Objekt zurück.
 	 *
 	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
 	 * @return Das FEntryPermission-Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
@@ -216,8 +216,8 @@ public class FEntry {
 	}
 
 	/**
-	 * Gibt die Rechte des aktuell eingeloggten Benutzers (basierend auf den Daten der UserAPI) als FEntryPermission
-	 * Objekt zurück.
+	 * Gibt die Rechte des aktuell eingeloggten Benutzers (basierend auf den Daten der UserAPI) als
+	 * FEntryPermission-Objekt zurück.
 	 *
 	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */

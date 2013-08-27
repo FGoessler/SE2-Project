@@ -12,7 +12,7 @@ import javax.swing.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-/** 
+/*
  * TODO Klassenbeschreibung (Eingabefelder für Accounting?)
  */
 public class AccountingController {
@@ -72,9 +72,9 @@ public class AccountingController {
 	/**
 	 * TODO der Text ist etwas verwirrend, weiß leider nicht genau was gemeint ist um es selber zu ändern
 	 * 
-	 * Speichern der Änderungen der Account-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional<br/>
-	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information<br/>
-	 * eingetragen werden (wird gespeichert). Beim Speichern des Speicherplatzes wird überprüft, ob alle nötigen<br/>
+	 * Speichern der Änderungen der Account-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional
+	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information
+	 * eingetragen werden (wird gespeichert). Beim Speichern des Speicherplatzes wird überprüft, ob alle nötigen
 	 * Zahlungsinformationen eingetragen sind, anschließend wird man ggf. an das externe Bezahlsystem weitergeleitet.
 	 */
 	public void save() {

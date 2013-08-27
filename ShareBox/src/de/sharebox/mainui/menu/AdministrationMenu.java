@@ -16,7 +16,7 @@ public class AdministrationMenu {
 	private final MainViewController mainViewController;
 
 	/**
-	 * Erstellt ein neues Administration-Menü und fügt es in die gegebene JMenuBar ein.
+	 * Erstellt ein neues Administration-Menü und fügt es in die gegebene JMenuBar ein.<br/>
 	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden. Siehe auch AdministrationMenuFactory.
 	 *
 	 * @param menuBar            Die JMenuBar zu dem das Menü hinzugefügt werden soll.

@@ -40,7 +40,7 @@ public class SharingService {
 
 	/**
 	 * Zeigt einen Input-Dialog an und gibt den gegebenen FEntry für den Nutzer mit der im Dialog eingegebenen
-	 * Mailadresse frei. Es werden Lese- und Schreibrechte gewährt.
+	 * E-Mail-Adresse frei. Es werden Lese- und Schreibrechte gewährt.
 	 *
 	 * @param fEntry Der freizugebende FEntry.
 	 */
@@ -52,7 +52,7 @@ public class SharingService {
 
 	/**
 	 * Zeigt einen Input-Dialog an und gibt die gegebenen FEntries für den Nutzer mit der im Dialog eingegebenen
-	 * Mailadresse frei. Es werden Lese- und Schreibrechte gewährt.
+	 * E-Mail-Adresse frei. Es werden Lese- und Schreibrechte gewährt.
 	 *
 	 * @param fEntries Der freizugebende FEntry.
 	 */

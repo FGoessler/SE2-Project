@@ -17,6 +17,9 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
+/*
+ * TODO Klassenbeschreibung (Die Klasse LogViewController steuert die Zugriffe auf das Log? ...)
+ */
 public class LogViewController {
 	private final DirectoryViewSelectionService selectionService;
 
@@ -47,8 +50,8 @@ public class LogViewController {
 	}
 
 	/**
-	 * Dieser TreeSelectionListener reagiert auf Änderungen an der Auswahl im JTree des DirectoryViewControllers um
-	 * diesen LogViewController zu aktualisieren, wenn der Nutzer einen anderen FEntry auswählt.
+	 * Dieser TreeSelectionListener reagiert auf Änderungen an der Auswahl im JTree des DirectoryViewControllers, um
+	 * den LogViewController zu aktualisieren, wenn der Nutzer einen anderen FEntry auswählt.
 	 * Eine Mehrfachauswahl wird dabei nicht unterstützt.
 	 */
 	protected TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
@@ -75,7 +78,7 @@ public class LogViewController {
 	};
 
 	/**
-	 * Dieser FEntryObserver beobachtet den aktuell vom Controller dargestellten FEntry um auf Änderungen am Datenmodel
+	 * Dieser FEntryObserver beobachtet den aktuell vom Controller dargestellten FEntry, um auf Änderungen am Datenmodel
 	 * zu reagieren und das UI zu aktualisieren.
 	 */
 	protected DirectoryObserver fEntryObserver = new DirectoryObserver() {
@@ -95,7 +98,7 @@ public class LogViewController {
 	};
 
 	/**
-	 * Dieses TableModel ist für die Darstellung der LogEntries des im DirectoryViewController selektierten FEntries als
+	 * Dieses TableModel ist für die Darstellung der LogEntries, des im DirectoryViewController selektierten FEntries, als
 	 * Tabelle verantwortlich.
 	 */
 	protected AbstractTableModel tableModel = new AbstractTableModel() {
