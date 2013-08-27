@@ -15,10 +15,11 @@ import java.util.List;
  */
 @Singleton
 public class FileAPI {
-	public enum Status {
-		OK,
-		DELETED
-	}
+
+    public enum Status {
+        OK,
+        DELETED
+    }
 
 	public class StorageEntry {
 		private long timestamp;
@@ -63,7 +64,7 @@ public class FileAPI {
 	private final List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
 
 	/**
-	 * Eien einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
+	 * Eine einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
 	 */
 	private Integer idCounter = 0;
 

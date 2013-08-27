@@ -18,7 +18,7 @@ public class FileManagerTest {
 
 	private File file;
 	private Directory dir;
-	private FEntry bs;
+	private FEntry nothing;
 	private FileManager fileManager;
 
 	@InjectMocks
@@ -34,15 +34,15 @@ public class FileManagerTest {
 		file.setIdentifier(123);
 		dir = new Directory(mockedUserAPI);
 		dir.setIdentifier(124);
-		bs = new FEntry(mockedUserAPI);
-		bs.setIdentifier(125);
+		nothing = new FEntry(mockedUserAPI);
+		nothing.setIdentifier(125);
 	}
 
 	@Test
 	public void registerFEntryTest() {
 		assertThat(fileManager.registerFEntry(file)).isTrue();
 		assertThat(fileManager.registerFEntry(dir)).isTrue();
-		assertThat(fileManager.registerFEntry(bs)).isFalse();
+		assertThat(fileManager.registerFEntry(nothing)).isFalse();
 		fileAPI.deleteFile(file);
 		fileAPI.deleteDirectory(dir);
 	}
@@ -62,7 +62,7 @@ public class FileManagerTest {
 
 	@Test
 	public void pollFileSystemForChangesTest() {
-		fileManager.updateFEntry(file);
+		fileManager.setFEntry(file);
 		assertThat(fileAPI.getFileCount()).isEqualTo(0);
 		fileManager.pollFileSystemForChanges();
 		assertThat(fileAPI.getFileCount()).isEqualTo(1);
@@ -73,9 +73,9 @@ public class FileManagerTest {
 	@Test
 	public void updateFEntryTest() {
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
-		fileManager.updateFEntry(file);
+		fileManager.setFEntry(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
-		fileManager.updateFEntry(file);
+		fileManager.setFEntry(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
 		fileManager.deleteFEntry(file);
 	}
@@ -83,7 +83,7 @@ public class FileManagerTest {
 	@Test
 	public void deleteFEntryTest() {
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
-		fileManager.updateFEntry(file);
+		fileManager.setFEntry(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
 		fileManager.deleteFEntry(file);
 		fileManager.deleteFlush();
