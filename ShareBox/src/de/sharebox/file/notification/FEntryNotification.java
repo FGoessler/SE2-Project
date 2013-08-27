@@ -8,7 +8,6 @@ import de.sharebox.file.model.FEntry;
  * Informationen.
  */
 public class FEntryNotification {
-	//TODO: write test
 
 	/**
 	 * Diese Enum wird verwendet um die Art der Änderung bei einer fEntryNotification zu spezifizieren.

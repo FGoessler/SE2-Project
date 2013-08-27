@@ -10,8 +10,6 @@ import de.sharebox.file.model.FEntry;
  * Informationen als eine FEntryNotification.
  */
 public class DirectoryNotification extends FEntryNotification {
-	//TODO: write test
-
 	private final ImmutableList<FEntry> affectedChildren;
 
 	/**
