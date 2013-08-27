@@ -2,6 +2,9 @@ package de.sharebox.file.model;
 
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.notification.DirectoryNotification;
+import de.sharebox.file.notification.DirectoryObserver;
+import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,14 +63,6 @@ public class DirectoryTest {
 	}
 
 	@Test
-	public void hasAName() {
-		directory.setName(TEST_DIRNAME);
-		assertThat(directory.getName()).isEqualTo(TEST_DIRNAME);
-
-		verify(observer, times(1)).fEntryChangedNotification(directory, FEntryObserver.ChangeType.NAME_CHANGED);    //assert that notification was sent
-	}
-
-	@Test
 	public void canCreateNewSubFiles() {
 		final File createdFile = directory.createNewFile(TEST_FILENAME).get();
 
@@ -86,7 +81,8 @@ public class DirectoryTest {
 		assertThat(createdFile.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
 		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_FILE);
 
-		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));    //assert that notification was sent
+		final DirectoryNotification expectedNotification = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(createdFile));
+		verify(observer, times(1)).directoryNotification(expectedNotification);    //assert that notification was sent
 	}
 
 	@Test
@@ -108,7 +104,8 @@ public class DirectoryTest {
 		assertThat(createdDirectory.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CREATED);
 		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_DIRECTORY);
 
-		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));    //assert that notification was sent
+		final DirectoryNotification expectedNotification = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(createdDirectory));
+		verify(observer, times(1)).directoryNotification(expectedNotification);    //assert that notification was sent
 	}
 
 	@Test
@@ -137,7 +134,8 @@ public class DirectoryTest {
 
 		assertThat(directory.getFEntries()).contains(newFile);
 		assertThat(directory.getLogEntries().get(1).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_FILE);
-		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(newFile));    //assert that notification was sent
+		final DirectoryNotification expectedNotification1 = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(newFile));
+		verify(observer, times(1)).directoryNotification(expectedNotification1);    //assert that notification was sent
 
 		final Directory newDirectory = new Directory(mockedUserAPI, TEST_DIRNAME, mockedUser);
 
@@ -145,7 +143,8 @@ public class DirectoryTest {
 
 		assertThat(directory.getFEntries()).contains(newDirectory);
 		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.ADDED_DIRECTORY);
-		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(newDirectory));    //assert that notification was sent
+		final DirectoryNotification expectedNotification2 = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(newDirectory));
+		verify(observer, times(1)).directoryNotification(expectedNotification2);    //assert that notification was sent
 	}
 
 	@Test
@@ -157,10 +156,13 @@ public class DirectoryTest {
 		directory.deleteFEntry(createdFile);
 		assertThat(createdFile).isNotIn(directory.getFEntries());
 
-		verify(observer, times(1)).fEntryDeletedNotification(createdFile);        //assert that notification was sent
+		final FEntryNotification expectedNotification1 = new FEntryNotification(createdFile, FEntryNotification.ChangeType.DELETED, directory);
+		verify(observer, times(1)).fEntryNotification(expectedNotification1);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
-		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
-		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdFile));
+		final DirectoryNotification expectedNotification2 = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(createdFile));
+		verify(observer, times(1)).directoryNotification(expectedNotification2);
+		final DirectoryNotification expectedNotification3 = new DirectoryNotification(directory, FEntryNotification.ChangeType.REMOVE_CHILDREN, directory, ImmutableList.<FEntry>of(createdFile));
+		verify(observer, times(1)).directoryNotification(expectedNotification3);
 
 		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_FILE);
 	}
@@ -178,11 +180,15 @@ public class DirectoryTest {
 		directory.deleteFEntry(createdDirectory);
 		assertThat(createdDirectory).isNotIn(directory.getFEntries());
 
-		verify(observer, times(1)).fEntryDeletedNotification(createdFile);            //assert that notification was sent
-		verify(observer, times(1)).fEntryDeletedNotification(createdDirectory);        //assert that notification was sent
+		final FEntryNotification expectedNotification1 = new FEntryNotification(createdFile, FEntryNotification.ChangeType.DELETED, createdDirectory);
+		verify(observer, times(1)).fEntryNotification(expectedNotification1);            //assert that notification was sent
+		final FEntryNotification expectedNotification2 = new FEntryNotification(createdDirectory, FEntryNotification.ChangeType.DELETED, directory);
+		verify(observer, times(1)).fEntryNotification(expectedNotification2);        //assert that notification was sent
 		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
-		verify(observer, times(1)).addedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
-		verify(observer, times(1)).removedChildrenNotification(directory, ImmutableList.<FEntry>of(createdDirectory));
+		final DirectoryNotification expectedNotification3 = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(createdDirectory));
+		verify(observer, times(1)).directoryNotification(expectedNotification3);
+		final DirectoryNotification expectedNotification4 = new DirectoryNotification(directory, FEntryNotification.ChangeType.REMOVE_CHILDREN, directory, ImmutableList.<FEntry>of(createdDirectory));
+		verify(observer, times(1)).directoryNotification(expectedNotification4);
 
 		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_DIRECTORY);
 	}

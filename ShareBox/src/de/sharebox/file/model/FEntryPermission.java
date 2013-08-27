@@ -1,6 +1,7 @@
 package de.sharebox.file.model;
 
 import com.sun.istack.internal.NotNull;
+import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.user.model.User;
 
 /**
@@ -18,7 +19,7 @@ public class FEntryPermission {
 	/**
 	 * Erstellt ein neues FEntryPermission-Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.<br/>
 	 * Die Standardrechte hierbei sind alles auf false.
-	 * 
+	 *
 	 * @param user   Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
 	 */
@@ -90,7 +91,7 @@ public class FEntryPermission {
 	/**
 	 * Setzt die Leserechte und feuert eine PERMISSION_CHANGED-Notifikation auf dem fEntry.
 	 * Erstellt zudem einen entsprechenden LogEntry.
-	 * 
+	 *
 	 * @param readAllowed Der neue Wert für die Leserechte.
 	 */
 	public void setReadAllowed(final Boolean readAllowed) {
@@ -109,7 +110,7 @@ public class FEntryPermission {
 	/**
 	 * Setzt die Schreibrechte und feuert eine PERMISSION_CHANGED-Notifikation auf dem fEntry.
 	 * Erstellt zudem einen entsprechenden LogEntry.
-	 * 
+	 *
 	 * @param writeAllowed Der neue Wert für die Schreibrechte.
 	 */
 	public void setWriteAllowed(final Boolean writeAllowed) {
@@ -128,7 +129,7 @@ public class FEntryPermission {
 	/**
 	 * Setzt die Verwaltungsrechte und feuert eine PERMISSION_CHANGED-Notifikation auf dem fEntry.
 	 * Erstellt zudem einen entsprechenden LogEntry.
-	 * 
+	 *
 	 * @param manageAllowed Der neue Wert für die Verwaltungsrechte.
 	 */
 	public void setManageAllowed(final Boolean manageAllowed) {
@@ -138,7 +139,7 @@ public class FEntryPermission {
 	/**
 	 * Setzt alle 3 Rechte auf einmal und feuert somit die PERMISSION_CHANGED-Notifikation auf dem FEntry nur einmal.
 	 * Erstellt zudem einen entsprechenden LogEntry.
-	 * 
+	 *
 	 * @param read   Der neue Wert für Leserechte.
 	 * @param write  Der neue Wert für Schreibrechte.
 	 * @param manage Der neue Wert für Verwaltungsrechte.
@@ -149,6 +150,6 @@ public class FEntryPermission {
 		manageAllowed = manage;
 
 		fEntry.addLogEntry(LogEntry.LogMessage.PERMISSION);
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
 	}
 }

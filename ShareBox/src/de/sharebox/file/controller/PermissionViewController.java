@@ -4,8 +4,9 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
@@ -106,21 +107,18 @@ public class PermissionViewController {
 	 */
 	protected FEntryObserver fEntryObserver = new FEntryObserver() {
 		@Override
-		public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
-			if (reason.equals(ChangeType.PERMISSION_CHANGED)) {
+		public void fEntryNotification(final FEntryNotification notification) {
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.PERMISSION_CHANGED)) {
+				tableModel.fireTableDataChanged();
+			} else if (notification.getChangeType().equals(FEntryNotification.ChangeType.DELETED)) {
+				currentFEntry = Optional.absent();
+
+				buttonPanel.setVisible(false);
+				messageTextArea.setText(NO_FENTRY_SELECTED_MSG);
+				messageTextArea.setVisible(true);
+
 				tableModel.fireTableDataChanged();
 			}
-		}
-
-		@Override
-		public void fEntryDeletedNotification(final FEntry fEntry) {
-			currentFEntry = Optional.absent();
-
-			buttonPanel.setVisible(false);
-			messageTextArea.setText(NO_FENTRY_SELECTED_MSG);
-			messageTextArea.setVisible(true);
-
-			tableModel.fireTableDataChanged();
 		}
 	};
 
@@ -229,7 +227,7 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser Handler reagiert auf Klicks des "-"-Button, um andere Nutzer von der Datei/Verzeichnis auszuladen, 
+	 * Dieser Handler reagiert auf Klicks des "-"-Button, um andere Nutzer von der Datei/Verzeichnis auszuladen,
 	 * also jegliche Rechte an der Datei zu löschen.
 	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */

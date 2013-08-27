@@ -3,6 +3,8 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
@@ -109,7 +111,7 @@ public class FEntry {
 	public void setName(final String name) {
 		this.name = name;
 		addLogEntry(LogEntry.LogMessage.RENAMED);
-		fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+		fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, this);
 	}
 
 	/**
@@ -140,23 +142,15 @@ public class FEntry {
 	}
 
 	/**
-	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
+	 * Benachrichtigt alle Observer das eine Änderung des gegebenen Typs stattgefunden hat.
+	 *
+	 * @param reason Art der stattgefunden Änderung.
+	 * @param source Das Objekt, das die Änderung ausgelöst hat - im Zweifel den FEntry selbst setzen.
 	 */
-	public void fireChangeNotification(final FEntryObserver.ChangeType reason) {
+	public void fireNotification(final FEntryNotification.ChangeType reason, final Object source) {
 		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
 		for (final FEntryObserver observer : localObservers) {
-			observer.fEntryChangedNotification(this, reason);
-		}
-	}
-
-	/**
-	 * Benachrichtigt alle Observer, dass dieses Objekt aus dem Dateisystem gelöscht wurde. Das Java-Objekt an sich ist<br/>
-	 * aber noch nicht notwendigerweise gelöscht.
-	 */
-	public void fireDeleteNotification() {
-		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
-		for (final FEntryObserver observer : localObservers) {
-			observer.fEntryDeletedNotification(this);
+			observer.fEntryNotification(new FEntryNotification(this, reason, source));
 		}
 	}
 
@@ -181,7 +175,7 @@ public class FEntry {
 		} else {
 			permissions.remove(permission);
 			addLogEntry(LogEntry.LogMessage.PERMISSION);
-			fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+			fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, this);
 		}
 	}
 

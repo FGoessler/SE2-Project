@@ -1,6 +1,8 @@
 package de.sharebox.file.model;
 
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,32 +85,34 @@ public class FEntryTest {
 	@Test
 	public void canRegisterObserversForChangeNotification() {
 		fEntry.addObserver(observer);
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+		fEntry.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
 
 		fEntry.removeObserver(observer);
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+		fEntry.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
 
 		//notification should have only been fired once (not fired after removeObserver)
-		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.NAME_CHANGED);
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
+		verify(observer, times(1)).fEntryNotification(expectedNotification);
 	}
 
 	@Test
 	public void canRegisterObserversForDeletionNotification() {
 		fEntry.addObserver(observer);
-		fEntry.fireDeleteNotification();
+		fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, fEntry);
 
 		fEntry.removeObserver(observer);
-		fEntry.fireDeleteNotification();
+		fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, fEntry);
 
 		//notification should only have been fired once (not fired after removeObserver)
-		verify(observer, times(1)).fEntryDeletedNotification(fEntry);
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.DELETED, fEntry);
+		verify(observer, times(1)).fEntryNotification(expectedNotification);
 	}
 
 	@Test
 	public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
 		try {
-			fEntry.fireDeleteNotification();
-			fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+			fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, fEntry);
+			fEntry.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
 		} catch (Exception exception) {
 			fail("Should not have thrown an error! " + exception.getLocalizedMessage());
 		}
@@ -135,7 +139,8 @@ public class FEntryTest {
 
 		fEntry.setPermission(user, true, true, true);
 
-		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(observer, times(1)).fEntryNotification(expectedNotification);
 		assertThat(fEntry.getPermissions()).hasSize(1);
 		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
@@ -153,11 +158,13 @@ public class FEntryTest {
 
 		fEntry.setPermission(user, true, true, true);
 		assertThat(fEntry.getPermissions()).hasSize(1);
-		verify(observer, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		final FEntryNotification expectedNotification1 = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(observer, times(1)).fEntryNotification(expectedNotification1);
 
 		fEntry.setPermission(user, false, false, false);
 
-		verify(observer, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		final FEntryNotification expectedNotification2 = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(observer, times(2)).fEntryNotification(expectedNotification2);
 		assertThat(fEntry.getPermissions()).hasSize(0);
 		final FEntryPermission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
@@ -190,7 +197,8 @@ public class FEntryTest {
 
 		fEntry.setName("Test");
 
-		verify(observer).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.NAME_CHANGED);
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
+		verify(observer).fEntryNotification(expectedNotification);
 		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.RENAMED);
 	}
 

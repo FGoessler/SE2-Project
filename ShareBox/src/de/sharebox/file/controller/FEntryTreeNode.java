@@ -2,8 +2,10 @@ package de.sharebox.file.controller;
 
 import com.google.common.collect.ImmutableList;
 import de.sharebox.file.model.Directory;
-import de.sharebox.file.model.DirectoryObserver;
 import de.sharebox.file.model.FEntry;
+import de.sharebox.file.notification.DirectoryNotification;
+import de.sharebox.file.notification.DirectoryObserver;
+import de.sharebox.file.notification.FEntryNotification;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -70,41 +72,36 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 	 */
 	private final DirectoryObserver observer = new DirectoryObserver() {
 		@Override
-		public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
-			if (reason.equals(ChangeType.NAME_CHANGED)) {
-				setUserObject(fEntry);        //set to trigger UI update
+		public void fEntryNotification(final FEntryNotification notification) {
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.NAME_CHANGED)) {
+				setUserObject(notification.getChangedFEntry());        //set to trigger UI update
 			}
 		}
 
 		@Override
-		public void addedChildrenNotification(final Directory parent, final ImmutableList<FEntry> newChildren) {
-			for (final FEntry child : newChildren) {
-				treeModel.insertNodeInto(new FEntryTreeNode(treeModel, child), FEntryTreeNode.this, 0);
-			}
-		}
-
-		@Override
-		public void removedChildrenNotification(final Directory parent, final ImmutableList<FEntry> removedChildren) {
-			final List<FEntry> remainingChildrenToRemove = new ArrayList<FEntry>(removedChildren);
-			while (!remainingChildrenToRemove.isEmpty()) {
-				FEntryTreeNode nodeToRemove = null;
-				final Enumeration children = children();
-				while (children.hasMoreElements()) {
-					final FEntryTreeNode child = (FEntryTreeNode) children.nextElement();
-					final FEntry childFEntry = (FEntry) child.getUserObject();
-					if (childFEntry.equals(removedChildren.get(0))) {
-						nodeToRemove = child;
-						break;
-					}
+		public void directoryNotification(final DirectoryNotification notification) {
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.ADDED_CHILDREN)) {
+				for (final FEntry child : notification.getAffectedChildren()) {
+					treeModel.insertNodeInto(new FEntryTreeNode(treeModel, child), FEntryTreeNode.this, 0);
 				}
-				treeModel.removeNodeFromParent(nodeToRemove);
-				remainingChildrenToRemove.remove(0);
+			} else if (notification.getChangeType().equals(FEntryNotification.ChangeType.REMOVE_CHILDREN)) {
+				final ImmutableList<FEntry> removedChildren = notification.getAffectedChildren();
+				final List<FEntry> remainingChildrenToRemove = new ArrayList<FEntry>(removedChildren);
+				while (!remainingChildrenToRemove.isEmpty()) {
+					FEntryTreeNode nodeToRemove = null;
+					final Enumeration children = children();
+					while (children.hasMoreElements()) {
+						final FEntryTreeNode child = (FEntryTreeNode) children.nextElement();
+						final FEntry childFEntry = (FEntry) child.getUserObject();
+						if (childFEntry.equals(removedChildren.get(0))) {
+							nodeToRemove = child;
+							break;
+						}
+					}
+					treeModel.removeNodeFromParent(nodeToRemove);
+					remainingChildrenToRemove.remove(0);
+				}
 			}
-		}
-
-		@Override
-		public void fEntryDeletedNotification(final FEntry fEntry) {
-			//wird ignoriert, da bereits die Informationen aus einer removedChildrenNotification ausreichen um den Baum zu aktualisieren.
 		}
 	};
 }

@@ -1,13 +1,13 @@
 package de.sharebox.file.controller;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import de.sharebox.file.model.Directory;
-import de.sharebox.file.model.DirectoryObserver;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.LogEntry;
+import de.sharebox.file.notification.DirectoryNotification;
+import de.sharebox.file.notification.DirectoryObserver;
+import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.helpers.SwingEngineHelper;
 
@@ -80,26 +80,16 @@ public class LogViewController {
 	 */
 	protected DirectoryObserver fEntryObserver = new DirectoryObserver() {
 		@Override
-		public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
+		public void fEntryNotification(final FEntryNotification notification) {
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.DELETED)) {
+				currentFEntry = Optional.absent();
+				panel.setVisible(false);
+			}
 			tableModel.fireTableDataChanged();
 		}
 
 		@Override
-		public void fEntryDeletedNotification(final FEntry fEntry) {
-			currentFEntry = Optional.absent();
-
-			panel.setVisible(false);
-
-			tableModel.fireTableDataChanged();
-		}
-
-		@Override
-		public void addedChildrenNotification(final Directory parent, final ImmutableList<FEntry> newChildren) {
-			tableModel.fireTableDataChanged();
-		}
-
-		@Override
-		public void removedChildrenNotification(final Directory parent, final ImmutableList<FEntry> removedChildren) {
+		public void directoryNotification(final DirectoryNotification notification) {
 			tableModel.fireTableDataChanged();
 		}
 	};

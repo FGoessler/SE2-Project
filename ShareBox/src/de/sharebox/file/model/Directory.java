@@ -3,6 +3,10 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.notification.DirectoryNotification;
+import de.sharebox.file.notification.DirectoryObserver;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
@@ -80,7 +84,7 @@ public class Directory extends FEntry {
 
 			fEntries.add(newFile.get());
 			addLogEntry(LogEntry.LogMessage.ADDED_FILE);
-			fireAddedChildrenNotification(newFile.get());
+			fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, newFile.get(), this);
 		}
 
 		return newFile;
@@ -103,7 +107,7 @@ public class Directory extends FEntry {
 
 			fEntries.add(newDir.get());
 			addLogEntry(LogEntry.LogMessage.ADDED_DIRECTORY);
-			fireAddedChildrenNotification(newDir.get());
+			fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, newDir.get(), this);
 		}
 
 		return newDir;
@@ -125,7 +129,7 @@ public class Directory extends FEntry {
 			addLogEntry(LogEntry.LogMessage.ADDED_DIRECTORY);
 		}
 
-		fireAddedChildrenNotification(newFEntry);
+		fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, newFEntry, this);
 	}
 
 	/**
@@ -153,40 +157,27 @@ public class Directory extends FEntry {
 			addLogEntry(LogEntry.LogMessage.REMOVED_DIRECTORY);
 		}
 
-		fEntry.fireDeleteNotification();
-		fireRemovedChildrenNotification(fEntry);
+		fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, this);
+		fireDirectoryNotification(FEntryNotification.ChangeType.REMOVE_CHILDREN, fEntry, this);
 	}
 
 	/**
-	 * Feuert eine addedChildrenNotification-Notifikation auf den registrierten DirectoryObservern. Etwaige reine
-	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation erhält das Directory dem FEntries hinzugefügt
-	 * wurden, sowie die FEntries die hinzugefügt wurden.
+	 * Feuert eine DirectoryNotification auf den registrierten DirectoryObservern. Etwaige reine
+	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation enthält unter anderem das Directory dem FEntries
+	 * hinzugefügt oder entfernt wurden, sowie die FEntries die hinzugefügt bzw. gelöscht wurden. Die Art der Änderung
+	 * kann am ChangeType abgelesen werden.
 	 *
-	 * @param addedFEntry Der hinzugefügt FEntry.
+	 * @param reason        Die Art der Änderung - entweder REMOVE_CHILDREN oder ADDED_CHILDREN.
+	 * @param affectedChild Der hinzugefügt/entfernte FEntry.
+	 * @param source        Das Objekt, das die Änderung ausgelöst hat - im Zweifel das Directory selbst setzen.
 	 */
-	public void fireAddedChildrenNotification(final FEntry addedFEntry) {
-		final ImmutableList<FEntry> addedFEntries = ImmutableList.of(addedFEntry);
+	public void fireDirectoryNotification(final FEntryNotification.ChangeType reason,
+										  final FEntry affectedChild, final Object source) {
+		final ImmutableList<FEntry> addedFEntries = ImmutableList.of(affectedChild);
 
 		for (final FEntryObserver observer : observers) {
 			if (observer instanceof DirectoryObserver) {
-				((DirectoryObserver) observer).addedChildrenNotification(this, addedFEntries);
-			}
-		}
-	}
-
-	/**
-	 * Feuert eine removedChildrenNotification-Notifikation auf den registrierten DirectoryObservern. Etwaige reine
-	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation erhält das Directory dem FEntries hinzugefügt
-	 * wurden, sowie die FEntries die hinzugefügt wurden.
-	 *
-	 * @param removedFEntry Der entfernte FEntry.
-	 */
-	public void fireRemovedChildrenNotification(final FEntry removedFEntry) {
-		final ImmutableList<FEntry> removedFEntries = ImmutableList.of(removedFEntry);
-
-		for (final FEntryObserver observer : observers) {
-			if (observer instanceof DirectoryObserver) {
-				((DirectoryObserver) observer).removedChildrenNotification(this, removedFEntries);
+				((DirectoryObserver) observer).directoryNotification(new DirectoryNotification(this, reason, source, addedFEntries));
 			}
 		}
 	}

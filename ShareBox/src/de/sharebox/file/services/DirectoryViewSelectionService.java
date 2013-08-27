@@ -8,8 +8,9 @@ import de.sharebox.file.controller.ContextMenuController;
 import de.sharebox.file.controller.FEntryTreeNode;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.File;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.helpers.OptionPaneHelper;
 
 import javax.swing.*;
@@ -235,17 +236,14 @@ public class DirectoryViewSelectionService {
 		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
 		final FEntryObserver observer = new FEntryObserver() {
 			@Override
-			public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
-				//not used here
-			}
-
-			@Override
-			public void fEntryDeletedNotification(final FEntry fEntry) {
-				//remove FEntry from list
-				int index = fEntriesToDelete.indexOf(fEntry);
-				if (index >= 0) {
-					fEntriesToDelete.remove(index);
-					parentDirectories.remove(index);
+			public void fEntryNotification(final FEntryNotification notification) {
+				if (notification.getChangeType().equals(FEntryNotification.ChangeType.DELETED)) {
+					//remove FEntry from list
+					int index = fEntriesToDelete.indexOf(notification.getChangedFEntry());
+					if (index >= 0) {
+						fEntriesToDelete.remove(index);
+						parentDirectories.remove(index);
+					}
 				}
 			}
 		};

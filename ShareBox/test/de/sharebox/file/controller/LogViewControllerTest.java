@@ -3,8 +3,8 @@ package de.sharebox.file.controller;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.LogEntry;
+import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.user.model.User;
 import org.junit.Before;
@@ -110,19 +110,19 @@ public class LogViewControllerTest {
 	public void notificationsUpdateTheUI() {
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));            //one initial invocation already happened
 
-		directory.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+		directory.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, directory);
 		verify(tableModelListener, times(2)).tableChanged(any(TableModelEvent.class));
 
-		directory.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		directory.fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, directory);
 		verify(tableModelListener, times(3)).tableChanged(any(TableModelEvent.class));
 
-		directory.fireAddedChildrenNotification(mock(FEntry.class));
+		directory.fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, mock(FEntry.class), directory);
 		verify(tableModelListener, times(4)).tableChanged(any(TableModelEvent.class));
 
-		directory.fireRemovedChildrenNotification(mock(FEntry.class));
+		directory.fireDirectoryNotification(FEntryNotification.ChangeType.REMOVE_CHILDREN, mock(FEntry.class), directory);
 		verify(tableModelListener, times(5)).tableChanged(any(TableModelEvent.class));
 
-		directory.fireDeleteNotification();
+		directory.fireNotification(FEntryNotification.ChangeType.DELETED, directory);
 		assertThat(logViewController.panel.isVisible()).isFalse();
 		verify(tableModelListener, times(6)).tableChanged(any(TableModelEvent.class));
 
