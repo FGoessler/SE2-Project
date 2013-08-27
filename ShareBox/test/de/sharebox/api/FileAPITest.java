@@ -27,10 +27,11 @@ public class FileAPITest {
 
 	@Before
 	public void setUp() {
-        //fileAPI = new FileAPI();
+        fileAPI = new FileAPI();
 		tFile1 = new File(mockedUserAPI);
 		tFile1.setIdentifier(42);
 		tFile1.setName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+
 
 		tFile2 = new File(mockedUserAPI);
 		tFile2.setIdentifier(43);
@@ -43,6 +44,7 @@ public class FileAPITest {
 		tDirectory2 = new Directory(mockedUserAPI);
 		tDirectory2.setIdentifier(45);
 		tDirectory2.setName("Heart of the Sunrise");
+        System.out.println("asd"+tFile1.getName());
 	}
 
 	@After

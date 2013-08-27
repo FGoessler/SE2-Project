@@ -139,11 +139,11 @@ public class FileManager implements DirectoryObserver {
 	private void timestampCheck(final FileAPI.StorageEntry storageEntry, final List<List<FileAPI.StorageEntry>> APIstorage, final Integer location) {
         // case for API having a smaller timestamp than the local version, and local version actually being ok
         if (storageEntry.getTimestamp() >= APIstorage.get(location).get(APIstorage.get(location).size()-1).getTimestamp() && storageEntry.getStatus() != FileAPI.Status.DELETED) {
-            getTypeAndUpdateAPI(storageEntry);
+            getFEntryTypeAndUpdateAPI(storageEntry.getFEntry());
         }
         // case for API having a smaller timestamp than the local version, and local version is flagged as deleted
         else if (storageEntry.getTimestamp() >= APIstorage.get(location).get(APIstorage.get(location).size()-1).getTimestamp() && storageEntry.getStatus() == FileAPI.Status.DELETED) {
-            getTypeAndDeleteAPI(storageEntry);
+            getFEntryTypeAndDeleteAPI(storageEntry.getFEntry());
         }
         // case for API having a greater timestamp than the local version
         else if (APIstorage.get(location).get(APIstorage.get(location).size()-1).getStatus() == FileAPI.Status.DELETED) {
@@ -154,19 +154,19 @@ public class FileManager implements DirectoryObserver {
         }
     }
 
-    private void getTypeAndUpdateAPI (final FileAPI.StorageEntry storageEntry) {
-            if (storageEntry.getFEntry() instanceof File) {
-                fileAPI.updateFile((File) storageEntry.getFEntry());
-            } else if (storageEntry.getFEntry() instanceof Directory) {
-                fileAPI.updateDirectory((Directory) storageEntry.getFEntry());
+    private void getFEntryTypeAndUpdateAPI (final FEntry fEntry) {
+            if (fEntry instanceof File) {
+                fileAPI.updateFile((File) fEntry);
+            } else if (fEntry instanceof Directory) {
+                fileAPI.updateDirectory((Directory) fEntry);
             }
     }
 
-    private void getTypeAndDeleteAPI (final FileAPI.StorageEntry storageEntry) {
-            if (storageEntry.getFEntry() instanceof File) {
-                fileAPI.deleteFile((File) storageEntry.getFEntry());
-            } else if (storageEntry.getFEntry() instanceof Directory) {
-                fileAPI.deleteDirectory((Directory) storageEntry.getFEntry());
+    private void getFEntryTypeAndDeleteAPI (final FEntry fEntry) {
+            if (fEntry instanceof File) {
+                fileAPI.deleteFile((File) fEntry);
+            } else if (fEntry instanceof Directory) {
+                fileAPI.deleteDirectory((Directory) fEntry);
             }
     }
 
@@ -256,11 +256,22 @@ public class FileManager implements DirectoryObserver {
     }
 
 	public void directoryNotification(final DirectoryNotification notification) {
-
+        final Directory source = new Directory((Directory)notification.getSource());
+        fileAPI.updateDirectory(source);
+        /*if (notification.getChangeType().equals(FEntryNotification.ChangeType.ADDED_CHILDREN)) {
+            for (FEntry fEntry : notification.getAffectedChildren()) {
+                getFEntryTypeAndUpdateAPI(fEntry);
+            }
+        }
+        if (notification.getChangeType().equals(FEntryNotification.ChangeType.REMOVE_CHILDREN)) {
+            for (FEntry fEntry : notification.getAffectedChildren()) {
+                getFEntryTypeAndDeleteAPI(fEntry);
+            }
+        }*/
 	}
 
 	public void fEntryNotification(final FEntryNotification notification) {
-
+        getFEntryTypeAndUpdateAPI(notification.getChangedFEntry());
 	}
 }
 
