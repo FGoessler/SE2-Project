@@ -71,20 +71,23 @@ public class FEntryNotification {
 		return source;
 	}
 
-	//TODO: refactor
 	@Override
 	public boolean equals(final Object otherObj) {
-		if (this == otherObj) return true;
-		if (otherObj == null || getClass() != otherObj.getClass()) return false;
+		Boolean equals = true;
 
-		FEntryNotification that = (FEntryNotification) otherObj;
+		if (otherObj.getClass().equals(getClass())) {
+			final FEntryNotification otherNotification = (FEntryNotification) otherObj;
 
-		if (changeType != that.changeType) return false;
-		if (changedFEntry != null ? !changedFEntry.equals(that.changedFEntry) : that.changedFEntry != null)
-			return false;
-		if (source != null ? !source.equals(that.source) : that.source != null) return false;
+			if (!Objects.equal(changedFEntry, otherNotification.getChangedFEntry()) ||
+					!Objects.equal(changeType, otherNotification.getChangeType()) ||
+					!Objects.equal(source, otherNotification.getSource())) {
+				equals = false;
+			}
+		} else {
+			equals = false;
+		}
 
-		return true;
+		return equals;
 	}
 
 	@Override

@@ -23,10 +23,10 @@ public class DirectoryNotification extends FEntryNotification {
 	 * @param affectedChildren Die von den Änderungen betroffenen FEntries des Verzeichnisses - also eine Liste der
 	 *                         gelöschten bzw. hinzugefügten FEntries.
 	 */
-	public DirectoryNotification(Directory changedDirectory,
-								 ChangeType changeType,
-								 Object source,
-								 ImmutableList<FEntry> affectedChildren) {
+	public DirectoryNotification(final Directory changedDirectory,
+								 final ChangeType changeType,
+								 final Object source,
+								 final ImmutableList<FEntry> affectedChildren) {
 		super(changedDirectory, changeType, source);
 		this.affectedChildren = affectedChildren;
 	}
@@ -41,19 +41,22 @@ public class DirectoryNotification extends FEntryNotification {
 		return affectedChildren;
 	}
 
-	//TODO: refactor
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+	public boolean equals(final Object otherObj) {
+		Boolean equals = true;
 
-		DirectoryNotification that = (DirectoryNotification) o;
+		if (otherObj.getClass().equals(getClass())) {
+			final DirectoryNotification otherNotification = (DirectoryNotification) otherObj;
 
-		if (affectedChildren != null ? !affectedChildren.equals(that.affectedChildren) : that.affectedChildren != null)
-			return false;
+			if (!super.equals(otherNotification) ||
+					!Objects.equal(affectedChildren, otherNotification.getAffectedChildren())) {
+				equals = false;
+			}
+		} else {
+			equals = false;
+		}
 
-		return true;
+		return equals;
 	}
 
 	@Override
