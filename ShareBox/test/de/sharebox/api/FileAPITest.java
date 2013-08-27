@@ -19,15 +19,15 @@ public class FileAPITest {
 	private File tFile2;
 	private Directory tDirectory1;
 	private Directory tDirectory2;
-
-	@Mock
-	private UserAPI mockedUserAPI;
+	private FileAPI fileAPI;
 
 	@InjectMocks
-	private FileAPI fileAPI;
+	private UserAPI mockedUserAPI;
+
 
 	@Before
 	public void setUp() {
+        //fileAPI = new FileAPI();
 		tFile1 = new File(mockedUserAPI);
 		tFile1.setIdentifier(42);
 		tFile1.setName("The answer to the Ultimate Question of Life, the Universe, and Everything.");

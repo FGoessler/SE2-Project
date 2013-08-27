@@ -19,7 +19,6 @@ public class FileManager implements DirectoryObserver {
 
 	private long lastAPIPoll = 0;
 	private long lastStoragePoll = 0;
-    private long lastSync = 0;
 
 	private final List<FileAPI.StorageEntry> storage = new ArrayList<FileAPI.StorageEntry>();
 
@@ -30,7 +29,7 @@ public class FileManager implements DirectoryObserver {
 	 * @param fileAPI Die FileAPI zur Kommunikation mit dem Server.
 	 */
 	@Inject
-	FileManager(FileAPI fileAPI) {
+	FileManager(final FileAPI fileAPI) {
 		this.fileAPI = fileAPI;
 	}
 
@@ -40,19 +39,15 @@ public class FileManager implements DirectoryObserver {
 	 * @param newFEntry Der hinzuzufügende FEntry.
 	 * @return ob die Operation erfolgreich war.
 	 */
-	public boolean registerFEntry(FEntry newFEntry) {
+	public boolean registerFEntry(final FEntry newFEntry) {
 		//log entry
 		boolean success = false;
-        //newFEntry.addObserver();
-		if (newFEntry instanceof File) {
-			if (fileAPI.createNewFile((File) newFEntry)) {
-				success = true;
-			}
+        newFEntry.addObserver(this);
+		if (newFEntry instanceof File && fileAPI.createNewFile((File) newFEntry)) {
+            success = true;
 		}
-		if (newFEntry instanceof Directory) {
-			if (fileAPI.createNewDirectory((Directory) newFEntry)) {
-				success = true;
-			}
+		if (newFEntry instanceof Directory && fileAPI.createNewDirectory((Directory) newFEntry)) {
+			success = true;
 		}
 
 		return success;
@@ -64,10 +59,8 @@ public class FileManager implements DirectoryObserver {
 	 * @return ob alle Operationen erfolgreich waren.
 	 */
 	public boolean pollAPIForChanges() {
-        //NOTE: deleted in API? -> nonexistent; deleted locally? -> DELETED type declared
 
-        List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
-        boolean success = true;
+        final List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
         boolean found;
 
 
@@ -79,47 +72,22 @@ public class FileManager implements DirectoryObserver {
                 for (FileAPI.StorageEntry storageEntry : storage) {
                     if (storageEntry.getFEntry().getIdentifier() == APIstorage.get(i).get(0).getFEntry().getIdentifier()) {
                         found = true;
-                        // case for API having a smaller timestamp than the local version, and local version actually being ok
-                        if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() != FileAPI.Status.DELETED) {
-                            if (storageEntry.getFEntry() instanceof File) {
-                                fileAPI.updateFile((File)storageEntry.getFEntry());
-                            } else if (storageEntry.getFEntry() instanceof Directory) {
-                                fileAPI.updateDirectory((Directory)storageEntry.getFEntry());
-                            } else {
-                                success = false;
-                            }
-                        }
-                        // case for API having a smaller timestamp than the local version, and local version is flagged as deleted
-                        else if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() == FileAPI.Status.DELETED) {
-                            if (storageEntry.getFEntry() instanceof File) {
-                                fileAPI.deleteFile((File) storageEntry.getFEntry());
-                            } else if (storageEntry.getFEntry() instanceof Directory) {
-                                fileAPI.deleteDirectory((Directory) storageEntry.getFEntry());
-                            } else {
-                                success = false;
-                            }
-                        }
-                        // case for API having a greater timestamp than the local version
-                        else if (APIstorage.get(i).get(APIstorage.get(i).size()-1).getStatus() == FileAPI.Status.DELETED) {
-                            deleteFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
-                        }
-                        else {
-                            updateFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
-                        }
+                        timestampCheck(storageEntry,APIstorage,i);
                         break;
                     }
 
                 }
                 //case for local storage not having the file at all
                 if (!found) {
-                    updateFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
+                    setFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
                 }
             }
         }
 		lastAPIPoll = System.currentTimeMillis();
         deleteFlush();
-        return success;
+        return true;
 	}
+
 
 	/**
 	 * Sucht nach Änderungen seitens des Filesystems und updated/added die geänderten FEntries.
@@ -129,7 +97,7 @@ public class FileManager implements DirectoryObserver {
 	public boolean pollFileSystemForChanges() {
         //NOTE: deleted in API? -> nonexistent; deleted locally? -> DELETED type declared
 
-        List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
+        final List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
         boolean success = true;
         boolean found;
 
@@ -142,40 +110,13 @@ public class FileManager implements DirectoryObserver {
                 for (int i = 0; i < APIstorage.size(); i++) {
                     if (storageEntry.getFEntry().getIdentifier() == APIstorage.get(i).get(0).getFEntry().getIdentifier()) {
                         found = true;
-                        // case for API having a smaller timestamp than the local version, and local version actually being ok
-                        if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() != FileAPI.Status.DELETED) {
-                            if (storageEntry.getFEntry() instanceof File) {
-                                fileAPI.updateFile((File)storageEntry.getFEntry());
-                            } else if (storageEntry.getFEntry() instanceof Directory) {
-                                fileAPI.updateDirectory((Directory)storageEntry.getFEntry());
-                            } else {
-                                success = false;
-                            }
-                        }
-                        // case for API having a smaller timestamp than the local version, and local version is flagged as deleted
-                        else if (storageEntry.getTimestamp() >= APIstorage.get(i).get(APIstorage.get(i).size()-1).getTimestamp() && storageEntry.getStatus() == FileAPI.Status.DELETED) {
-                            if (storageEntry.getFEntry() instanceof File) {
-                                fileAPI.deleteFile((File) storageEntry.getFEntry());
-                            } else if (storageEntry.getFEntry() instanceof Directory) {
-                                fileAPI.deleteDirectory((Directory) storageEntry.getFEntry());
-                            } else {
-                                success = false;
-                            }
-                        }
-                        // case for API having a greater timestamp than the local version
-                        else if (APIstorage.get(i).get(APIstorage.get(i).size()-1).getStatus() == FileAPI.Status.DELETED) {
-                            deleteFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
-                        }
-                        else {
-                            updateFEntry(APIstorage.get(i).get(APIstorage.get(i).size()-1).getFEntry());
-                        }
+                        timestampCheck(storageEntry,APIstorage,i);
                         break;
                     }
 
                 }
                 //case for local storage not having the file at all
                 if (!found) {
-                    System.out.println("not found. creating...");
                     if (storageEntry.getFEntry() instanceof File) {
                         fileAPI.createNewFile((File)storageEntry.getFEntry());
                     } else if (storageEntry.getFEntry() instanceof Directory) {
@@ -191,13 +132,47 @@ public class FileManager implements DirectoryObserver {
         return success;
     }
 
-	/**
+	private void timestampCheck(final FileAPI.StorageEntry storageEntry, final List<List<FileAPI.StorageEntry>> APIstorage, final Integer location) {
+        // case for API having a smaller timestamp than the local version, and local version actually being ok
+        if (storageEntry.getTimestamp() >= APIstorage.get(location).get(APIstorage.get(location).size()-1).getTimestamp() && storageEntry.getStatus() != FileAPI.Status.DELETED) {
+            getTypeAndUpdateAPI(storageEntry);
+        }
+        // case for API having a smaller timestamp than the local version, and local version is flagged as deleted
+        else if (storageEntry.getTimestamp() >= APIstorage.get(location).get(APIstorage.get(location).size()-1).getTimestamp() && storageEntry.getStatus() == FileAPI.Status.DELETED) {
+            getTypeAndDeleteAPI(storageEntry);
+        }
+        // case for API having a greater timestamp than the local version
+        else if (APIstorage.get(location).get(APIstorage.get(location).size()-1).getStatus() == FileAPI.Status.DELETED) {
+            deleteFEntry(APIstorage.get(location).get(APIstorage.get(location).size()-1).getFEntry());
+        }
+        else {
+            setFEntry(APIstorage.get(location).get(APIstorage.get(location).size()-1).getFEntry());
+        }
+    }
+
+    private void getTypeAndUpdateAPI (final FileAPI.StorageEntry storageEntry) {
+            if (storageEntry.getFEntry() instanceof File) {
+                fileAPI.updateFile((File) storageEntry.getFEntry());
+            } else if (storageEntry.getFEntry() instanceof Directory) {
+                fileAPI.updateDirectory((Directory) storageEntry.getFEntry());
+            }
+    }
+
+    private void getTypeAndDeleteAPI (final FileAPI.StorageEntry storageEntry) {
+            if (storageEntry.getFEntry() instanceof File) {
+                fileAPI.deleteFile((File) storageEntry.getFEntry());
+            } else if (storageEntry.getFEntry() instanceof Directory) {
+                fileAPI.deleteDirectory((Directory) storageEntry.getFEntry());
+            }
+    }
+
+    /**
 	 * Überschreibt/updated einen FEntry im lokalen Speicher.
 	 *
 	 * @param updatedFile zu bearbeitendes FEntry.
 	 * @return ob erfolgreich.
 	 */
-	public boolean updateFEntry(FEntry updatedFile) {
+	public boolean setFEntry(final FEntry updatedFile) {
 		boolean success = false;
 
 		//search through existing files, see createNewFile
@@ -213,10 +188,10 @@ public class FileManager implements DirectoryObserver {
 		if (!success) {
 			//file found, create new version
 			if (updatedFile instanceof File) {
-				FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new File((File) updatedFile));
+				final FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new File((File) updatedFile));
 				storage.add(newEntry);
 			} else if (updatedFile instanceof Directory) {
-				FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new Directory((Directory) updatedFile));
+				final FileAPI.StorageEntry newEntry = fileAPI.new StorageEntry(System.currentTimeMillis(), new Directory((Directory) updatedFile));
 				storage.add(newEntry);
 			}
 			success = true;
@@ -230,7 +205,7 @@ public class FileManager implements DirectoryObserver {
 	 * @param deletedFile zu löschender FEntry.
 	 * @return ob erfolgreich.
 	 */
-	public boolean deleteFEntry(FEntry deletedFile) {
+	public boolean deleteFEntry(final FEntry deletedFile) {
 		boolean success = false;
 
 		//search through existing files, see createNewFile
@@ -238,6 +213,7 @@ public class FileManager implements DirectoryObserver {
 			//check for correct ID
 			if (storage.get(i).getFEntry().getIdentifier().equals(deletedFile.getIdentifier())) {
 				//storage.remove(i);
+                success = true;
                 storage.get(i).setStatus(FileAPI.Status.DELETED);
                 storage.get(i).setTimestamp(System.currentTimeMillis());
 				break;
@@ -264,29 +240,29 @@ public class FileManager implements DirectoryObserver {
 		return storage.size();
 	}
 
-    public Directory getDirByID (Integer ID) {
+    public Directory getDirByID (final Integer identifier) {
         Directory returnDir = null;
 		for (FileAPI.StorageEntry storageEntry : storage) {
-			if (storageEntry.getFEntry().getIdentifier() == ID) {
+			if (storageEntry.getFEntry().getIdentifier() == identifier) {
                 returnDir = (Directory)storageEntry.getFEntry();
 			}
 		}
         return returnDir;
     }
 
-    public void addedChildrenNotification(Directory parent, ImmutableList<FEntry> newChildren) {
-
+    public void addedChildrenNotification(final Directory parent,final ImmutableList<FEntry> newChildren) {
+        System.out.println("addedChildrenNotification not implemented");
     }
 
-    public void removedChildrenNotification(Directory parent, ImmutableList<FEntry> removedChildren) {
-
+    public void removedChildrenNotification(final Directory parent,final ImmutableList<FEntry> removedChildren) {
+        System.out.println("removedChildrenNotification not implemented");
     }
 
-    public void fEntryChangedNotification(FEntry fEntry, ChangeType reason) {
-
+    public void fEntryChangedNotification(final FEntry fEntry,final ChangeType reason) {
+        System.out.println("fEntryChangedNotification not implemented");
     }
 
-    public void fEntryDeletedNotification(FEntry fEntry) {
-
+    public void fEntryDeletedNotification(final FEntry fEntry) {
+        System.out.println("fEntryDeletedNotification not implemented");
     }
 }

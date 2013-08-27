@@ -11,6 +11,10 @@ import java.util.List;
 public class FileAPI {
 	private final UserAPI userAPI;
 
+    FileAPI() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public enum Status {
         OK,
         DELETED
