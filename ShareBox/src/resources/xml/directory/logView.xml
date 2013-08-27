@@ -1,0 +1,5 @@
+<panel layout="borderLayout" minimumSize="200,200">
+    <scrollPane constraints="BorderLayout.CENTER">
+        <table id="logEntryTable"/>
+    </scrollPane>
+</panel>

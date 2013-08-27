@@ -3,14 +3,16 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories. Hauptsächlich implementiert
- * sie Observer Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
+ * Diese Klasse ist die abstrakte Oberklasse aller Dateiobjekte wie Files und Directories. Hauptsächlich implementiert<br/>
+ * sie Observer-Mechanismen und eine ID anhand der Dateien und Verzeichnisse eindeutig unterschieden werden können.
  */
 public class FEntry {
 	private final UserAPI userAPI;
@@ -19,6 +21,7 @@ public class FEntry {
 	private String name;
 
 	private final List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
+	protected final List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	protected final List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
@@ -32,7 +35,24 @@ public class FEntry {
 	}
 
 	/**
-	 * Der Copy Konstruktor.
+	 * Erstellt einen neuen FEntry mit den gegebenen Werten, feuert dabei allerdings keine Notifications und erstellt
+	 * auch nur einen "Created" LogEntry anstatt eines "Renamed" und "PermissionChanged" LogEntry.
+	 *
+	 * @param userAPI      Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 *                     Nutzer zu bestimmen und Rechte zu überprüfen.
+	 * @param name         Der Name des FEntries.
+	 * @param creatingUser Der Nutzer, der initial alle Rechte auf diesem FEntry erhält.
+	 */
+	public FEntry(final UserAPI userAPI, final String name, final User creatingUser) {
+		this.userAPI = userAPI;
+		this.name = name;
+		permissions.add(new FEntryPermission(creatingUser, this, true, true, true));
+		addLogEntry(LogEntry.LogMessage.CREATED);
+	}
+
+	/**
+	 * Der Copy Konstruktor. Permissions und LogEntries werden ebenfalls mit ihrem Copy Konstruktor kopiert.
+	 * Observer werden nicht übertragen.
 	 *
 	 * @param sourceFEntry Das zu kopierende Objekt.
 	 */
@@ -43,15 +63,15 @@ public class FEntry {
 
 		//copy permissions
 		for (final FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
-			final FEntryPermission newPermission = new FEntryPermission(oldPermission.getUser(), this);
-			newPermission.setPermissions(oldPermission.getReadAllowed(), oldPermission.getWriteAllowed(), oldPermission.getManageAllowed());
-
-			permissions.add(newPermission);
+			permissions.add(new FEntryPermission(oldPermission));
+		}
+		for (final LogEntry oldLogEntry : sourceFEntry.getLogEntries()) {
+			logEntries.add(new LogEntry(oldLogEntry));
 		}
 	}
 
 	/**
-	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu
+	 * Liefert die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten Nutzer zu<br/>
 	 * bestimmen und Rechte zu überprüfen.
 	 *
 	 * @return Die aktuell für diesen FEntry relevante UserAPI.
@@ -71,9 +91,8 @@ public class FEntry {
 	}
 
 	/**
-	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden falls der Server entsprechende Änderungen sendet.
-	 * <br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Setzt die eindeutige ID des Objekts. Sollte nur geändert werden, falls der Server entsprechende Änderungen sendet.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param identifier Die neue ID dieses Objekts.
@@ -83,17 +102,16 @@ public class FEntry {
 	}
 
 	/**
-	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.
-	 * <br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Ändert den Namen des FEntries('Dateiname') und benachrichtigt alle Observer über die Änderung.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param name Der neue Name.
 	 */
 	public void setName(final String name) {
 		this.name = name;
-
-		fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+		addLogEntry(LogEntry.LogMessage.RENAMED);
+		fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, this);
 	}
 
 	/**
@@ -106,7 +124,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Registriert ein Objekt als Observer. Dieses erhält dann Benachrichtigungen über Änderung und Läschung des Objekts.
+	 * Registriert ein Objekt als Observer. Dieser erhält dann Benachrichtigungen über Änderung und Löschung des Objekts.
 	 *
 	 * @param observer Der Observer der benachrichtigt werden soll.
 	 */
@@ -115,7 +133,7 @@ public class FEntry {
 	}
 
 	/**
-	 * Entfernt den Observer, sodass dieser nicht mehr Benachrichtigt wird.
+	 * Entfernt den Observer, sodass dieser nicht mehr benachrichtigt wird.
 	 *
 	 * @param observer Der Observer der entfernt werden soll.
 	 */
@@ -124,31 +142,21 @@ public class FEntry {
 	}
 
 	/**
-	 * Benachrichtigt alle Observer das eine Änderung stattgefunden hat.
+	 * Benachrichtigt alle Observer das eine Änderung des gegebenen Typs stattgefunden hat.
+	 *
+	 * @param reason Art der stattgefunden Änderung.
+	 * @param source Das Objekt, das die Änderung ausgelöst hat - im Zweifel den FEntry selbst setzen.
 	 */
-	public void fireChangeNotification(final FEntryObserver.ChangeType reason) {
+	public void fireNotification(final FEntryNotification.ChangeType reason, final Object source) {
 		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
 		for (final FEntryObserver observer : localObservers) {
-			observer.fEntryChangedNotification(this, reason);
+			observer.fEntryNotification(new FEntryNotification(this, reason, source));
 		}
 	}
 
 	/**
-	 * Benachrichtigt alle Observer das dieses Objekt aus dem Dateisystem gelöscht wurde. Das Java-Objekt an sich ist
-	 * aber noch nicht notwendigerweise gelöscht.
-	 */
-	public void fireDeleteNotification() {
-		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
-		for (final FEntryObserver observer : localObservers) {
-			observer.fEntryDeletedNotification(this);
-		}
-	}
-
-	/**
-	 * Setzt die Rechte eines Nutzers an diesem FEntry.
-	 * Löst entsprechende PERMISSION_CHANGED Notifications aus.
-	 * <br/><br/>
-	 * Hinweis: Es werden keine Permissions überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
+	 * Setzt die Rechte eines Nutzers an diesem FEntry. Löst entsprechende PERMISSION_CHANGED-Notifikationen aus.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param user   Der Nutzer der die Rechte erhält.
@@ -163,19 +171,18 @@ public class FEntry {
 			if (!permissions.contains(permission)) {
 				permissions.add(permission);
 			}
-
-			permission.setPermissions(read, write, manage);        //Notification wird vom FEntryPermission Objekt ausgelöst
+			permission.setPermissions(read, write, manage);        //Notification und LogMessage werden vom FEntryPermission Objekt erstellt
 		} else {
 			permissions.remove(permission);
-
-			fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+			addLogEntry(LogEntry.LogMessage.PERMISSION);
+			fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, this);
 		}
 	}
 
 	/**
-	 * Liefert eine unveränderbare Liste aller an Nutzer vergebenen Permissions. Nutzer die keinerlei Rechte an einem
-	 * FEntry besitzen werden in der Liste nicht mit einem eigenen fEntryPermission Objekt aufgeführt.
-	 * Um Änderungen an den Rechten vorzunehmen sollten die Objekte direkt manipuliert oder die setPermission Methode
+	 * Liefert eine unveränderbare Liste aller an Nutzer vergebenen Rechte. Nutzer die keinerlei Rechte an einem<br/>
+	 * FEntry besitzen werden in der Liste nicht mit einem eigenen fEntryPermission-Objekt aufgeführt.<br/>
+	 * Um Änderungen an den Rechten vorzunehmen, sollten die Objekte direkt manipuliert oder die setPermission-Methode<br/>
 	 * verwendet werden.
 	 *
 	 * @return Liste aller vergebenen FEntryPermissions.
@@ -188,7 +195,7 @@ public class FEntry {
 	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission Objekt zurück.
 	 *
 	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
-	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
+	 * @return Das FEntryPermission-Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
 	public FEntryPermission getPermissionOfUser(final User user) {
 		Optional<FEntryPermission> permission = Optional.absent();
@@ -216,5 +223,13 @@ public class FEntry {
 	 */
 	public FEntryPermission getPermissionOfCurrentUser() {
 		return getPermissionOfUser(getUserAPI().getCurrentUser());
+	}
+
+	public ImmutableList<LogEntry> getLogEntries() {
+		return ImmutableList.copyOf(logEntries);
+	}
+
+	public void addLogEntry(final LogEntry.LogMessage message) {
+		logEntries.add(new LogEntry(message));
 	}
 }

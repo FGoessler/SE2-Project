@@ -29,7 +29,7 @@ public class FileManagerTest {
 
 	@Before
 	public void setUp() {
-        fileManager = new FileManager(fileAPI);
+		fileManager = new FileManager(fileAPI);
 		file = new File(mockedUserAPI);
 		file.setIdentifier(123);
 		dir = new Directory(mockedUserAPI);
@@ -49,14 +49,14 @@ public class FileManagerTest {
 
 	@Test
 	public void pollAPIForChangesTest() {
-        //simple test for now - testing the whole function would result
-        //in an unintelligible mess anyways, plus delays/etc. for testing puprposes
-        //would slow down global testing.
+		//simple test for now - testing the whole function would result
+		//in an unintelligible mess anyways, plus delays/etc. for testing puprposes
+		//would slow down global testing.
 		fileAPI.createNewFile(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
 		fileManager.pollAPIForChanges();
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
-        fileAPI.deleteFile(file);
+		fileAPI.deleteFile(file);
 		fileManager.deleteFEntry(file);
 	}
 
@@ -86,7 +86,7 @@ public class FileManagerTest {
 		fileManager.setFEntry(file);
 		assertThat(fileManager.getFileCount()).isEqualTo(1);
 		fileManager.deleteFEntry(file);
-        fileManager.deleteFlush();
+		fileManager.deleteFlush();
 		assertThat(fileManager.getFileCount()).isEqualTo(0);
 	}
 }

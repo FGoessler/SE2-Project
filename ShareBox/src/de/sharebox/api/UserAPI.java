@@ -3,6 +3,7 @@ package de.sharebox.api;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import de.sharebox.file.model.Directory;
 import de.sharebox.user.enums.Gender;
 import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.AddressInfo;
@@ -15,20 +16,22 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Singleton
 public class UserAPI {
+	private final FileAPI fileAPI;
+
 	/**
-	 * simuliert Datenbank;
+	 * simuliert die Datenbank;
 	 */
 	private final List<User> userList = new ArrayList<User>();
 
 	private User currentUser;
 
 	/**
-	 * Leerer Konstruktor um ein direktes erstellen zu verhindern. Als Singleton konzipiert.<br/>
-	 * Instanzen dieser Klasse sollte nur per Dependecy Injection durch Guice erstellt werden.
+	 * Leerer Konstruktor um ein direktes Erstellen zu verhindern. Als Singleton konzipiert.<br/>
+	 * Instanzen dieser Klasse sollten nur per Dependecy Injection durch Guice erstellt werden.
 	 */
 	@Inject
-	UserAPI() {
-		//empty package constructor to avoid direct instantiation!
+	UserAPI(final FileAPI fileAPI) {
+		this.fileAPI = fileAPI;
 	}
 
 	/**
@@ -36,27 +39,29 @@ public class UserAPI {
 	 */
 	public final void createSampleContent() {
 
-		final User user = new User();
-		user.setEmail("Max@Mustermann.de");
-		user.setPassword("maxmuster");
-		user.setFirstname("Max");
-		user.setLastname("Mustermann");
+		final User user1 = new User();
+		user1.setEmail("Max@Mustermann.de");
+		user1.setPassword("maxmuster");
+		user1.setFirstname("Max");
+		user1.setLastname("Mustermann");
+		user1.setRootDirectoryIdentifier(0);
 
 		final AddressInfo addressInfo = new AddressInfo();
 		addressInfo.setStreet("Mustersraße 1");
 		addressInfo.setCity("Musterstadt");
 		addressInfo.setCountry("Deutschland");
 		addressInfo.setZipCode("01234");
-		user.setAddressInfo(addressInfo);
+		user1.setAddressInfo(addressInfo);
 
-		user.setStorageLimit(StorageLimit.GB_10);
-		user.setGender(Gender.Male);
+		user1.setStorageLimit(StorageLimit.GB_10);
+		user1.setGender(Gender.Male);
 
 		final User user2 = new User();
 		user2.setEmail("admin");
 		user2.setPassword("root");
 		user2.setFirstname("Hans");
 		user2.setLastname("Kanns");
+		user2.setRootDirectoryIdentifier(2);
 
 		addressInfo.setStreet("");
 		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
@@ -68,14 +73,17 @@ public class UserAPI {
 		user2.setStorageLimit(StorageLimit.GB_20);
 		user2.setGender(Gender.Male);
 
-		APILogger.logResult("Registered Sampledata", registerUser(user) && registerUser(user2));
+		userList.add(user1);
+		userList.add(user2);
+
+		APILogger.logMessage("Registered Sampledata");
 	}
 
 	/**
 	 * Prüft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
 	 *
-	 * @param user zu authentifizierender user
-	 * @return ob erfolgreich
+	 * @param user zu authentifizierender User
+	 * @return ob Authentifizierung erfolgreich war
 	 */
 	public boolean authenticateUser(final User user) {
 		boolean success = false;
@@ -94,10 +102,10 @@ public class UserAPI {
 	}
 
 	/**
-	 * Versucht, den User einzuloggen, wenn Authentifizierung erfolgreich ist.
+	 * Versucht den User einzuloggen, wenn Authentifizierung erfolgreich wae.
 	 *
-	 * @param user einzulogender user
-	 * @return ob erfolgreich
+	 * @param user einzuloggender user
+	 * @return ob Einloggen erfolgreich war
 	 */
 	public boolean login(final User user) {
 		boolean success = false;
@@ -117,9 +125,9 @@ public class UserAPI {
 	}
 
 	/**
-	 * Loggt den eingelogten User aus.
+	 * Loggt den eingeloggten User aus.
 	 *
-	 * @return ob erfolgreich
+	 * @return ob Ausloggen erfolgreich war
 	 */
 	public boolean logout() {
 		boolean success = false;
@@ -140,7 +148,7 @@ public class UserAPI {
 	 * Erstellt neuen User, sofern noch nicht vorhanden.
 	 *
 	 * @param user zu registrierender user
-	 * @return ob erfolgreich
+	 * @return ob Registrierung erfolgreich war
 	 */
 	public boolean registerUser(final User user) {
 		Boolean success = false;
@@ -148,6 +156,11 @@ public class UserAPI {
 		if (!isNullOrEmpty(user.getEmail())
 				&& !isNullOrEmpty(user.getPassword())
 				&& !getUserWithMail(user.getEmail()).isPresent()) {
+
+			//create new root directory for user
+			final Directory rootDir = new Directory(this, "Sharebox", user);
+			fileAPI.createNewDirectory(rootDir);
+			user.setRootDirectoryIdentifier(rootDir.getIdentifier());
 
 			userList.add(new User(user));
 			success = true;
@@ -162,8 +175,8 @@ public class UserAPI {
 	/**
 	 * Ändert Profil-Informationen.
 	 *
-	 * @param user zu ändernder user
-	 * @return ob erfolgreich
+	 * @param user zu änderndes User-Profil
+	 * @return ob Änderung erfolgreich war
 	 */
 	public boolean changeProfile(final User user) {
 		Boolean success = false;
@@ -191,8 +204,8 @@ public class UserAPI {
 	/**
 	 * Ändert Zahlungs- und Speicherinformationen
 	 *
-	 * @param user zu ändernder user
-	 * @return ob erfolgreich
+	 * @param user zu änderndes User-Profil
+	 * @return ob Änderung erfolgreich war
 	 */
 	public boolean changeAccountingSettings(final User user) {
 		Boolean success = false;
@@ -215,11 +228,11 @@ public class UserAPI {
 	}
 
 	/**
-	 * Ändert E-Mailadresse und Password
+	 * Ändert E-Mailadresse und Passwort
 	 *
-	 * @param oldUser zu ändernder user
-	 * @param newUser zu übernehmende Informationen
-	 * @return ob erfolgreich
+	 * @param oldUser zu änderndes User-Profil
+	 * @param newUser zu übernehmende Änderung des User-Profils
+	 * @return ob Änderung erfolgreich war
 	 */
 	public boolean changeCredential(final User oldUser, final User newUser) {
 		Boolean success = false;
@@ -247,9 +260,9 @@ public class UserAPI {
 	/**
 	 * Lädt neuen Benutzer zu Sharebox ein.
 	 *
-	 * @param invitingUser werbende User
-	 * @param invitedUser  geworbene User
-	 * @return ob erfolgreich
+	 * @param invitingUser einladender User
+	 * @param invitedUser  eingeladener User
+	 * @return ob Einladung erfolgreich war
 	 */
 	public boolean inviteUser(final User invitingUser, final User invitedUser) {
 		Boolean success = true;
@@ -284,7 +297,7 @@ public class UserAPI {
 	 * @return zur Zeit eingeloggter User
 	 */
 	public User getCurrentUser() {
-		User user = new User();
+		User user = null;
 
 		if (isLoggedIn()) {
 			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());

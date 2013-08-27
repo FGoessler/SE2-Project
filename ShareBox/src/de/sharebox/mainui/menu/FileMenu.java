@@ -13,7 +13,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Diese Klasse erstellt das "Datei"-Menü in der Menüleiste und reagiert auf die Nutzerinteraktionen.<br/>
+ * Diese Klasse erstellt das Datei-Menü in der Menüleiste und reagiert auf die Nutzerinteraktionen.<br/>
  * Das Erstellen und Verlinken der Aktionen mit dieser Klasse führt die SwingEngine durch.
  */
 public class FileMenu {
@@ -22,7 +22,7 @@ public class FileMenu {
 
 	/**
 	 * Erstellt ein neues FileMenu und fügt es der gegebenen JMenuBar hinzu.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden. Siehe auch FileMenuFactory.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden. Siehe auch FileMenuFactory.
 	 *
 	 * @param menuBar          Die JMenuBar zu dem das Menü hinzugefügt werden soll.
 	 * @param selectionService Ein DirectoryViewSelectionService mit dem die Auswahl des Nutzer im JTree des
@@ -41,7 +41,7 @@ public class FileMenu {
 	}
 
 	/**
-	 * Handler um auf die Auswahl des "Neue Datei erstellen"-Buttons im "Datei"-Menü zu reagieren.
+	 * Handler - um auf die Auswahl des "Neue Datei erstellen"-Buttons im Datei-Menü zu reagieren.
 	 */
 	public Action createNewFile = new AbstractAction() {
 		@Override
@@ -51,7 +51,7 @@ public class FileMenu {
 	};
 
 	/**
-	 * Handler um auf die Auswahl des "Neues Verzeichnis erstellen"-Buttons im "Datei"-Menü zu reagieren.
+	 * Handler - um auf die Auswahl des "Neues Verzeichnis erstellen"-Buttons im Datei-Menü zu reagieren.
 	 */
 	public Action createNewDirectory = new AbstractAction() {
 		@Override
@@ -61,7 +61,7 @@ public class FileMenu {
 	};
 
 	/**
-	 * Handler um auf "Kopieren" im Datei-Menü zu reagieren.
+	 * Handler - um auf Kopieren-Buttons im Datei-Menü zu reagieren.
 	 */
 	public Action copyFEntry = new AbstractAction() {
 		@Override
@@ -71,7 +71,7 @@ public class FileMenu {
 	};
 
 	/**
-	 * Handler um auf "Einfügen" im Datei-Menü zu reagieren.
+	 * Handler - um auf Einfügen-Buttons im Datei-Menü zu reagieren.
 	 */
 	public Action pasteFEntry = new AbstractAction() {
 		@Override

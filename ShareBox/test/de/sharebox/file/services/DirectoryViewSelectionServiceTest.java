@@ -242,4 +242,79 @@ public class DirectoryViewSelectionServiceTest {
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");
 		when(mockedAPI.getCurrentUser()).thenReturn(userWithoutPermissions);
 	}
+
+	@Test
+	public void userCanDeleteAFEntry() {
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.of(rootDirectory.getFEntries().get(0)));
+		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.of(rootDirectory));
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
+
+		assertThat(rootDirectory.getFEntries()).hasSize(3);
+	}
+
+	@Test
+	public void deletingAFEntryWithoutWritePermissionIsNotPossible() {
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.of(rootDirectory.getFEntries().get(0)));
+		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.of(rootDirectory));
+		setCurrentUserToUserWithoutPermissions();
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+		verify(optionPane).showMessageDialog(anyString());
+	}
+
+	@Test
+	public void userCanDeleteMultipleFEntriesAtOnce() {
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.of(rootDirectory.getFEntries().get(0)));
+		final FEntryTreeNode[] treeNodes1 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(0))};
+		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(1))};
+		final TreePath[] treePaths = {new TreePath(treeNodes1), new TreePath(treeNodes2)};
+		selectionService.getTreeView().setSelectionPaths(treePaths);
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
+
+		assertThat(rootDirectory.getFEntries()).hasSize(2);
+	}
+
+	@Test
+	public void userCanDeleteMultipleFEntriesAtOnceWithoutContextMenu() {
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.of(rootDirectory.getFEntries().get(0)));
+		final FEntryTreeNode[] treeNodes1 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(0))};
+		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(1))};
+		final TreePath[] treePaths = {new TreePath(treeNodes1), new TreePath(treeNodes2)};
+		selectionService.getTreeView().setSelectionPaths(treePaths);
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.<ContextMenuController>absent());
+
+		assertThat(rootDirectory.getFEntries()).hasSize(2);
+	}
+
+	@Test
+	public void deletingMultipleFEntriesWithoutWritePermissionIsNotPossible() {
+		setCurrentUserToUserWithoutPermissions();
+
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.of(rootDirectory.getFEntries().get(0)));
+		final FEntryTreeNode[] treeNodes1 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(0))};
+		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(1))};
+		final TreePath[] treePaths = {new TreePath(treeNodes1), new TreePath(treeNodes2)};
+		selectionService.getTreeView().setSelectionPaths(treePaths);
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+		//message should contain name of files
+		verify(optionPane).showMessageDialog(contains(rootDirectory.getFEntries().get(0).getName()));
+		verify(optionPane).showMessageDialog(contains(rootDirectory.getFEntries().get(1).getName()));
+	}
 }

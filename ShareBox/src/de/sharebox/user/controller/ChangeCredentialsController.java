@@ -9,6 +9,9 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/** 
+ * TODO Klassenbeschreibung
+ */
 public class ChangeCredentialsController {
 	private final OptionPaneHelper optionPane;
 	private final UserAPI userAPI;
@@ -21,7 +24,7 @@ public class ChangeCredentialsController {
 
 	/**
 	 * Erstellt einen neuen ChangeCredentialsController.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
@@ -34,9 +37,8 @@ public class ChangeCredentialsController {
 	}
 
 	/**
-	 * Öffnen des Login-Daten-bearbeiten Fensters. Hierbei werden alle bereits bekannten Informationen in
-	 * die TextFields direkt mit übernommen. Außerdem wird überprüft,ob bereits Informationen zu den einzelnen Feldern
-	 * vorhanden waren oder nicht.
+	 * Öffnen des Fensters für die Bearbeitung der Login-Daten. Hierbei werden die Textfelder, nach Überprüfung, mit den <br/>
+	 * bereits bekannten Informationen ausgefüllt.
 	 */
 	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/changeCredentials");
@@ -46,13 +48,12 @@ public class ChangeCredentialsController {
 	}
 
 	/**
-	 * Speichern der Änderungen an den Login Informationen. Für jedes einzelne Feld wird überprüft, ob etwas hinein
-	 * geschrieben werden muss oder nicht. Wenn nichts drin stehen muss kann auch beim Speichern nichts drin stehen
-	 * Wenn zuvor was drin Stand, dann muss auch wieder eine Information eingetragen werden.
-	 * Hierbei wird weiterhin getestet, ob die eigegeben E-Mail Adresse mit der Login-Adresse übereinstimmt.
-	 * Die E-Mail Adresse kann als einziges nicht verändert werden.
-	 * Außerdem wird das alte Passwort überprüft, darauf getestet, dass das neue und das alte Passwort nicht gleich sind
-	 * und dass die Passwörter in den neuen Feldern übereinstimmen
+	 * Speichern der Änderungen der Login-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional<br/>
+	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information<br/>
+	 * eingetragen werden (wird gespeichert). Hierbei wird weiterhin geprüft, ob die eingegebene E-Mail-Adresse<br/>
+	 * mit der Login-Adresse übereinstimmt.<br/>
+	 * Die E-Mail-Adresse kann hier als Einziges nicht verändert werden. Außerdem wird überprüft, ob das neue und das<br/>
+	 * alte Passwort nicht gleich sind und dass die Passwörter in den zwei Neu-Feldern übereinstimmen.
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
@@ -75,12 +76,12 @@ public class ChangeCredentialsController {
 	};
 
 	/**
-	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
-			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
+			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}
 	};
 }

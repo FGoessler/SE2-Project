@@ -8,8 +8,12 @@ import de.sharebox.user.enums.StorageLimit;
  * @author Kay Thorsten Meißner
  */
 
+/**
+ * TODO Klassenbeschreibung (Getter-/Setterklasse für die allgemeinen Daten des Users?)
+ */
 public class User {
 
+	private Integer rootDirectoryIdentifier;
 	private String email, password, firstname, lastname;
 	private Gender gender;
 	private StorageLimit storageLimit;
@@ -32,6 +36,8 @@ public class User {
 		this.setPassword(userToCopy.getPassword());
 		this.setFirstname(userToCopy.getFirstname());
 		this.setLastname(userToCopy.getLastname());
+
+		this.setRootDirectoryIdentifier(userToCopy.getRootDirectoryIdentifier());
 
 		this.setAddressInfo(new AddressInfo(userToCopy.getAddressInfo()));
 
@@ -88,6 +94,16 @@ public class User {
 		return gender;
 	}
 
+	/**
+	 * Liefert den eindeutigen Identifier des Root-Verzeichnisses des Nutzer. Unterhalb dieses Verzeichnisses befinden
+	 * sich alle Dateien und Verzeichnisse des Nutzers.
+	 *
+	 * @return Der Identifier des Root-Verzeichnisses.
+	 */
+	public Integer getRootDirectoryIdentifier() {
+		return rootDirectoryIdentifier;
+	}
+
 
 	/**
 	 * Ändert die E-Mailadresse des Objekts.
@@ -139,7 +155,7 @@ public class User {
 	 *
 	 * @param storageLimit
 	 */
-	public void setStorageLimit(final StorageLimit storageLimit) {        //TODO: create a enum or store as numbers
+	public void setStorageLimit(final StorageLimit storageLimit) {
 		this.storageLimit = storageLimit;
 	}
 
@@ -150,5 +166,15 @@ public class User {
 	 */
 	public void setGender(final Gender gender) {
 		this.gender = gender;
+	}
+
+	/**
+	 * Setzt den eindeutigen Identifier des Root-Verzeichnisses des Nutzer. Unterhalb dieses Verzeichnisses befinden
+	 * sich alle Dateien und Verzeichnisse des Nutzers.
+	 *
+	 * @param rootDirectoryIdentifier Der Identifier des Root-Verzeichnisses.
+	 */
+	public void setRootDirectoryIdentifier(final Integer rootDirectoryIdentifier) {
+		this.rootDirectoryIdentifier = rootDirectoryIdentifier;
 	}
 }

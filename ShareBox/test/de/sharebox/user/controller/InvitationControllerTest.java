@@ -48,7 +48,7 @@ public class InvitationControllerTest {
 		invitationController.show();
 
 		verify(mockedAPI, never()).inviteUser(Matchers.any(User.class), Matchers.any(User.class));
-		verify(optionPaneHelper).showMessageDialog("Die eingegebene Emailadresse war ungültig!");
+		verify(optionPaneHelper).showMessageDialog("Die eingegebene E-Mail-Adresse war ungültig!");
 	}
 
 	/**

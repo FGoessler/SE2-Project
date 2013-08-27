@@ -6,6 +6,7 @@ package de.sharebox.api;
  * @author Kay Thorsten Meißner
  */
 
+import de.sharebox.file.model.Directory;
 import de.sharebox.user.enums.Gender;
 import de.sharebox.user.enums.StorageLimit;
 import de.sharebox.user.model.AddressInfo;
@@ -14,14 +15,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAPITest {
 	private User user;
 	private User user2;
+
+	@Mock
+	private FileAPI fileAPI;
 
 	@InjectMocks
 	private UserAPI userAPI;
@@ -82,20 +89,18 @@ public class UserAPITest {
 
 	}
 
-	/*
+	/**
 	 * Der Test testet, ob es möglich ist zweimal den gleichen Account zu erstellen.
 	 */
-
 	@Test
 	public void creatingDuplicatesCannotBePerformed() {
 		assertThat(userAPI.registerUser(user)).isTrue();
 		assertThat(userAPI.registerUser(user)).isFalse();
 	}
 
-	/*
+	/**
 	 * Die Methode testet alle möglichen Änderungen die ein Nutzer an seinem Profil vornehmen kann.
 	 */
-
 	@Test
 	public void testUpdatingUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
@@ -135,14 +140,7 @@ public class UserAPITest {
 		assertThat(userAPI.changeCredential(user, user2)).isFalse();
 		assertThat(userAPI.isLoggedIn()).isFalse();
 
-		assertThat(userAPI.getCurrentUser().getFirstname()).isNotEqualTo(user2.getFirstname());
-		assertThat(userAPI.getCurrentUser().getLastname()).isNotEqualTo(user2.getLastname());
-		assertThat(userAPI.getCurrentUser().getGender()).isNotEqualTo(user2.getGender());
-		assertThat(userAPI.getCurrentUser().getStorageLimit()).isNotEqualTo(user2.getStorageLimit());
-		assertThat(userAPI.getCurrentUser().getAddressInfo()).isNotEqualTo(user2.getAddressInfo());
-		assertThat(userAPI.getCurrentUser().getEmail()).isNotEqualTo(user2.getEmail());
-		assertThat(userAPI.getCurrentUser().getPassword()).isNotEqualTo(user2.getPassword());
-
+		assertThat(userAPI.getCurrentUser()).isNull();
 	}
 
 	/**
@@ -151,6 +149,9 @@ public class UserAPITest {
 	@Test
 	public void testInviteUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
+
+		verify(fileAPI).createNewDirectory(any(Directory.class));
+
 		assertThat(userAPI.authenticateUser(user)).isTrue();
 		assertThat(userAPI.login(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user2)).isTrue();

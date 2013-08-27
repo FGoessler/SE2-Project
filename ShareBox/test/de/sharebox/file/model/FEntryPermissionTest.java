@@ -1,5 +1,6 @@
 package de.sharebox.file.model;
 
+import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,15 +53,27 @@ public class FEntryPermissionTest {
 	@Test
 	public void settingValuesFiresEventOnFEntry() {
 		permission.setReadAllowed(true);
-		verify(fEntry, times(1)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(1)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
 
 		permission.setWriteAllowed(true);
-		verify(fEntry, times(2)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(2)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
 
 		permission.setManageAllowed(true);
-		verify(fEntry, times(3)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(3)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
 
 		permission.setPermissions(false, false, false);
-		verify(fEntry, times(4)).fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		verify(fEntry, times(4)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+	}
+
+	@Test
+	public void testCopyConstructor() {
+		permission.setReadAllowed(true);
+		final FEntryPermission copiedPermission = new FEntryPermission(permission);
+
+		assertThat(copiedPermission.getUser()).isSameAs(user);
+		assertThat(copiedPermission.getFEntry()).isSameAs(fEntry);
+		assertThat(copiedPermission.getReadAllowed()).isTrue();
+		assertThat(copiedPermission.getWriteAllowed()).isFalse();
+		assertThat(copiedPermission.getManageAllowed()).isFalse();
 	}
 }

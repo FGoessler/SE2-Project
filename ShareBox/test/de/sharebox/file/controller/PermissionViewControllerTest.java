@@ -2,7 +2,8 @@ package de.sharebox.file.controller;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryObserver;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
@@ -82,10 +83,10 @@ public class PermissionViewControllerTest {
 		assertThat(permissionViewController.tableModel.getColumnCount()).isEqualTo(4);
 
 		//check column titles
-		assertThat(permissionViewController.tableModel.getColumnClass(0)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(1)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(2)).isNotNull();
-		assertThat(permissionViewController.tableModel.getColumnClass(3)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(0)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(1)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(2)).isNotNull();
+		assertThat(permissionViewController.tableModel.getColumnName(3)).isNotNull();
 
 		//check column classes
 		assertThat(permissionViewController.tableModel.getColumnClass(0)).isEqualTo(String.class);
@@ -122,7 +123,8 @@ public class PermissionViewControllerTest {
 		assertThat(fEntry.getPermissions().get(1).getManageAllowed()).isFalse();
 		assertThat(fEntry.getPermissions().get(1).getWriteAllowed()).isTrue();
 
-		verify(fEntryObserver, times(2)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(fEntryObserver, times(2)).fEntryNotification(expectedNotification);
 	}
 
 	@Test
@@ -185,13 +187,13 @@ public class PermissionViewControllerTest {
 	@Test
 	public void updatesUIOnFEntryNotifications() {
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));            //one initial invocation already happened
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.NAME_CHANGED);
+		fEntry.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
 		verify(tableModelListener, times(1)).tableChanged(any(TableModelEvent.class));
 
-		fEntry.fireChangeNotification(FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		fEntry.fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
 		verify(tableModelListener, times(2)).tableChanged(any(TableModelEvent.class));
 
-		fEntry.fireDeleteNotification();
+		fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, fEntry);
 		assertThat(permissionViewController.messageTextArea.isVisible()).isTrue();
 		assertThat(permissionViewController.buttonPanel.isVisible()).isFalse();
 		verify(tableModelListener, times(3)).tableChanged(any(TableModelEvent.class));
@@ -217,7 +219,8 @@ public class PermissionViewControllerTest {
 		assertThat(fEntry.getPermissionOfUser(user2).getWriteAllowed()).isFalse();
 		assertThat(fEntry.getPermissionOfUser(user2).getManageAllowed()).isTrue();
 
-		verify(fEntryObserver, times(1)).fEntryChangedNotification(fEntry, FEntryObserver.ChangeType.PERMISSION_CHANGED);
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(fEntryObserver, times(1)).fEntryNotification(expectedNotification);
 	}
 
 	@Test

@@ -4,14 +4,19 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.sharebox.api.FileAPI;
-import de.sharebox.file.model.DirectoryObserver;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
+import de.sharebox.file.notification.DirectoryNotification;
+import de.sharebox.file.notification.DirectoryObserver;
+import de.sharebox.file.notification.FEntryNotification;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * TODO Klassenbeschreibung
+ */
 @Singleton
 public class FileManager implements DirectoryObserver {
 
@@ -24,7 +29,7 @@ public class FileManager implements DirectoryObserver {
 
 	/**
 	 * Erstellt einen neuen FileManager. Als Singleton konzipiert.<br/>
-	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden.
+	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param fileAPI Die FileAPI zur Kommunikation mit dem Server.
 	 */
@@ -37,7 +42,7 @@ public class FileManager implements DirectoryObserver {
 	 * Registriert ein neues File in der FileAPI
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
-	 * @return ob die Operation erfolgreich war.
+	 * @return ob die Operation erfolgreich war
 	 */
 	public boolean registerFEntry(final FEntry newFEntry) {
 		//log entry
@@ -45,7 +50,7 @@ public class FileManager implements DirectoryObserver {
         newFEntry.addObserver(this);
 		if (newFEntry instanceof File && fileAPI.createNewFile((File) newFEntry)) {
             success = true;
-		}
+			}
 		if (newFEntry instanceof Directory && fileAPI.createNewDirectory((Directory) newFEntry)) {
 			success = true;
 		}
@@ -54,7 +59,7 @@ public class FileManager implements DirectoryObserver {
 	}
 
 	/**
-	 * Sucht nach Änderungen seitens der FileAPI und updated/added die geänderten FEntries.
+	 * Sucht nach Änderungen der FileAPI und aktualisiert/ergänzt die veränderten FEntries.
 	 *
 	 * @return ob alle Operationen erfolgreich waren.
 	 */
@@ -86,16 +91,15 @@ public class FileManager implements DirectoryObserver {
 		lastAPIPoll = System.currentTimeMillis();
         deleteFlush();
         return true;
-	}
+    }
 
 
 	/**
-	 * Sucht nach Änderungen seitens des Filesystems und updated/added die geänderten FEntries.
+	 * Sucht nach Änderungen des Dateisystems und aktualisiert/ergänzt die veränderten FEntries.
 	 *
-	 * @return ob alle Operationen erfolgreich waren.
+	 * @return ob alle Operationen erfolgreich waren
 	 */
 	public boolean pollFileSystemForChanges() {
-        //NOTE: deleted in API? -> nonexistent; deleted locally? -> DELETED type declared
 
         final List<List<FileAPI.StorageEntry>> APIstorage = fileAPI.getStorage();
         boolean success = true;
@@ -128,9 +132,9 @@ public class FileManager implements DirectoryObserver {
             }
         }
 		lastStoragePoll = System.currentTimeMillis();
-        deleteFlush();
-        return success;
-    }
+		deleteFlush();
+		return success;
+	}
 
 	private void timestampCheck(final FileAPI.StorageEntry storageEntry, final List<List<FileAPI.StorageEntry>> APIstorage, final Integer location) {
         // case for API having a smaller timestamp than the local version, and local version actually being ok
@@ -166,11 +170,12 @@ public class FileManager implements DirectoryObserver {
             }
     }
 
-    /**
-	 * Überschreibt/updated einen FEntry im lokalen Speicher.
+
+	/**
+	 * Überschreibt/aktualisiert einen FEntry im lokalen Speicher.
 	 *
-	 * @param updatedFile zu bearbeitendes FEntry.
-	 * @return ob erfolgreich.
+	 * @param updatedFile zu änderndes FEntry.
+	 * @return ob Änderungen erfolgreich war
 	 */
 	public boolean setFEntry(final FEntry updatedFile) {
 		boolean success = false;
@@ -200,10 +205,10 @@ public class FileManager implements DirectoryObserver {
 	}
 
 	/**
-	 * Löscht FEntry mit ID des gegebenen FEntry.
+	 * Löscht FEntry mit der ID dieses FEntrys.
 	 *
 	 * @param deletedFile zu löschender FEntry.
-	 * @return ob erfolgreich.
+	 * @return ob Änderungen erfolgreich war
 	 */
 	public boolean deleteFEntry(final FEntry deletedFile) {
 		boolean success = false;
@@ -223,18 +228,18 @@ public class FileManager implements DirectoryObserver {
 		return success;
 	}
 
-    public void deleteFlush () {
+	public void deleteFlush() {
 		for (int i = 0; i < storage.size(); i++) {
 			if (storage.get(i).getStatus() == FileAPI.Status.DELETED) {
 				storage.remove(i);
 			}
 		}
-    }
+	}
 
 	/**
-	 * TODO: Doku
+	 * Methode um die Anzahl der Storage-Einträge zu erhalten.
 	 *
-	 * @return
+	 * @return Größe vom Speicher
 	 */
 	public int getFileCount() {
 		return storage.size();
@@ -250,19 +255,15 @@ public class FileManager implements DirectoryObserver {
         return returnDir;
     }
 
-    public void addedChildrenNotification(final Directory parent,final ImmutableList<FEntry> newChildren) {
-        System.out.println("addedChildrenNotification not implemented");
-    }
+	public void directoryNotification(final DirectoryNotification notification) {
 
-    public void removedChildrenNotification(final Directory parent,final ImmutableList<FEntry> removedChildren) {
-        System.out.println("removedChildrenNotification not implemented");
-    }
+	}
 
-    public void fEntryChangedNotification(final FEntry fEntry,final ChangeType reason) {
-        System.out.println("fEntryChangedNotification not implemented");
-    }
+	public void fEntryNotification(final FEntryNotification notification) {
 
-    public void fEntryDeletedNotification(final FEntry fEntry) {
-        System.out.println("fEntryDeletedNotification not implemented");
-    }
+	}
 }
+
+/**
+ * TODO: Es sieht so aus als ob einige Methoden hieraus nochmal in der FileAPI sind oder umgekehrt
+ */

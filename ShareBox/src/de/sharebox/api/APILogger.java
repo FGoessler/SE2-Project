@@ -5,19 +5,25 @@ import de.sharebox.file.model.FEntry;
 import java.text.DateFormat;
 import java.util.Date;
 
+/** 
+ * TODO Klassenbeschreibung (Klasse für das Loggen von API-Aktionen?)
+ */
 public final class APILogger {
 
-	/**
-	 * Logging flag.
-	 */
+    /** 
+     * Logging Flag.
+     */
 	public static final boolean LOGGING = true;
+    /**
+     * Flag für Datumsausgabe: TRUE wenn volles Datumsformat gewünscht wird, FALSE sonst.
+     */
+    public static final boolean READABLEDATE = false;
 
 	private APILogger() {
 	}
 
 	/**
 	 * Loggt die gegebene Meldung.
-	 *
 	 * @param message Die zu loggende Meldung.
 	 */
 	public static void logMessage(final String message) {

@@ -11,6 +11,9 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/** 
+ * TODO Klassenbeschreibung (Eingabefelder für Registrierung?)
+ */
 public class RegisterController {
 	private final OptionPaneHelper optionPane;
 	private final UserAPI userAPI;
@@ -30,7 +33,7 @@ public class RegisterController {
 
 	/**
 	 * Erstellt einen neuen RegisterController.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
@@ -43,7 +46,7 @@ public class RegisterController {
 	}
 
 	/**
-	 * Öffnen des Registrieren Fensters.
+	 * Öffnen des Fensters zum Registrieren.
 	 */
 	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/register");
@@ -51,10 +54,10 @@ public class RegisterController {
 	}
 
 	/**
-	 * Speichern der eingegebenen Informationen. Hierbei sind das E-Mail- und das Passwortfeld Pflicht.
-	 * Alle anderen Felder können zunächst leer bleiben.
-	 * Wenn der Nutzer eine Speicherapazität von mehr als 5GB auswählt, wird er aufgefordert sie Zahlunngsinformationen
-	 * anzugeben und anschließend wird er an das Bezahlsystem weitergeleitet.
+	 * Speichern der eingegebenen Informationen. Hierbei sind das E-Mail- und das Passwortfeld Pflicht.<br/>
+	 * Alle anderen Felder können, zunächst, leer bleiben.<br/>
+	 * Wenn der Nutzer eine Speicherkapazität von mehr als 5GB auswählt, wird er aufgefordert die Zahlungsinformationen<br/>
+	 * einzugeben und anschließend wird er an das Bezahlsystem weitergeleitet.
 	 */
 	public Action register = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
@@ -87,12 +90,12 @@ public class RegisterController {
 	};
 
 	/**
-	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
-			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
+			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}
 	};
 }

@@ -1,5 +1,6 @@
 package de.sharebox.file.services;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -8,6 +9,8 @@ import de.sharebox.file.controller.FEntryTreeNode;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.helpers.OptionPaneHelper;
 
 import javax.swing.*;
@@ -19,10 +22,10 @@ import java.util.List;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * Diese Klasse liefert Informationen über die aktuelle Auswahl des Benutzers im JTree des DirectoryViewControllers und
+ * Diese Klasse liefert Informationen über die aktuelle Auswahl des Benutzers im JTree des DirectoryViewControllers und<br/>
  * stellt Methoden für einige Aktionen bereit, die auf dieser Auswahl basieren.<br/>
- * Diese Klasse ist als Singleton gedacht, sodass wann immer ein DirectoryViewSelectionService per Guice injected wird
- * alle Objekte Zugriff auf die selbe Instanz besitzen. Diese Singleton-Instanz muss allerdings inital im
+ * Diese Klasse ist als Singleton gedacht, so dass wann immer ein DirectoryViewSelectionService per Guice injected wird,<br/>
+ * alle Objekte Zugriff auf dieselbe Instanz besitzen. Diese Singleton-Instanz muss allerdings inital im<br/>
  * DirectoryViewController mit dem JTree verknüpft werden.
  */
 @Singleton
@@ -43,9 +46,9 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Setzt den JTree dieses Instanz.
+	 * Setzt den JTree dieser Instanz.
 	 *
-	 * @param treeView Ein JTree dessen Selections betrachtet werden.
+	 * @param treeView Ein JTree dessen Selektionen betrachtet werden.
 	 */
 	public void setTreeView(final JTree treeView) {
 		this.treeView = treeView;
@@ -54,7 +57,7 @@ public class DirectoryViewSelectionService {
 	/**
 	 * Liefert den aktuell gesetzten JTree.
 	 *
-	 * @return Der JTree dessen Selections betrachtet werden.
+	 * @return Der JTree dessen Selektionen betrachtet werden.
 	 */
 	public JTree getTreeView() {
 		return treeView;
@@ -101,19 +104,19 @@ public class DirectoryViewSelectionService {
 	/**
 	 * Fügt den gegebenen TreeSelectionListener dem JTree hinzu.
 	 *
-	 * @param selectionListener Ein TreeSelectionListener um auf Änderungen der Selktierung im JTree zu reagieren.
+	 * @param selectionListener Ein TreeSelectionListener um auf Änderungen der Selektierung im JTree zu reagieren.
 	 */
 	public void addTreeSelectionListener(final TreeSelectionListener selectionListener) {
 		treeView.addTreeSelectionListener(selectionListener);
 	}
 
 	/**
-	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade
-	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses
+	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade<br/>
+	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses<br/>
 	 * erstellt.
 	 *
-	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
-	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
+	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden<br/>
+	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein<br/>
 	 *                              ContextMenuController betrachtet.
 	 * @return Die neu erstellte Datei als Optional. Optional.absent() falls der Nutzer keinen korrekten Namen eingegeben
 	 *         hat, eine Datei mit diesem Namen bereits existiert oder er nicht die erforderlichen Rechte besitzt.
@@ -139,8 +142,8 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der
-	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des
+	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der<br/>
+	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des<br/>
 	 * Root-Verzeichnisses erstellt.
 	 *
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
@@ -190,5 +193,77 @@ public class DirectoryViewSelectionService {
 		}
 
 		return parentDirectory;
+	}
+
+	/**
+	 * Löscht die vom Nutzer im DirectoryViewController selektierten FEntries bzw. den/die FEntries, für die per Rechtsklick
+	 * ein Kontextmenü aufgerufen wurde.
+	 *
+	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
+	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
+	 *                              ContextMenuController betrachtet.
+	 */
+	public void deleteFEntryBasedOnUserSelection(final Optional<ContextMenuController> contextMenuController) {
+		Optional<FEntry> selectedFEntry = Optional.absent();
+		if (contextMenuController.isPresent()) {
+			selectedFEntry = contextMenuController.get().getSelectedFEntry();
+		}
+
+		final List<FEntry> selectedFEntries = new ArrayList<FEntry>(getSelectedFEntries());
+
+		if (contextMenuController.isPresent() && selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
+			deleteMultipleFEntries(selectedFEntries, getParentsOfSelectedFEntries());
+		} else if (contextMenuController.isPresent()) {
+			final Directory parentDirectory = contextMenuController.get().getParentOfSelectedFEntry().get();
+			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
+				parentDirectory.deleteFEntry(selectedFEntry.get());
+			} else {
+				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
+			}
+		} else if (!contextMenuController.isPresent()) {
+			deleteMultipleFEntries(selectedFEntries, getParentsOfSelectedFEntries());
+		}
+	}
+
+	/**
+	 * Löscht die gegebenen FEntries aus ihren entsprechenden Elternverzeichnissen.
+	 *
+	 * @param fEntriesToDelete  Die zu löschenden FEntries.
+	 * @param parentDirectories Die Elternverzeichnisse der zu löschenden FEntries.
+	 */
+	private void deleteMultipleFEntries(final List<FEntry> fEntriesToDelete, final List<Optional<Directory>> parentDirectories) {
+		// Add observer to all elements in the list, so they can be removed from the list of items, that
+		// should be deleted, if they already got deleted - either directly or indirectly by deleting the parent
+		final FEntryObserver observer = new FEntryObserver() {
+			@Override
+			public void fEntryNotification(final FEntryNotification notification) {
+				if (notification.getChangeType().equals(FEntryNotification.ChangeType.DELETED)) {
+					//remove FEntry from list
+					int index = fEntriesToDelete.indexOf(notification.getChangedFEntry());
+					if (index >= 0) {
+						fEntriesToDelete.remove(index);
+						parentDirectories.remove(index);
+					}
+				}
+			}
+		};
+		for (final FEntry fEntry : fEntriesToDelete) {
+			fEntry.addObserver(observer);
+		}
+
+		//delete all selected FEntries
+		final List<String> namesOfNotDeletedFEntries = new ArrayList<String>();
+		while (!parentDirectories.isEmpty()) {
+			if (parentDirectories.get(0).get().getPermissionOfCurrentUser().getWriteAllowed()) {
+				parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
+			} else {
+				namesOfNotDeletedFEntries.add(fEntriesToDelete.get(0).getName());
+				fEntriesToDelete.remove(0);
+				parentDirectories.remove(0);
+			}
+		}
+		if (!namesOfNotDeletedFEntries.isEmpty()) {
+			optionPane.showMessageDialog("Folgende Elemente konnten nicht gelöscht werden: " + Joiner.on(", ").skipNulls().join(namesOfNotDeletedFEntries));
+		}
 	}
 }

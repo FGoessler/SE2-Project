@@ -4,8 +4,9 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryObserver;
 import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.notification.FEntryNotification;
+import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 import de.sharebox.file.services.SharingService;
 import de.sharebox.helpers.OptionPaneHelper;
@@ -23,6 +24,8 @@ import java.util.List;
  * Dieser Controller ist für die Darstellung der Rechte in der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
  */
 public class PermissionViewController {
+	public static final String NO_FENTRY_SELECTED_MSG = "Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.";
+
 	private final DirectoryViewSelectionService selectionService;
 	private final SharingService sharingService;
 	private final OptionPaneHelper optionPane;
@@ -35,12 +38,13 @@ public class PermissionViewController {
 
 	/**
 	 * Erstellt einen neuen PermissionViewController.<br/>
-	 * Sollte nur mittel Dependency Injection durch Guice erstellt werden. Siehe auch PermissionViewControllerFactory.
+	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden. Siehe auch PermissionViewControllerFactory.
 	 *
-	 * @param splitPane        Der SplitPane in dessen rechter Hälfte der Controller seien Inhalte darstellen soll.
+	 * @param splitPane        Der SplitPane, in dessen rechter Hälfte der Controller seinen Inhalte darstellen soll.
 	 * @param selectionService Ein DirectoryViewSelectionService mittels dessen die aktuelle Auswahl des Nutzer im JTree
 	 *                         festgestellt werden kann.
-	 * @param sharingService   Eine SharingService Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
+	 * @param sharingService   Eine SharingService-Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
+	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
 	 */
 	@Inject
 	PermissionViewController(final @Assisted JSplitPane splitPane,
@@ -62,8 +66,8 @@ public class PermissionViewController {
 	}
 
 	/**
-	 * Dieser TreeSelectionListener reagiert auf Änderungen an der Auswahl im JTree des DirectoryViewControllers um den
-	 * diesen PermissionViewController zu aktualisieren, wenn der Nutzer einen anderen FEntry auswählt.
+	 * Der TreeSelectionListener reagiert auf Änderungen an der Auswahl im JTree des DirectoryViewControllers,
+	 * um den PermissionViewController zu aktualisieren, wenn der Nutzer einen anderen FEntry auswählt.<br/>
 	 * Eine Mehrfachauswahl wird dabei nicht unterstützt.
 	 */
 	protected TreeSelectionListener treeSelectionListener = new TreeSelectionListener() {
@@ -84,7 +88,7 @@ public class PermissionViewController {
 				currentFEntry = Optional.absent();
 
 				buttonPanel.setVisible(false);
-				messageTextArea.setText("Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
+				messageTextArea.setText(NO_FENTRY_SELECTED_MSG);
 				messageTextArea.setVisible(true);
 			} else {
 				buttonPanel.setVisible(true);
@@ -98,32 +102,28 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser FEntryObserver beobachtet den aktuell vom Controller dargestellten FEntry um auf Änderungen am Datenmodel
+	 * Der FEntryObserver beobachtet den, aktuell vom Controller, dargestellten FEntry um auf Änderungen am Datenmodel
 	 * zu reagieren und das UI zu aktualisieren.
 	 */
 	protected FEntryObserver fEntryObserver = new FEntryObserver() {
 		@Override
-		public void fEntryChangedNotification(final FEntry fEntry, final ChangeType reason) {
-			if (reason.equals(ChangeType.PERMISSION_CHANGED)) {
+		public void fEntryNotification(final FEntryNotification notification) {
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.PERMISSION_CHANGED)) {
+				tableModel.fireTableDataChanged();
+			} else if (notification.getChangeType().equals(FEntryNotification.ChangeType.DELETED)) {
+				currentFEntry = Optional.absent();
+
+				buttonPanel.setVisible(false);
+				messageTextArea.setText(NO_FENTRY_SELECTED_MSG);
+				messageTextArea.setVisible(true);
+
 				tableModel.fireTableDataChanged();
 			}
-		}
-
-		@Override
-		public void fEntryDeletedNotification(final FEntry fEntry) {
-			currentFEntry = Optional.absent();
-
-			buttonPanel.setVisible(false);
-			messageTextArea.setText("Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.");
-			messageTextArea.setVisible(true);
-
-			tableModel.fireTableDataChanged();
 		}
 	};
 
 	/**
-	 * Dieses TableModel ist für die Darstellung der Rechte des im DirectoryViewController selektierten FEntries als
-	 * Tabelle verantwortlich.
+	 * Das TableModel stellt die Rechte des selektierten FEntries im DirectoryViewController als Tabelle dar.
 	 */
 	protected AbstractTableModel tableModel = new AbstractTableModel() {
 		private final String[] columnNames = {"Nutzer", "Lesen", "Schreiben", "Verwalten"};
@@ -144,7 +144,7 @@ public class PermissionViewController {
 
 		@Override
 		public int getColumnCount() {
-			return 4;
+			return columnNames.length;
 		}
 
 		@Override
@@ -216,8 +216,8 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser Handler reagiert auf Klicks auf den "+"-Button um andere Nutzer zu der Datei/Verzeichnis einzuladen.
-	 * Diese Action wird per SWIxml automatisch mit dem UI verknüpft.
+	 * Dieser Handler reagiert auf Klicks des "+"-Button, um andere Nutzer zu der Datei/Verzeichnis einzuladen.
+	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
 	public Action addUserPermission = new AbstractAction() {
 		@Override
@@ -227,9 +227,9 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser Handler reagiert auf Klicks auf den "-"-Button um andere Nutzer von der Datei/Verzeichnis auszuladen, also
-	 * jegliche Rechte dieser an der Datei zu löschen.
-	 * Diese Action wird per SWIxml automatisch mit dem UI verknüpft.
+	 * Dieser Handler reagiert auf Klicks des "-"-Button, um andere Nutzer von der Datei/Verzeichnis auszuladen,
+	 * also jegliche Rechte an der Datei zu löschen.
+	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
 	public Action removeUserPermission = new AbstractAction() {
 		@Override

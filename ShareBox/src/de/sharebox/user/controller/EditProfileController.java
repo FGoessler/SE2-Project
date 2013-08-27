@@ -10,6 +10,9 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
+/** 
+ * TODO Klassenbeschreibung
+ */
 public class EditProfileController {
 	private final OptionPaneHelper optionPane;
 	private final UserAPI userAPI;
@@ -21,7 +24,7 @@ public class EditProfileController {
 
 	/**
 	 * Erstellt einen neuen EditProfileController.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Anzeigen von Dialog-Fenstern.
 	 * @param userAPI          Die UserAPI zur Kommunikation mit dem Server.
@@ -34,9 +37,8 @@ public class EditProfileController {
 	}
 
 	/**
-	 * Öffnen des Profil-bearbeiten Fensters. Hierbei werden alle bereits bekannten Informationen in
-	 * die TextFields direkt mit übernommen. Außerdem wird überprüft,ob bereits Informationen zu den einzelnen Feldern
-	 * vorhanden waren oder nicht.
+	 * Öffnen des Fensters für Profilbearbeitung. Hierbei werden die Textfelder, nach Überprüfung, mit den <br/>
+	 * bereits bekannten Informationen ausgefüllt.
 	 */
 	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/editProfile");
@@ -49,9 +51,9 @@ public class EditProfileController {
 	}
 
 	/**
-	 * Speichern der Änderungen an den Profil Informationen. Für jedes einzelne Feld wird überprüft, ob etwas hinein
-	 * geschrieben werden muss oder nicht. Wenn nichts drin stehen muss kann auch beim Speichern nichts drin stehen
-	 * Wenn zuvor was drin Stand, dann muss auch wieder eine Information eingetragen werden.
+	 * Speichern der Änderungen an den Profil-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional<br/>
+	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information<br/>
+	 * eingetragen werden (wird gespeichert).
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
@@ -71,12 +73,12 @@ public class EditProfileController {
 	};
 
 	/**
-	 * Ein einfacher Abbrechen Button, der das Fenster schließt und nichts ändert.
+	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
 	 */
 	public Action stop = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
-			optionPane.showMessageDialog("Sie haben den Vorgang abgebrochen!");
+			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
 		}
 	};
 }

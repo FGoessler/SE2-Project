@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
+import de.sharebox.file.controller.LogViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
 import de.sharebox.helpers.SwingEngineHelper;
 import de.sharebox.mainui.menu.AdministrationMenuFactory;
@@ -14,8 +15,8 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 
 /**
- * Dieser Controller kümmert sich um das Hauptfenster. Er erstellt das zentrale Menü und stellt dem
- * DirectoryVewController einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur durchzuführen.
+ * Dieser Controller steuert das Hauptfenster. Er erstellt das zentrale Menü und stellt dem DirectoryViewController<br/>
+ * einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur zu ermöglichen.<br/>
  * Dieser Controller besitzt außerdem eine Referenz auf den aktuell eingeloggten User, dessen Daten dargestellt werden.
  */
 public class MainViewController {
@@ -34,11 +35,10 @@ public class MainViewController {
 	private final User currentUser;
 
 	/**
-	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt.
-	 * Wird über die SwingEngine gesetzt.
+	 * Der JTree, in dem der DirectoryViewController seine Inhalte darstellt. Wird über die SwingEngine gesetzt.
 	 */
 	protected JTree tree;
-	protected JSplitPane splitPane;
+	protected JSplitPane detailSplitPane;
 
 	/**
 	 * Die zentrale Menüleiste.
@@ -48,18 +48,20 @@ public class MainViewController {
 	/**
 	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml
 	 * generiert.<br/>
-	 * Instanzen dieser Klasse solten per Dependency Injection durch Guice erstellt werden.
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.<br/>
 	 * Siehe auch MainViewControllerFactory.
 	 *
 	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen. Kann nicht von Guice
-	 *                                       injecten werden und wird daher per Factory gesetzt.
+	 *                                       injectet werden und wird daher per Factory gesetzt.
 	 * @param userAPI                        Die UserAPI zur Kommunikation mit dem Server.
-	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt um
-	 *                                       den diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
-	 *                                       Kann nicht von Guice injecten werden und wird daher per Factory gesetzt.
+	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt, um 
+	 *                                       dann diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
+	 *                                       Kann nicht von Guice injectet werden und wird daher per Factory gesetzt.
 	 * @param permissionViewControllerFactory
 	 *                                       Mittels dieser Factory wird ein PermissionViewController erzeugt,
-	 *                                       der in der rechten Hälfte des JSplitPanes dargestellt wird.
+	 *                                       der in der rechten-unteren Hälfte des JSplitPanes dargestellt wird.
+	 * @param logViewControllerFactory       Mittels dieser Factory wird ein LogViewController erzeugt,
+	 *                                       der in der rechten-oberen Hälfte des JSplitPanes dargestellt wird.
 	 * @param directoryViewControllerFactory Mittels dieser Factory wird ein DirectoryViewController erzeugt,
 	 *                                       der im JTree in der linken Hälfte des JSplitPane seinen Inhalt darstellt.
 	 * @param fileMenuFactory                Mittels dieser Factory wird das FileMenu erzeugt.
@@ -71,6 +73,7 @@ public class MainViewController {
 					   final @Assisted LoginController callingLoginController,
 					   final UserAPI userAPI,
 					   final PermissionViewControllerFactory permissionViewControllerFactory,
+					   final LogViewControllerFactory logViewControllerFactory,
 					   final DirectoryViewControllerFactory directoryViewControllerFactory,
 					   final FileMenuFactory fileMenuFactory,
 					   final AdministrationMenuFactory administrationMenuFactory,
@@ -97,7 +100,8 @@ public class MainViewController {
 		fileMenuFactory.create(menuBar);
 		administrationMenuFactory.create(menuBar, this);
 
-		permissionViewControllerFactory.create(splitPane);
+		permissionViewControllerFactory.create(detailSplitPane);
+		logViewControllerFactory.create(detailSplitPane);
 	}
 
 	/**

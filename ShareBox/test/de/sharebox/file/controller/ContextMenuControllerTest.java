@@ -117,58 +117,9 @@ public class ContextMenuControllerTest {
 
 	@Test
 	public void userCanDeleteAFEntry() {
-		assertThat(parentDirectory.getFEntries()).hasSize(2);
-
 		performClickOnMenuItem(contextMenuController.deleteFEntry);
 
-		assertThat(parentDirectory.getFEntries()).hasSize(1);
-	}
-
-	@Test
-	public void deletingAFEntryWithoutWritePermissionIsNotPossible() {
-		setCurrentUserToUserWithoutPermissions();
-
-		assertThat(parentDirectory.getFEntries()).hasSize(2);
-		performClickOnMenuItem(contextMenuController.deleteFEntry);
-
-		assertThat(parentDirectory.getFEntries()).hasSize(2);
-		verify(optionPaneHelper).showMessageDialog(anyString());
-	}
-
-	@Test
-	public void userCanDeleteMultipleFEntriesAtOnce() {
-		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
-		final List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
-		parents.add(Optional.of(parentDirectory));
-		parents.add(Optional.of(parentDirectory));
-		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
-
-		assertThat(parentDirectory.getFEntries()).hasSize(2);
-
-		performClickOnMenuItem(contextMenuController.deleteFEntry);
-
-		assertThat(parentDirectory.getFEntries()).hasSize(0);
-	}
-
-	@Test
-	public void deletingMultipleFEntriesWithoutWritePermissionIsNotPossible() {
-		setCurrentUserToUserWithoutPermissions();
-
-		when(selectionService.getSelectedFEntries()).thenReturn(parentDirectory.getFEntries());
-		final List<Optional<Directory>> parents = new ArrayList<Optional<Directory>>();
-		parents.add(Optional.of(parentDirectory));
-		parents.add(Optional.of(parentDirectory));
-		when(selectionService.getParentsOfSelectedFEntries()).thenReturn(parents);
-
-
-		assertThat(parentDirectory.getFEntries()).hasSize(2);
-
-		performClickOnMenuItem(contextMenuController.deleteFEntry);
-
-		assertThat(parentDirectory.getFEntries()).hasSize(2);
-		//message should contain name of files
-		verify(optionPaneHelper).showMessageDialog(contains(parentDirectory.getFEntries().get(0).getName()));
-		verify(optionPaneHelper).showMessageDialog(contains(parentDirectory.getFEntries().get(1).getName()));
+		verify(selectionService).deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
 	}
 
 	@Test
