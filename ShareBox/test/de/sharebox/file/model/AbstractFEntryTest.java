@@ -11,7 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class AbstractFEntryTestSupport {
+public abstract class AbstractFEntryTest {
 	protected FEntry fEntry;
 	@Mock
 	protected UserAPI mockedUserAPI;

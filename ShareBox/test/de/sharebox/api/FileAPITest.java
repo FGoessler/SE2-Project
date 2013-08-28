@@ -152,7 +152,7 @@ public class FileAPITest {
 
 	@Test
 	public void testGetChangesSince() {
-		long lastChange = System.currentTimeMillis();
+		final long lastChange = System.currentTimeMillis();
 		System.out.println("-- change test --");
 		System.out.println(lastChange);
 		fileAPI.createNewFEntry(tFile1);

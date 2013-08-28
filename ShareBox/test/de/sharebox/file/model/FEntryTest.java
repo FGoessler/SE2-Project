@@ -7,11 +7,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FEntryTest extends AbstractFEntryTestSupport {
+public class FEntryTest extends AbstractFEntryTest {
 
 	@Test
-	public void hasAConstructorToBeCreateWithSpecificValuesAndDefaultPermissions() {
-		FEntry testFEntry = new FEntry(mockedUserAPI, "Testfile", user);
+	public void hasAConstructorToBeCreatedWithSpecificValuesAndDefaultPermissions() {
+		final FEntry testFEntry = new FEntry(mockedUserAPI, "Testfile", user);
 
 		assertThat(testFEntry.getName()).isEqualTo("Testfile");
 		assertThat(testFEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
@@ -23,7 +23,7 @@ public class FEntryTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void hasACopyConstructor() {
+	public void testCopyConstructor() {
 		fEntry.setName("TestFile");
 		fEntry.setIdentifier(1234L);
 		fEntry.setPermission(user, true, true, true);
@@ -51,14 +51,14 @@ public class FEntryTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void hasAnUniqueID() {
+	public void testUniqueID() {
 		fEntry.setIdentifier(1234L);
 
 		assertThat(fEntry.getIdentifier()).isEqualTo(1234L);
 	}
 
 	@Test
-	public void canAddLogEntriesAndCanBeAskForAListLogEntries() {
+	public void testAddLogEntriesAndAskForAListLogEntries() {
 		fEntry.addLogEntry(LogEntry.LogMessage.CHANGED);
 
 		assertThat(fEntry.getLogEntries()).hasSize(1);

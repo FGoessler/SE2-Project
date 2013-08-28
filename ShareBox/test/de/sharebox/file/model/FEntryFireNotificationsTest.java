@@ -11,10 +11,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FEntryFireNotificationsTest extends AbstractFEntryTestSupport {
+public class FEntryFireNotificationsTest extends AbstractFEntryTest {
 
 	@Test
-	public void canRegisterObserversForChangeNotification() {
+	public void testRegisterObserversForChangeNotification() {
 		fEntry.addObserver(observer);
 		fEntry.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
 
@@ -27,7 +27,7 @@ public class FEntryFireNotificationsTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void canRegisterObserversForDeletionNotification() {
+	public void testRegisterObserversForDeletionNotification() {
 		fEntry.addObserver(observer);
 		fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, fEntry);
 
@@ -40,7 +40,7 @@ public class FEntryFireNotificationsTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void firingNotificationsWithoutObserverDoesNotResultInAnError() {
+	public void testFiringNotificationsWithoutObserverDoesNotResultInAnError() {
 		try {
 			fEntry.fireNotification(FEntryNotification.ChangeType.DELETED, fEntry);
 			fEntry.fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fEntry);
@@ -50,7 +50,7 @@ public class FEntryFireNotificationsTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void changingTheNameFiresNotificationAndCreatesLogEntry() {
+	public void testChangingTheNameFiresNotificationAndCreatesLogEntry() {
 		fEntry.addObserver(observer);
 
 		fEntry.setName("Test");

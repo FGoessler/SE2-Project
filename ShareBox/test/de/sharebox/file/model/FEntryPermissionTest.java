@@ -9,10 +9,10 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FEntryPermissionTest extends AbstractFEntryTestSupport {
+public class FEntryPermissionTest extends AbstractFEntryTest {
 
 	@Test
-	public void canBeAskedForAllPermissionsAndThePermissionOfASpecificUserAndThePermissionOfTheCurrentUser() {
+	public void testAskForPermissions() {
 		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 
 		fEntry.setPermission(user, true, true, true);
@@ -27,7 +27,7 @@ public class FEntryPermissionTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void canSetPermissionsForAUserAndFiresNotification() {
+	public void testSetPermissionsForAUserFiresNotification() {
 		fEntry.addObserver(observer);
 
 		fEntry.setPermission(user, true, true, true);
@@ -46,7 +46,7 @@ public class FEntryPermissionTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void settingAPermissionToAllFalseRemovesItFromTheListOfPermissions() {
+	public void testSettingAPermissionToAllFalseRemovesItFromTheListOfPermissions() {
 		fEntry.addObserver(observer);
 
 		fEntry.setPermission(user, true, true, true);
@@ -68,7 +68,7 @@ public class FEntryPermissionTest extends AbstractFEntryTestSupport {
 	}
 
 	@Test
-	public void changingAPermissionViaSetPermissionDirectlyChangesThePermissionObj() {
+	public void testChangingAPermissionViaSetPermissionDirectlyChangesThePermissionObj() {
 		fEntry.setPermission(user, true, true, true);
 		assertThat(fEntry.getPermissions()).hasSize(1);
 		final Permission permission = fEntry.getPermissionOfUser(user);
