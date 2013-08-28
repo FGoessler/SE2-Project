@@ -8,7 +8,7 @@ import de.sharebox.user.enums.StorageLimit;
  * @author Kay Thorsten Meißner
  */
 
-/**
+/*
  * TODO Klassenbeschreibung (Getter-/Setterklasse für die allgemeinen Daten des Users?)
  */
 public class User {

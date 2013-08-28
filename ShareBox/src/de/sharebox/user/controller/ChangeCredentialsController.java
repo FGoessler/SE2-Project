@@ -9,7 +9,7 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/** 
+/*
  * TODO Klassenbeschreibung
  */
 public class ChangeCredentialsController {
@@ -37,7 +37,7 @@ public class ChangeCredentialsController {
 	}
 
 	/**
-	 * Öffnen des Fensters für die Bearbeitung der Login-Daten. Hierbei werden die Textfelder, nach Überprüfung, mit den <br/>
+	 * Öffnen des Fensters für die Bearbeitung der Login-Daten. Hierbei werden die Textfelder, nach Überprüfung, mit den
 	 * bereits bekannten Informationen ausgefüllt.
 	 */
 	public void show() {
@@ -48,12 +48,12 @@ public class ChangeCredentialsController {
 	}
 
 	/**
-	 * Speichern der Änderungen der Login-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional<br/>
-	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information<br/>
-	 * eingetragen werden (wird gespeichert). Hierbei wird weiterhin geprüft, ob die eingegebene E-Mail-Adresse<br/>
+	 * Speichern der Änderungen der Login-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional
+	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information
+	 * eingetragen werden (wird gespeichert). Hierbei wird weiterhin geprüft, ob die eingegebene E-Mail-Adresse
 	 * mit der Login-Adresse übereinstimmt.<br/>
-	 * Die E-Mail-Adresse kann hier als Einziges nicht verändert werden. Außerdem wird überprüft, ob das neue und das<br/>
-	 * alte Passwort nicht gleich sind und dass die Passwörter in den zwei Neu-Feldern übereinstimmen.
+	 * Die E-Mail-Adresse kann hier als Einziges nicht verändert werden. Außerdem wird überprüft, ob das neue und das
+	 * alte Passwort nicht gleich sind und dass die Passwörter in den zwei 'Neu'-Feldern übereinstimmen.
 	 */
 	public Action save = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {

@@ -6,8 +6,8 @@ import com.google.common.base.Objects;
 /**
  * Dieses Objekt speichert Adressinformationen eines Nutzers. Dies wird für die Rechnungsadresse benötigt, die der
  * Benutzer zwingend angeben muss, wenn er mehr als den kostenlosen Default-Speicher nutzen möchte.
- * TODO Getter und Setter vollständig kommentieren.
  */
+ // TODO Getter und Setter vollständig kommentieren.
 public class AddressInfo {
 	public static final String EMPTY_STRING = "";
 

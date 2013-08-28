@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Diese Klasse kapselt die Verwaltung der Zwischenablage um Dateien und Verzeichnisse zu kopieren.<br/>
- * Diese Klasse ist als Singleton gedacht, so dass wann immer ein DirectoryViewClipboardService per Guice injected wird<br/>
+ * Diese Klasse kapselt die Verwaltung der Zwischenablage, um Dateien und Verzeichnisse zu kopieren.<br/>
+ * Diese Klasse ist als Singleton gedacht, sodass wann immer ein DirectoryViewClipboardService per Guice injected wird
  * alle Objekte Zugriff auf die selbe Instanz und somit auch auf die globalen Inhalte der Zwischenablage besitzen.
  */
 @Singleton
@@ -47,7 +47,7 @@ public class DirectoryViewClipboardService {
 	}
 
 	/**
-	 * Fügt mehrere FEntry in die Zwischenablage ein. Der bisherige Inhalt der Zwischenablage wird dabei nicht<br/>
+	 * Fügt mehrere FEntry in die Zwischenablage ein. Der bisherige Inhalt der Zwischenablage wird dabei nicht
 	 * gelöscht. Verwende resetClipboard() um die Zwischenablage zu leeren.
 	 *
 	 * @param fEntries Die zu kopierenden FEntries, die in die Zwischenablage abgelegt werden sollen.

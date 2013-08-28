@@ -15,7 +15,7 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 
 /**
- * Dieser Controller steuert das Hauptfenster. Er erstellt das zentrale Menü und stellt dem DirectoryViewController<br/>
+ * Dieser Controller steuert das Hauptfenster. Er erstellt das zentrale Menü und stellt dem DirectoryViewController
  * einen Container zur Verfügung um die Darstellung der Verzeichnisstruktur zu ermöglichen.<br/>
  * Dieser Controller besitzt außerdem eine Referenz auf den aktuell eingeloggten User, dessen Daten dargestellt werden.
  */
@@ -46,10 +46,8 @@ public class MainViewController {
 	protected final JMenuBar menuBar;
 
 	/**
-	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml
-	 * generiert.<br/>
-	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden.<br/>
-	 * Siehe auch MainViewControllerFactory.
+	 * Erstellt ein neues Hauptfenster und zeigt es an. Das UI wird dabei aus der mainwindow.xml Datei mittels SWIxml generiert.<br/>
+	 * Instanzen dieser Klasse sollten per Dependency Injection durch Guice erstellt werden. Siehe auch MainViewControllerFactory.
 	 *
 	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen. Kann nicht von Guice
 	 *                                       injectet werden und wird daher per Factory gesetzt.

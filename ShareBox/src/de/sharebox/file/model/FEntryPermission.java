@@ -17,10 +17,10 @@ public class FEntryPermission {
 	private final FEntry fEntry;
 
 	/**
-	 * Erstellt ein neues FEntryPermission-Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.<br/>
-	 * Die Standardrechte hierbei sind alles auf false.
+	 * Erstellt ein neues FEntryPermission-Objekt, das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.<br/>
+	 * Die Standardrechte hierbei sind alle auf "false" gesetzt.
 	 *
-	 * @param user   Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
+	 * @param user   Der Nutzer, dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
 	 */
 	public FEntryPermission(final @NotNull User user, final @NotNull FEntry fEntry) {
@@ -30,11 +30,11 @@ public class FEntryPermission {
 
 	/**
 	 * Erstellt ein neue FEntryPermission Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
-	 * Hinweis: Dieser Konstruktor dient dazu ein initilaes Objekt mit bestimmten Rechten zu erzeugen und feuert
+	 * Hinweis: Dieser Konstruktor dient dazu ein initiales Objekt mit bestimmten Rechten zu erzeugen und feuert
 	 * im Gegensatz zu den set-Methoden keine Notification auf dem FEntry und erzeugt auch keinen LogEntry.
 	 *
-	 * @param user          Der Nutzer dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
-	 * @param fEntry        Der FEntry für den die Rechte des Users definiert werden.
+	 * @param user          Der Nutzer, dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
+	 * @param fEntry        Der FEntry, für den die Rechte des Users definiert werden.
 	 * @param readAllowed   Der initale Wert für Leserechte.
 	 * @param writeAllowed  Der initale Wert für Schreibrechte.
 	 * @param manageAllowed Der initale Wert für Verwaltungsrechte.
@@ -64,7 +64,7 @@ public class FEntryPermission {
 	/**
 	 * Gibt den Nutzer zurück, für den die Rechte definiert sind.
 	 *
-	 * @return Der Nutzer für den die Rechte definiert sind.
+	 * @return Der Nutzer, für den die Rechte definiert sind.
 	 */
 	public User getUser() {
 		return user;
@@ -73,7 +73,7 @@ public class FEntryPermission {
 	/**
 	 * Gibt den FEntry zurück, für den die Rechte definiert sind.
 	 *
-	 * @return Der FEntry für den die Rechte definiert sind.
+	 * @return Der FEntry, für den die Rechte definiert sind.
 	 */
 	public FEntry getFEntry() {
 		return fEntry;

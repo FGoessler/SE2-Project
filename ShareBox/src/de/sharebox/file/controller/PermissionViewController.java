@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Dieser Controller ist für die Darstellung der Rechte in der rechten Hälfte des SplitPanes im MainWindow verantwortlich.
+ * Dieser Controller ist für die Darstellung der Rechte, in der rechten Hälfte des SplitPanes, im MainWindow verantwortlich.
  */
 public class PermissionViewController {
 	public static final String NO_FENTRY_SELECTED_MSG = "Keine Dateien/ Verzeichnisse angewählt - keine Detailinformationen verfügbar.";
@@ -41,7 +41,7 @@ public class PermissionViewController {
 	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden. Siehe auch PermissionViewControllerFactory.
 	 *
 	 * @param splitPane        Der SplitPane, in dessen rechter Hälfte der Controller seinen Inhalte darstellen soll.
-	 * @param selectionService Ein DirectoryViewSelectionService mittels dessen die aktuelle Auswahl des Nutzer im JTree
+	 * @param selectionService Ein DirectoryViewSelectionService, mittels dessen die aktuelle Auswahl des Nutzer im JTree
 	 *                         festgestellt werden kann.
 	 * @param sharingService   Eine SharingService-Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
@@ -102,7 +102,7 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Der FEntryObserver beobachtet den, aktuell vom Controller, dargestellten FEntry um auf Änderungen am Datenmodel
+	 * Der FEntryObserver beobachtet den, aktuell vom Controller, dargestellten FEntry, um auf Änderungen am Datenmodel
 	 * zu reagieren und das UI zu aktualisieren.
 	 */
 	protected FEntryObserver fEntryObserver = new FEntryObserver() {
@@ -123,7 +123,7 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Das TableModel stellt die Rechte des selektierten FEntries im DirectoryViewController als Tabelle dar.
+	 * Das TableModel stellt die Rechte des selektierten FEntries, im DirectoryViewController, als Tabelle dar.
 	 */
 	protected AbstractTableModel tableModel = new AbstractTableModel() {
 		private final String[] columnNames = {"Nutzer", "Lesen", "Schreiben", "Verwalten"};
@@ -216,7 +216,7 @@ public class PermissionViewController {
 	};
 
 	/**
-	 * Dieser Handler reagiert auf Klicks des "+"-Button, um andere Nutzer zu der Datei/Verzeichnis einzuladen.
+	 * Dieser Handler reagiert auf Klicks des "+"-Button, um andere Nutzer zu der Datei/Verzeichnis einzuladen.<br/>
 	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
 	public Action addUserPermission = new AbstractAction() {
@@ -228,7 +228,7 @@ public class PermissionViewController {
 
 	/**
 	 * Dieser Handler reagiert auf Klicks des "-"-Button, um andere Nutzer von der Datei/Verzeichnis auszuladen,
-	 * also jegliche Rechte an der Datei zu löschen.
+	 * also jegliche Rechte an der Datei zu löschen.<br/>
 	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
 	public Action removeUserPermission = new AbstractAction() {

@@ -2,6 +2,9 @@ package de.sharebox.file.model;
 
 import java.util.Date;
 
+/*
+ * TODO Klassenbeschreibung (Die Klasse LogEntry beinhaltet die Methoden fürs Logggen? ...)
+ */
 public class LogEntry {
 	private final LogMessage message;
 	private final Date date;

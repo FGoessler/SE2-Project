@@ -11,7 +11,7 @@ public class File extends FEntry {
 	/**
 	 * Der Standard-Konstruktor.
 	 *
-	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
+	 * @param userAPI Die aktuell für diesen FEntry relevante UserAPI. Wird dazu benötigt, um den aktuell eingeloggten
 	 *                Nutzer zu bestimmen und Rechte zu überprüfen.
 	 */
 	public File(final UserAPI userAPI) {
@@ -19,11 +19,11 @@ public class File extends FEntry {
 	}
 
 	/**
-	 * Erstellt einen neuen File mit den gegebenen Werten, feuert dabei allerdings keine Notifications und erstellt
-	 * auch nur einen "Created" LogEntry anstatt eines "Renamed" und "PermissionChanged" LogEntry.
+	 * Erstellt ein neues File mit den gegebenen Werten, feuert dabei allerdings keine Notifications und erstellt
+	 * auch nur einen "Created"-LogEntry, anstatt eines "Renamed"- und "PermissionChanged"-LogEntry.
 	 *
-	 * @param userAPI      Die aktuell für diesen File relevante UserAPI. Wird dazu benötigt den aktuell eingeloggten
-	 *                     Nutzer zu bestimmen und Rechte zu überprüfen.
+	 * @param userAPI      Die aktuell für diesen File relevante UserAPI. Wird dazu benötigt, um den aktuell eingeloggten
+	 *                	   Nutzer zu bestimmen und Rechte zu überprüfen.
 	 * @param name         Der Name des Files.
 	 * @param creatingUser Der Nutzer, der initial alle Rechte auf diesem File erhält.
 	 */

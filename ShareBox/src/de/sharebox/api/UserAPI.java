@@ -14,12 +14,15 @@ import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+/*
+ * TODO Klassenbeschreibung (Die Klasse UserAPI kappselt die Zugriffsmethoden auf die User-Daten? ...)
+ */
 @Singleton
 public class UserAPI {
 	private final FileAPI fileAPI;
 
 	/**
-	 * simuliert die Datenbank;
+	 * Eine simulierte Datenbank.
 	 */
 	private final List<User> userList = new ArrayList<User>();
 
@@ -35,7 +38,7 @@ public class UserAPI {
 	}
 
 	/**
-	 * Erstellt Beispiel-Daten, die für Testzwecke benötigt werden.
+	 * Erstellt Beispieldaten, die für Testzwecke benötigt werden.
 	 */
 	public final void createSampleContent() {
 
@@ -83,7 +86,7 @@ public class UserAPI {
 	 * Prüft, ob eine Kombination von E-Mailadresse und Passwort im System enthalten ist.
 	 *
 	 * @param user zu authentifizierender User
-	 * @return ob Authentifizierung erfolgreich war
+	 * @return ob die Authentifizierung erfolgreich war
 	 */
 	public boolean authenticateUser(final User user) {
 		boolean success = false;
@@ -102,10 +105,10 @@ public class UserAPI {
 	}
 
 	/**
-	 * Versucht den User einzuloggen, wenn Authentifizierung erfolgreich wae.
+	 * Versucht den User einzuloggen, wenn Authentifizierung erfolgreich war.
 	 *
-	 * @param user einzuloggender user
-	 * @return ob Einloggen erfolgreich war
+	 * @param user einzuloggender User
+	 * @return ob das Einloggen erfolgreich war
 	 */
 	public boolean login(final User user) {
 		boolean success = false;
@@ -127,7 +130,7 @@ public class UserAPI {
 	/**
 	 * Loggt den eingeloggten User aus.
 	 *
-	 * @return ob Ausloggen erfolgreich war
+	 * @return ob das Ausloggen erfolgreich war
 	 */
 	public boolean logout() {
 		boolean success = false;
@@ -145,10 +148,10 @@ public class UserAPI {
 
 
 	/**
-	 * Erstellt neuen User, sofern noch nicht vorhanden.
+	 * Erstellt einen neuen User, sofern noch nicht vorhanden.
 	 *
-	 * @param user zu registrierender user
-	 * @return ob Registrierung erfolgreich war
+	 * @param user zu registrierender User
+	 * @return ob die Registrierung erfolgreich war
 	 */
 	public boolean registerUser(final User user) {
 		Boolean success = false;
@@ -176,7 +179,7 @@ public class UserAPI {
 	 * Ändert Profil-Informationen.
 	 *
 	 * @param user zu änderndes User-Profil
-	 * @return ob Änderung erfolgreich war
+	 * @return ob die Änderung erfolgreich war
 	 */
 	public boolean changeProfile(final User user) {
 		Boolean success = false;
@@ -202,10 +205,10 @@ public class UserAPI {
 	}
 
 	/**
-	 * Ändert Zahlungs- und Speicherinformationen
+	 * Ändert Zahlungs- und Speicherinformationen.
 	 *
 	 * @param user zu änderndes User-Profil
-	 * @return ob Änderung erfolgreich war
+	 * @return ob die Änderung erfolgreich war
 	 */
 	public boolean changeAccountingSettings(final User user) {
 		Boolean success = false;
@@ -228,11 +231,11 @@ public class UserAPI {
 	}
 
 	/**
-	 * Ändert E-Mailadresse und Passwort
+	 * Ändert E-Mail-Adresse und Passwort.
 	 *
 	 * @param oldUser zu änderndes User-Profil
 	 * @param newUser zu übernehmende Änderung des User-Profils
-	 * @return ob Änderung erfolgreich war
+	 * @return ob die Änderung erfolgreich war
 	 */
 	public boolean changeCredential(final User oldUser, final User newUser) {
 		Boolean success = false;
@@ -262,7 +265,7 @@ public class UserAPI {
 	 *
 	 * @param invitingUser einladender User
 	 * @param invitedUser  eingeladener User
-	 * @return ob Einladung erfolgreich war
+	 * @return ob die Einladung erfolgreich war
 	 */
 	public boolean inviteUser(final User invitingUser, final User invitedUser) {
 		Boolean success = true;
@@ -283,7 +286,7 @@ public class UserAPI {
 	}
 
 	/**
-	 * prüft, ob ein User eingeloggt ist.
+	 * Prüft, ob ein User eingeloggt ist.
 	 *
 	 * @return ob ein User eingeloggt ist
 	 */
@@ -292,7 +295,7 @@ public class UserAPI {
 	}
 
 	/**
-	 * gibt eingeloggten User zurück
+	 * Gibt dem eingeloggten User zurück.
 	 *
 	 * @return zur Zeit eingeloggter User
 	 */

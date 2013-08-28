@@ -11,7 +11,7 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/** 
+/*
  * TODO Klassenbeschreibung (Eingabefelder für Registrierung?)
  */
 public class RegisterController {
@@ -54,9 +54,9 @@ public class RegisterController {
 	}
 
 	/**
-	 * Speichern der eingegebenen Informationen. Hierbei sind das E-Mail- und das Passwortfeld Pflicht.<br/>
+	 * Speichern der eingegebenen Informationen. Hierbei sind das E-Mail- und das Passwortfeld Pflicht.
 	 * Alle anderen Felder können, zunächst, leer bleiben.<br/>
-	 * Wenn der Nutzer eine Speicherkapazität von mehr als 5GB auswählt, wird er aufgefordert die Zahlungsinformationen<br/>
+	 * Wenn der Nutzer eine Speicherkapazität von mehr als 5GB auswählt, wird er aufgefordert die Zahlungsinformationen
 	 * einzugeben und anschließend wird er an das Bezahlsystem weitergeleitet.
 	 */
 	public Action register = new AbstractAction() {

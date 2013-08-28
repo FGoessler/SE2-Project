@@ -5,7 +5,7 @@ import org.swixml.SwingEngine;
 import java.awt.*;
 
 /**
- * Diese Klasse kapselt den Standardaufruf der SwingEngine von SWIxml. Dadurch müssen mögliche Fehler nicht mehr in den<br/>
+ * Diese Klasse kapselt den Standardaufruf der SwingEngine von SWIxml. Dadurch müssen mögliche Fehler nicht mehr in den
  * eigentlichen Controller-Klassen abgefangen werden.<br/>
  * (zur Laufzeit kann auf eine fehlende/defekte Resource ohnehin nicht mehr reagiert werden)
  */

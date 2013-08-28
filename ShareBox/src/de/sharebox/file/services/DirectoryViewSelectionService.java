@@ -22,10 +22,10 @@ import java.util.List;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * Diese Klasse liefert Informationen über die aktuelle Auswahl des Benutzers im JTree des DirectoryViewControllers und<br/>
+ * Diese Klasse liefert Informationen über die aktuelle Auswahl des Benutzers im JTree des DirectoryViewControllers und
  * stellt Methoden für einige Aktionen bereit, die auf dieser Auswahl basieren.<br/>
- * Diese Klasse ist als Singleton gedacht, so dass wann immer ein DirectoryViewSelectionService per Guice injected wird,<br/>
- * alle Objekte Zugriff auf dieselbe Instanz besitzen. Diese Singleton-Instanz muss allerdings inital im<br/>
+ * Diese Klasse ist als Singleton gedacht, so dass wann immer ein DirectoryViewSelectionService per Guice injected wird,
+ * alle Objekte Zugriff auf dieselbe Instanz besitzen. Diese Singleton-Instanz muss allerdings initial im
  * DirectoryViewController mit dem JTree verknüpft werden.
  */
 @Singleton
@@ -35,7 +35,7 @@ public class DirectoryViewSelectionService {
 	private JTree treeView;
 
 	/**
-	 * Erstellt einen neuen DirectoryViewSelectionService.
+	 * Erstellt einen neuen DirectoryViewSelectionService.<br/>
 	 * Instanzen dieser Klasse sollten nur per Dependency Injection durch Guice erstellt werden.
 	 *
 	 * @param optionPane Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
@@ -81,7 +81,7 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Liefert die Elternverzeichnisse der aktuell im JTree ausgewählten FEntries in der selben Reihenfolge wie von getSelectedFEntries().
+	 * Liefert die Elternverzeichnisse, der aktuell im JTree ausgewählten FEntries, in der selben Reihenfolge wie von getSelectedFEntries().
 	 *
 	 * @return Die Elternverzeichnisse der im JTree ausgewählten FEntries.
 	 */
@@ -111,12 +111,12 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade<br/>
-	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses<br/>
+	 * Erstellt eine neue Datei. Wo die Datei eingefügt wird hängt davon ab welche Datei/Verzeichnis der Nutzer gerade
+	 * angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird die Datei als Kind des Root-Verzeichnisses
 	 * erstellt.
 	 *
-	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden<br/>
-	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein<br/>
+	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden
+	 *                              soll. Hier kann auch ein Optional.absent() übergeben werden. Dann wird kein
 	 *                              ContextMenuController betrachtet.
 	 * @return Die neu erstellte Datei als Optional. Optional.absent() falls der Nutzer keinen korrekten Namen eingegeben
 	 *         hat, eine Datei mit diesem Namen bereits existiert oder er nicht die erforderlichen Rechte besitzt.
@@ -142,8 +142,8 @@ public class DirectoryViewSelectionService {
 	}
 
 	/**
-	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der<br/>
-	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des<br/>
+	 * Erstellt ein neues Verzeichnis. Wo das Verzeichnis eingefügt wird hängt davon ab welche Datei/Verzeichnis der
+	 * Nutzer gerade angewählt hat. Hat er keine Datei oder Verzeichnis selektiert wird das Verzeichnis als Kind des
 	 * Root-Verzeichnisses erstellt.
 	 *
 	 * @param contextMenuController Ein ContextMenuController dessen aktuelle Klickposition mit berücksichtigt werden

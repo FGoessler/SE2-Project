@@ -69,7 +69,7 @@ public class Directory extends FEntry {
 
 	/**
 	 * Erstellt eine neue Datei in diesem Verzeichnis und benachrichtigt alle Observer über die Änderung.<br/>
-	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param filename Der Name der neuen Datei.
@@ -115,7 +115,7 @@ public class Directory extends FEntry {
 
 	/**
 	 * Fügt dem Verzeichnis einen FEntry hinzu.<br/>
-	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param newFEntry Der hinzuzufügende FEntry.
@@ -133,11 +133,11 @@ public class Directory extends FEntry {
 	}
 
 	/**
-	 * Löscht den übergebenen FEntry aus dem Dateisystem. Handelt es sich um ein Verzeichnis werden rekursiv alle<br/>
-	 * Unterdateien dieses Verzeichnisses gelöscht. Es werden die Observer aller gelöschten Objekte mit einer<br/>
-	 * Löschungs-Benachrichtigung informiert und der Observer des Verzeichnisses auf dem die Methode aufgerufen<br/>
-	 * wird erhält eine Änderungsbenachrichtigung.<br/>
-	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls<br/>
+	 * Löscht den übergebenen FEntry aus dem Dateisystem. Handelt es sich um ein Verzeichnis, dann werden alle
+	 * Unterdateien dieses Verzeichnisses rekursiv gelöscht. Es werden die Observer aller gelöschten Objekte mit einer
+	 * Löschungsbenachrichtigung informiert und der Observer des Verzeichnisses, auf dem die Methode aufgerufen wird,
+	 * erhält eine Änderungsbenachrichtigung.<br/>
+	 * Hinweis: Es werden keine Rechte überprüft! Diese hat der Aufrufer dieser Methode vorher zu überprüfen, falls
 	 * diese Methode auf eine Aktion des Nutzers hin aufgerufen wird und nicht aufgrund von Änderungen seitens der API.
 	 *
 	 * @param fEntry Der zu löschende FEntry.
@@ -163,7 +163,7 @@ public class Directory extends FEntry {
 
 	/**
 	 * Feuert eine DirectoryNotification auf den registrierten DirectoryObservern. Etwaige reine
-	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation enthält unter anderem das Directory dem FEntries
+	 * FEntryObserver erhalten keine Benachrichtigung. Die Notifikation enthält unter anderem das Directory, dem FEntries
 	 * hinzugefügt oder entfernt wurden, sowie die FEntries die hinzugefügt bzw. gelöscht wurden. Die Art der Änderung
 	 * kann am ChangeType abgelesen werden.
 	 *

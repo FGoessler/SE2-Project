@@ -12,7 +12,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class InvitationController {
 	/**
-	 * RegEx-Pattern zum Erkennen einer (vom Format her) gültigen Email-Addresse.
+	 * RegEx-Pattern zum Erkennen einer korrekt formatierten E-Mail-Addresse.
 	 */
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 

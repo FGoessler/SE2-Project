@@ -10,7 +10,7 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/** 
+/*
  * TODO Klassenbeschreibung (Eingabefelder für das Einloggen?)
  */
 public class LoginController {
@@ -54,7 +54,7 @@ public class LoginController {
 	}
 
 	/**
-	 * Handler - reagiert auf einen Klick auf den Login-Button. Überprüft die eingegebenen Daten und erstellt, im<br/>
+	 * Handler - reagiert auf einen Klick auf den Login-Button. Überprüft die eingegebenen Daten und erstellt, im
 	 * Erfolgsfall, das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
 	 */
 	public Action submit = new AbstractAction() {

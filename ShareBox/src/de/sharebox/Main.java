@@ -23,7 +23,7 @@ public final class Main {
 	/**
 	 * Dies ist die Standard Main-Methode, die beim Programmstart aufgerufen wird und das erste Fenster erzeugt.
 	 *
-	 * @param args Programmargumente werden f�r ShareBox nicht benötigt.
+	 * @param args Programmargumente werden für ShareBox nicht benötigt.
 	 */
 	public static void main(final String[] args) {
 		//create sample content

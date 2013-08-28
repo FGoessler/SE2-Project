@@ -16,14 +16,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Diese Klasse verwaltet den zentralen JTree in dem das Verzeichnis des Nutzers angezeigt wird.
+ * Diese Klasse verwaltet den zentralen JTree, in dem das Verzeichnis des Nutzers angezeigt wird.
  */
 @Singleton
 public class DirectoryViewController {
 	private final ContextMenuController contextMenuController;
 
 	/**
-	 * Der JTree zur Darstellung des Sharebox Verzeichnisses des Nutzers.
+	 * Der JTree zur Darstellung des Sharebox-Verzeichnisses des Nutzers.
 	 */
 	protected final JTree treeView;
 
@@ -32,11 +32,11 @@ public class DirectoryViewController {
 	 * Erstellt einen neuen DirectoryViewController, der seinen Inhalt in dem gegebenen TreeView darstellt.<br/>
 	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden. Siehe auch DirectoryViewControllerFactory.
 	 *
-	 * @param tree                          Der TreeView, in dem der Inhalt dargestellt werden soll - muss über die Factory gesetzt werden
+	 * @param tree                          Der TreeView in dem der Inhalt dargestellt werden soll - muss über die Factory gesetzt werden
 	 *                                      und kann nicht automatisch injectet werden.
 	 * @param directoryViewSelectionService Ein DirectoryViewSelectionService der von Guice als Singleton erstellt wird
 	 *                                      und hier lediglich mit dem JTree verbunden wird.
-	 * @param contextMenuController         Ein ContextMenuController der für das per Rechtsklick aufrufbare Kontextmenü verantwortlich ist.
+	 * @param contextMenuController         Ein ContextMenuController der für das, per Rechtsklick, aufrufbare Kontextmenü verantwortlich ist.
 	 * @param userAPI                       Die UserAPI zum Herausfinden des aktuell eingeloggten Benutzers.
 	 * @param fileAPI                       Die FileAPI zum Erhalten des Root-Directories des Benutzers.
 	 */
@@ -62,7 +62,7 @@ public class DirectoryViewController {
 	}
 
 	/**
-	 * Dieser MouseAdapter dient dazu das Kontextmenü anzuzeigen bzw. wieder auszublenden.
+	 * Dieser MouseAdapter dient dazu, dass Kontextmenü anzuzeigen bzw. wieder auszublenden.
 	 */
 	protected MouseAdapter contextMenuMA = new MouseAdapter() {
 		@Override

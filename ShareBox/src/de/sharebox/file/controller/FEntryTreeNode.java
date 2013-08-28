@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Diese Klasse dient als Wrapper der FEntries, die im TreeView eines DirectoryViewControllers dargestellt werden. Um
- * nicht die toString-Methode der Directory- und File-Klasse für Darstellungsspezifische Zwecke zu verwenden.
+ * nicht die toString-Methode der Directory- und File-Klasse für darstellungsspezifische Zwecke zu verwenden.
  */
 public class FEntryTreeNode extends DefaultMutableTreeNode {
 	private final DefaultTreeModel treeModel;
@@ -41,7 +41,8 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 
 		fEntry.addObserver(observer);
 	}
-
+	
+	// TODO Methodenbeschreibung
 	@Override
 	public boolean isLeaf() {
 		return !(getFEntry() instanceof Directory) || ((Directory) getFEntry()).getFEntries().isEmpty();
