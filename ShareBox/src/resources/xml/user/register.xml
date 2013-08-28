@@ -1,31 +1,31 @@
 <frame name="register" size="600,520" title="Registrieren" defaultCloseOperation="JFrame.DO_NOTHING_ON_CLOSE">
 
     <panel background="white" Layout="GridBagLayout">
-        <label font="Georgia-BOLD-22" text="Registrieren">
+        <label font="ARIAL-BOLD-20" text="Registrieren">
             <gridbagconstraints id="gbc_1" insets="1,1,1,1" gridx="0" gridy="0" ipadx="5" ipady="5" weightx="0,75"
                                 weighty="0,9"/>
         </label>
-        
-        <label font="Georgia-BOLD-12" text="">
+
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
         </label>
-        
-        <label font="Georgia-BOLD-12" text="E-Mail Adresse:   ">
+
+        <label text="E-Mail Adresse:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="4"/>
         </label>
 
@@ -33,7 +33,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="4"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Passwort:   ">
+        <label text="Passwort:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
         </label>
 
@@ -41,7 +41,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
         </passwordfield>
 
-        <label font="Georgia-BOLD-12" text="Passwort:   ">
+        <label text="Passwort:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
         </label>
 
@@ -49,7 +49,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
         </passwordfield>
 
-        <label font="Georgia-BOLD-12" text="Vorname:   ">
+        <label text="Vorname:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="7"/>
         </label>
 
@@ -57,7 +57,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="7"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Nachname:   ">
+        <label text="Nachname:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="8"/>
         </label>
 
@@ -65,7 +65,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="8"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Geschlecht:   ">
+        <label text="Geschlecht:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="9"/>
         </label>
 
@@ -73,45 +73,45 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="9"/>
         </combobox>
 
-        <label font="Georgia-BOLD-12" text="Speicherkapazität:   ">
+        <label text="Speicherkapazität:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="10"/>
         </label>
 
-        <label font="Georgia-BOLD-12" text="5 GB - Sie können später mehr erwerben.">
+        <label text="5 GB - Sie können später mehr erwerben.">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="10"/>
         </label>
-        
-         <label font="Georgia-BOLD-12" text="">
+
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="11"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="11"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="12"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="12"/>
         </label>
 
         <label font="Georgia-BOLD-16" text="Rechnungsadresse:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="13"/>
         </label>
-        
-         <label font="Georgia-BOLD-12" text="">
+
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="14"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="14"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="14"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="14"/>
         </label>
 
-        <label font="Georgia-BOLD-12" text="Straße, Hausnummer:   ">
+        <label text="Straße, Hausnummer:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="15"/>
         </label>
 
@@ -119,7 +119,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="15"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Adresszusatz (optional):   ">
+        <label text="Adresszusatz (optional):   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="16"/>
         </label>
 
@@ -127,7 +127,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="16"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Postleitzahl:   ">
+        <label text="Postleitzahl:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="17"/>
         </label>
 
@@ -135,7 +135,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="17"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Ort:   ">
+        <label text="Ort:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="18"/>
         </label>
 
@@ -143,7 +143,7 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="18"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="Land:   ">
+        <label text="Land:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="19"/>
         </label>
 
@@ -151,30 +151,30 @@
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="19"/>
         </textfield>
 
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="20"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="20"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="21"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="21"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="22"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="22"/>
         </label>
 
-        <button font="Georgia-BOLD-12" text="Registrieren" action="register">
+        <button text="Registrieren" action="register">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="23"/>
         </button>
 
-        <button font="Georgia-BOLD-12" text="Abbrechen" action="stop">
+        <button text="Abbrechen" action="stop">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="23"/>
         </button>
     </panel>

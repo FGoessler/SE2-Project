@@ -1,6 +1,6 @@
-<frame size="400,180" title="Login"  defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
+<frame size="400,180" title="Login" defaultCloseOperation="JFrame.EXIT_ON_CLOSE">
     <panel background="white" Layout="GridBagLayout">
-        <label font="Georgia-BOLD-12" text="E-Mail Adresse:   ">
+        <label text="E-Mail Adresse:   ">
             <gridbagconstraints id="gbc_1" insets="1,1,1,1" gridx="0" gridy="0" ipadx="5" ipady="5" weightx="0,75"
                                 weighty="0,9"/>
         </label>
@@ -8,46 +8,46 @@
         <textfield id="mailField" columns="12" text="admin">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="0"/>
         </textfield>
-        
-         <label font="Georgia-BOLD-12" text="">
+
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="1"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="1"/>
         </label>
 
-        <label font="Georgia-BOLD-12" text="Passwort:   ">
+        <label text="Passwort:   ">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="2"/>
         </label>
 
         <passwordfield id="passwordField" columns="12" text="root">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="2"/>
         </passwordfield>
-        
-        <label font="Georgia-BOLD-12" text="">
+
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="3"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="3"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="4"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="4"/>
         </label>
-         <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="5"/>
         </label>
-        <label font="Georgia-BOLD-12" text="">
+        <label text="">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="5"/>
         </label>
 
-        <button font="Georgia-BOLD-12" text="Login" action="submit">
+        <button text="Login" action="submit">
             <gridbagconstraints refid="gbc_1" gridx="0" gridy="6"/>
         </button>
 
-        <button font="Georgia-BOLD-12" text="Registrieren" action="register">
+        <button text="Registrieren" action="register">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="6"/>
         </button>
     </panel>
