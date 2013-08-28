@@ -23,7 +23,7 @@ public class UserTest {
 		user.setGender(Gender.Female);
 		addressInfo = new AddressInfo();
 		user.setAddressInfo(addressInfo);
-		user.setRootDirectoryIdentifier(2000);
+		user.setRootDirectoryIdentifier(2000L);
 	}
 
 	@Test

@@ -8,7 +8,7 @@ import de.sharebox.user.model.User;
  * Diese Klasse bildet die Rechte eines Nutzers an einer bestimmten Datei/Verzeichnis ab. Es gibt Lese-, Schreib- und
  * Verwaltungsrechte (= Möglichkeit des Änderns, Hinzufügens und Enfernens von Rechten einzelner Nutzer an der Datei).
  */
-public class FEntryPermission {
+public class Permission {
 	private Boolean readAllowed = false;
 	private Boolean writeAllowed = false;
 	private Boolean manageAllowed = false;
@@ -17,19 +17,19 @@ public class FEntryPermission {
 	private final FEntry fEntry;
 
 	/**
-	 * Erstellt ein neues FEntryPermission-Objekt, das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.<br/>
+	 * Erstellt ein neues Permission-Objekt, das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.<br/>
 	 * Die Standardrechte hierbei sind alle auf "false" gesetzt.
 	 *
 	 * @param user   Der Nutzer, dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
 	 */
-	public FEntryPermission(final @NotNull User user, final @NotNull FEntry fEntry) {
+	public Permission(final @NotNull User user, final @NotNull FEntry fEntry) {
 		this.user = user;
 		this.fEntry = fEntry;
 	}
 
 	/**
-	 * Erstellt ein neue FEntryPermission Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
+	 * Erstellt ein neue Permission Objekt das den gegebenen Nutzer mit dem gegebenen FEntry in Beziehung setzt.
 	 * Hinweis: Dieser Konstruktor dient dazu ein initiales Objekt mit bestimmten Rechten zu erzeugen und feuert
 	 * im Gegensatz zu den set-Methoden keine Notification auf dem FEntry und erzeugt auch keinen LogEntry.
 	 *
@@ -39,8 +39,8 @@ public class FEntryPermission {
 	 * @param writeAllowed  Der initale Wert für Schreibrechte.
 	 * @param manageAllowed Der initale Wert für Verwaltungsrechte.
 	 */
-	public FEntryPermission(final @NotNull User user, final @NotNull FEntry fEntry,
-							final Boolean readAllowed, final Boolean writeAllowed, final Boolean manageAllowed) {
+	public Permission(final @NotNull User user, final @NotNull FEntry fEntry,
+					  final Boolean readAllowed, final Boolean writeAllowed, final Boolean manageAllowed) {
 		this.user = user;
 		this.fEntry = fEntry;
 		this.readAllowed = readAllowed;
@@ -51,9 +51,9 @@ public class FEntryPermission {
 	/**
 	 * Copy-Konstruktor.
 	 *
-	 * @param permissionToCopy Das zu kopierende FEntryPermission Objekt.
+	 * @param permissionToCopy Das zu kopierende Permission Objekt.
 	 */
-	public FEntryPermission(final FEntryPermission permissionToCopy) {
+	public Permission(final Permission permissionToCopy) {
 		this.user = permissionToCopy.getUser();
 		this.fEntry = permissionToCopy.getFEntry();
 		this.readAllowed = permissionToCopy.getReadAllowed();

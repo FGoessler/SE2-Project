@@ -26,67 +26,45 @@ public class FileManagerTest {
 	@InjectMocks
 	private FileAPI fileAPI;
 
-
 	@Before
 	public void setUp() {
 		fileManager = new FileManager(fileAPI);
 		file = new File(mockedUserAPI);
-		file.setIdentifier(123);
+		file.setIdentifier(123L);
 		dir = new Directory(mockedUserAPI);
-		dir.setIdentifier(124);
+		dir.setIdentifier(124L);
 		nothing = new FEntry(mockedUserAPI);
-		nothing.setIdentifier(125);
+		nothing.setIdentifier(125L);
 	}
+
+	//TODO: test FileManager
 
 	@Test
 	public void registerFEntryTest() {
 		assertThat(fileManager.registerFEntry(file)).isTrue();
 		assertThat(fileManager.registerFEntry(dir)).isTrue();
 		assertThat(fileManager.registerFEntry(nothing)).isFalse();
-		fileAPI.deleteFile(file);
-		fileAPI.deleteDirectory(dir);
+		fileAPI.deleteFEntry(file);
+		fileAPI.deleteFEntry(dir);
 	}
 
 	@Test
 	public void pollAPIForChangesTest() {
-		//simple test for now - testing the whole function would result
-		//in an unintelligible mess anyways, plus delays/etc. for testing puprposes
-		//would slow down global testing.
-		fileAPI.createNewFile(file);
-		assertThat(fileManager.getFileCount()).isEqualTo(0);
-		fileManager.pollAPIForChanges();
-		assertThat(fileManager.getFileCount()).isEqualTo(1);
-		fileAPI.deleteFile(file);
-		fileManager.deleteFEntry(file);
+
 	}
 
 	@Test
 	public void pollFileSystemForChangesTest() {
-		fileManager.setFEntry(file);
-		assertThat(fileAPI.getFileCount()).isEqualTo(0);
-		fileManager.pollFileSystemForChanges();
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
-		fileAPI.deleteFile(file);
-		fileManager.deleteFEntry(file);
+
 	}
 
 	@Test
 	public void updateFEntryTest() {
-		assertThat(fileManager.getFileCount()).isEqualTo(0);
-		fileManager.setFEntry(file);
-		assertThat(fileManager.getFileCount()).isEqualTo(1);
-		fileManager.setFEntry(file);
-		assertThat(fileManager.getFileCount()).isEqualTo(1);
-		fileManager.deleteFEntry(file);
+
 	}
 
 	@Test
 	public void deleteFEntryTest() {
-		assertThat(fileManager.getFileCount()).isEqualTo(0);
-		fileManager.setFEntry(file);
-		assertThat(fileManager.getFileCount()).isEqualTo(1);
-		fileManager.deleteFEntry(file);
-		fileManager.deleteFlush();
-		assertThat(fileManager.getFileCount()).isEqualTo(0);
+
 	}
 }

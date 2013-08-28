@@ -47,7 +47,7 @@ public class UserAPI {
 		user1.setPassword("maxmuster");
 		user1.setFirstname("Max");
 		user1.setLastname("Mustermann");
-		user1.setRootDirectoryIdentifier(0);
+		user1.setRootDirectoryIdentifier(0L);
 
 		final AddressInfo addressInfo = new AddressInfo();
 		addressInfo.setStreet("Mustersraße 1");
@@ -64,7 +64,7 @@ public class UserAPI {
 		user2.setPassword("root");
 		user2.setFirstname("Hans");
 		user2.setLastname("Kanns");
-		user2.setRootDirectoryIdentifier(2);
+		user2.setRootDirectoryIdentifier(2L);
 
 		addressInfo.setStreet("");
 		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
@@ -162,7 +162,7 @@ public class UserAPI {
 
 			//create new root directory for user
 			final Directory rootDir = new Directory(this, "Sharebox", user);
-			fileAPI.createNewDirectory(rootDir);
+			fileAPI.createNewFEntry(rootDir);
 			user.setRootDirectoryIdentifier(rootDir.getIdentifier());
 
 			userList.add(new User(user));

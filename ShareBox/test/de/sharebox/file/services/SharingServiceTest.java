@@ -2,7 +2,7 @@ package de.sharebox.file.services;
 
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.model.Permission;
 import de.sharebox.helpers.OptionPaneHelper;
 import de.sharebox.user.model.User;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class SharingServiceTest {
 		sharingService.showShareFEntryDialog(fEntry1);
 
 		assertThat(fEntry1.getPermissions()).hasSize(2);    //contains initial and added permission
-		final FEntryPermission permission = fEntry1.getPermissions().get(1);
+		final Permission permission = fEntry1.getPermissions().get(1);
 		assertThat(permission.getUser().getEmail()).isEqualTo(NEW_USER_MAIL);
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
@@ -75,14 +75,14 @@ public class SharingServiceTest {
 		sharingService.showShareFEntryDialog(fEntries);
 
 		assertThat(fEntry1.getPermissions()).hasSize(2);    //contains initial and added permission
-		final FEntryPermission permission1 = fEntry1.getPermissions().get(1);
+		final Permission permission1 = fEntry1.getPermissions().get(1);
 		assertThat(permission1.getUser().getEmail()).isEqualTo(NEW_USER_MAIL);
 		assertThat(permission1.getReadAllowed()).isTrue();
 		assertThat(permission1.getWriteAllowed()).isTrue();
 		assertThat(permission1.getManageAllowed()).isFalse();
 
 		assertThat(fEntry2.getPermissions()).hasSize(2);
-		final FEntryPermission permission2 = fEntry2.getPermissions().get(1);
+		final Permission permission2 = fEntry2.getPermissions().get(1);
 		assertThat(permission2.getUser().getEmail()).isEqualTo(NEW_USER_MAIL);
 		assertThat(permission2.getReadAllowed()).isTrue();
 		assertThat(permission2.getWriteAllowed()).isTrue();

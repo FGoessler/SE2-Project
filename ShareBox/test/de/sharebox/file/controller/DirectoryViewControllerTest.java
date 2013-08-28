@@ -43,16 +43,16 @@ public class DirectoryViewControllerTest {
 
 	@Before
 	public void setUp() {
-		when(user.getRootDirectoryIdentifier()).thenReturn(2000);
+		when(user.getRootDirectoryIdentifier()).thenReturn(2000L);
 		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
-		when(fileAPI.getFEntryWithId(anyInt())).thenReturn(new Directory(mockedUserAPI));
+		when(fileAPI.getFEntryWithId(anyLong())).thenReturn(new Directory(mockedUserAPI));
 
 		controller = new DirectoryViewController(tree, selectionService, contextMenuController, mockedUserAPI, fileAPI);
 	}
 
 	@Test
 	public void loadsTheUsersRootDirectoryFromTheFileAPI() {
-		verify(fileAPI).getFEntryWithId(2000);
+		verify(fileAPI).getFEntryWithId(2000L);
 	}
 
 	@Test

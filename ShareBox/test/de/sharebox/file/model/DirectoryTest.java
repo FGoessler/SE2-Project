@@ -46,7 +46,7 @@ public class DirectoryTest {
 	@Test
 	public void hasACopyConstructor() {
 		directory.setName(TEST_DIRNAME);
-		directory.setIdentifier(1234);
+		directory.setIdentifier(1234L);
 		directory.createNewFile(TEST_FILENAME);
 		directory.createNewDirectory(TEST_DIRNAME + "2");
 
@@ -71,7 +71,7 @@ public class DirectoryTest {
 
 		//check that initial permission was set
 		assertThat(createdFile.getPermissions()).hasSize(1);
-		final FEntryPermission permission = createdFile.getPermissions().get(0);
+		final Permission permission = createdFile.getPermissions().get(0);
 		assertThat(permission.getUser()).isSameAs(mockedUser);
 		assertThat(permission.getFEntry()).isSameAs(createdFile);
 		assertThat(permission.getReadAllowed()).isTrue();
@@ -94,7 +94,7 @@ public class DirectoryTest {
 
 		//check that initial permission was se
 		assertThat(createdDirectory.getPermissions()).hasSize(1);
-		final FEntryPermission permission = createdDirectory.getPermissions().get(0);
+		final Permission permission = createdDirectory.getPermissions().get(0);
 		assertThat(permission.getUser()).isSameAs(mockedUser);
 		assertThat(permission.getFEntry()).isSameAs(createdDirectory);
 		assertThat(permission.getReadAllowed()).isTrue();
@@ -158,7 +158,7 @@ public class DirectoryTest {
 
 		final FEntryNotification expectedNotification1 = new FEntryNotification(createdFile, FEntryNotification.ChangeType.DELETED, directory);
 		verify(observer, times(1)).fEntryNotification(expectedNotification1);        //assert that notification was sent
-		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
+		//assert that notification was sent - 2 times - one for createNewFEntry and one for the deletion of sub objects
 		final DirectoryNotification expectedNotification2 = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(createdFile));
 		verify(observer, times(1)).directoryNotification(expectedNotification2);
 		final DirectoryNotification expectedNotification3 = new DirectoryNotification(directory, FEntryNotification.ChangeType.REMOVE_CHILDREN, directory, ImmutableList.<FEntry>of(createdFile));
@@ -184,7 +184,7 @@ public class DirectoryTest {
 		verify(observer, times(1)).fEntryNotification(expectedNotification1);            //assert that notification was sent
 		final FEntryNotification expectedNotification2 = new FEntryNotification(createdDirectory, FEntryNotification.ChangeType.DELETED, directory);
 		verify(observer, times(1)).fEntryNotification(expectedNotification2);        //assert that notification was sent
-		//assert that notification was sent - 2 times - one for createNewFile and one for the deletion of sub objects
+		//assert that notification was sent - 2 times - one for createNewFEntry and one for the deletion of sub objects
 		final DirectoryNotification expectedNotification3 = new DirectoryNotification(directory, FEntryNotification.ChangeType.ADDED_CHILDREN, directory, ImmutableList.<FEntry>of(createdDirectory));
 		verify(observer, times(1)).directoryNotification(expectedNotification3);
 		final DirectoryNotification expectedNotification4 = new DirectoryNotification(directory, FEntryNotification.ChangeType.REMOVE_CHILDREN, directory, ImmutableList.<FEntry>of(createdDirectory));
@@ -192,4 +192,6 @@ public class DirectoryTest {
 
 		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_DIRECTORY);
 	}
+
+	//TODO: test applyAPI changes
 }

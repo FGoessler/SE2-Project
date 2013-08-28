@@ -13,7 +13,7 @@ import de.sharebox.user.enums.StorageLimit;
  */
 public class User {
 
-	private Integer rootDirectoryIdentifier;
+	private Long rootDirectoryIdentifier;
 	private String email, password, firstname, lastname;
 	private Gender gender;
 	private StorageLimit storageLimit;
@@ -100,7 +100,7 @@ public class User {
 	 *
 	 * @return Der Identifier des Root-Verzeichnisses.
 	 */
-	public Integer getRootDirectoryIdentifier() {
+	public Long getRootDirectoryIdentifier() {
 		return rootDirectoryIdentifier;
 	}
 
@@ -174,7 +174,7 @@ public class User {
 	 *
 	 * @param rootDirectoryIdentifier Der Identifier des Root-Verzeichnisses.
 	 */
-	public void setRootDirectoryIdentifier(final Integer rootDirectoryIdentifier) {
+	public void setRootDirectoryIdentifier(final Long rootDirectoryIdentifier) {
 		this.rootDirectoryIdentifier = rootDirectoryIdentifier;
 	}
 }

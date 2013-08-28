@@ -3,6 +3,7 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.user.model.User;
@@ -17,10 +18,10 @@ import java.util.List;
 public class FEntry {
 	private final UserAPI userAPI;
 
-	private Integer identifier;
+	private Long identifier = null;
 	private String name;
 
-	private final List<FEntryPermission> permissions = new ArrayList<FEntryPermission>();
+	private final List<Permission> permissions = new ArrayList<Permission>();
 	protected final List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	protected final List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
@@ -46,7 +47,7 @@ public class FEntry {
 	public FEntry(final UserAPI userAPI, final String name, final User creatingUser) {
 		this.userAPI = userAPI;
 		this.name = name;
-		permissions.add(new FEntryPermission(creatingUser, this, true, true, true));
+		permissions.add(new Permission(creatingUser, this, true, true, true));
 		addLogEntry(LogEntry.LogMessage.CREATED);
 	}
 
@@ -62,8 +63,8 @@ public class FEntry {
 		this.identifier = sourceFEntry.identifier;
 
 		//copy permissions
-		for (final FEntryPermission oldPermission : sourceFEntry.getPermissions()) {
-			permissions.add(new FEntryPermission(oldPermission));
+		for (final Permission oldPermission : sourceFEntry.getPermissions()) {
+			permissions.add(new Permission(oldPermission));
 		}
 		for (final LogEntry oldLogEntry : sourceFEntry.getLogEntries()) {
 			logEntries.add(new LogEntry(oldLogEntry));
@@ -86,7 +87,7 @@ public class FEntry {
 	 *
 	 * @return Die eindeutige ID des Objekts.
 	 */
-	public Integer getIdentifier() {
+	public Long getIdentifier() {
 		return identifier;
 	}
 
@@ -97,7 +98,7 @@ public class FEntry {
 	 *
 	 * @param identifier Die neue ID dieses Objekts.
 	 */
-	public void setIdentifier(final Integer identifier) {
+	public void setIdentifier(final Long identifier) {
 		this.identifier = identifier;
 	}
 
@@ -165,13 +166,13 @@ public class FEntry {
 	 * @param manage Der neue Wert für Verwaltungsrechte.
 	 */
 	public void setPermission(final User user, final boolean read, final boolean write, final boolean manage) {
-		final FEntryPermission permission = getPermissionOfUser(user);
+		final Permission permission = getPermissionOfUser(user);
 
 		if (read || write || manage) {
 			if (!permissions.contains(permission)) {
 				permissions.add(permission);
 			}
-			permission.setPermissions(read, write, manage);        //Notification und LogMessage werden vom FEntryPermission Objekt erstellt
+			permission.setPermissions(read, write, manage);        //Notification und LogMessage werden vom Permission Objekt erstellt
 		} else {
 			permissions.remove(permission);
 			addLogEntry(LogEntry.LogMessage.PERMISSION);
@@ -187,28 +188,28 @@ public class FEntry {
 	 *
 	 * @return Liste aller vergebenen FEntryPermissions.
 	 */
-	public ImmutableList<FEntryPermission> getPermissions() {
+	public ImmutableList<Permission> getPermissions() {
 		return ImmutableList.copyOf(permissions);
 	}
 
 	/**
-	 * Gibt die Rechte des gegebenen Benutzers als FEntryPermission-Objekt zurück.
+	 * Gibt die Rechte des gegebenen Benutzers als Permission-Objekt zurück.
 	 *
 	 * @param user Der Nutzer dessen Rechte abgefragt werden sollen.
-	 * @return Das FEntryPermission-Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
+	 * @return Das Permission-Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
-	public FEntryPermission getPermissionOfUser(final User user) {
-		Optional<FEntryPermission> permission = Optional.absent();
+	public Permission getPermissionOfUser(final User user) {
+		Optional<Permission> permission = Optional.absent();
 
 		try {
-			for (final FEntryPermission perm : permissions) {
+			for (final Permission perm : permissions) {
 				if (perm.getUser().getEmail().equals(user.getEmail())) {
 					permission = Optional.of(perm);
 				}
 			}
 		} finally {
 			if (!permission.isPresent()) {
-				permission = Optional.of(new FEntryPermission(user, this));
+				permission = Optional.of(new Permission(user, this));
 			}
 		}
 
@@ -217,19 +218,32 @@ public class FEntry {
 
 	/**
 	 * Gibt die Rechte des aktuell eingeloggten Benutzers (basierend auf den Daten der UserAPI) als
-	 * FEntryPermission-Objekt zurück.
+	 * Permission-Objekt zurück.
 	 *
-	 * @return Das FEntryPermission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
+	 * @return Das Permission Objekt mit allen Informationen über die Rechte des Nutzers an dem FEntry.
 	 */
-	public FEntryPermission getPermissionOfCurrentUser() {
+	public Permission getPermissionOfCurrentUser() {
 		return getPermissionOfUser(getUserAPI().getCurrentUser());
 	}
 
+	//TODO: docu
 	public ImmutableList<LogEntry> getLogEntries() {
 		return ImmutableList.copyOf(logEntries);
 	}
 
+	//TODO: docu
 	public void addLogEntry(final LogEntry.LogMessage message) {
 		logEntries.add(new LogEntry(message));
+	}
+
+	//TODO: docu
+	public void applyChangesFromAPI(final FEntry updatedFEntry, final FileManager fileManager) {
+		if (!name.equals(updatedFEntry.getName())) {
+			name = updatedFEntry.getName();
+			fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fileManager);
+		}
+		if (!permissions.equals(updatedFEntry.getPermissions())) {
+			//TODO: set permissions
+		}
 	}
 }

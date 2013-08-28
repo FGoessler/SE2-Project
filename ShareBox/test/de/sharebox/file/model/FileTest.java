@@ -31,7 +31,7 @@ public class FileTest {
 	@Test
 	public void hasACopyConstructor() {
 		file.setName("TestFile");
-		file.setIdentifier(1234);
+		file.setIdentifier(1234L);
 		file.setPermission(user, true, true, true);
 
 		final File copy = new File(file);
@@ -42,8 +42,8 @@ public class FileTest {
 
 		//test that all permission have been deep copied
 		assertThat(copy.getPermissions()).isNotEmpty();
-		for (final FEntryPermission newPermission : copy.getPermissions()) {
-			for (final FEntryPermission oldPermission : file.getPermissions()) {
+		for (final Permission newPermission : copy.getPermissions()) {
+			for (final Permission oldPermission : file.getPermissions()) {
 				assertThat(newPermission).isNotSameAs(oldPermission);
 			}
 		}

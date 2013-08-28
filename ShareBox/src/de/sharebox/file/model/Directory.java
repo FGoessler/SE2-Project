@@ -3,6 +3,7 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.notification.DirectoryNotification;
 import de.sharebox.file.notification.DirectoryObserver;
 import de.sharebox.file.notification.FEntryNotification;
@@ -149,7 +150,7 @@ public class Directory extends FEntry {
 				dir.deleteFEntry(dir.getFEntries().get(0));
 			}
 		}
-		fEntries.remove(fEntry);
+		removeChild(fEntry);
 
 		if (fEntry instanceof File) {
 			addLogEntry(LogEntry.LogMessage.REMOVED_FILE);
@@ -190,5 +191,60 @@ public class Directory extends FEntry {
 			}
 		}
 		return exists;
+	}
+
+	@Override
+	public void applyChangesFromAPI(final FEntry updatedFEntry, final FileManager fileManager) {
+		super.applyChangesFromAPI(updatedFEntry, fileManager);
+
+		final Directory updatedDirectory = (Directory) updatedFEntry;
+
+		final List<FEntry> addedChildren = new ArrayList<FEntry>();
+		for (final FEntry childOfUpdatedDir : updatedDirectory.getFEntries()) {
+			if (!directoryContainsFEntry(this, childOfUpdatedDir)) {
+				addedChildren.add(childOfUpdatedDir);
+			}
+		}
+		for (final FEntry addedChild : addedChildren) {
+			fEntries.add(addedChild);
+			fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, addedChild, fileManager);
+		}
+
+		final List<FEntry> removedChildren = new ArrayList<FEntry>();
+		for (final FEntry childOfCurrentDir : this.getFEntries()) {
+			if (!directoryContainsFEntry(updatedDirectory, childOfCurrentDir)) {
+				removedChildren.add(childOfCurrentDir);
+			}
+		}
+		for (final FEntry removedChild : removedChildren) {
+			removeChild(removedChild);
+			fireDirectoryNotification(FEntryNotification.ChangeType.REMOVE_CHILDREN, removedChild, fileManager);
+		}
+	}
+
+	private Boolean directoryContainsFEntry(final Directory directory, final FEntry containedFEntry) {
+		Boolean found = false;
+		for (final FEntry fEntry : directory.getFEntries()) {
+			if (fEntry.getIdentifier().equals(containedFEntry.getIdentifier())) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+
+	private void removeChild(final FEntry removedChild) {
+		FEntry foundFEntry = null;
+		for (final FEntry fEntry : fEntries) {
+			if ((removedChild.getIdentifier() != null && fEntry.getIdentifier() != null &&
+					fEntry.getIdentifier().equals(removedChild.getIdentifier())) ||
+					fEntry.equals(removedChild)) {
+				foundFEntry = fEntry;
+				break;
+			}
+		}
+		if (foundFEntry != null) {
+			fEntries.remove(foundFEntry);
+		}
 	}
 }

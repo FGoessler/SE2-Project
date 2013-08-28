@@ -1,79 +1,86 @@
 package de.sharebox.file.model;
 
 import de.sharebox.file.notification.FEntryNotification;
-import de.sharebox.user.model.User;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FEntryPermissionTest {
+public class FEntryPermissionTest extends AbstractFEntryTestSupport {
 
-	@Mock
-	private User user;
-	@Mock
-	private FEntry fEntry;
+	@Test
+	public void canBeAskedForAllPermissionsAndThePermissionOfASpecificUserAndThePermissionOfTheCurrentUser() {
+		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 
-	private FEntryPermission permission;
+		fEntry.setPermission(user, true, true, true);
 
-	@Before
-	public void setUp() {
-		permission = new FEntryPermission(user, fEntry);
+		assertThat(fEntry.getPermissions()).hasSize(1);
+		assertThat(fEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfCurrentUser().getReadAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfCurrentUser().getWriteAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfCurrentUser().getManageAllowed()).isTrue();
 	}
 
 	@Test
-	public void testCreationAndSetterAndGetter() {
-		assertThat(permission.getUser()).isSameAs(user);
+	public void canSetPermissionsForAUserAndFiresNotification() {
+		fEntry.addObserver(observer);
+
+		fEntry.setPermission(user, true, true, true);
+
+		final FEntryNotification expectedNotification = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(observer, times(1)).fEntryNotification(expectedNotification);
+		assertThat(fEntry.getPermissions()).hasSize(1);
+		final Permission permission = fEntry.getPermissionOfUser(user);
 		assertThat(permission.getFEntry()).isSameAs(fEntry);
-		assertThat(permission.getReadAllowed()).isFalse();
-		assertThat(permission.getWriteAllowed()).isFalse();
-		assertThat(permission.getManageAllowed()).isFalse();
-
-		permission.setReadAllowed(true);
-		permission.setWriteAllowed(true);
-		permission.setManageAllowed(true);
-
+		assertThat(permission.getUser()).isSameAs(user);
 		assertThat(permission.getReadAllowed()).isTrue();
 		assertThat(permission.getWriteAllowed()).isTrue();
 		assertThat(permission.getManageAllowed()).isTrue();
 
-		permission.setPermissions(false, false, false);
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.PERMISSION);
+	}
 
+	@Test
+	public void settingAPermissionToAllFalseRemovesItFromTheListOfPermissions() {
+		fEntry.addObserver(observer);
+
+		fEntry.setPermission(user, true, true, true);
+		assertThat(fEntry.getPermissions()).hasSize(1);
+		final FEntryNotification expectedNotification1 = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(observer, times(1)).fEntryNotification(expectedNotification1);
+
+		fEntry.setPermission(user, false, false, false);
+
+		final FEntryNotification expectedNotification2 = new FEntryNotification(fEntry, FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		verify(observer, times(2)).fEntryNotification(expectedNotification2);
+		assertThat(fEntry.getPermissions()).hasSize(0);
+		final Permission permission = fEntry.getPermissionOfUser(user);
+		assertThat(permission.getFEntry()).isSameAs(fEntry);
+		assertThat(permission.getUser()).isSameAs(user);
 		assertThat(permission.getReadAllowed()).isFalse();
 		assertThat(permission.getWriteAllowed()).isFalse();
 		assertThat(permission.getManageAllowed()).isFalse();
 	}
 
 	@Test
-	public void settingValuesFiresEventOnFEntry() {
-		permission.setReadAllowed(true);
-		verify(fEntry, times(1)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+	public void changingAPermissionViaSetPermissionDirectlyChangesThePermissionObj() {
+		fEntry.setPermission(user, true, true, true);
+		assertThat(fEntry.getPermissions()).hasSize(1);
+		final Permission permission = fEntry.getPermissionOfUser(user);
 
-		permission.setWriteAllowed(true);
-		verify(fEntry, times(2)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
+		fEntry.setPermission(user, true, false, false);
+		assertThat(fEntry.getPermissions()).hasSize(1);
+		assertThat(permission.getFEntry()).isSameAs(fEntry);
+		assertThat(permission.getUser()).isSameAs(user);
+		assertThat(permission.getReadAllowed()).isTrue();
+		assertThat(permission.getWriteAllowed()).isFalse();
+		assertThat(permission.getManageAllowed()).isFalse();
 
-		permission.setManageAllowed(true);
-		verify(fEntry, times(3)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
-
-		permission.setPermissions(false, false, false);
-		verify(fEntry, times(4)).fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, fEntry);
-	}
-
-	@Test
-	public void testCopyConstructor() {
-		permission.setReadAllowed(true);
-		final FEntryPermission copiedPermission = new FEntryPermission(permission);
-
-		assertThat(copiedPermission.getUser()).isSameAs(user);
-		assertThat(copiedPermission.getFEntry()).isSameAs(fEntry);
-		assertThat(copiedPermission.getReadAllowed()).isTrue();
-		assertThat(copiedPermission.getWriteAllowed()).isFalse();
-		assertThat(copiedPermission.getManageAllowed()).isFalse();
+		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.PERMISSION);
 	}
 }

@@ -44,8 +44,8 @@ public class AccountingController {
 	}
 
 	/**
-	 * Öffnen des Fensters für die Accountbearbeitung. Hierbei werden die Textfelder, nach Überprüfung, mit den
-	 * bereits bekannten Informationen ausgefüllt.
+	 * Öffnen des Fensters für die Accountbearbeitung. Hierbei werden die Textfelder mit den möglicherweise
+	 * bereits bekannten Informationen vorausgefüllt.
 	 */
 	public void show() {
 		frame = (JFrame) new SwingEngineHelper().render(this, "user/editAccounting");
@@ -70,12 +70,11 @@ public class AccountingController {
 	}
 
 	/**
-	 * TODO der Text ist etwas verwirrend, weiß leider nicht genau was gemeint ist um es selber zu ändern
-	 * 
-	 * Speichern der Änderungen der Account-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional
-	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information
-	 * eingetragen werden (wird gespeichert). Beim Speichern des Speicherplatzes wird überprüft, ob alle nötigen
-	 * Zahlungsinformationen eingetragen sind, anschließend wird man ggf. an das externe Bezahlsystem weitergeleitet.
+	 * Speichert die Änderungen der Account-Informationen. Wählt man ein Speicherlimit von mehr als 5GB, also mehr als
+	 * den kostenlosen Speicher, so MUSS man zwingend Addressinformationen für die Rechnung angeben und wird danach an
+	 * das externe Abrechnungssystem weitergeleitet. Dieses ist in diesem Prototypen nicht eingebunden.
+	 * <br/>
+	 * Diese Methode wird per SWIxml an das GUI Element gebunden.
 	 */
 	public void save() {
 		final User user = new User();

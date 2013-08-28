@@ -1,5 +1,7 @@
 package de.sharebox.api;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.sharebox.file.model.Directory;
@@ -8,28 +10,39 @@ import de.sharebox.file.model.File;
 import de.sharebox.user.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * TODO Klassenbeschreibung (Die Klasse FileAPI kappselt die Zugriffsmethoden auf die FEntrys? ...)
  */
 @Singleton
 public class FileAPI {
+	private static final String FILE_NOT_FOUND = "File not found.";
 
-    public enum Status {
-        OK,
-        DELETED
-    }
+	public int getFileCount() {
+		return storage.size();
+	}
+
+	public int getVersionCount() {
+		return storage.size();
+	}
+
+	public enum Status {
+		OK,
+		DELETED
+	}
 
 	/*
-	* TODO Klassenbeschreibung (Die Klasse StorageEntry ist für ...)
+	* TODO Klassenbeschreibung (Die Klasse StoredFEntry ist für ...)
 	*/
-	public class StorageEntry {
-		private long timestamp;
-		private FEntry fEntry;
+	public class StoredFEntry {
+		private final Long timestamp;
+		private final FEntry fEntry;
 		private Status status;
 
-		public StorageEntry(long timestamp, FEntry fEntry) {
+		public StoredFEntry(final Long timestamp, final FEntry fEntry) {
 			this.timestamp = timestamp;
 			this.fEntry = fEntry;
 			this.status = Status.OK;
@@ -43,19 +56,11 @@ public class FileAPI {
 			return fEntry;
 		}
 
-		public void setFEntry(FEntry fEntry) {
-			this.fEntry = fEntry;
-		}
-
-		public void setTimestamp(long timestamp) {
-			this.timestamp = timestamp;
-		}
-
 		public Status getStatus() {
 			return this.status;
 		}
 
-		public void setStatus(Status newStatus) {
+		public void setStatus(final Status newStatus) {
 			this.status = newStatus;
 		}
 	}
@@ -64,57 +69,12 @@ public class FileAPI {
 	 * Ein simulierter Speicher - Unterliste von Speichereinträgen für die Versionierung usw.<br/>
 	 * (Liste der fEntry hat einen Zeitstempel und FEntry)
 	 */
-	private final List<List<StorageEntry>> storage = new ArrayList<List<StorageEntry>>();
+	private final Map<Long, List<StoredFEntry>> storage = new HashMap<Long, List<StoredFEntry>>();
 
 	/**
 	 * Eine einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
 	 */
-	private Integer idCounter = 0;
-
-	//various stat getters
-
-	/**
-	 * Generiert eine Meldung mit generellen Daten über den benutzten Speicher.
-	 */
-	public void logStatistics() {
-		APILogger.logMessage("- Storage -\n    Entries: " + storage.size() + "\n    Files: " + getVersionCount() + "\n");
-	}
-
-	/**
-	 * Generiert eine Meldung mit generellen Daten über einen gegebenen Speichereintrag.
-	 *
-	 * @param indexOfStorage Index des gewünschten Objekts
-	 */
-	public void logStatistics(int indexOfStorage) {
-		APILogger.logMessage("- Storage: File #" + indexOfStorage + " -\n    entries: " + storage.get(indexOfStorage).size() + "\n");
-	}
-
-	/**
-	 * Zählt Versionen innerhalb des Speichers.
-	 *
-	 * @return Anzahl der vorhandenen Versionen
-	 */
-	public int getVersionCount() {
-		int versionCount = 0;
-		for (List<StorageEntry> aStorage : storage) {
-			versionCount += aStorage.size();
-		}
-		return versionCount;
-	}
-
-	/**
-	 * Methode um die Anzahl der Storage-Einträge zu erhalten.
-	 *
-	 * @return Größe vom Speicher
-	 */
-	public int getFileCount() {
-		return storage.size();
-	}
-
-	//actually relevant code-------------------------------------------------------------------------------
-
-	private static final String FILE_NOT_FOUND = "File not found.";
-	private static final String FILE_EXISTS = "File already exists!";
+	private Long idCounter = 0L;
 
 	/**
 	 * Erstellt ein FileAPI-Objekt. Als Singleton konzipiert.<br/>
@@ -125,25 +85,36 @@ public class FileAPI {
 		//empty package constructor to avoid direct instantiation
 	}
 
+	private Optional<StoredFEntry> getLatestStorageEntryForFEntryID(final Long fEntryId) {
+		Optional<StoredFEntry> foundEntry = Optional.absent();
+
+		final List<StoredFEntry> versions = storage.get(fEntryId);
+
+		if (versions != null) {
+			long latestTimestamp = 0;
+			for (final StoredFEntry storedFEntry : versions) {
+				if (storedFEntry.getTimestamp() > latestTimestamp) {
+					foundEntry = Optional.of(storedFEntry);
+					latestTimestamp = storedFEntry.getTimestamp();
+				}
+			}
+		}
+
+		return foundEntry;
+	}
+
 	/**
 	 * Liefert den FEntry mit der gegebenen ID.
 	 *
 	 * @param fEntryId Die ID des FEntries.
 	 * @return Der aktuellste FEntry mit dieser ID.
 	 */
-	public FEntry getFEntryWithId(long fEntryId) {
+	public FEntry getFEntryWithId(final Long fEntryId) {
 		FEntry foundFEntry = null;
 
-		for (List<StorageEntry> aStorage : storage) {
-			long latestTimestamp = 0;
-			for (StorageEntry storageEntry : aStorage) {
-				if (latestTimestamp < storageEntry.getTimestamp() && storageEntry.getFEntry().getIdentifier() == fEntryId) {
-					foundFEntry = storageEntry.getFEntry();
-				}
-			}
-			if (foundFEntry != null) {
-				break;
-			}
+		final Optional<StoredFEntry> latestStorageEntryForFEntryID = getLatestStorageEntryForFEntryID(fEntryId);
+		if (latestStorageEntryForFEntryID.isPresent()) {
+			foundFEntry = latestStorageEntryForFEntryID.get().getFEntry();
 		}
 
 		return foundFEntry;
@@ -152,204 +123,99 @@ public class FileAPI {
 	/**
 	 * Erstellt einen neuen File-Eintrag im Speicher.
 	 *
-	 * @param newFile das zu erzeugende File
+	 * @param newFEntry das zu erzeugende File
 	 * @return ob die Erstellung erfolgreich war
 	 */
-	public boolean createNewFile(File newFile) {
+	public Long createNewFEntry(final FEntry newFEntry) {
 		//generate id
-		newFile.setIdentifier(idCounter++);
+		newFEntry.setIdentifier(idCounter++);
 
 		//create new sublist to account for new file if no existing file was found
-		List<StorageEntry> newStorage = new ArrayList<StorageEntry>();
-		storage.add(newStorage);
+		final StoredFEntry newEntry = new StoredFEntry(System.currentTimeMillis(), createTypeAwareFEntryCopy(newFEntry));
+		final List<StoredFEntry> versions = new ArrayList<StoredFEntry>();
+		versions.add(newEntry);
+		storage.put(newFEntry.getIdentifier(), versions);
 
-		StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), new File(newFile));
-		newStorage.add(newEntry);
+		APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Creation", newFEntry));
 
-
-		APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Creation", newFile));
-
-		return true;
+		return newFEntry.getIdentifier();
 	}
 
 
 	/**
 	 * überschreibt/aktualisiert einen FEntry vom Typ File.
 	 *
-	 * @param updatedFile zu bearbeitendes File
+	 * @param updatedFEntry zu bearbeitendes File
 	 * @return ob die Aktualisierung erfolgreich war
 	 */
-	public boolean updateFile(File updatedFile) {
-		List<StorageEntry> foundStorage = null;
+	public boolean updateFEntry(final FEntry updatedFEntry) {
+		final List<StoredFEntry> versions = storage.get(updatedFEntry.getIdentifier());
 
-		//search through existing files, see createNewFile
-		for (List<StorageEntry> aStorage : storage) {
-			//check for correct ID
-			if (aStorage.get(0).fEntry.getIdentifier().equals(updatedFile.getIdentifier())) {
-				foundStorage = aStorage;
-				break;
-			}
-		}
-
-		if (foundStorage == null) {
+		if (versions == null) {
 			//no file found found - error!
-			APILogger.logFailure(APILogger.actionStringForFEntryAction("File Update", updatedFile), FILE_NOT_FOUND);
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("FEntry Update", updatedFEntry), FILE_NOT_FOUND);
 		} else {
-			//file found, create new version
-			StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), new File(updatedFile));
-			foundStorage.add(newEntry);
-			APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Update", updatedFile));
+			final StoredFEntry newEntry = new StoredFEntry(System.currentTimeMillis(), createTypeAwareFEntryCopy(updatedFEntry));
+			versions.add(newEntry);
+			APILogger.logSuccess(APILogger.actionStringForFEntryAction("FEntry Update", updatedFEntry));
 		}
 
-		return foundStorage != null;
+		return versions != null;
 	}
 
 	/**
 	 * Löscht das File mit der ID, die übergeben wurde.
 	 *
-	 * @param deletedFile zu löschendes File
+	 * @param deletedFEntry zu löschendes File
 	 * @return ob Löschung erfolgreich war
 	 */
-	public boolean deleteFile(File deletedFile) {
-		Boolean fileExists = false;
+	public boolean deleteFEntry(final FEntry deletedFEntry) {
+		final List<StoredFEntry> versions = storage.get(deletedFEntry.getIdentifier());
 
-		//search through existing files, to see if you're just confused and/or still reading this
-		for (int i = 0; i < storage.size(); i++) {
-			if (storage.get(i).get(0).fEntry.getIdentifier().equals(deletedFile.getIdentifier())) {
-				//storage.remove(i);
-				storage.get(i).get(storage.get(i).size() - 1).setStatus(Status.DELETED);
-				storage.get(i).get(storage.get(i).size() - 1).setTimestamp(System.currentTimeMillis());
-				APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Deletion", deletedFile));
-				fileExists = true;
-				break;
-			}
+		if (versions == null) {
+			APILogger.logFailure(APILogger.actionStringForFEntryAction("FEntry Deletion", deletedFEntry), FILE_NOT_FOUND);
+		} else {
+			final StoredFEntry deletionEntry = new StoredFEntry(System.currentTimeMillis(), createTypeAwareFEntryCopy(deletedFEntry));
+			deletionEntry.setStatus(Status.DELETED);
+			versions.add(deletionEntry);
+			APILogger.logSuccess(APILogger.actionStringForFEntryAction("FEntry Deletion", deletedFEntry));
 		}
 
-		if (!fileExists) {
-			APILogger.logFailure(APILogger.actionStringForFEntryAction("File Deletion", deletedFile), FILE_NOT_FOUND);
-		}
-
-		return fileExists;
+		return versions != null;
 	}
-
-	/**
-	 * Erstellt einen neuen Directory-Eintrag im Speicher.
-	 *
-	 * @param newDirectory zu erzeugendes Directory
-	 * @return ob die Directory-Erstellung erfolgreich war
-	 */
-	public boolean createNewDirectory(Directory newDirectory) {
-		//generate id
-		newDirectory.setIdentifier(idCounter++);
-
-		List<StorageEntry> fList = new ArrayList<StorageEntry>();
-		StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), new Directory(newDirectory));
-		fList.add(newEntry);
-		storage.add(fList);
-
-		APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Creation", newDirectory));
-
-		return true;
-	}
-
-	/**
-	 * Überschreibt/aktualisiert einen FEntry vom Typ Directory.
-	 *
-	 * @param updatedDirectory zu bearbeitendes Directory
-	 * @return ob die Aktualisierung erfolgreich war
-	 */
-	public boolean updateDirectory(Directory updatedDirectory) {
-		Boolean directoryFound = false;
-
-		for (List<StorageEntry> aStorage : storage) {
-			if (aStorage.get(0).fEntry.getIdentifier().equals(updatedDirectory.getIdentifier())) {
-				aStorage.get(0).fEntry = new Directory(updatedDirectory);
-				aStorage.get(0).timestamp = System.currentTimeMillis();
-				APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Update", updatedDirectory));
-				directoryFound = true;
-				break;
-			}
-		}
-
-		if (!directoryFound) {
-			APILogger.logFailure(APILogger.actionStringForFEntryAction("Directory Update (", updatedDirectory), FILE_NOT_FOUND);
-		}
-
-		return directoryFound;
-	}
-
-	/**
-	 * Löscht das Directory mit der ID, die übergeben wurde.
-	 *
-	 * @param deletedDirectory zu löschendes Directory
-	 * @return ob die Löschung erfolgreich war
-	 */
-	public boolean deleteDirectory(Directory deletedDirectory) {
-		Boolean directoryFound = false;
-
-		for (int i = 0; i < storage.size(); i++) {
-			if (storage.get(i).get(0).fEntry.getIdentifier().equals(deletedDirectory.getIdentifier())) {
-				//storage.remove(i);
-				storage.get(i).get(storage.get(i).size() - 1).setStatus(Status.DELETED);
-				storage.get(i).get(storage.get(i).size() - 1).setTimestamp(System.currentTimeMillis());
-				APILogger.logSuccess(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory));
-				directoryFound = true;
-				break;
-			}
-		}
-
-		if (!directoryFound) {
-			APILogger.logFailure(APILogger.actionStringForFEntryAction("Directory Deletion", deletedDirectory), FILE_NOT_FOUND);
-		}
-
-		return directoryFound;
-	}
-
-	/* TODO For later use!
-	public static boolean addPermission(FEntry f, User u,FEntryPermission fp) {
-
-        return true;
-    }
-
-    public static boolean changePermission(FEntryPermission fp) {
-
-        return true;
-    }
-
-    public static boolean deletePermission(FEntryPermission fp) {
-
-        return true;
-    }
-    */
 
 	/**
 	 * Gibt die Liste der Speichereinträge, welche nach einem bestimmten Datumsstempel erstellt worden sind.
 	 *
-	 * @param timeOfLastChange Timestamp der letzten Änderung in ms.
+	 * @param timeOfLastPoll Timestamp der letzten Änderung in ms.
 	 * @return Liste von FEntries die sich geändert haben bzw. neu erstellt wurden.
 	 */
-	public List<FEntry> getChangesSince(long timeOfLastChange) {
-		List<FEntry> changedFiles = new ArrayList<FEntry>();
+	public ImmutableList<FEntry> getChangesSince(final long timeOfLastPoll) {
+		final List<FEntry> changedFEntries = new ArrayList<FEntry>();
 
-		for (List<StorageEntry> aStorage : storage) {
-			for (StorageEntry storageEntry : aStorage) {
-				if (storageEntry.timestamp >= timeOfLastChange) {
-					changedFiles.add(storageEntry.fEntry);
-				}
+		for (final Long key : storage.keySet()) {
+			final StoredFEntry latestStorageEntryForFEntryID = getLatestStorageEntryForFEntryID(key).get();
+			if (latestStorageEntryForFEntryID.getTimestamp() > timeOfLastPoll && latestStorageEntryForFEntryID.getStatus() != Status.DELETED) {
+				changedFEntries.add(latestStorageEntryForFEntryID.getFEntry());
 			}
 		}
 
-		return changedFiles;
+		return ImmutableList.copyOf(changedFEntries);
 	}
 
-	/**
-	 * Gibt den API storage zurück. Nirgends benutzen außer für Sync.
-	 *
-	 * @return API File Storage.
-	 */
-	public List<List<StorageEntry>> getStorage() {
-		return storage;
+	private FEntry createTypeAwareFEntryCopy(final FEntry fEntryToCopy) {
+		FEntry copy = null;
+		if (fEntryToCopy instanceof Directory) {
+			copy = new Directory((Directory) fEntryToCopy);
+		} else if (fEntryToCopy instanceof File) {
+			copy = new File((File) fEntryToCopy);
+		}
+		return copy;
 	}
+
+	//TODO: check permissions?
+	//TODO: realize invitation
+	//TODO: rethink: deletion of shared file/directories?
 
 	/**
 	 * Diese Funktion erstellt lediglich einige Beispieldateien und -verzeichnisse, die für Testzwecke benötigt werden.
@@ -388,10 +254,10 @@ public class FileAPI {
 		sampleFEntries.add(file2);
 
 		for (final FEntry fEntry : sampleFEntries) {
-			final StorageEntry newEntry = new StorageEntry(System.currentTimeMillis(), fEntry);
-			final List<StorageEntry> newStorage = new ArrayList<StorageEntry>();
+			final StoredFEntry newEntry = new StoredFEntry(System.currentTimeMillis(), fEntry);
+			final List<StoredFEntry> newStorage = new ArrayList<StoredFEntry>();
 			newStorage.add(newEntry);
-			storage.add(newStorage);
+			storage.put(newEntry.getFEntry().getIdentifier(), newStorage);
 		}
 
 	}

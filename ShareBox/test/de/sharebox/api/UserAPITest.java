@@ -150,7 +150,7 @@ public class UserAPITest {
 	public void testInviteUser() {
 		assertThat(userAPI.registerUser(user)).isTrue();
 
-		verify(fileAPI).createNewDirectory(any(Directory.class));
+		verify(fileAPI).createNewFEntry(any(Directory.class));
 
 		assertThat(userAPI.authenticateUser(user)).isTrue();
 		assertThat(userAPI.login(user)).isTrue();

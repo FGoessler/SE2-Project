@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.file.model.FEntry;
-import de.sharebox.file.model.FEntryPermission;
+import de.sharebox.file.model.Permission;
 import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.file.services.DirectoryViewSelectionService;
@@ -158,7 +158,7 @@ public class PermissionViewController {
 
 		@Override
 		public Object getValueAt(final int rowIndex, final int columnIndex) {
-			final FEntryPermission permission = currentFEntry.get().getPermissions().get(rowIndex);
+			final Permission permission = currentFEntry.get().getPermissions().get(rowIndex);
 			Object value;
 			switch (columnIndex) {
 				case 0:
@@ -185,7 +185,7 @@ public class PermissionViewController {
 			if (currentFEntry.get().getPermissionOfCurrentUser().getManageAllowed()) {
 				super.setValueAt(aValue, rowIndex, columnIndex);
 
-				final FEntryPermission permission = currentFEntry.get().getPermissions().get(rowIndex);
+				final Permission permission = currentFEntry.get().getPermissions().get(rowIndex);
 
 				switch (columnIndex) {
 					case 1:
@@ -235,13 +235,13 @@ public class PermissionViewController {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final int[] selectedRows = permissionTable.getSelectedRows();
-			final List<FEntryPermission> selectedPermissions = new ArrayList<FEntryPermission>();
+			final List<Permission> selectedPermissions = new ArrayList<Permission>();
 			for (final int index : selectedRows) {
 				selectedPermissions.add(currentFEntry.get().getPermissions().get(index));
 			}
 
 			if (currentFEntry.get().getPermissionOfCurrentUser().getManageAllowed()) {
-				for (final FEntryPermission permission : selectedPermissions) {
+				for (final Permission permission : selectedPermissions) {
 					currentFEntry.get().setPermission(permission.getUser(), false, false, false);
 				}
 			} else {
