@@ -22,6 +22,7 @@ import java.util.TimerTask;
 @Singleton
 public class FileManager implements DirectoryObserver {
 	private final FileAPI fileAPI;
+	private Timer timer;
 
 	private long lastAPIPoll = 0;
 
@@ -42,7 +43,11 @@ public class FileManager implements DirectoryObserver {
 	 * Startet einen Timer, der alle 30 Sekunden Änderungen der API und des Dateisystems abfragt.
 	 */
 	public void startPolling() {
-		final Timer timer = new Timer();
+		if (timer != null) {
+			timer.cancel();
+		}
+
+		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -53,17 +58,24 @@ public class FileManager implements DirectoryObserver {
 	}
 
 	/**
-	 * Registriert ein neues File in der FileAPI
+	 * Registriert einen neuen oder existierenden FEntry, der ab sofort vom FileManager beoabachtet und mit der FileAPI
+	 * abgeglichen wird. Besitzt der FEntry keine ID so wird er der API als neuer FEntry gemeldet und die erhaltene ID
+	 * wird zugeweißen.
 	 *
-	 * @param newFEntry Der hinzuzufügende FEntry.
+	 * @param fEntry Der zu registrierende FEntry.
 	 * @return ob die Operation erfolgreich war
 	 */
-	public boolean registerFEntry(final FEntry newFEntry) {
-		newFEntry.addObserver(this);
-		registeredFEntries.put(fileAPI.createNewFEntry(newFEntry), newFEntry);
+	public boolean registerFEntry(final FEntry fEntry) {
+		fEntry.addObserver(this);
 
-		if (newFEntry instanceof Directory) {
-			for (final FEntry child : ((Directory) newFEntry).getFEntries()) {
+		if (fEntry.getIdentifier() == null) {
+			fEntry.setIdentifier(fileAPI.createNewFEntry(fEntry));
+		}
+
+		registeredFEntries.put(fEntry.getIdentifier(), fEntry);
+
+		if (fEntry instanceof Directory) {
+			for (final FEntry child : ((Directory) fEntry).getFEntries()) {
 				registerFEntry(child);
 			}
 		}
@@ -85,7 +97,7 @@ public class FileManager implements DirectoryObserver {
 		for (final FEntry changedFEntry : changedFEntries) {
 			final FEntry currentFEntry = registeredFEntries.get(changedFEntry.getIdentifier());
 			if (currentFEntry != null) {
-				currentFEntry.applyChangesFromAPI(changedFEntry, this);
+				currentFEntry.applyChanges(changedFEntry, this);
 			}
 		}
 
@@ -108,6 +120,11 @@ public class FileManager implements DirectoryObserver {
 	@Override
 	public void directoryNotification(final DirectoryNotification notification) {
 		if (notification.getSource() != this) {    //do not publish changes that came from the api/filemanager
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.ADDED_CHILDREN)) {
+				for (final FEntry addedChild : notification.getAffectedChildren()) {
+					registerFEntry(addedChild);
+				}
+			}
 			fileAPI.updateFEntry(notification.getChangedFEntry());
 		}
 	}

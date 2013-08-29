@@ -74,7 +74,7 @@ public class FEntryTest extends AbstractFEntryTest {
 		fEntry.setPermission(user, true, true, true);
 		final FEntry updatedFEntry = new FEntry(mockedUserAPI, "newFileName", user);
 
-		fEntry.applyChangesFromAPI(updatedFEntry, mock(FileManager.class));
+		fEntry.applyChanges(updatedFEntry, mock(FileManager.class));
 
 		assertThat(fEntry).isNotSameAs(updatedFEntry);
 		assertThat(fEntry.getName()).isEqualTo("newFileName");

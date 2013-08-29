@@ -10,14 +10,14 @@ import java.util.Date;
  */
 public final class APILogger {
 
-    /** 
-     * Logging Flag.
-     */
+	/**
+	 * Logging Flag.
+	 */
 	public static final boolean LOGGING = true;
-    /**
-     * Flag für Datumsausgabe: TRUE wenn volles Datumsformat gewünscht wird, FALSE sonst.
-     */
-    public static final boolean READABLEDATE = false;
+	/**
+	 * Flag für Datumsausgabe: TRUE wenn volles Datumsformat gewünscht wird, FALSE sonst.
+	 */
+	public static final boolean READABLEDATE = false;
 
 	private APILogger() {
 	}
@@ -28,8 +28,21 @@ public final class APILogger {
 	 * @param message Die zu loggende Meldung.
 	 */
 	public static void logMessage(final String message) {
+		logMessage(message, 0);
+	}
+
+	/**
+	 * Loggt die gegebene Meldung.
+	 *
+	 * @param message Die zu loggende Meldung.
+	 */
+	public static void logMessage(final String message, final int level) {
 		if (LOGGING) {
-			System.out.println("["+System.currentTimeMillis()+"]"+DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
+			if (level == 1) {
+				System.err.println("[" + System.currentTimeMillis() + "]" + DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
+			} else {
+				System.out.println("[" + System.currentTimeMillis() + "]" + DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())) + ": " + message);
+			}
 		}
 	}
 
@@ -59,7 +72,7 @@ public final class APILogger {
 	 * @param action Ein Text der die Aktion benennt.
 	 */
 	public static void logFailure(final String action) {
-		logMessage(action + " failed.");
+		logMessage(action + " failed.", 1);
 	}
 
 	/**
@@ -69,7 +82,7 @@ public final class APILogger {
 	 * @param reason Ein Text der den Grund für den Fehler benennt.
 	 */
 	public static void logFailure(final String action, final String reason) {
-		logMessage(action + " failed. Reason: " + reason);
+		logMessage(action + " failed. Reason: " + reason, 1);
 	}
 
 	/**

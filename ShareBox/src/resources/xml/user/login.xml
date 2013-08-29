@@ -5,7 +5,7 @@
                                 weighty="0,9"/>
         </label>
 
-        <textfield id="mailField" columns="12" text="admin">
+        <textfield id="mailField" columns="12" text="admin@test.de">
             <gridbagconstraints refid="gbc_1" gridx="1" gridy="0"/>
         </textfield>
 

@@ -16,7 +16,6 @@ public class SampleContentTest {
 			final FileAPI fileAPI = new FileAPI();
 			final UserAPI userAPI = new UserAPI(fileAPI);
 			userAPI.createSampleContent();
-			fileAPI.createSampleContent(userAPI);
 		} catch (Exception exception) {
 			fail("Exception should not have been thrown! " + exception.getLocalizedMessage());
 		}

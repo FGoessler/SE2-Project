@@ -167,4 +167,6 @@ public class UserAPITest {
 		assertThat(userAPI.login(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user)).isFalse();
 	}
+
+	//TODO: test getRootDir & improve invite tests
 }

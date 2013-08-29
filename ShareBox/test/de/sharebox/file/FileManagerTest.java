@@ -39,19 +39,18 @@ public class FileManagerTest {
 	public void setUp() {
 		when(fileAPI.createNewFEntry(any(FEntry.class))).thenReturn(idCounter++);
 		when(fileAPI.getChangesSince(anyLong())).thenReturn(ImmutableList.of(file, dir));
-		when(file.getIdentifier()).thenReturn(1L);
-		when(dir.getIdentifier()).thenReturn(2L);
+		when(file.getIdentifier()).thenReturn(null);
+		when(dir.getIdentifier()).thenReturn(1L);
+		when(dir.getFEntries()).thenReturn(ImmutableList.<FEntry>of(file));
 	}
 
 	@Test
 	public void testRegisterFEntry() {
-		assertThat(fileManager.registerFEntry(file)).isTrue();
 		assertThat(fileManager.registerFEntry(dir)).isTrue();
 
 		verify(file).addObserver(fileManager);
 		verify(fileAPI).createNewFEntry(file);
 		verify(dir).addObserver(fileManager);
-		verify(fileAPI).createNewFEntry(dir);
 	}
 
 	@Test
@@ -62,8 +61,8 @@ public class FileManagerTest {
 
 		verify(fileAPI).getChangesSince(anyLong());
 
-		verify(file).applyChangesFromAPI(any(FEntry.class), same(fileManager));
-		verify(dir, never()).applyChangesFromAPI(any(FEntry.class), same(fileManager));
+		verify(file).applyChanges(any(FEntry.class), same(fileManager));
+		verify(dir, never()).applyChanges(any(FEntry.class), same(fileManager));
 	}
 
 	@Test
@@ -97,4 +96,6 @@ public class FileManagerTest {
 		fileManager.directoryNotification(directoryNotification);
 		verify(fileAPI, never()).updateFEntry(dir);
 	}
+
+	//TODO: test dir notification creates api-create-calls
 }

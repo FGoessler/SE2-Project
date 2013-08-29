@@ -1,5 +1,6 @@
 package de.sharebox.file.services;
 
+import de.sharebox.api.FileAPI;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.Permission;
@@ -30,9 +31,11 @@ public class SharingServiceTest {
 
 	@Mock
 	private OptionPaneHelper mockedOptionPaneHelper;
-
+	@Mock
+	private FileAPI fileAPI;
 	@Mock
 	private UserAPI mockedAPI;
+
 	@InjectMocks
 	private SharingService sharingService;
 
@@ -63,6 +66,7 @@ public class SharingServiceTest {
 
 		final ArgumentCaptor<User> invitedUser = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).inviteUser(same(mockedUser), invitedUser.capture());
+		verify(fileAPI).shareFEntry(mockedAPI, invitedUser.getValue(), fEntry1);
 		assertThat(invitedUser.getValue().getEmail()).isEqualTo(NEW_USER_MAIL);
 	}
 
@@ -90,6 +94,8 @@ public class SharingServiceTest {
 
 		final ArgumentCaptor<User> invitedUser = ArgumentCaptor.forClass(User.class);
 		verify(mockedAPI).inviteUser(same(mockedUser), invitedUser.capture());
+		verify(fileAPI).shareFEntry(mockedAPI, invitedUser.getValue(), fEntry1);
+		verify(fileAPI).shareFEntry(mockedAPI, invitedUser.getValue(), fEntry2);
 		assertThat(invitedUser.getValue().getEmail()).isEqualTo(NEW_USER_MAIL);
 	}
 

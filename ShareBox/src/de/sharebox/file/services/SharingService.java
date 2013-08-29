@@ -2,6 +2,7 @@ package de.sharebox.file.services;
 
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
+import de.sharebox.api.FileAPI;
 import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.helpers.OptionPaneHelper;
@@ -23,6 +24,7 @@ public class SharingService {
 
 	private final OptionPaneHelper optionPane;
 	private final UserAPI userAPI;
+	private final FileAPI fileAPI;
 
 	/**
 	 * Erstellt einen neuen SharingService.<br/>
@@ -33,9 +35,11 @@ public class SharingService {
 	 */
 	@Inject
 	SharingService(final OptionPaneHelper optionPaneHelper,
-				   final UserAPI userAPI) {
+				   final UserAPI userAPI,
+				   final FileAPI fileAPI) {
 		this.optionPane = optionPaneHelper;
 		this.userAPI = userAPI;
+		this.fileAPI = fileAPI;
 	}
 
 	/**
@@ -69,6 +73,7 @@ public class SharingService {
 			for (final FEntry fEntry : fEntries) {
 				if (fEntry.getPermissionOfCurrentUser().getManageAllowed()) {
 					fEntry.setPermission(newUser, true, true, false);
+					fileAPI.shareFEntry(userAPI, newUser, fEntry);
 				} else {
 					namesOfNotChangedFEntries.add(fEntry.getName());
 				}

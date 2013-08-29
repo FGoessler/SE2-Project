@@ -3,7 +3,6 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.FileManager;
 import de.sharebox.file.notification.DirectoryNotification;
 import de.sharebox.file.notification.DirectoryObserver;
 import de.sharebox.file.notification.FEntryNotification;
@@ -195,8 +194,8 @@ public class Directory extends FEntry {
 	}
 
 	@Override
-	public void applyChangesFromAPI(final FEntry updatedFEntry, final FileManager fileManager) {
-		super.applyChangesFromAPI(updatedFEntry, fileManager);
+	public void applyChanges(final FEntry updatedFEntry, final Object source) {
+		super.applyChanges(updatedFEntry, source);
 
 		final Directory updatedDirectory = (Directory) updatedFEntry;
 
@@ -208,7 +207,7 @@ public class Directory extends FEntry {
 		}
 		for (final FEntry addedChild : addedChildren) {
 			fEntries.add(addedChild);
-			fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, addedChild, fileManager);
+			fireDirectoryNotification(FEntryNotification.ChangeType.ADDED_CHILDREN, addedChild, source);
 		}
 
 		final List<FEntry> removedChildren = new ArrayList<FEntry>();
@@ -219,7 +218,7 @@ public class Directory extends FEntry {
 		}
 		for (final FEntry removedChild : removedChildren) {
 			removeChild(removedChild);
-			fireDirectoryNotification(FEntryNotification.ChangeType.REMOVE_CHILDREN, removedChild, fileManager);
+			fireDirectoryNotification(FEntryNotification.ChangeType.REMOVE_CHILDREN, removedChild, source);
 		}
 	}
 

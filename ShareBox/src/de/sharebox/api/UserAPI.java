@@ -126,6 +126,8 @@ public class UserAPI {
 
 			userList.add(new User(user));
 			success = true;
+
+			APILogger.logMessage("Created User: " + user.getEmail() + " with password: " + user.getPassword());
 		}
 
 		APILogger.logResult("Registration", success);
@@ -220,7 +222,7 @@ public class UserAPI {
 	}
 
 	/**
-	 * Lädt neuen Benutzer zu Sharebox ein.
+	 * Lädt neuen Benutzer zu Sharebox Ultimate ein.
 	 *
 	 * @param invitingUser einladender User
 	 * @param invitedUser  eingeladener User
@@ -237,12 +239,25 @@ public class UserAPI {
 			}
 		}
 		if (success) {
+			invitedUser.setPassword("PW" + Math.random());
+			registerUser(invitedUser);
 			APILogger.logMessage("User '" + invitedUser.getEmail() + "' invited by '" + invitingUser.getEmail() + "'.");
 		} else {
 			APILogger.logFailure("Invitation", "User '" + invitedUser.getEmail() + "' already exists.");
 		}
 		return success;
 	}
+
+	/**
+	 * TODO: docu
+	 *
+	 * @param user
+	 * @return
+	 */
+	public Long getRootDirIDOfUser(final User user) {
+		return getUserWithMail(user.getEmail()).get().getRootDirectoryIdentifier();
+	}
+
 
 	/**
 	 * Prüft, ob ein User eingeloggt ist.
@@ -288,47 +303,29 @@ public class UserAPI {
 
 
 	/**
-	 * Erstellt Beispieldaten, die für Testzwecke benötigt werden.
+	 * Erstellt Beispieldaten, die zum Testen des Protypen verwendet werden können.
 	 */
 	public final void createSampleContent() {
-
-		final User user1 = new User();
-		user1.setEmail("Max@Mustermann.de");
-		user1.setPassword("maxmuster");
-		user1.setFirstname("Max");
-		user1.setLastname("Mustermann");
-		user1.setRootDirectoryIdentifier(0L);
+		final User user = new User();
+		user.setEmail("admin@test.de");
+		user.setPassword("root");
+		user.setFirstname("Hans");
+		user.setLastname("Kanns");
+		user.setRootDirectoryIdentifier(2L);
 
 		final AddressInfo addressInfo = new AddressInfo();
-		addressInfo.setStreet("Mustersraße 1");
-		addressInfo.setCity("Musterstadt");
-		addressInfo.setCountry("Deutschland");
-		addressInfo.setZipCode("01234");
-		user1.setAddressInfo(addressInfo);
-
-		user1.setStorageLimit(StorageLimit.GB_10);
-		user1.setGender(Gender.Male);
-
-		final User user2 = new User();
-		user2.setEmail("admin");
-		user2.setPassword("root");
-		user2.setFirstname("Hans");
-		user2.setLastname("Kanns");
-		user2.setRootDirectoryIdentifier(2L);
-
-		addressInfo.setStreet("");
+		addressInfo.setStreet("Meierstraße 5");
 		addressInfo.setAdditionalAddressInfo("Haus 4, Zimmer 15");
 		addressInfo.setCity("Berlin");
 		addressInfo.setCountry("Deutschland");
 		addressInfo.setZipCode("14569");
-		user2.setAddressInfo(addressInfo);
+		user.setAddressInfo(addressInfo);
 
-		user2.setStorageLimit(StorageLimit.GB_20);
-		user2.setGender(Gender.Male);
+		user.setStorageLimit(StorageLimit.GB_20);
+		user.setGender(Gender.Male);
 
-		userList.add(user1);
-		userList.add(user2);
+		registerUser(user);
 
-		APILogger.logMessage("Registered Sampledata");
+		APILogger.logMessage("Registered Testuser");
 	}
 }

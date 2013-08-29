@@ -57,6 +57,11 @@ public class FileAPI {
 		}
 
 		public FEntry getFEntry() {
+			if (fEntry instanceof Directory) {
+				for (final FEntry child : ((Directory) fEntry).getFEntries()) {
+					child.applyChanges(getFEntryWithId(child.getIdentifier()), FileAPI.this);
+				}
+			}
 			return fEntry;
 		}
 
@@ -111,7 +116,7 @@ public class FileAPI {
 		versions.add(newEntry);
 		storage.put(newFEntry.getIdentifier(), versions);
 
-		APILogger.logSuccess(APILogger.actionStringForFEntryAction("File Creation", newFEntry));
+		APILogger.logSuccess(APILogger.actionStringForFEntryAction("FEntry Creation", newFEntry));
 
 		return newFEntry.getIdentifier();
 	}
@@ -181,6 +186,29 @@ public class FileAPI {
 	}
 
 	/**
+	 * TODO: docu
+	 *
+	 * @param userAPI
+	 * @param invitedUser
+	 * @param sharedFEntry
+	 * @return
+	 */
+	public boolean shareFEntry(final UserAPI userAPI, final User invitedUser, final FEntry sharedFEntry) {
+		Boolean success = true;
+
+		try {
+			final Directory invitedUsersRootDir = (Directory) getLatestStorageEntryForFEntryID(userAPI.getRootDirIDOfUser(invitedUser)).get().getFEntry();
+			invitedUsersRootDir.addFEntry(sharedFEntry);
+		} catch (Exception exception) {
+			success = false;
+		}
+
+		APILogger.logResult("Shared file '" + sharedFEntry.getName() + "' with user", success);
+
+		return success;
+	}
+
+	/**
 	 * Kopiert einen FEntry mit dem entsprechenden Copy-Konstruktor.
 	 *
 	 * @param fEntryToCopy Der FEntry der kopiert werden soll.
@@ -220,52 +248,4 @@ public class FileAPI {
 		return foundEntry;
 	}
 
-	//TODO: check permissions?
-	//TODO: realize invitation
-	//TODO: rethink: deletion of shared file/directories?
-
-	/**
-	 * Diese Funktion erstellt einige Beispieldateien und -verzeichnisse, die für Testzwecke benötigt werden.
-	 *
-	 * @param userAPI Die UserAPI - wird benötigt, um sie an die erstellten FEntries weiterzugeben.
-	 */
-	public void createSampleContent(final UserAPI userAPI) {
-		//create the same 2 users as available in the UserAPI
-		final User user1 = new User();
-		user1.setEmail("Max@Mustermann.de");
-		final User user2 = new User();
-		user2.setEmail("admin");
-
-		final List<FEntry> sampleFEntries = new ArrayList<FEntry>();
-
-		//create sample content for user1
-		final Directory root1 = new Directory(userAPI, "Sharebox", user1);
-		root1.setIdentifier(idCounter++);
-		sampleFEntries.add(root1);
-		final File file1 = new File(userAPI, "A file", user1);
-		file1.setIdentifier(idCounter++);
-		root1.addFEntry(file1);
-		sampleFEntries.add(file1);
-
-		//create sample content for user2
-		final Directory root2 = new Directory(userAPI, "Sharebox", user2);
-		root2.setIdentifier(idCounter++);
-		sampleFEntries.add(root2);
-		final Directory subDir1 = new Directory(userAPI, "A Subdirectory", user2);
-		subDir1.setIdentifier(idCounter++);
-		root2.addFEntry(subDir1);
-		sampleFEntries.add(subDir1);
-		final File file2 = new File(userAPI, "A file", user2);
-		file2.setIdentifier(idCounter++);
-		root2.addFEntry(file2);
-		sampleFEntries.add(file2);
-
-		for (final FEntry fEntry : sampleFEntries) {
-			final StoredFEntry newEntry = new StoredFEntry(System.currentTimeMillis(), fEntry);
-			final List<StoredFEntry> newStorage = new ArrayList<StoredFEntry>();
-			newStorage.add(newEntry);
-			storage.put(newEntry.getFEntry().getIdentifier(), newStorage);
-		}
-
-	}
 }

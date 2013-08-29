@@ -137,4 +137,6 @@ public class FileAPITest {
 				.isNotSameAs(tFile1);
 		assertThat(changedFEntries.get(0).getName()).isEqualTo(NEW_NAME);
 	}
+
+	//TODO: test shareFEntry
 }

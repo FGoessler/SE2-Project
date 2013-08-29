@@ -206,7 +206,7 @@ public class DirectoryTest {
 		Directory newDir = updatedDirectory.createNewDirectory("added dir").get();
 		newDir.setIdentifier(3L);
 
-		directory.applyChangesFromAPI(updatedDirectory, mock(FileManager.class));
+		directory.applyChanges(updatedDirectory, mock(FileManager.class));
 
 		assertThat(directory).isNotSameAs(updatedDirectory);
 		assertThat(directory.getName()).isEqualTo("newDirName");

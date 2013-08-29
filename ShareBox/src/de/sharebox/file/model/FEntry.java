@@ -3,7 +3,6 @@ package de.sharebox.file.model;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
-import de.sharebox.file.FileManager;
 import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.file.notification.FEntryObserver;
 import de.sharebox.user.model.User;
@@ -246,18 +245,18 @@ public class FEntry {
 
 	/**
 	 * Aktualisiert diesen FEntry mit den Informationen des updatedFEntry. Sämtliche Änderungsnotifications erhalten
-	 * als Source den gegebenen FileManager.
+	 * als Source das gegebene Objekt.
 	 *
 	 * @param updatedFEntry Der FEntry mit neuen Informationen.
-	 * @param fileManager   Der FileManager, der als Source der Notificatiosn gesetzt werden soll.
+	 * @param source        Das Objekt, das als Source der Notificatiosn gesetzt werden soll.
 	 */
-	public void applyChangesFromAPI(final FEntry updatedFEntry, final FileManager fileManager) {
+	public void applyChanges(final FEntry updatedFEntry, final Object source) {
 
 		logEntries = new ArrayList<LogEntry>(updatedFEntry.getLogEntries());
 
 		if (!name.equals(updatedFEntry.getName())) {
 			name = updatedFEntry.getName();
-			fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fileManager);
+			fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, source);
 		}
 
 		if (!permissions.equals(updatedFEntry.getPermissions())) {
