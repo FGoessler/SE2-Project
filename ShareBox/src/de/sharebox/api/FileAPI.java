@@ -15,21 +15,33 @@ import java.util.List;
 import java.util.Map;
 
 /*
- * TODO Klassenbeschreibung (Die Klasse FileAPI kappselt die Zugriffsmethoden auf die FEntrys? ...)
+ * TODO Klassenbeschreibung und Methoden neu beschreiben, allgemeines Storage Prinzip erklären
  */
 @Singleton
 public class FileAPI {
 	private static final String FILE_NOT_FOUND = "File not found.";
+
+	/**
+	 * Ein simulierter Speicher - Unterliste von Speichereinträgen für die Versionierung usw.<br/>
+	 * (Liste der fEntry hat einen Zeitstempel und FEntry)
+	 */
+	private final Map<Long, List<StoredFEntry>> storage = new HashMap<Long, List<StoredFEntry>>();
+
+	/**
+	 * Eine einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
+	 */
+	private Long idCounter = 0L;
 
 	public enum Status {
 		OK,
 		DELETED
 	}
 
-	/*
-	* TODO Klassenbeschreibung (Die Klasse StoredFEntry ist für ...)
-	*/
-	public class StoredFEntry {
+	/**
+	 * Diese Klasse versieht einen FEntry mit Timestap und Status Informationen, die benötigt werden wenn der FEntry
+	 * in der MockAPI gespeichert wird.
+	 */
+	private class StoredFEntry {
 		private final Long timestamp;
 		private final FEntry fEntry;
 		private Status status;
@@ -58,41 +70,12 @@ public class FileAPI {
 	}
 
 	/**
-	 * Ein simulierter Speicher - Unterliste von Speichereinträgen für die Versionierung usw.<br/>
-	 * (Liste der fEntry hat einen Zeitstempel und FEntry)
-	 */
-	private final Map<Long, List<StoredFEntry>> storage = new HashMap<Long, List<StoredFEntry>>();
-
-	/**
-	 * Eine einfache Zählervariable um fortlaufende eindeutige IDs für erstellte FEntries zu erzeugen.
-	 */
-	private Long idCounter = 0L;
-
-	/**
 	 * Erstellt ein FileAPI-Objekt. Als Singleton konzipiert.<br/>
 	 * Sollte nur mittels Dependency Injection durch Guice erstellt werden.
 	 */
 	@Inject
 	FileAPI() {
 		//empty package constructor to avoid direct instantiation
-	}
-
-	private Optional<StoredFEntry> getLatestStorageEntryForFEntryID(final Long fEntryId) {
-		Optional<StoredFEntry> foundEntry = Optional.absent();
-
-		final List<StoredFEntry> versions = storage.get(fEntryId);
-
-		if (versions != null) {
-			long latestTimestamp = 0;
-			for (final StoredFEntry storedFEntry : versions) {
-				if (storedFEntry.getTimestamp() >= latestTimestamp) {
-					foundEntry = Optional.of(storedFEntry);
-					latestTimestamp = storedFEntry.getTimestamp();
-				}
-			}
-		}
-
-		return foundEntry;
 	}
 
 	/**
@@ -113,10 +96,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Erstellt einen neuen File-Eintrag im Speicher.
+	 * Erstellt einen neuen FEntry und weißt ihm eine neue ID vor.
 	 *
-	 * @param newFEntry das zu erzeugende File
-	 * @return ob die Erstellung erfolgreich war
+	 * @param newFEntry Der neue zu erstellende FEntry.
+	 * @return Die ID des erstellten FEntries.
 	 */
 	public Long createNewFEntry(final FEntry newFEntry) {
 		//generate id
@@ -135,10 +118,11 @@ public class FileAPI {
 
 
 	/**
-	 * überschreibt/aktualisiert einen FEntry vom Typ File.
+	 * Aktulisiert den gegebenen FEntry bzw. seine lokale Kopie in der API. 2 FEntries werden hierbei als gleich betrachtet
+	 * wenn sie die selbe ID besitzen.
 	 *
 	 * @param updatedFEntry zu bearbeitendes File
-	 * @return ob die Aktualisierung erfolgreich war
+	 * @return True, wenn der FEntry gefunden und aktualisiert wurde. False, sonst.
 	 */
 	public boolean updateFEntry(final FEntry updatedFEntry) {
 		final List<StoredFEntry> versions = storage.get(updatedFEntry.getIdentifier());
@@ -156,10 +140,11 @@ public class FileAPI {
 	}
 
 	/**
-	 * Löscht das File mit der ID, die übergeben wurde.
+	 * Löscht den gegebenen FEntry bzw. seine lokale Kopie in der API. 2 FEntries werden hierbei als gleich betrachtet
+	 * wenn sie die selbe ID besitzen.
 	 *
-	 * @param deletedFEntry zu löschendes File
-	 * @return ob Löschung erfolgreich war
+	 * @param deletedFEntry Der zu löschende FEntry.
+	 * @return True, wenn der FEntry gefunden und gelöscht wurde. False, sonst.
 	 */
 	public boolean deleteFEntry(final FEntry deletedFEntry) {
 		final List<StoredFEntry> versions = storage.get(deletedFEntry.getIdentifier());
@@ -177,10 +162,10 @@ public class FileAPI {
 	}
 
 	/**
-	 * Gibt die Liste der Speichereinträge, welche nach einem bestimmten Datumsstempel erstellt worden sind.
+	 * Liefert alle FEntries, welche sich nach dem gegebenen Zeitpunkt geändert haben oder erstellt wurden.
 	 *
-	 * @param timeOfLastPoll Timestamp der letzten Änderung in ms.
-	 * @return Liste von FEntries die sich geändert haben bzw. neu erstellt wurden.
+	 * @param timeOfLastPoll Timestamp der letzten Abfrage in ms.
+	 * @return ImmutableList von FEntries die sich geändert haben bzw. neu erstellt wurden.
 	 */
 	public ImmutableList<FEntry> getChangesSince(final long timeOfLastPoll) {
 		final List<FEntry> changedFEntries = new ArrayList<FEntry>();
@@ -195,6 +180,12 @@ public class FileAPI {
 		return ImmutableList.copyOf(changedFEntries);
 	}
 
+	/**
+	 * Kopiert einen FEntry mit dem entsprechenden Copy-Konstruktor.
+	 *
+	 * @param fEntryToCopy Der FEntry der kopiert werden soll.
+	 * @return Die Kopie des FEntries.
+	 */
 	private FEntry createTypeAwareFEntryCopy(final FEntry fEntryToCopy) {
 		FEntry copy = null;
 		if (fEntryToCopy instanceof Directory) {
@@ -205,12 +196,36 @@ public class FileAPI {
 		return copy;
 	}
 
+	/**
+	 * Liefert den aktuellsten StoredFEntry des FEntries mit der gegebenen ID.
+	 *
+	 * @param fEntryId Die ID des FEntries.
+	 * @return Der aktuellste StoredFEntry, des FEntries, als Optional.
+	 */
+	private Optional<StoredFEntry> getLatestStorageEntryForFEntryID(final Long fEntryId) {
+		Optional<StoredFEntry> foundEntry = Optional.absent();
+
+		final List<StoredFEntry> versions = storage.get(fEntryId);
+
+		if (versions != null) {
+			long latestTimestamp = 0;
+			for (final StoredFEntry storedFEntry : versions) {
+				if (storedFEntry.getTimestamp() >= latestTimestamp) {
+					foundEntry = Optional.of(storedFEntry);
+					latestTimestamp = storedFEntry.getTimestamp();
+				}
+			}
+		}
+
+		return foundEntry;
+	}
+
 	//TODO: check permissions?
 	//TODO: realize invitation
 	//TODO: rethink: deletion of shared file/directories?
 
 	/**
-	 * Diese Funktion erstellt lediglich einige Beispieldateien und -verzeichnisse, die für Testzwecke benötigt werden.
+	 * Diese Funktion erstellt einige Beispieldateien und -verzeichnisse, die für Testzwecke benötigt werden.
 	 *
 	 * @param userAPI Die UserAPI - wird benötigt, um sie an die erstellten FEntries weiterzugeben.
 	 */

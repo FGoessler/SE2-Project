@@ -12,8 +12,8 @@ import javax.swing.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-/*
- * TODO Klassenbeschreibung (Eingabefelder für Accounting?)
+/**
+ * Dieser Controller ist verantwortlich für das Fenster, in dem der Nutzer seine Rechnungsdaten ändern kann.
  */
 public class AccountingController {
 	private final OptionPaneHelper optionPane;
@@ -63,7 +63,7 @@ public class AccountingController {
 		final AddressInfo addressInfo = user.getAddressInfo();
 		storageLimitField.setSelectedIndex(oldStorageLimitIndex);
 		streetField.setText(addressInfo.getStreet());
-		additiveField.setText(addressInfo.getAdditionalStreet());
+		additiveField.setText(addressInfo.getAdditionalAddressInfo());
 		codeField.setText(addressInfo.getZipCode());
 		locationField.setText(addressInfo.getCity());
 		countryField.setText(addressInfo.getCountry());
@@ -84,7 +84,7 @@ public class AccountingController {
 		addressInfo.setZipCode(codeField.getText());
 		addressInfo.setCity(locationField.getText());
 		addressInfo.setCountry(countryField.getText());
-		addressInfo.setAdditionalStreet(additiveField.getText());
+		addressInfo.setAdditionalAddressInfo(additiveField.getText());
 
 		user.setAddressInfo(addressInfo);
 		user.setStorageLimit((StorageLimit) storageLimitField.getSelectedItem());

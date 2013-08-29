@@ -17,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * TODO Klassenbeschreibung
+ * TODO Klassenbeschreibung und Methoden neu beschreiben
  */
 @Singleton
 public class FileManager implements DirectoryObserver {

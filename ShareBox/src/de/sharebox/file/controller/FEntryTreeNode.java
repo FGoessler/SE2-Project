@@ -41,8 +41,7 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 
 		fEntry.addObserver(observer);
 	}
-	
-	// TODO Methodenbeschreibung
+
 	@Override
 	public boolean isLeaf() {
 		return !(getFEntry() instanceof Directory) || ((Directory) getFEntry()).getFEntries().isEmpty();

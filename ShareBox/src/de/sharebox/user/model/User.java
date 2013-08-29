@@ -4,12 +4,9 @@ import de.sharebox.user.enums.Gender;
 import de.sharebox.user.enums.StorageLimit;
 
 /**
- * @author Benjamin Barth
- * @author Kay Thorsten Meißner
- */
-
-/*
- * TODO Klassenbeschreibung (Getter-/Setterklasse für die allgemeinen Daten des Users?)
+ * Dieses Objekt repräsentiert einen Nutzer der Sharebox und enthält alle nötigen Informationen. Teilweise werden im
+ * Program aus Datenschutzgründen nur unvollstämdig gefüllte User-Objekte verwendet. Um alle Informationen zu beziehen
+ * müssen die entsprechenden Request über die UserAPI durchgeführt werden.
  */
 public class User {
 
@@ -60,14 +57,14 @@ public class User {
 	}
 
 	/**
-	 * @return Den Vornamen des Users.
+	 * @return Der Vornamen des Users.
 	 */
 	public String getFirstname() {
 		return firstname;
 	}
 
 	/**
-	 * @return Den Nachnamen des Users.
+	 * @return Der Nachname des Users.
 	 */
 	public String getLastname() {
 		return lastname;
@@ -108,7 +105,7 @@ public class User {
 	/**
 	 * Ändert die E-Mailadresse des Objekts.
 	 *
-	 * @param email
+	 * @param email Die neue E-Mail-Adresse.
 	 */
 	public void setEmail(final String email) {
 		this.email = email;
@@ -117,7 +114,7 @@ public class User {
 	/**
 	 * Ändert das Passwort des Objekts.
 	 *
-	 * @param password
+	 * @param password Das neue Passwort.
 	 */
 	public void setPassword(final String password) {
 		this.password = password;
@@ -126,7 +123,7 @@ public class User {
 	/**
 	 * Ändert den Vornamen des Objekts.
 	 *
-	 * @param firstname
+	 * @param firstname Der neue Vorname.
 	 */
 	public void setFirstname(final String firstname) {
 		this.firstname = firstname;
@@ -135,7 +132,7 @@ public class User {
 	/**
 	 * Ändert den Nachnamen des Objekts.
 	 *
-	 * @param lastname
+	 * @param lastname Der neue Nachname.
 	 */
 	public void setLastname(final String lastname) {
 		this.lastname = lastname;
@@ -144,7 +141,7 @@ public class User {
 	/**
 	 * Ändert die Zahlungsinformationen des Objekts.
 	 *
-	 * @param addressInfo
+	 * @param addressInfo Die neuen Adressinformationen.
 	 */
 	public void setAddressInfo(final AddressInfo addressInfo) {
 		this.addressInfo = new AddressInfo(addressInfo);
@@ -153,7 +150,7 @@ public class User {
 	/**
 	 * Ändert die Speicherkapazität des Objekts.
 	 *
-	 * @param storageLimit
+	 * @param storageLimit Das neue Speicherlimit des Nutzers.
 	 */
 	public void setStorageLimit(final StorageLimit storageLimit) {
 		this.storageLimit = storageLimit;
@@ -162,7 +159,7 @@ public class User {
 	/**
 	 * Ändert das Geschlecht des Users
 	 *
-	 * @param gender
+	 * @param gender Das neue Geschlecht.
 	 */
 	public void setGender(final Gender gender) {
 		this.gender = gender;

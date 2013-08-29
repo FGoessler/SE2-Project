@@ -9,8 +9,8 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/*
- * TODO Klassenbeschreibung
+/**
+ * Dieser Controller ist verantwortlich für das Fenster zum Ändern der Logindaten (Passwort und Emailadresse).
  */
 public class ChangeCredentialsController {
 	private final OptionPaneHelper optionPane;

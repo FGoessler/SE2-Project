@@ -62,7 +62,7 @@ public class UserAPITest {
 		user2.setLastname("Peter");
 
 		addressInfo.setStreet("Meinweg 2");
-		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
+		addressInfo.setAdditionalAddressInfo("Haus 4, Zimmer 15");
 		addressInfo.setCity("Berlin");
 		addressInfo.setCountry("Deutschland");
 		addressInfo.setZipCode("14569");

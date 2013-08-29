@@ -17,8 +17,9 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
-/*
- * TODO Klassenbeschreibung (Die Klasse LogViewController steuert die Zugriffe auf das Log? ...)
+/**
+ * Der LogViewController ist verantwortlich für die Anzeige der LogEntries des im DirectoryViewControllers selektierten
+ * FEntries.
  */
 public class LogViewController {
 	private final DirectoryViewSelectionService selectionService;

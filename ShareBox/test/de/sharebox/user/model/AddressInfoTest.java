@@ -14,7 +14,7 @@ public class AddressInfoTest {
 		addressInfo = new AddressInfo();
 
 		addressInfo.setStreet("Mainstreet 1");
-		addressInfo.setAdditionalStreet("2nd Floor");
+		addressInfo.setAdditionalAddressInfo("2nd Floor");
 		addressInfo.setZipCode("10243");
 		addressInfo.setCity("Berlin");
 		addressInfo.setCountry("Germany");
@@ -23,7 +23,7 @@ public class AddressInfoTest {
 	@Test
 	public void testGetterAndSetter() {
 		assertThat(addressInfo.getStreet()).isEqualTo("Mainstreet 1");
-		assertThat(addressInfo.getAdditionalStreet()).isEqualTo("2nd Floor");
+		assertThat(addressInfo.getAdditionalAddressInfo()).isEqualTo("2nd Floor");
 		assertThat(addressInfo.getZipCode()).isEqualTo("10243");
 		assertThat(addressInfo.getCity()).isEqualTo("Berlin");
 		assertThat(addressInfo.getCountry()).isEqualTo("Germany");
@@ -35,7 +35,7 @@ public class AddressInfoTest {
 
 		assertThat(copiedAddressInfo).isNotSameAs(addressInfo);
 		assertThat(copiedAddressInfo.getStreet()).isEqualTo("Mainstreet 1");
-		assertThat(copiedAddressInfo.getAdditionalStreet()).isEqualTo("2nd Floor");
+		assertThat(copiedAddressInfo.getAdditionalAddressInfo()).isEqualTo("2nd Floor");
 		assertThat(copiedAddressInfo.getZipCode()).isEqualTo("10243");
 		assertThat(copiedAddressInfo.getCity()).isEqualTo("Berlin");
 		assertThat(copiedAddressInfo.getCountry()).isEqualTo("Germany");

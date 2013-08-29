@@ -14,8 +14,12 @@ import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-/*
- * TODO Klassenbeschreibung (Die Klasse UserAPI kappselt die Zugriffsmethoden auf die User-Daten? ...)
+/**
+ * Die UserAPI ist verantwortlich für die Kommunikation mit dem Server um Änderungen und Aktionen, die User-Objekte
+ * betreffen, druchzuführen.
+ * <br/><br/>
+ * Für die Zwecke dieses Prototypen werden keine echten Request abgesetzt und nur über den APILogger Meldungen
+ * ausgegeben, sowie die Daten lokal im Objekt gespeichert.
  */
 @Singleton
 public class UserAPI {
@@ -35,51 +39,6 @@ public class UserAPI {
 	@Inject
 	UserAPI(final FileAPI fileAPI) {
 		this.fileAPI = fileAPI;
-	}
-
-	/**
-	 * Erstellt Beispieldaten, die für Testzwecke benötigt werden.
-	 */
-	public final void createSampleContent() {
-
-		final User user1 = new User();
-		user1.setEmail("Max@Mustermann.de");
-		user1.setPassword("maxmuster");
-		user1.setFirstname("Max");
-		user1.setLastname("Mustermann");
-		user1.setRootDirectoryIdentifier(0L);
-
-		final AddressInfo addressInfo = new AddressInfo();
-		addressInfo.setStreet("Mustersraße 1");
-		addressInfo.setCity("Musterstadt");
-		addressInfo.setCountry("Deutschland");
-		addressInfo.setZipCode("01234");
-		user1.setAddressInfo(addressInfo);
-
-		user1.setStorageLimit(StorageLimit.GB_10);
-		user1.setGender(Gender.Male);
-
-		final User user2 = new User();
-		user2.setEmail("admin");
-		user2.setPassword("root");
-		user2.setFirstname("Hans");
-		user2.setLastname("Kanns");
-		user2.setRootDirectoryIdentifier(2L);
-
-		addressInfo.setStreet("");
-		addressInfo.setAdditionalStreet("Haus 4, Zimmer 15");
-		addressInfo.setCity("Berlin");
-		addressInfo.setCountry("Deutschland");
-		addressInfo.setZipCode("14569");
-		user2.setAddressInfo(addressInfo);
-
-		user2.setStorageLimit(StorageLimit.GB_20);
-		user2.setGender(Gender.Male);
-
-		userList.add(user1);
-		userList.add(user2);
-
-		APILogger.logMessage("Registered Sampledata");
 	}
 
 	/**
@@ -325,5 +284,51 @@ public class UserAPI {
 		}
 
 		return foundUser;
+	}
+
+
+	/**
+	 * Erstellt Beispieldaten, die für Testzwecke benötigt werden.
+	 */
+	public final void createSampleContent() {
+
+		final User user1 = new User();
+		user1.setEmail("Max@Mustermann.de");
+		user1.setPassword("maxmuster");
+		user1.setFirstname("Max");
+		user1.setLastname("Mustermann");
+		user1.setRootDirectoryIdentifier(0L);
+
+		final AddressInfo addressInfo = new AddressInfo();
+		addressInfo.setStreet("Mustersraße 1");
+		addressInfo.setCity("Musterstadt");
+		addressInfo.setCountry("Deutschland");
+		addressInfo.setZipCode("01234");
+		user1.setAddressInfo(addressInfo);
+
+		user1.setStorageLimit(StorageLimit.GB_10);
+		user1.setGender(Gender.Male);
+
+		final User user2 = new User();
+		user2.setEmail("admin");
+		user2.setPassword("root");
+		user2.setFirstname("Hans");
+		user2.setLastname("Kanns");
+		user2.setRootDirectoryIdentifier(2L);
+
+		addressInfo.setStreet("");
+		addressInfo.setAdditionalAddressInfo("Haus 4, Zimmer 15");
+		addressInfo.setCity("Berlin");
+		addressInfo.setCountry("Deutschland");
+		addressInfo.setZipCode("14569");
+		user2.setAddressInfo(addressInfo);
+
+		user2.setStorageLimit(StorageLimit.GB_20);
+		user2.setGender(Gender.Male);
+
+		userList.add(user1);
+		userList.add(user2);
+
+		APILogger.logMessage("Registered Sampledata");
 	}
 }

@@ -11,8 +11,8 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/*
- * TODO Klassenbeschreibung (Eingabefelder für Registrierung?)
+/**
+ * Dieser Controller ist verantwortlich für das Registrieren-Fenster mit dem sich ein Nutzer für Sharebox registrieren kann.
  */
 public class RegisterController {
 	private final OptionPaneHelper optionPane;
@@ -73,7 +73,7 @@ public class RegisterController {
 
 			final AddressInfo addressInfo = user.getAddressInfo();
 			addressInfo.setStreet(streetField.getText());
-			addressInfo.setAdditionalStreet(additiveField.getText());
+			addressInfo.setAdditionalAddressInfo(additiveField.getText());
 			addressInfo.setZipCode(codeField.getText());
 			addressInfo.setCity(locationField.getText());
 			addressInfo.setCountry(countryField.getText());

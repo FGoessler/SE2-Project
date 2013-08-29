@@ -226,17 +226,31 @@ public class FEntry {
 		return getPermissionOfUser(getUserAPI().getCurrentUser());
 	}
 
-	//TODO: docu
+	/**
+	 * Liefert eine ImmutableList aller LogEntries.
+	 *
+	 * @return Eine ImmutableList aller LogEntries.
+	 */
 	public ImmutableList<LogEntry> getLogEntries() {
 		return ImmutableList.copyOf(logEntries);
 	}
 
-	//TODO: docu
+	/**
+	 * Erstellt einen neuen LogEntry mit der gegebenen Meldung für diesen FEntry.
+	 *
+	 * @param message Die Meldung des LogEntries.
+	 */
 	public void addLogEntry(final LogEntry.LogMessage message) {
 		logEntries.add(new LogEntry(message));
 	}
 
-	//TODO: docu
+	/**
+	 * Aktualisiert diesen FEntry mit den Informationen des updatedFEntry. Sämtliche Änderungsnotifications erhalten
+	 * als Source den gegebenen FileManager.
+	 *
+	 * @param updatedFEntry Der FEntry mit neuen Informationen.
+	 * @param fileManager   Der FileManager, der als Source der Notificatiosn gesetzt werden soll.
+	 */
 	public void applyChangesFromAPI(final FEntry updatedFEntry, final FileManager fileManager) {
 
 		logEntries = new ArrayList<LogEntry>(updatedFEntry.getLogEntries());

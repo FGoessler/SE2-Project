@@ -10,8 +10,8 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/*
- * TODO Klassenbeschreibung (Eingabefelder für das Einloggen?)
+/**
+ * Dieser Controller ist verantwortlich für das Login-Fenster mit dem sich Nutzer anmelden.
  */
 public class LoginController {
 	private final MainViewControllerFactory mainViewControllerFactory;

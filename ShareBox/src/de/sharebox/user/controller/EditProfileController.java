@@ -10,8 +10,8 @@ import de.sharebox.user.model.User;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-/*
- * TODO Klassenbeschreibung
+/**
+ * Dieser Controller ist verantwortlich für das Fenster zum Ändern der Profildaten (im Prototyp nur Name und Geschlecht).
  */
 public class EditProfileController {
 	private final OptionPaneHelper optionPane;

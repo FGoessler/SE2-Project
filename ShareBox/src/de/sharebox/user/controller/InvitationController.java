@@ -8,7 +8,8 @@ import de.sharebox.user.model.User;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * TODO Klassenbeschreibung
+ * Mithilfe dieses Controllers können Nutzer neue Nutzer zur Sharebox einladen. Im Gegensatz zum "Datei freigeben"-
+ * Feature muss der Nutzer dabei kein Verzeichnis freigeben.
  */
 public class InvitationController {
 	/**
