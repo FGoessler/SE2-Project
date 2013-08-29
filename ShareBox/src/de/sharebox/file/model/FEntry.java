@@ -149,7 +149,7 @@ public class FEntry {
 	 * @param source Das Objekt, das die Änderung ausgelöst hat - im Zweifel den FEntry selbst setzen.
 	 */
 	public void fireNotification(final FEntryNotification.ChangeType reason, final Object source) {
-		final ArrayList<FEntryObserver> localObservers = new ArrayList<FEntryObserver>(observers);
+		final ImmutableList<FEntryObserver> localObservers = ImmutableList.copyOf(observers);
 		for (final FEntryObserver observer : localObservers) {
 			observer.fEntryNotification(new FEntryNotification(this, reason, source));
 		}

@@ -176,6 +176,7 @@ public class Directory extends FEntry {
 										  final FEntry affectedChild, final Object source) {
 		final ImmutableList<FEntry> addedFEntries = ImmutableList.of(affectedChild);
 
+		final ImmutableList<FEntryObserver> observers = ImmutableList.copyOf(this.observers);
 		for (final FEntryObserver observer : observers) {
 			if (observer instanceof DirectoryObserver) {
 				((DirectoryObserver) observer).directoryNotification(new DirectoryNotification(this, reason, source, addedFEntries));
