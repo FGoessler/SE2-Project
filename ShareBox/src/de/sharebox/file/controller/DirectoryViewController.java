@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.FileAPI;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.services.DirectoryViewSelectionService;
 
@@ -39,17 +40,21 @@ public class DirectoryViewController {
 	 * @param contextMenuController         Ein ContextMenuController der für das, per Rechtsklick, aufrufbare Kontextmenü verantwortlich ist.
 	 * @param userAPI                       Die UserAPI zum Herausfinden des aktuell eingeloggten Benutzers.
 	 * @param fileAPI                       Die FileAPI zum Erhalten des Root-Directories des Benutzers.
+	 * @param fileManager                   Der FileManager, der Updates mit der FileAPI koordiniert.
 	 */
 	@Inject
 	DirectoryViewController(final @Assisted JTree tree,
 							final DirectoryViewSelectionService directoryViewSelectionService,
 							final ContextMenuController contextMenuController,
 							final UserAPI userAPI,
-							final FileAPI fileAPI) {
+							final FileAPI fileAPI,
+							final FileManager fileManager) {
 
 		this.contextMenuController = contextMenuController;
 
 		final Directory rootDirectory = (Directory) fileAPI.getFEntryWithId(userAPI.getCurrentUser().getRootDirectoryIdentifier());
+		fileManager.registerFEntry(rootDirectory);
+		fileManager.startPolling();
 
 		this.treeView = tree;
 		final DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Root"), true);

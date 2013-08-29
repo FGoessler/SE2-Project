@@ -2,6 +2,7 @@ package de.sharebox.file.controller;
 
 import de.sharebox.api.FileAPI;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewSelectionService;
@@ -38,6 +39,8 @@ public class DirectoryViewControllerTest {
 	private ContextMenuController contextMenuController;
 	@Mock
 	private DirectoryViewSelectionService selectionService;
+	@Mock
+	private FileManager fileManager;
 
 	private DirectoryViewController controller;
 
@@ -47,7 +50,7 @@ public class DirectoryViewControllerTest {
 		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 		when(fileAPI.getFEntryWithId(anyLong())).thenReturn(new Directory(mockedUserAPI));
 
-		controller = new DirectoryViewController(tree, selectionService, contextMenuController, mockedUserAPI, fileAPI);
+		controller = new DirectoryViewController(tree, selectionService, contextMenuController, mockedUserAPI, fileAPI, fileManager);
 	}
 
 	@Test

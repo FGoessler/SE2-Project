@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.sharebox.api.APILogger;
 import de.sharebox.api.FileAPI;
+import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.notification.DirectoryNotification;
 import de.sharebox.file.notification.DirectoryObserver;
@@ -12,6 +13,8 @@ import de.sharebox.file.notification.FEntryNotification;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * TODO Klassenbeschreibung
@@ -35,7 +38,19 @@ public class FileManager implements DirectoryObserver {
 		this.fileAPI = fileAPI;
 	}
 
-	//TODO: execute poll methods regularly -> thread
+	/**
+	 * Startet einen Timer, der alle 30 Sekunden Änderungen der API und des Dateisystems abfragt.
+	 */
+	public void startPolling() {
+		final Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				pollAPIForChanges();
+				pollFileSystemForChanges();
+			}
+		}, 0, 30000);
+	}
 
 	/**
 	 * Registriert ein neues File in der FileAPI
@@ -46,6 +61,12 @@ public class FileManager implements DirectoryObserver {
 	public boolean registerFEntry(final FEntry newFEntry) {
 		newFEntry.addObserver(this);
 		registeredFEntries.put(fileAPI.createNewFEntry(newFEntry), newFEntry);
+
+		if (newFEntry instanceof Directory) {
+			for (final FEntry child : ((Directory) newFEntry).getFEntries()) {
+				registerFEntry(child);
+			}
+		}
 
 		return true;
 	}
@@ -90,7 +111,6 @@ public class FileManager implements DirectoryObserver {
 			fileAPI.updateFEntry(notification.getChangedFEntry());
 		}
 	}
-
 
 	@Override
 	public void fEntryNotification(final FEntryNotification notification) {
