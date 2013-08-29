@@ -317,4 +317,25 @@ public class DirectoryViewSelectionServiceTest {
 		verify(optionPane).showMessageDialog(contains(rootDirectory.getFEntries().get(0).getName()));
 		verify(optionPane).showMessageDialog(contains(rootDirectory.getFEntries().get(1).getName()));
 	}
+
+	@Test
+	public void deletingTheRootDirectoryIsNotPossible() {
+		when(contextMenuController.getSelectedFEntry()).thenReturn(Optional.<FEntry>of(rootDirectory));
+		when(contextMenuController.getParentOfSelectedFEntry()).thenReturn(Optional.<Directory>absent());
+
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
+		verify(optionPane).showMessageDialog("Sie können ihr Hauptverzeichnis nicht löschen.");
+
+
+		final FEntryTreeNode[] treeNodes1 = {new FEntryTreeNode(treeModel, rootDirectory), new FEntryTreeNode(treeModel, rootDirectory.getFEntries().get(0))};
+		final FEntryTreeNode[] treeNodes2 = {new FEntryTreeNode(treeModel, rootDirectory)};
+		final TreePath[] treePaths = {new TreePath(treeNodes1), new TreePath(treeNodes2)};
+		selectionService.getTreeView().setSelectionPaths(treePaths);
+
+		assertThat(rootDirectory.getFEntries()).hasSize(4);
+
+		selectionService.deleteFEntryBasedOnUserSelection(Optional.of(contextMenuController));
+		assertThat(rootDirectory.getFEntries()).hasSize(3);
+		verify(optionPane).showMessageDialog(contains(rootDirectory.getName()));
+	}
 }

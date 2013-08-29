@@ -122,7 +122,10 @@ public class ContextMenuController {
 	public Optional<Directory> getParentOfSelectedFEntry() {
 		Optional<Directory> foundDirectory = Optional.absent();
 		if (currentTreePath.isPresent()) {
-			foundDirectory = Optional.of((Directory) ((FEntryTreeNode) currentTreePath.get().getParentPath().getLastPathComponent()).getFEntry());
+			TreePath parentPath = currentTreePath.get().getParentPath();
+			if (parentPath != null) {
+				foundDirectory = Optional.of((Directory) ((FEntryTreeNode) parentPath.getLastPathComponent()).getFEntry());
+			}
 		}
 		return foundDirectory;
 	}

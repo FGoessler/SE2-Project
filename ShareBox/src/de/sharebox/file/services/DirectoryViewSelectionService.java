@@ -214,14 +214,20 @@ public class DirectoryViewSelectionService {
 		if (contextMenuController.isPresent() && selectedFEntries.contains(selectedFEntry.get()) && selectedFEntries.size() > 1) {
 			deleteMultipleFEntries(selectedFEntries, getParentsOfSelectedFEntries());
 		} else if (contextMenuController.isPresent()) {
-			final Directory parentDirectory = contextMenuController.get().getParentOfSelectedFEntry().get();
-			if (parentDirectory.getPermissionOfCurrentUser().getWriteAllowed()) {
-				parentDirectory.deleteFEntry(selectedFEntry.get());
-			} else {
-				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
-			}
+			deleteSingleFEntry(selectedFEntry.get(), contextMenuController.get());
 		} else if (!contextMenuController.isPresent()) {
 			deleteMultipleFEntries(selectedFEntries, getParentsOfSelectedFEntries());
+		}
+	}
+
+	private void deleteSingleFEntry(FEntry selectedFEntry, ContextMenuController contextMenuController) {
+		final Optional<Directory> parentDirectory = contextMenuController.getParentOfSelectedFEntry();
+		if (parentDirectory.isPresent() && parentDirectory.get().getPermissionOfCurrentUser().getWriteAllowed()) {
+			parentDirectory.get().deleteFEntry(selectedFEntry);
+		} else if (!parentDirectory.isPresent()) {
+			optionPane.showMessageDialog("Sie können ihr Hauptverzeichnis nicht löschen.");
+		} else {
+			optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
 		}
 	}
 
@@ -254,7 +260,7 @@ public class DirectoryViewSelectionService {
 		//delete all selected FEntries
 		final List<String> namesOfNotDeletedFEntries = new ArrayList<String>();
 		while (!parentDirectories.isEmpty()) {
-			if (parentDirectories.get(0).get().getPermissionOfCurrentUser().getWriteAllowed()) {
+			if (parentDirectories.get(0).isPresent() && parentDirectories.get(0).get().getPermissionOfCurrentUser().getWriteAllowed()) {
 				parentDirectories.get(0).get().deleteFEntry(fEntriesToDelete.get(0));
 			} else {
 				namesOfNotDeletedFEntries.add(fEntriesToDelete.get(0).getName());
