@@ -2,6 +2,7 @@ package de.sharebox.file.model;
 
 import com.google.common.collect.ImmutableList;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.notification.DirectoryNotification;
 import de.sharebox.file.notification.DirectoryObserver;
 import de.sharebox.file.notification.FEntryNotification;
@@ -193,5 +194,27 @@ public class DirectoryTest {
 		assertThat(directory.getLogEntries().get(2).getMessage()).isEqualTo(LogEntry.LogMessage.REMOVED_DIRECTORY);
 	}
 
-	//TODO: test applyAPI changes
+	@Test
+	public void testApplyChangesFormAPI() {
+		directory.setIdentifier(1234L);
+		File removedFile = directory.createNewFile("removed file").get();
+		removedFile.setIdentifier(1L);
+		File keptFile = directory.createNewFile("kept file").get();
+		keptFile.setIdentifier(2L);
+		final Directory updatedDirectory = new Directory(mockedUserAPI, "newDirName", mockedUser);
+		updatedDirectory.addFEntry(keptFile);
+		Directory newDir = updatedDirectory.createNewDirectory("added dir").get();
+		newDir.setIdentifier(3L);
+
+		directory.applyChangesFromAPI(updatedDirectory, mock(FileManager.class));
+
+		assertThat(directory).isNotSameAs(updatedDirectory);
+		assertThat(directory.getName()).isEqualTo("newDirName");
+		assertThat(directory.getIdentifier()).isEqualTo(1234L);
+		assertThat(directory.getFEntries()).hasSize(2);
+		assertThat(directory.getFEntries().get(0).getIdentifier()).isEqualTo(2L);
+		assertThat(directory.getFEntries().get(0).getName()).isEqualTo("kept file");
+		assertThat(directory.getFEntries().get(1).getIdentifier()).isEqualTo(3L);
+		assertThat(directory.getFEntries().get(1).getName()).isEqualTo("added dir");
+	}
 }

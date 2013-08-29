@@ -1,10 +1,12 @@
 package de.sharebox.file.model;
 
+import de.sharebox.file.FileManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FEntryTest extends AbstractFEntryTest {
@@ -65,5 +67,21 @@ public class FEntryTest extends AbstractFEntryTest {
 		assertThat(fEntry.getLogEntries().get(0).getMessage()).isEqualTo(LogEntry.LogMessage.CHANGED);
 	}
 
-	//TODO: test applyAPI changes
+	@Test
+	public void testApplyChangesFormAPI() {
+		fEntry.setName("TestFile");
+		fEntry.setIdentifier(1234L);
+		fEntry.setPermission(user, true, true, true);
+		final FEntry updatedFEntry = new FEntry(mockedUserAPI, "newFileName", user);
+
+		fEntry.applyChangesFromAPI(updatedFEntry, mock(FileManager.class));
+
+		assertThat(fEntry).isNotSameAs(updatedFEntry);
+		assertThat(fEntry.getName()).isEqualTo("newFileName");
+		assertThat(fEntry.getIdentifier()).isEqualTo(1234L);
+		assertThat(fEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
+	}
+
 }

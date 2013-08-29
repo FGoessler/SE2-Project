@@ -21,8 +21,8 @@ public class FEntry {
 	private Long identifier = null;
 	private String name;
 
+	protected List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	private final List<Permission> permissions = new ArrayList<Permission>();
-	protected final List<LogEntry> logEntries = new ArrayList<LogEntry>();
 	protected final List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
@@ -238,10 +238,14 @@ public class FEntry {
 
 	//TODO: docu
 	public void applyChangesFromAPI(final FEntry updatedFEntry, final FileManager fileManager) {
+
+		logEntries = new ArrayList<LogEntry>(updatedFEntry.getLogEntries());
+
 		if (!name.equals(updatedFEntry.getName())) {
 			name = updatedFEntry.getName();
 			fireNotification(FEntryNotification.ChangeType.NAME_CHANGED, fileManager);
 		}
+
 		if (!permissions.equals(updatedFEntry.getPermissions())) {
 			//TODO: set permissions
 		}

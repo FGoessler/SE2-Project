@@ -21,14 +21,6 @@ import java.util.Map;
 public class FileAPI {
 	private static final String FILE_NOT_FOUND = "File not found.";
 
-	public int getFileCount() {
-		return storage.size();
-	}
-
-	public int getVersionCount() {
-		return storage.size();
-	}
-
 	public enum Status {
 		OK,
 		DELETED
@@ -93,7 +85,7 @@ public class FileAPI {
 		if (versions != null) {
 			long latestTimestamp = 0;
 			for (final StoredFEntry storedFEntry : versions) {
-				if (storedFEntry.getTimestamp() > latestTimestamp) {
+				if (storedFEntry.getTimestamp() >= latestTimestamp) {
 					foundEntry = Optional.of(storedFEntry);
 					latestTimestamp = storedFEntry.getTimestamp();
 				}
@@ -113,7 +105,7 @@ public class FileAPI {
 		FEntry foundFEntry = null;
 
 		final Optional<StoredFEntry> latestStorageEntryForFEntryID = getLatestStorageEntryForFEntryID(fEntryId);
-		if (latestStorageEntryForFEntryID.isPresent()) {
+		if (latestStorageEntryForFEntryID.isPresent() && latestStorageEntryForFEntryID.get().getStatus() != Status.DELETED) {
 			foundFEntry = latestStorageEntryForFEntryID.get().getFEntry();
 		}
 
@@ -195,7 +187,7 @@ public class FileAPI {
 
 		for (final Long key : storage.keySet()) {
 			final StoredFEntry latestStorageEntryForFEntryID = getLatestStorageEntryForFEntryID(key).get();
-			if (latestStorageEntryForFEntryID.getTimestamp() > timeOfLastPoll && latestStorageEntryForFEntryID.getStatus() != Status.DELETED) {
+			if (latestStorageEntryForFEntryID.getTimestamp() >= timeOfLastPoll && latestStorageEntryForFEntryID.getStatus() != Status.DELETED) {
 				changedFEntries.add(latestStorageEntryForFEntryID.getFEntry());
 			}
 		}

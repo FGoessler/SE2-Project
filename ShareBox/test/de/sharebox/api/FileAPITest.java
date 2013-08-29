@@ -2,164 +2,139 @@ package de.sharebox.api;
 
 
 import de.sharebox.file.model.Directory;
+import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
-import org.junit.After;
+import de.sharebox.user.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileAPITest {
+	public static final String NEW_NAME = "new name";
+
 	private File tFile1;
 	private File tFile2;
 	private Directory tDirectory1;
-	private Directory tDirectory2;
-	private FileAPI fileAPI;
 
-	@InjectMocks
+	@Mock
+	private User user;
+	@Mock
 	private UserAPI mockedUserAPI;
 
+	@InjectMocks
+	private FileAPI fileAPI;
 
 	@Before
 	public void setUp() {
-		fileAPI = new FileAPI();
-		tFile1 = new File(mockedUserAPI);
-		tFile1.setIdentifier(42L);
-		tFile1.setName("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+		when(user.getEmail()).thenReturn("test@mail.com");
+		when(mockedUserAPI.getCurrentUser()).thenReturn(user);
 
-
-		tFile2 = new File(mockedUserAPI);
-		tFile2.setIdentifier(43L);
-		tFile2.setName("Not quite.");
-
-		tDirectory1 = new Directory(mockedUserAPI);
-		tDirectory1.setIdentifier(44L);
-		tDirectory1.setName("Tempus Fugit");
-
-		tDirectory2 = new Directory(mockedUserAPI);
-		tDirectory2.setIdentifier(45L);
-		tDirectory2.setName("Heart of the Sunrise");
-		System.out.println("asd" + tFile1.getName());
-	}
-
-	@After
-	public void tearDown() {
-		fileAPI.deleteFEntry(tFile1);
-		fileAPI.deleteFEntry(tFile2);
-		fileAPI.deleteFEntry(tDirectory1);
-		fileAPI.deleteFEntry(tDirectory2);
-
-		assertThat(fileAPI.getFileCount()).isEqualTo(0);
-	}
-
-	//TODO: test FileAPI
-
-	@Test
-	public void testCreationOfNewFile() {
-		fileAPI.createNewFEntry(tFile1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
-		assertThat(fileAPI.getFEntryWithId(42L)).isInstanceOf(File.class);
-		assertThat(fileAPI.getFEntryWithId(42L).getName()).isEqualTo("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+		tFile1 = new File(mockedUserAPI, "Testfile", user);
+		tFile2 = new File(mockedUserAPI, "Other stuff", user);
+		tDirectory1 = new Directory(mockedUserAPI, "Some dir", user);
 	}
 
 	@Test
-	public void creatingDuplicatesCannotBePerformed() {
-		fileAPI.createNewFEntry(tFile1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
+	public void testCreationAndUpdateOfNewFEntry() {
+		final Long newId = fileAPI.createNewFEntry(tFile1);
 
-		assertThat(fileAPI.createNewFEntry(tFile1)).isGreaterThan(0);
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
-	}
+		final FEntry storedFile = fileAPI.getFEntryWithId(newId);
 
-	@Test
-	public void testUpdatingFile() {
-		fileAPI.createNewFEntry(tFile1);
-		fileAPI.createNewFEntry(tFile2);
-		assertThat(fileAPI.getFileCount()).isEqualTo(2);
-		assertThat(fileAPI.getVersionCount()).isEqualTo(2);
-		assertThat(fileAPI.getFEntryWithId(42L).getName()).isEqualTo("The answer to the Ultimate Question of Life, the Universe, and Everything.");
+		assertThat(storedFile).isInstanceOf(File.class)
+				.isNotSameAs(tFile1);
+		assertThat(storedFile.getName()).isEqualTo("Testfile");
+		assertThat(storedFile.getIdentifier()).isEqualTo(newId);
 
-		tFile1.setName("some name");
-		fileAPI.updateFEntry(tFile1);
+		tFile1.setName("some other name");
+		assertThat(fileAPI.updateFEntry(tFile1)).isTrue();
 
-		assertThat(fileAPI.getFileCount()).isEqualTo(2);
-		assertThat(fileAPI.getVersionCount()).isEqualTo(3);
-		assertThat(fileAPI.getFEntryWithId(42L).getName()).isEqualTo("some name");
+		final FEntry updatedFile = fileAPI.getFEntryWithId(newId);
+		assertThat(updatedFile).isInstanceOf(File.class)
+				.isNotSameAs(tFile1);
+		assertThat(updatedFile.getName()).isEqualTo("some other name");
+		assertThat(updatedFile.getIdentifier()).isEqualTo(newId);
 	}
 
 	@Test
 	public void updatingNotExistingFileCannotBePerformed() {
 		assertThat(fileAPI.updateFEntry(tFile1)).isFalse();
-		assertThat(fileAPI.getFileCount()).isEqualTo(0);
+		assertThat(fileAPI.getFEntryWithId(0L)).isNull();
 	}
 
 	@Test
 	public void testDeleteFile() {
-		fileAPI.createNewFEntry(tFile1);
-		fileAPI.createNewFEntry(tFile2);
-		fileAPI.updateFEntry(tFile1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(2);
-		assertThat(fileAPI.getVersionCount()).isEqualTo(3);
+		final Long file1Id = fileAPI.createNewFEntry(tFile1);
+		final Long file2Id = fileAPI.createNewFEntry(tFile2);
 
-		fileAPI.deleteFEntry(tFile1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
-		assertThat(fileAPI.getVersionCount()).isEqualTo(1);        //deleted all versions
+		assertThat(fileAPI.deleteFEntry(tFile1)).isTrue();
+
+		assertThat(fileAPI.getFEntryWithId(file1Id)).isNull();
+		final FEntry storedFile2 = fileAPI.getFEntryWithId(file2Id);
+		assertThat(storedFile2).isInstanceOf(File.class)
+				.isNotSameAs(tFile1);
+		assertThat(storedFile2.getName()).isEqualTo("Other stuff");
+		assertThat(storedFile2.getIdentifier()).isEqualTo(file2Id);
 	}
 
 	@Test
 	public void deletingNotExistingFilesCannotBePerformed() {
-		fileAPI.createNewFEntry(tFile1);
-		assertThat(fileAPI.deleteFEntry(tFile2)).isFalse();
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
+		assertThat(fileAPI.deleteFEntry(tFile1)).isFalse();
+		assertThat(fileAPI.getFEntryWithId(0L)).isNull();
 	}
 
 	@Test
-	public void testCreationOfNewDirectory() {
-		fileAPI.createNewFEntry(tDirectory1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
-		assertThat(fileAPI.getFEntryWithId(44L)).isInstanceOf(Directory.class);
-		assertThat(fileAPI.getFEntryWithId(44L).getName()).isEqualTo("Tempus Fugit");
-	}
+	public void testCreationAndUpdateOfNewDirectory() {
+		final Long newId = fileAPI.createNewFEntry(tDirectory1);
 
-	@Test
-	public void testUpdatingDirectory() {
-		fileAPI.createNewFEntry(tDirectory1);
-		fileAPI.createNewFEntry(tDirectory2);
-		assertThat(fileAPI.getFileCount()).isEqualTo(2);
-		assertThat(fileAPI.getFEntryWithId(44L).getName()).isEqualTo("Tempus Fugit");
+		final FEntry storedFile = fileAPI.getFEntryWithId(newId);
+		assertThat(storedFile).isInstanceOf(Directory.class)
+				.isNotSameAs(tFile1);
+		assertThat(storedFile.getName()).isEqualTo("Some dir");
+		assertThat(storedFile.getIdentifier()).isEqualTo(newId);
 
-		tDirectory1.setName("An other name");
-		fileAPI.updateFEntry(tDirectory1);
+		tDirectory1.setName(NEW_NAME);
+		assertThat(fileAPI.updateFEntry(tDirectory1));
 
-		assertThat(fileAPI.getFileCount()).isEqualTo(2);
-		assertThat(fileAPI.getFEntryWithId(44L).getName()).isEqualTo("An other name");
-	}
-
-	@Test
-	public void testDeleteDirectory() {
-		fileAPI.createNewFEntry(tDirectory1);
-		fileAPI.createNewFEntry(tDirectory2);
-		fileAPI.updateFEntry(tDirectory1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(2);
-
-		fileAPI.deleteFEntry(tDirectory1);
-		assertThat(fileAPI.getFileCount()).isEqualTo(1);
+		final FEntry updatedFile = fileAPI.getFEntryWithId(newId);
+		assertThat(updatedFile).isInstanceOf(Directory.class)
+				.isNotSameAs(tFile1);
+		assertThat(updatedFile.getName()).isEqualTo(NEW_NAME);
+		assertThat(updatedFile.getIdentifier()).isEqualTo(newId);
 	}
 
 	@Test
 	public void testGetChangesSince() {
-		final long lastChange = System.currentTimeMillis();
-		System.out.println("-- change test --");
-		System.out.println(lastChange);
+		Long lastChange = System.currentTimeMillis();
+
 		fileAPI.createNewFEntry(tFile1);
 		fileAPI.createNewFEntry(tDirectory1);
-		fileAPI.createNewFEntry(tDirectory2);
-		System.out.println(System.currentTimeMillis());
-		assertThat(fileAPI.getChangesSince(lastChange).size()).isEqualTo(3);
-		System.out.println("-- change end --");
+
+		List<FEntry> changedFEntries = fileAPI.getChangesSince(lastChange);
+		lastChange = System.currentTimeMillis();
+		assertThat(changedFEntries).hasSize(2);
+		assertThat(changedFEntries.get(0)).isInstanceOf(File.class)
+				.isNotSameAs(tFile1);
+		assertThat(changedFEntries.get(0).getName()).isEqualTo("Testfile");
+		assertThat(changedFEntries.get(1)).isInstanceOf(Directory.class)
+				.isNotSameAs(tDirectory1);
+		assertThat(changedFEntries.get(1).getName()).isEqualTo("Some dir");
+
+		tFile1.setName(NEW_NAME);
+		fileAPI.updateFEntry(tFile1);
+
+		changedFEntries = fileAPI.getChangesSince(lastChange);
+		assertThat(changedFEntries).hasSize(1);
+		assertThat(changedFEntries.get(0)).isInstanceOf(File.class)
+				.isNotSameAs(tFile1);
+		assertThat(changedFEntries.get(0).getName()).isEqualTo(NEW_NAME);
 	}
 }
