@@ -20,8 +20,8 @@ public class FEntry {
 	private Long identifier = null;
 	private String name;
 
+	private List<Permission> permissions = new ArrayList<Permission>();
 	protected List<LogEntry> logEntries = new ArrayList<LogEntry>();
-	private final List<Permission> permissions = new ArrayList<Permission>();
 	protected final List<FEntryObserver> observers = new ArrayList<FEntryObserver>();
 
 	/**
@@ -260,7 +260,8 @@ public class FEntry {
 		}
 
 		if (!permissions.equals(updatedFEntry.getPermissions())) {
-			//TODO: set permissions
+			permissions = new ArrayList<Permission>(updatedFEntry.getPermissions());
+			fireNotification(FEntryNotification.ChangeType.PERMISSION_CHANGED, source);
 		}
 	}
 }

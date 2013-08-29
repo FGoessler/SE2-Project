@@ -121,7 +121,7 @@ public class UserAPI {
 
 			//create new root directory for user
 			final Directory rootDir = new Directory(this, "Sharebox", user);
-			fileAPI.createNewFEntry(rootDir);
+			rootDir.setIdentifier(fileAPI.createNewFEntry(rootDir));
 			user.setRootDirectoryIdentifier(rootDir.getIdentifier());
 
 			userList.add(new User(user));
@@ -249,10 +249,11 @@ public class UserAPI {
 	}
 
 	/**
-	 * TODO: docu
+	 * Liefert die ID des Hauptverzeichnises des Nutzers. Mit dieser ID kann das entsprechende Directory-Objekt bei der
+	 * FileAPI angefragt werden.
 	 *
-	 * @param user
-	 * @return
+	 * @param user Der User dessen Hauptverzeichnises angefragt wird.
+	 * @return Die ID des Hauptverzeichnises des Nutzers.
 	 */
 	public Long getRootDirIDOfUser(final User user) {
 		return getUserWithMail(user.getEmail()).get().getRootDirectoryIdentifier();

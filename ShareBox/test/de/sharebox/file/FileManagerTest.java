@@ -84,6 +84,7 @@ public class FileManagerTest {
 		final DirectoryNotification directoryNotification = new DirectoryNotification(dir, FEntryNotification.ChangeType.ADDED_CHILDREN, dir, ImmutableList.<FEntry>of(file));
 		fileManager.directoryNotification(directoryNotification);
 		verify(fileAPI).updateFEntry(dir);
+		verify(fileAPI).createNewFEntry(file);
 	}
 
 	@Test
@@ -96,6 +97,4 @@ public class FileManagerTest {
 		fileManager.directoryNotification(directoryNotification);
 		verify(fileAPI, never()).updateFEntry(dir);
 	}
-
-	//TODO: test dir notification creates api-create-calls
 }

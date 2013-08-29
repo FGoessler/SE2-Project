@@ -20,7 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAPITest {
@@ -148,13 +148,13 @@ public class UserAPITest {
 	 */
 	@Test
 	public void testInviteUser() {
-		assertThat(userAPI.registerUser(user)).isTrue();
+		userAPI.registerUser(user);
+		userAPI.login(user);
 
-		verify(fileAPI).createNewFEntry(any(Directory.class));
-
-		assertThat(userAPI.authenticateUser(user)).isTrue();
-		assertThat(userAPI.login(user)).isTrue();
 		assertThat(userAPI.inviteUser(user, user2)).isTrue();
+
+		verify(fileAPI, times(2)).createNewFEntry(any(Directory.class));    //created root directory for both users
+		assertThat(userAPI.inviteUser(user, user2)).isFalse();    //user already invited -> return false
 	}
 
 	/**
@@ -162,11 +162,17 @@ public class UserAPITest {
 	 */
 	@Test
 	public void testInviteSameUser() {
-		assertThat(userAPI.registerUser(user)).isTrue();
-		assertThat(userAPI.authenticateUser(user)).isTrue();
-		assertThat(userAPI.login(user)).isTrue();
+		userAPI.registerUser(user);
+
 		assertThat(userAPI.inviteUser(user, user)).isFalse();
 	}
 
-	//TODO: test getRootDir & improve invite tests
+	@Test
+	public void testGetUsersRootDirectoryId() {
+		when(fileAPI.createNewFEntry(any(Directory.class))).thenReturn(1234L);
+
+		userAPI.registerUser(user);
+
+		assertThat(userAPI.getRootDirIDOfUser(user)).isEqualTo(1234L);
+	}
 }

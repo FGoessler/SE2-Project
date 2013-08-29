@@ -138,5 +138,9 @@ public class FileAPITest {
 		assertThat(changedFEntries.get(0).getName()).isEqualTo(NEW_NAME);
 	}
 
-	//TODO: test shareFEntry
+	@Test
+	public void testShareFEntry() {
+		//TODO: test shareFEntry
+
+	}
 }

@@ -9,10 +9,7 @@ import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
 import de.sharebox.user.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
  * TODO Klassenbeschreibung und Methoden neu beschreiben, allgemeines Storage Prinzip erklären
@@ -58,8 +55,14 @@ public class FileAPI {
 
 		public FEntry getFEntry() {
 			if (fEntry instanceof Directory) {
-				for (final FEntry child : ((Directory) fEntry).getFEntries()) {
-					child.applyChanges(getFEntryWithId(child.getIdentifier()), FileAPI.this);
+				final Iterator<FEntry> iterator = ((Directory) fEntry).getFEntries().iterator();
+				while (iterator.hasNext()) {
+					final FEntry child = iterator.next();
+					if (child.getPermissionOfCurrentUser().getReadAllowed()) {
+						child.applyChanges(getFEntryWithId(child.getIdentifier()), FileAPI.this);
+					} else {
+						iterator.remove();
+					}
 				}
 			}
 			return fEntry;
@@ -186,12 +189,13 @@ public class FileAPI {
 	}
 
 	/**
-	 * TODO: docu
+	 * Gibt den gegebenen FEntry für den gegebenen Nutzer frei. Der FEntry wird dabei zu dem Hauptverzeichnis des Nutzer
+	 * hinzugefügt.
 	 *
-	 * @param userAPI
-	 * @param invitedUser
-	 * @param sharedFEntry
-	 * @return
+	 * @param userAPI      Die UserAPI. Wird benötigt um die ID des Hauptverzeichnises des Nutzers zu erhalten.
+	 * @param invitedUser  Der Nutzer, für den der FEntry freigegeben werden soll.
+	 * @param sharedFEntry Der freizugebende FEntry.
+	 * @return True, wenn die Operation erfolgreich war. False, sonst.
 	 */
 	public boolean shareFEntry(final UserAPI userAPI, final User invitedUser, final FEntry sharedFEntry) {
 		Boolean success = true;
@@ -203,7 +207,7 @@ public class FileAPI {
 			success = false;
 		}
 
-		APILogger.logResult("Shared file '" + sharedFEntry.getName() + "' with user", success);
+		APILogger.logResult("Shared file  '" + sharedFEntry.getName() + "' with user", success);
 
 		return success;
 	}

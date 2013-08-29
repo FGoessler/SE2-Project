@@ -82,6 +82,8 @@ public class FEntryTest extends AbstractFEntryTest {
 		assertThat(fEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
 		assertThat(fEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
 		assertThat(fEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
+
+		//TODO: test permission change!
 	}
 
 }

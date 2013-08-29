@@ -197,13 +197,13 @@ public class DirectoryTest {
 	@Test
 	public void testApplyChangesFormAPI() {
 		directory.setIdentifier(1234L);
-		File removedFile = directory.createNewFile("removed file").get();
+		final File removedFile = directory.createNewFile("removed file").get();
 		removedFile.setIdentifier(1L);
-		File keptFile = directory.createNewFile("kept file").get();
+		final File keptFile = directory.createNewFile("kept file").get();
 		keptFile.setIdentifier(2L);
 		final Directory updatedDirectory = new Directory(mockedUserAPI, "newDirName", mockedUser);
 		updatedDirectory.addFEntry(keptFile);
-		Directory newDir = updatedDirectory.createNewDirectory("added dir").get();
+		final Directory newDir = updatedDirectory.createNewDirectory("added dir").get();
 		newDir.setIdentifier(3L);
 
 		directory.applyChanges(updatedDirectory, mock(FileManager.class));

@@ -220,14 +220,14 @@ public class DirectoryViewSelectionService {
 		}
 	}
 
-	private void deleteSingleFEntry(FEntry selectedFEntry, ContextMenuController contextMenuController) {
+	private void deleteSingleFEntry(final FEntry selectedFEntry, final ContextMenuController contextMenuController) {
 		final Optional<Directory> parentDirectory = contextMenuController.getParentOfSelectedFEntry();
 		if (parentDirectory.isPresent() && parentDirectory.get().getPermissionOfCurrentUser().getWriteAllowed()) {
 			parentDirectory.get().deleteFEntry(selectedFEntry);
-		} else if (!parentDirectory.isPresent()) {
-			optionPane.showMessageDialog("Sie können ihr Hauptverzeichnis nicht löschen.");
-		} else {
+		} else if (parentDirectory.isPresent()) {
 			optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte um diese Änderung vorzunehmen.");
+		} else {
+			optionPane.showMessageDialog("Sie können ihr Hauptverzeichnis nicht löschen.");
 		}
 	}
 

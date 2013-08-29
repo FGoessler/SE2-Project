@@ -5,8 +5,8 @@ import de.sharebox.file.model.FEntry;
 import java.text.DateFormat;
 import java.util.Date;
 
-/*
- * TODO Klassenbeschreibung (Die Klasse APILogger ist für das Loggen von API-Aktionen?)
+/**
+ * Diese Klasse bietet statische Methode zum Loggen von Meldungen zu Testzwecken.
  */
 public final class APILogger {
 
@@ -14,10 +14,6 @@ public final class APILogger {
 	 * Logging Flag.
 	 */
 	public static final boolean LOGGING = true;
-	/**
-	 * Flag für Datumsausgabe: TRUE wenn volles Datumsformat gewünscht wird, FALSE sonst.
-	 */
-	public static final boolean READABLEDATE = false;
 
 	private APILogger() {
 	}
