@@ -237,6 +237,24 @@ public class PermissionViewControllerTest {
 		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
 
+	@Test
+	public void showsConfirmationMessageWhenEditingOwnPermission() {
+		when(optionPaneHelper.showConfirmationDialog(anyString())).thenReturn(1);    //simulate 'no'-button
+
+		assertThat(fEntry.getPermissions()).hasSize(2);
+		permissionViewController.permissionTable.changeSelection(0, 0, false, false);
+		permissionViewController.removeUserPermission.actionPerformed(mock(ActionEvent.class));
+
+		verify(optionPaneHelper, times(1)).showConfirmationDialog("Achtung Sie ändern Ihre eigenen Rechte. Diese Aktion wirklich durchführen?");
+		assertThat(fEntry.getPermissions()).hasSize(2);
+
+
+		assertThat(fEntry.getPermissions().get(0).getManageAllowed()).isTrue();
+		permissionViewController.tableModel.setValueAt(false, 0, 3);
+		verify(optionPaneHelper, times(2)).showConfirmationDialog("Achtung Sie ändern Ihre eigenen Rechte. Diese Aktion wirklich durchführen?");
+		assertThat(fEntry.getPermissions().get(0).getManageAllowed()).isTrue();
+	}
+
 	private void setCurrentUserToUserWithoutPermissions() {
 		final User userWithoutPermissions = mock(User.class);
 		when(userWithoutPermissions.getEmail()).thenReturn("keine@rechte.de");

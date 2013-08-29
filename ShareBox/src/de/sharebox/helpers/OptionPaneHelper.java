@@ -30,4 +30,8 @@ public class OptionPaneHelper {
 	public void showMessageDialog(final String msg) {
 		JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), msg);
 	}
+
+	public int showConfirmationDialog(final String msg) {
+		return JOptionPane.showConfirmDialog(JOptionPane.getRootFrame(), msg);
+	}
 }

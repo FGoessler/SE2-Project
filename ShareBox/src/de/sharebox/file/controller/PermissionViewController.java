@@ -3,6 +3,7 @@ package de.sharebox.file.controller;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import de.sharebox.api.UserAPI;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.Permission;
 import de.sharebox.file.notification.FEntryNotification;
@@ -29,6 +30,7 @@ public class PermissionViewController {
 	private final DirectoryViewSelectionService selectionService;
 	private final SharingService sharingService;
 	private final OptionPaneHelper optionPane;
+	private final UserAPI userAPI;
 
 	private Optional<FEntry> currentFEntry = Optional.absent();
 
@@ -45,17 +47,20 @@ public class PermissionViewController {
 	 *                         festgestellt werden kann.
 	 * @param sharingService   Eine SharingService-Instanz, die Methoden zum Freigeben von FEntries bereitstellt.
 	 * @param optionPaneHelper Ein OptionPaneHelper zum Erstellen von Dialogfenstern.
+	 * @param userAPI          Die UserAPI. Wird hier benötigt um den aktuell eingeloggten Benutzer festzustellen.
 	 */
 	@Inject
 	PermissionViewController(final @Assisted JSplitPane splitPane,
 							 final DirectoryViewSelectionService selectionService,
 							 final SharingService sharingService,
-							 final OptionPaneHelper optionPaneHelper) {
+							 final OptionPaneHelper optionPaneHelper,
+							 final UserAPI userAPI) {
 
 		final JComponent panel = (JComponent) new SwingEngineHelper().render(this, "directory/permissionView");
 		splitPane.setRightComponent(panel);
 
 		this.optionPane = optionPaneHelper;
+		this.userAPI = userAPI;
 
 		this.sharingService = sharingService;
 
@@ -189,13 +194,19 @@ public class PermissionViewController {
 
 				switch (columnIndex) {
 					case 1:
-						permission.setReadAllowed((Boolean) aValue);
+						if (showOwnPermissionWarning(permission)) {
+							permission.setReadAllowed((Boolean) aValue);
+						}
 						break;
 					case 2:
-						permission.setWriteAllowed((Boolean) aValue);
+						if (showOwnPermissionWarning(permission)) {
+							permission.setWriteAllowed((Boolean) aValue);
+						}
 						break;
 					case 3:
-						permission.setManageAllowed((Boolean) aValue);
+						if (showOwnPermissionWarning(permission)) {
+							permission.setManageAllowed((Boolean) aValue);
+						}
 						break;
 					default:
 						System.out.println("Unallowed editing!");
@@ -242,11 +253,21 @@ public class PermissionViewController {
 
 			if (currentFEntry.get().getPermissionOfCurrentUser().getManageAllowed()) {
 				for (final Permission permission : selectedPermissions) {
-					currentFEntry.get().setPermission(permission.getUser(), false, false, false);
+					if (showOwnPermissionWarning(permission)) {
+						currentFEntry.get().setPermission(permission.getUser(), false, false, false);
+					}
 				}
 			} else {
 				optionPane.showMessageDialog("Sie besitzen leider nicht die erforderlichen Rechte für diese Änderung.");
 			}
 		}
 	};
+
+	private Boolean showOwnPermissionWarning(final Permission permission) {
+		Boolean agreed = true;
+		if (permission.getUser().getEmail().equals(userAPI.getCurrentUser().getEmail())) {
+			agreed = optionPane.showConfirmationDialog("Achtung Sie ändern Ihre eigenen Rechte. Diese Aktion wirklich durchführen?") < 1;
+		}
+		return agreed;
+	}
 }
