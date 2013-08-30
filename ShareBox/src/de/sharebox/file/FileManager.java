@@ -17,7 +17,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * TODO Klassenbeschreibung und Methoden neu beschreiben
+ * Der FileManager dient als Bindeglied zwischen FileAPI und der Applikationen. Jeder in der Applikation verwendete
+ * FEntry sollte sich beim FileManager registrieren. Der FileManager registriert sich bei jedem so registrierten FEntry
+ * als Observer. Jede Änderungsbenachrichtigung sendet der FileManager an die FileAPI weiter. Zudem ruft der FileManager
+ * regelmäßig (derzeit alle 30sek) Änderungen bei der FileAPI ab und führt diese auf den registrierten FEntries aus und
+ * löst die entsprechenden Notifications aus, wobei als Source der FileManager gesetzt wird.
+ * Durch das Setzen der Source der Notification kann der FileManager Änderungsbenachrichtigungen, die von ihm selbst
+ * erzeugt wurden, ignorieren und verhindert somit einen endlosen 'Notificationkreis'.
  */
 @Singleton
 public class FileManager implements DirectoryObserver {
@@ -59,8 +65,8 @@ public class FileManager implements DirectoryObserver {
 
 	/**
 	 * Registriert einen neuen oder existierenden FEntry, der ab sofort vom FileManager beoabachtet und mit der FileAPI
-	 * abgeglichen wird. Besitzt der FEntry keine ID so wird er der API als neuer FEntry gemeldet und die erhaltene ID
-	 * wird zugeweißen.
+	 * abgeglichen wird. Handelt es sich um ein Directory werden auch rekursiv alle enthaltenen FEntries registriert.
+	 * Besitzt der FEntry keine ID so wird er der API als neuer FEntry gemeldet und die erhaltene ID wird zugeweißen.
 	 *
 	 * @param fEntry Der zu registrierende FEntry.
 	 * @return ob die Operation erfolgreich war
@@ -84,11 +90,9 @@ public class FileManager implements DirectoryObserver {
 	}
 
 	/**
-	 * Sucht nach Änderungen der FileAPI und aktualisiert/ergänzt die veränderten FEntries.
-	 *
-	 * @return ob alle Operationen erfolgreich waren.
+	 * Fragt Änderungen seit dem letzten Poll von der FIleAPI ab und aktualisiert/ergänzt die veränderten FEntries.
 	 */
-	public boolean pollAPIForChanges() {
+	public void pollAPIForChanges() {
 		APILogger.logMessage("Polling changes from API...");
 
 		final long currentAPIPoll = System.currentTimeMillis();
@@ -102,19 +106,13 @@ public class FileManager implements DirectoryObserver {
 		}
 
 		lastAPIPoll = currentAPIPoll;
-
-		return true;
 	}
 
 	/**
-	 * Sucht nach Änderungen des Dateisystems und aktualisiert/ergänzt die veränderten FEntries.
-	 *
-	 * @return ob alle Operationen erfolgreich waren
+	 * Sucht nach Änderungen im Dateisystem seit dem letzten Poll und aktualisiert/ergänzt die veränderten FEntries.
 	 */
-	public boolean pollFileSystemForChanges() {
+	public void pollFileSystemForChanges() {
 		APILogger.logMessage("Polling changes from local filesystem... NOT implemented in this Prototype!");
-
-		return true;
 	}
 
 	@Override

@@ -11,16 +11,21 @@ import de.sharebox.user.model.User;
 
 import java.util.*;
 
-/*
- * TODO Klassenbeschreibung und Methoden neu beschreiben, allgemeines Storage Prinzip erklären
+/**
+ * Die FileAPI dient zur Kommunikation mit dem Server. Hiermit können Dateien und Verzeichnisse angelegt, aktualisiert
+ * und abgerufen werden.<br/>
+ * Für die Zwecke dieses Prototypen werden keine echten Request abgesetzt und nur über den APILogger Meldungen
+ * ausgegeben, sowie die Daten lokal im Objekt gespeichert.
  */
 @Singleton
 public class FileAPI {
 	private static final String FILE_NOT_FOUND = "File not found.";
 
 	/**
-	 * Ein simulierter Speicher - Unterliste von Speichereinträgen für die Versionierung usw.<br/>
-	 * (Liste der fEntry hat einen Zeitstempel und FEntry)
+	 * Diese Map dient dazu alle FEntries mit allen existierenden Versionen zu speichern. Der Key eines Eintrags in
+	 * der Map ist dabei jeweils der eindeutige, sich nicht ändernde, Identfier des FEntries, der von der API vorher
+	 * vergeben wurde. Als Value enthält ein Eintrag der Map eine Liste aller Versionen eines FEntries, jeweils gekapselt
+	 * in ein StoredFEntry-Objekt, das zusätzliche Informationen über den FEntry enthält, die dieser nicht selbst speichert.
 	 */
 	private final Map<Long, List<StoredFEntry>> storage = new HashMap<Long, List<StoredFEntry>>();
 
@@ -53,6 +58,12 @@ public class FileAPI {
 			return timestamp;
 		}
 
+		/**
+		 * Ruft den gespeicherte FEntry ab. Handelt es sich bei dem FEntry um ein Directory werden alle Kinder des
+		 * Directories aktualisiert abgefragt.
+		 *
+		 * @return Der gespeicherte FEntry.
+		 */
 		public FEntry getFEntry() {
 			if (fEntry instanceof Directory) {
 				final Iterator<FEntry> iterator = ((Directory) fEntry).getFEntries().iterator();
@@ -104,9 +115,9 @@ public class FileAPI {
 	}
 
 	/**
-	 * Erstellt einen neuen FEntry und weißt ihm eine neue ID vor.
+	 * Erstellt einen neuen FEntry und weißt ihm eine neue ID zu.
 	 *
-	 * @param newFEntry Der neue zu erstellende FEntry.
+	 * @param newFEntry Der neu erstellte FEntry.
 	 * @return Die ID des erstellten FEntries.
 	 */
 	public Long createNewFEntry(final FEntry newFEntry) {
@@ -129,7 +140,7 @@ public class FileAPI {
 	 * Aktulisiert den gegebenen FEntry bzw. seine lokale Kopie in der API. 2 FEntries werden hierbei als gleich betrachtet
 	 * wenn sie die selbe ID besitzen.
 	 *
-	 * @param updatedFEntry zu bearbeitendes File
+	 * @param updatedFEntry Aktulaisierter FEntry mit neuen Informationen.
 	 * @return True, wenn der FEntry gefunden und aktualisiert wurde. False, sonst.
 	 */
 	public boolean updateFEntry(final FEntry updatedFEntry) {
@@ -173,7 +184,7 @@ public class FileAPI {
 	 * Liefert alle FEntries, welche sich nach dem gegebenen Zeitpunkt geändert haben oder erstellt wurden.
 	 *
 	 * @param timeOfLastPoll Timestamp der letzten Abfrage in ms.
-	 * @return ImmutableList von FEntries die sich geändert haben bzw. neu erstellt wurden.
+	 * @return Eine ImmutableList von FEntries die sich geändert haben bzw. neu erstellt wurden.
 	 */
 	public ImmutableList<FEntry> getChangesSince(final long timeOfLastPoll) {
 		final List<FEntry> changedFEntries = new ArrayList<FEntry>();
@@ -213,7 +224,7 @@ public class FileAPI {
 	}
 
 	/**
-	 * Kopiert einen FEntry mit dem entsprechenden Copy-Konstruktor.
+	 * Kopiert einen FEntry mit dem entsprechenden Copy-Konstruktor seiner spezifischen Klasse.
 	 *
 	 * @param fEntryToCopy Der FEntry der kopiert werden soll.
 	 * @return Die Kopie des FEntries.
