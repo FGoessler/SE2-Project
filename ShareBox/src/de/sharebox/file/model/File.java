@@ -23,7 +23,7 @@ public class File extends FEntry {
 	 * auch nur einen "Created"-LogEntry, anstatt eines "Renamed"- und "PermissionChanged"-LogEntry.
 	 *
 	 * @param userAPI      Die aktuell für diesen File relevante UserAPI. Wird dazu benötigt, um den aktuell eingeloggten
-	 *                	   Nutzer zu bestimmen und Rechte zu überprüfen.
+	 *                     Nutzer zu bestimmen und Rechte zu überprüfen.
 	 * @param name         Der Name des Files.
 	 * @param creatingUser Der Nutzer, der initial alle Rechte auf diesem File erhält.
 	 */

@@ -2,7 +2,6 @@ package de.sharebox.file.controller;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
-import com.sun.istack.internal.NotNull;
 import de.sharebox.file.model.Directory;
 import de.sharebox.file.model.FEntry;
 import de.sharebox.file.services.DirectoryViewClipboardService;
@@ -68,7 +67,7 @@ public class ContextMenuController {
 	 * @param xPos     Die X Koordinate des Klicks.
 	 * @param yPos     Die Y Koordinate des Klicks.
 	 */
-	public void showMenu(final @NotNull TreePath treePath, final int xPos, final int yPos) {
+	public void showMenu(final TreePath treePath, final int xPos, final int yPos) {
 		popupMenu.setLocation(xPos, yPos);
 		popupMenu.setVisible(true);
 		currentTreePath = Optional.of(treePath);

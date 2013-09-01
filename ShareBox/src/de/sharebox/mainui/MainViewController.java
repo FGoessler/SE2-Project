@@ -52,7 +52,7 @@ public class MainViewController {
 	 * @param user                           Der Nutzer dessen Daten angezeigt werden sollen. Kann nicht von Guice
 	 *                                       injectet werden und wird daher per Factory gesetzt.
 	 * @param userAPI                        Die UserAPI zur Kommunikation mit dem Server.
-	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt, um 
+	 * @param callingLoginController         Der LoginController der diesen mainViewController erstellt. Wird benötigt, um
 	 *                                       dann diesen LoginController wieder anzuzeigen, wenn der Nutzer sich ausloggt.
 	 *                                       Kann nicht von Guice injectet werden und wird daher per Factory gesetzt.
 	 * @param permissionViewControllerFactory

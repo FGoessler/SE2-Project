@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sharebox Ultimate</title>
+</head>
+<body>
+Dies ist die Dokumentation zur Sharebox Ultimate.<br/>
+<br/>
+<strong>Gruppe SE2-04</strong><br/>
+<br/>
+<strong>Mitglieder:</strong><br/>
+- Benjamin Barth<br/>
+- Florian Gößler<br/>
+- Kay Thorsten Meißner<br/>
+- Julius Mertens<br/>
+<br/>
+<br/>
+Dieser Prototype kann einfach über ohne Programmargumente gestartet werden. Es empfielt sich zu Testzwecken das
+Programm aus einer IDE heraus oder per Kommandozeile zu starten um die vom Programm erzeugten Logmeldungen mitlesen
+zu können.<br/>
+Bei den Tests haben wir uns auf echte Unit-Tests beschränkt und Abhängigkeiten jeweils mit Mockito so weit es geht
+gemockt.
+Integrationstest wurden von uns händisch ausgeführt, da in der Aufgabenstellung expliziet nur Unit-Tests gefordert
+waren.
+Die Testklassen sind dieser Dokumentation mit enthalten wurden aber bewusst nicht größer kommentiert, da schließlich
+schon die zu testenden Klassen alle ausführlich beschrieben sind.<br/>
+<br/>
+<br/>
+<strong>In diesem Prototypen nicht enthaltene Funktionalitäten:</strong><br/>
+- Es findet wie besprochen keine Kommunikationen mit einem Server statt und es werden auch keine Daten persistent
+abgelegt.<br/>
+Es findet keine Kommunikation mit dem Dateisystem statt. Die implementierte FileAPI und UserAPI loggen lediglich die
+Aufrufe,
+die normalerweise zu einer Serverkommunikation führen würden und speichern alle Daten lokal im Hauptspeicher.
+- Die GUI wurde ohne Berücksichtigung von Branding o.ä. Überlegeungen erstellt und dient nur zur schlichten Darstellung
+der Funktionalität.<br/>
+- Ein externes Bezahlsystem wurde nicht eingebunden.<br/>
+- Ein Versionierungssystem wurde nicht implementiert.<br/>
+- Es existiert ein voreingestellter Testnutzer (Zugangsdaten: admin@test.de Passwort: root)<br/>
+- Beim Erstellen/Registreieren neuer Benutzer werden keine Emails Versand, sondern nur ein Defaultpasswort generiert,
+welches zu Testzwecken in den Logs auf der Konsole ausgelesen werden kann.<br/>
+<br/>
+<br/>
+<strong>Anmerkungen zu PMD:</strong><br/>
+Wir verletzten diverse PMD-Regeln und möchten dies an dieser Stelle kurz erklären:<br/>
+- "Avoid instantiating objects in loops": Lässt sich an manchen Stellen für zB. Deep Copies nicht vermeiden.<br/>
+- "Unused Private Field": Kommt in einigen Testklassen vor. Die entsprechenden Feldern sind allerings mit Mockitos
+&#064;Mock-
+Annotation markiert und die dadurch erstellten Objekte werden per &#064;InjectMocks bei der Erstellung von Testobjekten
+automatisch vom Framework verwendet. PMD erkennt dies leider nicht.<br/>
+- "Jnit Tests should include Assert": PMD erkennt leider Mockitos verify-Methoden bzw. teilweise auch assertThat() von
+FEST-Asserts nicht.<br/>
+- "Use Proper Class Loader": laut der Meldung selbst nur für Java EE relevant<br/>
+- "Dataflor Anomaly Analysis": ließen sich an vielen Stellen leider auch nicht beheben - zumindets nicht ohne andere
+Warnings zu generieren<br/>
+- "Avoid Final Local Variable": Sämtliche Schleifenvariablen werden von For-Each Schleifen werden damit markeiert. Diese
+als Felder zu definieren ist Unsinn. Lässt man das Final-Keyword weg erhält man allerdings eine andere Warnung. Unserer
+Meinung nach handelt es sich um einen Fehler von PMD.<br/>
+- "Bean Member Should Serialize": PMD kann leider keine Beans erkennen und hält daher alle Klassen für Beans. Wir
+verwenden jedoch nirgends Beans.<br/>
+- "Long Variable": Wir bevorzugen sprechende Bezeichner die lieber etwas zu lang sind als nur aus Äbkürzungen zu
+bestehen.<br/>
+<br/>
+<br/>
+<strong>Verwendte Frameworks:</strong><br/>
+- SWIxml (http://www.swixml.org) : Framework um Swing GUIs aus XML Dateien zu generieren.<br/>
+- Google Guice (https://code.google.com/p/google-guice/) (Version 3.0) : Dependency Injection Framework - hauptsächlich
+eingesetzt um das Testen der einzelnen Komponenten unabhängig voneinander zu erleichtern und diverse Singleton-Mechansim
+zu vereinfachen. (Wir verwenden zusätzlich das Guice Addon Assisted-Inject.)<br/>
+- Google Guava (https://code.google.com/p/guava-libraries/) (Version 14.0.1) : Generelles Framework von Google für
+häufig<br/>
+benötigte Funktionen, die die Java Standard Library nicht zur Verfügung stellt. Von uns wurden davon hauptsächlich
+Immutable Collections und Optionals (zur Vermeidung von null-Zuweisungen bzw. "meaningfull nulls") verwendet.<br/>
+<br/>
+<br/>
+<strong>Verwendete Testframeworks:</strong><br/>
+- JUnit 4<br/>
+- Mockito (https://code.google.com/p/mockito/) (Version 1.9.5) : Framework um automatisch Mock- und Spy-Objekte zu
+erstellen.<br/>
+- FEST Asserts (http://fest.easytesting.org) (Version 1.4) : Framework das zusätzliche Matcher bereitstellt bzw.
+sogenannte "Fluent Assertions".<br/>
+
+
+</body>
+</html>

@@ -1,1 +1,13 @@
 de.sharebox
+de.sharebox.api
+de.sharebox.file
+de.sharebox.file.controller
+de.sharebox.file.model
+de.sharebox.file.notification
+de.sharebox.file.services
+de.sharebox.helpers
+de.sharebox.mainui
+de.sharebox.mainui.menu
+de.sharebox.user.controller
+de.sharebox.user.enums
+de.sharebox.user.model

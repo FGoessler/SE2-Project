@@ -1,6 +1,5 @@
 package de.sharebox.file.model;
 
-import com.sun.istack.internal.NotNull;
 import de.sharebox.file.notification.FEntryNotification;
 import de.sharebox.user.model.User;
 
@@ -23,7 +22,7 @@ public class Permission {
 	 * @param user   Der Nutzer, dessen Rechte an dem FEntry mit diesem Objekt definiert werden.
 	 * @param fEntry Der FEntry für den die Rechte des Users definiert werden.
 	 */
-	public Permission(final @NotNull User user, final @NotNull FEntry fEntry) {
+	public Permission(final User user, final FEntry fEntry) {
 		this.user = user;
 		this.fEntry = fEntry;
 	}
@@ -39,7 +38,7 @@ public class Permission {
 	 * @param writeAllowed  Der initale Wert für Schreibrechte.
 	 * @param manageAllowed Der initale Wert für Verwaltungsrechte.
 	 */
-	public Permission(final @NotNull User user, final @NotNull FEntry fEntry,
+	public Permission(final User user, final FEntry fEntry,
 					  final Boolean readAllowed, final Boolean writeAllowed, final Boolean manageAllowed) {
 		this.user = user;
 		this.fEntry = fEntry;
