@@ -1,6 +1,7 @@
 package de.sharebox.mainui;
 
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
 import de.sharebox.file.controller.LogViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
@@ -48,6 +49,8 @@ public class MainViewControllerTest {
 	private EditProfileController editProfileController;
 	@Mock
 	private InvitationController invitationController;
+	@Mock
+	private FileManager fileManager;
 
 	@InjectMocks
 	private MainViewController mainView;

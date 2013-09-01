@@ -50,6 +50,14 @@ Annotation markiert und die dadurch erstellten Objekte werden per &#064;InjectMo
 automatisch vom Framework verwendet. PMD erkennt dies leider nicht.<br/>
 - "Jnit Tests should include Assert": PMD erkennt leider Mockitos verify-Methoden bzw. teilweise auch assertThat() von
 FEST-Asserts nicht.<br/>
+- "Abstract Class Without Abstract Method": Die Testklasse die diese Regel verletzt dient als Basisklasse für weitere
+Tests,
+die die FEntry-Klasse testen und sollte nicht ausgeführt werden. Sie fungiert daher korrekterweise als Abstrakte Klasse,
+die gemeinsame Funktionalität bereitstellt aber nicht selbst instanziert werden sollte.<br/>
+- "Too Many Fields": Der RegisterController ist leider vom UI her sehr umfangreich und SWIXml kann die generierten
+Swing-Elemente nur an Felder einer Klasse binden.<br/>
+- "Too Many Methods": Zwei unserer Tesklassen sind leider etwas zu lang, da es sich aber nur um Tests handelt ist dies
+für uns vertretbar.<br/>
 - "Use Proper Class Loader": laut der Meldung selbst nur für Java EE relevant<br/>
 - "Dataflor Anomaly Analysis": ließen sich an vielen Stellen leider auch nicht beheben - zumindets nicht ohne andere
 Warnings zu generieren<br/>

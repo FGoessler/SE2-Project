@@ -30,7 +30,7 @@ public class UserAPI {
 	 */
 	private final List<User> userList = new ArrayList<User>();
 
-	private User currentUser;
+	private Optional<User> currentUser = Optional.absent();
 
 	/**
 	 * Leerer Konstruktor um ein direktes Erstellen zu verhindern. Als Singleton konzipiert.<br/>
@@ -73,7 +73,7 @@ public class UserAPI {
 		boolean success = false;
 
 		if (authenticateUser(user) && !isLoggedIn()) {
-			currentUser = new User(user);
+			currentUser = Optional.of(new User(user));
 			APILogger.logSuccess("Login");
 			success = true;
 		} else {
@@ -95,7 +95,7 @@ public class UserAPI {
 		boolean success = false;
 
 		if (isLoggedIn()) {
-			currentUser = null;
+			currentUser = Optional.absent();
 			APILogger.logSuccess("Logout");
 			success = true;
 		} else {
@@ -145,18 +145,18 @@ public class UserAPI {
 	public boolean changeProfile(final User user) {
 		Boolean success = false;
 
-		if (currentUser != null
+		if (isLoggedIn()
 				&& !isNullOrEmpty(user.getFirstname())
 				&& user.getGender() != null
 				&& !isNullOrEmpty(user.getLastname())) {
 
-			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());
+			final Optional<User> foundUser = getUserWithMail(currentUser.get().getEmail());
 			if (foundUser.isPresent()) {
 				foundUser.get().setFirstname(user.getFirstname());
 				foundUser.get().setLastname(user.getLastname());
 				foundUser.get().setGender(user.getGender());
 				success = true;
-				currentUser = new User(foundUser.get());
+				currentUser = Optional.of(new User(foundUser.get()));
 			}
 		}
 
@@ -174,15 +174,15 @@ public class UserAPI {
 	public boolean changeAccountingSettings(final User user) {
 		Boolean success = false;
 
-		if (currentUser != null
+		if (isLoggedIn()
 				&& !isNullOrEmpty(user.getAddressInfo().getStreet()) && !isNullOrEmpty(user.getAddressInfo().getCity())
 				&& !isNullOrEmpty(user.getAddressInfo().getZipCode()) && !isNullOrEmpty(user.getAddressInfo().getCountry())) {
-			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());
+			final Optional<User> foundUser = getUserWithMail(currentUser.get().getEmail());
 			if (foundUser.isPresent()) {
 				foundUser.get().setAddressInfo(user.getAddressInfo());
 				foundUser.get().setStorageLimit(user.getStorageLimit());
 				success = true;
-				currentUser = new User(foundUser.get());
+				currentUser = Optional.of(new User(foundUser.get()));
 			}
 		}
 
@@ -201,18 +201,18 @@ public class UserAPI {
 	public boolean changeCredential(final User oldUser, final User newUser) {
 		Boolean success = false;
 		//search through existing users
-		if (currentUser != null
+		if (isLoggedIn()
 				&& !isNullOrEmpty(newUser.getEmail())
 				&& !isNullOrEmpty(newUser.getPassword())
-				&& currentUser.getPassword().equals(oldUser.getPassword())
-				&& currentUser.getEmail().equals(oldUser.getEmail())) {
+				&& currentUser.get().getPassword().equals(oldUser.getPassword())
+				&& currentUser.get().getEmail().equals(oldUser.getEmail())) {
 
 			final Optional<User> foundUser = getUserWithMail(oldUser.getEmail());
 			if (foundUser.isPresent() && foundUser.get().getPassword().equals(oldUser.getPassword())) {
 				foundUser.get().setEmail(newUser.getEmail());
 				foundUser.get().setPassword(newUser.getPassword());
 				success = true;
-				currentUser = new User(foundUser.get());
+				currentUser = Optional.of(new User(foundUser.get()));
 			}
 		}
 
@@ -231,7 +231,7 @@ public class UserAPI {
 	public boolean inviteUser(final User invitingUser, final User invitedUser) {
 		Boolean success = true;
 		//search through existing users to test if user already exists
-		if (currentUser == null || isNullOrEmpty(invitedUser.getEmail())) {
+		if (!isLoggedIn() || isNullOrEmpty(invitedUser.getEmail())) {
 			success = false;
 		} else {
 			if (getUserWithMail(invitedUser.getEmail()).isPresent()) {
@@ -266,7 +266,7 @@ public class UserAPI {
 	 * @return ob ein User eingeloggt ist
 	 */
 	public boolean isLoggedIn() {
-		return currentUser != null;
+		return currentUser.isPresent();
 	}
 
 	/**
@@ -278,11 +278,11 @@ public class UserAPI {
 		User user = null;
 
 		if (isLoggedIn()) {
-			final Optional<User> foundUser = getUserWithMail(currentUser.getEmail());
+			final Optional<User> foundUser = getUserWithMail(currentUser.get().getEmail());
 			if (foundUser.isPresent()) {
-				currentUser = new User(foundUser.get());
+				currentUser = Optional.of(new User(foundUser.get()));
 			}
-			user = new User(currentUser);
+			user = new User(currentUser.get());
 			user.setPassword("");
 		}
 
