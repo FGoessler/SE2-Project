@@ -34,7 +34,7 @@ public class AdministrationMenu {
 	/**
 	 * Handler - um auf die Auswahl des "Logindaten ändern"-Buttons im Menü zu reagieren.
 	 */
-	public Action showEditCredentials = new AbstractAction() {
+	public final Action showEditCredentials = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openEditCredentialsController();
 		}
@@ -43,7 +43,7 @@ public class AdministrationMenu {
 	/**
 	 * Handler - um auf die Auswahl des "Profil ändern"-Buttons im Menü zu reagieren.
 	 */
-	public Action showEditProfile = new AbstractAction() {
+	public final Action showEditProfile = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openEditProfileController();
 		}
@@ -52,7 +52,7 @@ public class AdministrationMenu {
 	/**
 	 * Handler - um auf die Auswahl des "Accounting ändern"-Buttons im Menü zu reagieren.
 	 */
-	public Action showEditAccounting = new AbstractAction() {
+	public final Action showEditAccounting = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openAccountController();
 		}
@@ -61,7 +61,7 @@ public class AdministrationMenu {
 	/**
 	 * Handler - um auf die Auswahl des Einladen-Buttons im Menü zu reagieren.
 	 */
-	public Action showInvitationView = new AbstractAction() {
+	public final Action showInvitationView = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			mainViewController.openInvitationController();
 		}
@@ -70,7 +70,7 @@ public class AdministrationMenu {
 	/**
 	 * Handler - um auf die Auswahl das Ausloggen-Buttons im Menü zu reagieren.
 	 */
-	public Action logout = new AbstractAction() {
+	public final Action logout = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			mainViewController.close();
 		}

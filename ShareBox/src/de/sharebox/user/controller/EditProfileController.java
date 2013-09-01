@@ -53,9 +53,10 @@ public class EditProfileController {
 	/**
 	 * Speichern der Änderungen an den Profil-Informationen. Für jedes Feld wird überprüft, ob eine Eingabe optional
 	 * ist oder nicht (z.B.: >5GB Speicherplatz). Wenn eine Eingabe optional ist, kann trotzdem eine Information
-	 * eingetragen werden (wird gespeichert).
+	 * eingetragen werden (wird gespeichert).<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action save = new AbstractAction() {
+	public final Action save = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			final User user = new User();
 			user.setFirstname(firstnameField.getText());
@@ -73,9 +74,10 @@ public class EditProfileController {
 	};
 
 	/**
-	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
+	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action stop = new AbstractAction() {
+	public final Action stop = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");

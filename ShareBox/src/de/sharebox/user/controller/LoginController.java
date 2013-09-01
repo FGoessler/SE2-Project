@@ -55,9 +55,10 @@ public class LoginController {
 
 	/**
 	 * Handler - reagiert auf einen Klick auf den Login-Button. Überprüft die eingegebenen Daten und erstellt, im
-	 * Erfolgsfall, das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.
+	 * Erfolgsfall, das Hauptfenster (MainViewController). Bei Falscheingabe wird der Nutzer aufgefordert seine Daten korrekt einzugeben.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action submit = new AbstractAction() {
+	public final Action submit = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			final User user = new User();
 			user.setEmail(mailField.getText());
@@ -73,9 +74,10 @@ public class LoginController {
 	};
 
 	/**
-	 * Der Registrieren-Button bringt den Nutzer in das Registrieren-Fenster, wo er einen Account erstellen kann.
+	 * Der Registrieren-Button bringt den Nutzer in das Registrieren-Fenster, wo er einen Account erstellen kann.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action register = new AbstractAction() {
+	public final Action register = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			registerController.show();
 		}

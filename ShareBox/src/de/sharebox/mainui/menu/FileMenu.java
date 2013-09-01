@@ -43,7 +43,7 @@ public class FileMenu {
 	/**
 	 * Handler - um auf die Auswahl des "Neue Datei erstellen"-Buttons im Datei-Menü zu reagieren.
 	 */
-	public Action createNewFile = new AbstractAction() {
+	public final Action createNewFile = new AbstractAction() {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			selectionService.createNewFileBasedOnUserSelection(Optional.<ContextMenuController>absent());
@@ -53,7 +53,7 @@ public class FileMenu {
 	/**
 	 * Handler - um auf die Auswahl des "Neues Verzeichnis erstellen"-Buttons im Datei-Menü zu reagieren.
 	 */
-	public Action createNewDirectory = new AbstractAction() {
+	public final Action createNewDirectory = new AbstractAction() {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			selectionService.createNewDirectoryBasedOnUserSelection(Optional.<ContextMenuController>absent());
@@ -63,7 +63,7 @@ public class FileMenu {
 	/**
 	 * Handler - um auf Kopieren-Buttons im Datei-Menü zu reagieren.
 	 */
-	public Action copyFEntry = new AbstractAction() {
+	public final Action copyFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			clipboard.addToClipboard(selectionService.getSelectedFEntries());
@@ -73,7 +73,7 @@ public class FileMenu {
 	/**
 	 * Handler - um auf Einfügen-Buttons im Datei-Menü zu reagieren.
 	 */
-	public Action pasteFEntry = new AbstractAction() {
+	public final Action pasteFEntry = new AbstractAction() {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			if (!selectionService.getSelectedFEntries().isEmpty()) {

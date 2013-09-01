@@ -12,8 +12,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.awt.event.ActionEvent;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,7 +49,7 @@ public class RegisterControllerTest {
 		registerController.countryField.setText("Base");
 		registerController.locationField.setText("preBase");
 
-		registerController.register.actionPerformed(mock(ActionEvent.class));
+		registerController.register();
 
 		verify(mockedAPI).registerUser(any(User.class));
 		verify(optionPaneHelper).showMessageDialog("Die Registrierung war erfolgreich");
@@ -64,7 +62,7 @@ public class RegisterControllerTest {
 	public void testInvalidRegister() {
 		when(mockedAPI.registerUser(Matchers.any(User.class))).thenReturn(false);
 
-		registerController.register.actionPerformed(mock(ActionEvent.class));
+		registerController.register();
 
 		verify(mockedAPI).registerUser(any(User.class));
 		verify(optionPaneHelper).showMessageDialog("Die Registrierung ist fehlgeschlagen!");
@@ -75,7 +73,7 @@ public class RegisterControllerTest {
 	 */
 	@Test
 	public void testStop() {
-		registerController.stop.actionPerformed(mock(ActionEvent.class));
+		registerController.stop();
 		verify(optionPaneHelper).showMessageDialog(anyString());
 	}
 

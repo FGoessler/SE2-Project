@@ -230,7 +230,7 @@ public class PermissionViewController {
 	 * Dieser Handler reagiert auf Klicks des "+"-Button, um andere Nutzer zu der Datei/Verzeichnis einzuladen.<br/>
 	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
-	public Action addUserPermission = new AbstractAction() {
+	public final Action addUserPermission = new AbstractAction() {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			sharingService.showShareFEntryDialog(currentFEntry.get());
@@ -242,7 +242,7 @@ public class PermissionViewController {
 	 * also jegliche Rechte an der Datei zu löschen.<br/>
 	 * Diese Aktion wird per SWIxml automatisch mit dem UI verknüpft.
 	 */
-	public Action removeUserPermission = new AbstractAction() {
+	public final Action removeUserPermission = new AbstractAction() {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final int[] selectedRows = permissionTable.getSelectedRows();

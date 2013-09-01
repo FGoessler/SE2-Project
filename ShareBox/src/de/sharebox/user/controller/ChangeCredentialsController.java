@@ -53,9 +53,10 @@ public class ChangeCredentialsController {
 	 * eingetragen werden (wird gespeichert). Hierbei wird weiterhin geprüft, ob die eingegebene E-Mail-Adresse
 	 * mit der Login-Adresse übereinstimmt.<br/>
 	 * Die E-Mail-Adresse kann hier als Einziges nicht verändert werden. Außerdem wird überprüft, ob das neue und das
-	 * alte Passwort nicht gleich sind und dass die Passwörter in den zwei 'Neu'-Feldern übereinstimmen.
+	 * alte Passwort nicht gleich sind und dass die Passwörter in den zwei 'Neu'-Feldern übereinstimmen.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action save = new AbstractAction() {
+	public final Action save = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			final User newUserData = new User();
 
@@ -76,9 +77,10 @@ public class ChangeCredentialsController {
 	};
 
 	/**
-	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.
+	 * Ein einfacher Button zum Abbrechen, der das Fenster ohne Änderungen schließt.<br/>
+	 * Wird per SWIxml an das GUI Element gebunden.
 	 */
-	public Action stop = new AbstractAction() {
+	public final Action stop = new AbstractAction() {
 		public void actionPerformed(final ActionEvent event) {
 			frame.setVisible(false);
 			optionPane.showMessageDialog("Der Vorgang wurde abgebrochen!");
