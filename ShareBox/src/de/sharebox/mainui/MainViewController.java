@@ -3,6 +3,7 @@ package de.sharebox.mainui;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import de.sharebox.api.UserAPI;
+import de.sharebox.file.FileManager;
 import de.sharebox.file.controller.DirectoryViewControllerFactory;
 import de.sharebox.file.controller.LogViewControllerFactory;
 import de.sharebox.file.controller.PermissionViewControllerFactory;
@@ -26,6 +27,7 @@ public class MainViewController {
 	private final ChangeCredentialsController changeCredentialsController;
 	private final LoginController loginController;
 	private final UserAPI userAPI;
+	private final FileManager fileManager;
 
 	private final JFrame frame;
 
@@ -65,6 +67,10 @@ public class MainViewController {
 	 * @param fileMenuFactory                Mittels dieser Factory wird das FileMenu erzeugt.
 	 * @param administrationMenuFactory      Mittels dieser Factory wird das AdministrationMenu erzeugt.
 	 * @param accountingController           Ein AccountingController für Änderungen an den Rechnungsdaten.
+	 * @param changeCredentialsController    Ein ChangeCredentialsController für Änderungen an den Logindaten.
+	 * @param editProfileController          Ein EditProfileController für Änderungen an den Profildaten des Nutzers.
+	 * @param invitationController           Ein InvitationController zum Einladen neuer Benutzer..
+	 * @param fileManager                    Der Filemanager zum Abrufen von Änderungen am Dateiszstem und der FileAPI.
 	 */
 	@Inject
 	MainViewController(final @Assisted User user,
@@ -78,7 +84,8 @@ public class MainViewController {
 					   final AccountingController accountingController,
 					   final ChangeCredentialsController changeCredentialsController,
 					   final EditProfileController editProfileController,
-					   final InvitationController invitationController) {
+					   final InvitationController invitationController,
+					   final FileManager fileManager) {
 
 		this.currentUser = user;
 		this.userAPI = userAPI;
@@ -87,6 +94,7 @@ public class MainViewController {
 		this.changeCredentialsController = changeCredentialsController;
 		this.editProfileController = editProfileController;
 		this.invitationController = invitationController;
+		this.fileManager = fileManager;
 
 		//create window
 		frame = (JFrame) new SwingEngineHelper().render(this, "directory/mainWindow");
@@ -143,6 +151,7 @@ public class MainViewController {
 	 * Schließt das Hauptfenster und loggt den Benutzer aus. Anschließend ist wieder das Login-Fenster sichtbar.
 	 */
 	public void close() {
+		fileManager.stopPolling();
 		userAPI.logout();
 
 		frame.setVisible(false);

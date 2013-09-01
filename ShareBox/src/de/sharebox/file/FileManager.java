@@ -49,9 +49,7 @@ public class FileManager implements DirectoryObserver {
 	 * Startet einen Timer, der alle 30 Sekunden Änderungen der API und des Dateisystems abfragt.
 	 */
 	public void startPolling() {
-		if (timer != null) {
-			timer.cancel();
-		}
+		stopPolling();
 
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -61,6 +59,15 @@ public class FileManager implements DirectoryObserver {
 				pollFileSystemForChanges();
 			}
 		}, 0, 30000);
+	}
+
+	/**
+	 * Stoppt den laufenden Timer, der Änderungen der API und des Dateisystems abfragt.
+	 */
+	public void stopPolling() {
+		if (timer != null) {
+			timer.cancel();
+		}
 	}
 
 	/**
