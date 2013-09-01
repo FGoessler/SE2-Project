@@ -183,6 +183,22 @@ public class Directory extends FEntry {
 		}
 	}
 
+	/**
+	 * Dieser Observer reagiert auf Änderungen an den Rechten von Kindern dieses Directories. Besitzt der aktuelle Nutzer
+	 * keine Lese-Rechte mehr an der Datei wird die Datei aus dem Verzeichnis entfernt.
+	 */
+	private FEntryObserver permissionOfChildChangedObserver = new FEntryObserver() {
+		@Override
+		public void fEntryNotification(final FEntryNotification notification) {
+			if (notification.getChangeType().equals(FEntryNotification.ChangeType.PERMISSION_CHANGED)) {
+				final Permission permission = notification.getChangedFEntry().getPermissionOfCurrentUser();
+				if (!permission.getReadAllowed()) {
+					deleteFEntry(notification.getChangedFEntry());
+				}
+			}
+		}
+	};
+
 	private Boolean fEntryExists(final String fileName) {
 		boolean exists = false;
 		for (final FEntry fEntry : fEntries) {

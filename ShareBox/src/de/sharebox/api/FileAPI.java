@@ -9,7 +9,10 @@ import de.sharebox.file.model.FEntry;
 import de.sharebox.file.model.File;
 import de.sharebox.user.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Die FileAPI dient zur Kommunikation mit dem Server. Hiermit können Dateien und Verzeichnisse angelegt, aktualisiert
@@ -65,15 +68,10 @@ public class FileAPI {
 		 * @return Der gespeicherte FEntry.
 		 */
 		public FEntry getFEntry() {
+			//update children
 			if (fEntry instanceof Directory) {
-				final Iterator<FEntry> iterator = ((Directory) fEntry).getFEntries().iterator();
-				while (iterator.hasNext()) {
-					final FEntry child = iterator.next();
-					if (child.getPermissionOfCurrentUser().getReadAllowed()) {
-						child.applyChanges(getFEntryWithId(child.getIdentifier()), FileAPI.this);
-					} else {
-						iterator.remove();
-					}
+				for (final FEntry child : ((Directory) fEntry).getFEntries()) {
+					child.applyChanges(getFEntryWithId(child.getIdentifier()), FileAPI.this);
 				}
 			}
 			return fEntry;

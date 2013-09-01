@@ -32,8 +32,10 @@ public class FEntryTreeNode extends DefaultMutableTreeNode {
 
 		if (fEntry instanceof Directory) {
 			setAllowsChildren(true);
-			for (final FEntry childFEntry : ((Directory) fEntry).getFEntries()) {
-				add(new FEntryTreeNode(this.treeModel, childFEntry));
+			if (fEntry.getPermissionOfCurrentUser().getReadAllowed()) {
+				for (final FEntry childFEntry : ((Directory) fEntry).getFEntries()) {
+					add(new FEntryTreeNode(this.treeModel, childFEntry));
+				}
 			}
 		} else {
 			setAllowsChildren(false);
