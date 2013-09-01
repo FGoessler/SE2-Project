@@ -72,7 +72,9 @@ public class FEntryTest extends AbstractFEntryTest {
 		fEntry.setName("TestFile");
 		fEntry.setIdentifier(1234L);
 		fEntry.setPermission(user, true, true, true);
+
 		final FEntry updatedFEntry = new FEntry(mockedUserAPI, "newFileName", user);
+		updatedFEntry.setPermission(user, true, false, true);
 
 		fEntry.applyChanges(updatedFEntry, mock(FileManager.class));
 
@@ -80,10 +82,8 @@ public class FEntryTest extends AbstractFEntryTest {
 		assertThat(fEntry.getName()).isEqualTo("newFileName");
 		assertThat(fEntry.getIdentifier()).isEqualTo(1234L);
 		assertThat(fEntry.getPermissionOfUser(user).getReadAllowed()).isTrue();
-		assertThat(fEntry.getPermissionOfUser(user).getWriteAllowed()).isTrue();
+		assertThat(fEntry.getPermissionOfUser(user).getWriteAllowed()).isFalse();
 		assertThat(fEntry.getPermissionOfUser(user).getManageAllowed()).isTrue();
-
-		//TODO: test permission change!
 	}
 
 }

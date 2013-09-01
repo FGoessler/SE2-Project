@@ -66,12 +66,6 @@ public class FileManagerTest {
 	}
 
 	@Test
-	public void testPollFileSystemForChanges() {
-		assertThat(fileManager.pollFileSystemForChanges()).isTrue();
-		//Nothing more to test here since it's not really implemented in this prototype.
-	}
-
-	@Test
 	public void handlesNotifications() {
 		final FEntryNotification updateNotification = new FEntryNotification(file, FEntryNotification.ChangeType.NAME_CHANGED, file);
 		fileManager.fEntryNotification(updateNotification);

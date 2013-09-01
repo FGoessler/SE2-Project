@@ -15,6 +15,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -140,7 +142,15 @@ public class FileAPITest {
 
 	@Test
 	public void testShareFEntry() {
-		//TODO: test shareFEntry
+		final Long dirID = fileAPI.createNewFEntry(tDirectory1);
+		final Long fileID = fileAPI.createNewFEntry(tFile1);
+		when(mockedUserAPI.getRootDirIDOfUser(any(User.class))).thenReturn(dirID);
 
+		assertThat(fileAPI.shareFEntry(mockedUserAPI, mock(User.class), tFile1)).isTrue();
+
+		final Directory updatedDir = (Directory) fileAPI.getFEntryWithId(dirID);
+		assertThat(updatedDir.getFEntries()).hasSize(1);
+		assertThat(updatedDir.getFEntries().get(0).getName()).isEqualTo(tFile1.getName());
+		assertThat(updatedDir.getFEntries().get(0).getIdentifier()).isEqualTo(fileID);
 	}
 }
