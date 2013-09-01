@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="jars/swixml.jar">
@@ -28,26 +28,10 @@
 			<attribute name="javadoc_location" value="http://docs.mockito.googlecode.com/hg/latest/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="jars/guava-14.0.1.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="jars/guice-3.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="jars/guice-assistedinject-3.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="jars/javax.inject.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="jars/aopalliance.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-
+	<classpathentry kind="lib" path="jars/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="jars/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="jars/guice-assistedinject-3.0.jar"/>
+	<classpathentry kind="lib" path="jars/javax.inject.jar"/>
+	<classpathentry kind="lib" path="jars/aopalliance.jar"/>
 	<classpathentry kind="output" path="out/production/ShareBox"/>
 </classpath>
